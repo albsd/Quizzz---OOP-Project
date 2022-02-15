@@ -2,7 +2,7 @@
 Date:           15/02/2022 
 Main focus:     Setting up the project template
 Chair:          Pil Kyu Cho
-Note taker:     Jakub Patrik
+Note taker:     Albert Sandu
 
 # Opening
 Attendance check:
@@ -33,6 +33,9 @@ Attendance check:
     - Spring framework
 
 # Action points for next week (Scrum board)
+ - Finish the teamwork assignment (code of conduct) and backlog assignment by this Friday. Meet up on Thursday for the assignment
+ - Read-up on framework and gradle tutorial before Sunday
+ - Sunday create a schedule of entire project work flow
 
 
 # Any other business
@@ -45,4 +48,4 @@ Attendance check:
 *If there are any questions, now is the time to ask them.*
 
 # Closing remarks
-*any closing remarks.*
+ - The time for future meetings is the fixed one on mattermost. As for location, this may be subject to change. 
