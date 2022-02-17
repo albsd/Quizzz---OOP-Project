@@ -12,6 +12,7 @@ Add your own name (do not add the names for others!) to the section below.
 |---|---|---|
 | ![](https://eu.ui-avatars.com/api/?name=OOPP&length=4&size=50&color=DDD&background=777&font-size=0.325) | Your Name Here | Y.NameHere@student.tudelft.nl |
 | <a href="https://imgbb.com/"><img src="https://i.ibb.co/RCYJ2zR/Lohithsai.jpg" alt="Lohithsai" border="0" height=60></a> | Lohithsai Yadala Chanchu | L.S.YadalaChanchu@student.tudelft.nl|
+| <a href="https://tinyurl.com/jakubpatrik"><img src="https://tinyurl.com/jakubpatrik" alt="Jakub" border="0" height=60></a> | Jakub Patrik | J.Patrik@student.tudelft.nl|
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
