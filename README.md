@@ -13,6 +13,7 @@ Add your own name (do not add the names for others!) to the section below.
 | <a href="https://imgbb.com/"><img src="https://i.ibb.co/7VSxGDk/Capture.png" alt="Philip" border="0" height=60></a> | Pil Kyu Cho | p.k.cho@student.tudelft.nl|
 | <a href="https://imgbb.com/"><img src="https://i.ibb.co/RCYJ2zR/Lohithsai.jpg" alt="Lohithsai" border="0" height=60></a> | Lohithsai Yadala Chanchu | L.S.YadalaChanchu@student.tudelft.nl|
 | <a href="https://tinyurl.com/jakubpatrik"><img src="https://tinyurl.com/jakubpatrik" alt="Jakub" border="0" height=60></a> | Jakub Patrik | J.Patrik@student.tudelft.nl|
+| <a href="https://ibb.co/1bzqskD"><img src="https://i.ibb.co/1bzqskD/kare.jpg" alt="Kerem" border="0" height=60></a> | Kerem Yoner | K.Yoner@student.tudelft.nl|
 
 
 <!-- Instructions (remove once assignment has been completed -->
