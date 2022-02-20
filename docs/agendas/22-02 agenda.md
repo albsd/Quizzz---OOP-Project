@@ -22,8 +22,11 @@ Attendance check:
  - Create HCI evaluation feedback notes
  - Get started with some issues on Gitlab
  - Talk about assignment 3B; teamwork
- - Literacy assignment
-
+ - Literacy assignment 
+ - Check-in: how are things going?
+ - A short reflection on learnings (tips/tops) last week
+ - Code of Conduct: are we still on track? Do we need to make adjustments?
+ - Sharing tips & tops (feedback for the chair and the team)
 
 # Action points for next week (Scrum board)
  - Finish the HCI evaluation assignment of our prototype by Friday
