@@ -16,7 +16,7 @@
 package server.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,22 +24,41 @@ import org.junit.jupiter.api.Test;
 import server.repository.GameRepository;
 import server.service.GameService;
 
+import java.util.UUID;
+
 public class GameControllerTest {
 
     private GameService service;
 
     private GameController ctrl;
 
+    private  UUID uuid;
+
     @BeforeEach
     public void setup() {
         service = new GameService(new GameRepository());
         ctrl = new GameController(service);
+        uuid = ctrl.create();
     }
 
     @Test
-    public void cannotAddNullGame() {
+    public void addNullGame() {
         var actual = ctrl.join(null, "johny");
+        assertEquals(NOT_FOUND, actual.getStatusCode());
+    }
+    @Test
+    public void addNullNickName() {
+        var actual = ctrl.join(uuid, null);
         assertEquals(BAD_REQUEST, actual.getStatusCode());
     }
-
+    @Test
+    public void joinUninitializedGameWithValidNickname() {
+        var actual = ctrl.join(UUID.randomUUID(), "nick");
+        assertEquals(NOT_FOUND, actual.getStatusCode());
+    }
+    @Test
+    public void joinInitializedGameWithValidNickname() {
+        var actual = ctrl.join(uuid, "nick");
+        assertEquals(OK, actual.getStatusCode());
+    }
 }
