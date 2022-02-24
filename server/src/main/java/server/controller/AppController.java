@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/")
-public class SomeController {
+public class AppController {
 
     @GetMapping("/")
     @ResponseBody
