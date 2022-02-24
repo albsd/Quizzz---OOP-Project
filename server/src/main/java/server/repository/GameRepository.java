@@ -15,9 +15,6 @@
  */
 package server.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import commons.Quote;
 import org.springframework.stereotype.Repository;
 import server.model.Game;
 

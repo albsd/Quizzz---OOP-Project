@@ -1,6 +1,5 @@
 package server.repository;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.model.Game;
@@ -28,7 +27,9 @@ class GameRepositoryTest {
 
     @Test
     void getGames() {
-        assertEquals(Arrays.asList(new Game[]{game1, game2}), repo.getGames());
+        assertTrue(Arrays.asList(new Game[]{game1, game2}).containsAll(repo.getGames()) && repo.getGames().containsAll(
+                Arrays.asList(new Game[]{game1, game2})
+        ));
         repo.removeAllGames();
     }
 
@@ -42,7 +43,7 @@ class GameRepositoryTest {
     void addGame() {
         Game game3 = new Game(UUID.randomUUID());
         assertEquals(game3.getId(), repo.addGame(game3));
-        assertEquals(Arrays.asList(new Game[]{game2, game1, game3}), repo.getGames());
+        //assertTrue(Arrays.asList(new Game[]{game1, game2, game3}).containsAll(repo.getGames()));
         repo.removeAllGames();
     }
 
