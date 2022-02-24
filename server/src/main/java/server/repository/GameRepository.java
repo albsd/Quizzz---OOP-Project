@@ -45,7 +45,9 @@ public class GameRepository {
         GAMES.add(game);
         return game.getId();
     }
-
+    public void removeAllGames(){
+        GAMES = new HashSet<>();;
+    }
     public boolean removeGame(UUID id) {
         return GAMES.removeIf(g -> g.getId().equals(id));
     }
