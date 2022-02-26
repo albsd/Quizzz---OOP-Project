@@ -23,6 +23,8 @@ dependencies {
 	implementation group: 'jakarta.activation', name: 'jakarta.activation-api', version: '2.0.1'
 	
 	implementation 'com.google.inject:guice:5.0.1'
+	
+	implementation 'org.springframework.boot:spring-boot-starter-websocket:2.6.3'
 
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
 	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
