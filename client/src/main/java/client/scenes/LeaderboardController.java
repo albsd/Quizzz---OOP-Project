@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +25,7 @@ public class LeaderboardController {
 
     @FXML
     protected void onConfirmButtonClick(ActionEvent e) throws IOException {
-        root = FXMLLoader.load(LeaderboardApplication.class.getResource("placeholder-view.fxml"));
+        root = FXMLLoader.load(Main.LeaderboardApplication.class.getResource("placeholder-view.fxml"));
         stage = (Stage)((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -33,7 +34,7 @@ public class LeaderboardController {
 
     @FXML
     protected void onReturnButtonClick(ActionEvent e) throws IOException {
-        root = FXMLLoader.load(LeaderboardApplication.class.getResource("leaderboard-leave-confirmation-view.fxml"));
+        root = FXMLLoader.load(Main.LeaderboardApplication.class.getResource("leaderboard-leave-confirmation-view.fxml"));
         stage = (Stage)((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -43,7 +44,7 @@ public class LeaderboardController {
 
     @FXML
     public void switchToLeaderboard(ActionEvent e) throws IOException {
-        root = FXMLLoader.load(LeaderboardApplication.class.getResource("leaderboard-view.fxml"));
+        root = FXMLLoader.load(Main.LeaderboardApplication.class.getResource("leaderboard-view.fxml"));
         stage = (Stage)((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
