@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" prefHeight="325.0" prefWidth="527.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SplashController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <AnchorPane prefHeight="303.0" prefWidth="422.0">
+        <children>
+            <Button fx:id="helpButton" layoutX="7.0" layoutY="5.0" mnemonicParsing="false" onAction="#help" prefHeight="17.0" prefWidth="41.0" text="Help">
+            <font>
+               <Font name="System Bold" size="8.0" />
+            </font></Button>
+            <Button fx:id="exitButton" layoutX="450.0" layoutY="14.0" mnemonicParsing="false" onAction="#exitApp" prefHeight="26.0" prefWidth="21.0" text="X" />
+            <Button fx:id="singleplayerButton" layoutX="202.0" layoutY="204.0" mnemonicParsing="false" onAction="#singleGame" text="Singleplayer" />
+            <Button fx:id="multiplayerButton" layoutX="82.0" layoutY="204.0" mnemonicParsing="false" onAction="#lobby" text="Multiplayer" />
+            <Button fx:id="leaderBoardButton" layoutX="323.0" layoutY="204.0" mnemonicParsing="false" onAction="#leaderBoard" text="Leaderboard" />
+
+            <Label fx:id="exitLabel" layoutX="443.0" layoutY="40.0" prefHeight="14.0" prefWidth="37.0" text="Exit game" textAlignment="CENTER">
+            <font>
+               <Font size="8.0" />
+            </font></Label>
+            <Label fx:id="title" layoutX="120.0" layoutY="55.0" prefHeight="52.0" prefWidth="245.0" text="Energy Quizzz" textAlignment="CENTER">
+                <font>
+                    <Font name="System Bold" size="36.0" />
+                </font>
+            </Label>
+            <TextField fx:id="userField" alignment="CENTER" layoutX="167.0" layoutY="130.0" text="Input nickname" />
+        </children>
+    </AnchorPane>
+<!--    <ScrollPane prefHeight="200.0" prefWidth="200.0" />-->
+</VBox>
