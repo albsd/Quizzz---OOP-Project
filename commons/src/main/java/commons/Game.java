@@ -22,6 +22,7 @@ public class Game {
     public Game(UUID id) {
         this.id = id;
         this.players = new ArrayList<>();
+        this.questions = new Question[20];
         // Generating questions is not implemented yet:
         // this.questions = QuestionService.generateQuestions()
         this.currentQuestion = 0;
@@ -40,7 +41,8 @@ public class Game {
     }
 
     public boolean addPlayer(Player p) {
-        if (players.contains(p)) return false;
+        if (players.contains(p))
+            return false;
         players.add(p);
         return true;
     }

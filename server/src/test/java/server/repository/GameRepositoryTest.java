@@ -25,12 +25,11 @@ class GameRepositoryTest {
         repo.addGame(game2);
     }
 
-
     @Test
     void getGames() {
-        assertTrue(Arrays.asList(new Game[]{game1, game2}).containsAll(repo.getGames()) && repo.getGames().containsAll(
-                Arrays.asList(new Game[]{game1, game2})
-        ));
+        assertTrue(
+                Arrays.asList(new Game[] { game1, game2 }).containsAll(repo.getGames()) && repo.getGames().containsAll(
+                        Arrays.asList(new Game[] { game1, game2 })));
         repo.removeAllGames();
     }
 
@@ -44,7 +43,8 @@ class GameRepositoryTest {
     void addGame() {
         Game game3 = new Game(UUID.randomUUID());
         assertEquals(game3.getId(), repo.addGame(game3));
-        //assertTrue(Arrays.asList(new Game[]{game1, game2, game3}).containsAll(repo.getGames()));
+        // assertTrue(Arrays.asList(new Game[]{game1, game2,
+        // game3}).containsAll(repo.getGames()));
         repo.removeAllGames();
     }
 

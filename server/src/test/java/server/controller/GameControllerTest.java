@@ -32,7 +32,7 @@ public class GameControllerTest {
 
     private GameController ctrl;
 
-    private  UUID uuid;
+    private UUID uuid;
 
     @BeforeEach
     public void setup() {
@@ -46,16 +46,19 @@ public class GameControllerTest {
         var actual = ctrl.join(null, "johny");
         assertEquals(NOT_FOUND, actual.getStatusCode());
     }
+
     @Test
     public void addNullNickName() {
         var actual = ctrl.join(uuid, null);
         assertEquals(BAD_REQUEST, actual.getStatusCode());
     }
+
     @Test
     public void joinUninitializedGameWithValidNickname() {
         var actual = ctrl.join(UUID.randomUUID(), "nick");
         assertEquals(NOT_FOUND, actual.getStatusCode());
     }
+
     @Test
     public void joinInitializedGameWithValidNickname() {
         var actual = ctrl.join(uuid, "nick");

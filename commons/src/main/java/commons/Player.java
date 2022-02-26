@@ -3,7 +3,7 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Player {
-    @JsonProperty("nick")
+    @JsonProperty("nick_name")
     private final String nick;
 
     @JsonProperty("time")
@@ -16,7 +16,7 @@ public class Player {
         this.nick = nick;
     }
 
-    public String getName() {
+    public String getNick() {
         return this.nick;
     }
 
@@ -24,12 +24,12 @@ public class Player {
         return this.time;
     }
 
-    public void setTime(int ms) {
-        this.time = ms;
-    }
-
     public int getScore() {
         return this.score;
+    }
+
+    public void setTime(int ms) {
+        this.time = ms;
     }
 
     public void setScore(int amount) {
@@ -42,7 +42,8 @@ public class Player {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null) return false;
+        if (other == null)
+            return false;
         if (other instanceof Player that) {
             return nick.equals(that.nick) && score == that.score && time == that.time;
         }
