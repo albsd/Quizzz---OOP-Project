@@ -1,4 +1,4 @@
-package com.example.demo2;
+package client.scenes;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
