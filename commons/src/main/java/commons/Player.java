@@ -1,18 +1,23 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Player {
-    private final String name;
+    @JsonProperty("nick")
+    private final String nick;
+
+    @JsonProperty("time")
     private int time;
+
+    @JsonProperty("score")
     private int score;
 
-    public Player(String name) {
-        this.name = name;
-        this.time = 0;
-        this.score = 0;
+    public Player(String nick) {
+        this.nick = nick;
     }
 
     public String getName() {
-        return this.name;
+        return this.nick;
     }
 
     public int getTime() {
@@ -27,11 +32,20 @@ public class Player {
         return this.score;
     }
 
+    public void setScore(int amount) {
+        this.score = amount;
+    }
+
     public void addScore(int amount) {
         this.score += amount;
     }
 
-    public void setScore(int amount) {
-        this.score = amount;
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        if (other instanceof Player that) {
+            return nick.equals(that.nick) && score == that.score && time == that.time;
+        }
+        return false;
     }
 }

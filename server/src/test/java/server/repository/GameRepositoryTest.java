@@ -2,7 +2,8 @@ package server.repository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.model.Game;
+
+import commons.Game;
 
 import java.util.Arrays;
 import java.util.UUID;

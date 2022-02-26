@@ -1,8 +1,8 @@
 package server.service;
 
+import commons.Game;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.model.Game;
 import server.repository.GameRepository;
 
 import java.util.List;

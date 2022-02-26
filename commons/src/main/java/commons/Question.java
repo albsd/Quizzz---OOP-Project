@@ -1,14 +1,28 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.net.URI;
 import java.nio.file.Path;
 
 import static java.nio.file.Files.readAllBytes;
 
+@Entity
 public class Question {
+
+    @Id
+    @JsonProperty("nick")
     private final String prompt;
+
+    @JsonProperty("imageBytes")
     private final byte[] imageBytes;
+
+    @JsonProperty("options")
     private final String[] options;
+
+    @JsonProperty("answer")
     private final int answer;
 
     public Question(String prompt, Path imagePath, String[] options, int answer) {

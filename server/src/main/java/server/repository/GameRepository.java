@@ -15,8 +15,8 @@
  */
 package server.repository;
 
+import commons.Game;
 import org.springframework.stereotype.Repository;
-import server.model.Game;
 
 import java.util.*;
 
