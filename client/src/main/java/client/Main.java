@@ -25,6 +25,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.io.IOException;
 import client.scenes.SplashController;
@@ -43,8 +44,8 @@ public class Main extends Application {
 //        Parent root = FXMLLoader.load(Main.class.getResource("Splash.fxml"));
         var root  = FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
         Scene scene = new Scene(root.getValue());
-//            Image logo = new Image(SplashApplication.class.getResourceAsStream("icon.png"));
-//            stage.getIcons().add(logo);
+        Image logo = new Image(Main.class.getResourceAsStream("/icon.png"));
+        stage.getIcons().add(logo);
         stage.setTitle("Energy Quizzz");
         stage.setScene(scene);
         stage.setResizable(false);
