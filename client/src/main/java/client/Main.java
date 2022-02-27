@@ -48,20 +48,5 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, overview, add);
     }
-    // The class is responsible for launching the leaderboard ui
-    public static class LeaderboardApplication extends Application {
-        @Override
-        public void start(Stage stage) throws IOException{
-            FXMLLoader fxmlLoader = new FXMLLoader(Main.LeaderboardApplication.class.getResource("leaderboard-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-            stage.setTitle("Leaderboard");
-            stage.setScene(scene);
-            stage.show();
-        }
-        public void main(String[] args) {
-            launch();
-        }
-
-    }
 
 }
