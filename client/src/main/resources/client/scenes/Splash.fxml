@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SplashController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SplashController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -15,34 +18,34 @@
             <font>
                <Font name="System Bold" size="18.0" />
             </font></Button>
-            <Button fx:id="exitButton" layoutX="1207.0" layoutY="9.0" mnemonicParsing="false" onAction="#exitApp" prefHeight="39.0" prefWidth="38.0" text="X" />
-            <Button fx:id="singleplayerButton" layoutX="104.0" layoutY="528.0" mnemonicParsing="false" onAction="#singleGame" prefHeight="97.0" prefWidth="207.0" text="Singleplayer">
+            <Button fx:id="exitButton" layoutX="1192.0" layoutY="9.0" mnemonicParsing="false" onAction="#exitApp" prefHeight="39.0" prefWidth="38.0" text="X" />
+            <Button fx:id="singleplayerButton" layoutX="110.0" layoutY="527.0" mnemonicParsing="false" onAction="#singleGame" prefHeight="97.0" prefWidth="207.0" text="Singleplayer">
             <font>
                <Font size="24.0" />
             </font></Button>
-            <Button fx:id="multiplayerButton" layoutX="948.0" layoutY="528.0" mnemonicParsing="false" onAction="#lobby" prefHeight="98.0" prefWidth="209.0" text="Multiplayer">
+            <Button fx:id="multiplayerButton" layoutX="941.0" layoutY="526.0" mnemonicParsing="false" onAction="#lobby" prefHeight="98.0" prefWidth="209.0" text="Multiplayer">
             <font>
                <Font size="24.0" />
             </font></Button>
-            <Button fx:id="leaderBoardButton" layoutX="543.0" layoutY="527.0" mnemonicParsing="false" onAction="#leaderBoard" prefHeight="98.0" prefWidth="208.0" text="Leaderboard">
+            <Button fx:id="leaderBoardButton" layoutX="525.0" layoutY="527.0" mnemonicParsing="false" onAction="#leaderBoard" prefHeight="98.0" prefWidth="208.0" text="Leaderboard">
             <font>
                <Font size="24.0" />
             </font></Button>
 
-            <Label fx:id="exitLabel" layoutX="1163.0" layoutY="55.0" prefHeight="30.0" prefWidth="97.0" text="Exit game">
+            <Label fx:id="exitLabel" alignment="CENTER" layoutX="1158.0" layoutY="55.0" prefHeight="39.0" prefWidth="105.0" text="Exit game">
             <font>
                <Font size="18.0" />
             </font></Label>
-            <Label fx:id="title" layoutX="204.0" layoutY="52.0" prefHeight="169.0" prefWidth="807.0" text="Energy Quizzz">
+            <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" layoutX="214.0" layoutY="71.0" prefHeight="185.0" prefWidth="831.0" text="Energy Quizzz" textAlignment="CENTER">
                 <font>
                     <Font name="System Bold" size="96.0" />
                 </font>
             </Label>
-            <TextField fx:id="userField" alignment="CENTER" layoutX="388.0" layoutY="340.0" prefHeight="86.0" prefWidth="518.0" promptText="Input nickname">
+            <TextField fx:id="userField" alignment="CENTER" layoutX="372.0" layoutY="334.0" prefHeight="86.0" prefWidth="518.0" promptText="Input nickname">
             <font>
                <Font size="36.0" />
             </font></TextField>
-         <Label fx:id="warning" layoutX="492.0" layoutY="439.0" prefHeight="31.0" prefWidth="275.0">
+         <Label fx:id="warning" alignment="CENTER" layoutX="474.0" layoutY="442.0" prefHeight="39.0" prefWidth="310.0">
             <font>
                <Font size="14.0" />
             </font></Label>
