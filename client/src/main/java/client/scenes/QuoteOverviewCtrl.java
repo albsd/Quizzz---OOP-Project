@@ -13,58 +13,39 @@
 //  * See the License for the specific language governing permissions and
 //  * limitations under the License.
 //  */
-// package client.scenes;
+package client.scenes;
 
-// import java.net.URL;
-// import java.util.ResourceBundle;
+import com.google.inject.Inject;
+import commons.Player;
+import javafx.fxml.Initializable;
+import client.utils.ServerUtils;
 
-// import com.google.inject.Inject;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
-// import client.utils.ServerUtils;
-// import javafx.beans.property.SimpleStringProperty;
-// import javafx.collections.FXCollections;
-// import javafx.collections.ObservableList;
-// import javafx.fxml.FXML;
-// import javafx.fxml.Initializable;
-// import javafx.scene.control.TableColumn;
-// import javafx.scene.control.TableView;
+// TODO:
+// Rename to LobbyCtrl
+public class QuoteOverviewCtrl implements Initializable {
 
-// public class QuoteOverviewCtrl implements Initializable {
+    private final ServerUtils server;
 
-//     private final ServerUtils server;
-//     private final MainCtrl mainCtrl;
+    private final MainCtrl mainCtrl;
 
-//     private ObservableList<Quote> data;
+    private final List<Player> players;
 
-//     @FXML
-//     private TableView<Quote> table;
-//     @FXML
-//     private TableColumn<Quote, String> colFirstName;
-//     @FXML
-//     private TableColumn<Quote, String> colLastName;
-//     @FXML
-//     private TableColumn<Quote, String> colQuote;
+    @Inject
+    public QuoteOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+        this.server = server;
+        this.mainCtrl = mainCtrl;
+        this.players = new ArrayList<>();
+    }
 
-//     @Inject
-//     public QuoteOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
-//         this.server = server;
-//         this.mainCtrl = mainCtrl;
-//     }
-
-//     @Override
-//     public void initialize(URL location, ResourceBundle resources) {
-//         colFirstName.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().person.firstName));
-//         colLastName.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().person.lastName));
-//         colQuote.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().quote));
-//     }
-
-//     public void addQuote() {
-//         mainCtrl.showAdd();
-//     }
-
-//     public void refresh() {
-//         var quotes = server.getQuotes();
-//         data = FXCollections.observableList(quotes);
-//         table.setItems(data);
-//     }
-// }
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        server.registerForMessages("/topic/game_join", Player.class, p -> {
+            players.add(p);
+        });
+    }
+}

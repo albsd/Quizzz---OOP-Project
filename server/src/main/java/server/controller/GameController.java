@@ -23,6 +23,8 @@ import commons.Player;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,9 +56,15 @@ public class GameController {
         return gameService.addGame(game);
     }
 
+    @MessageMapping("{id}/join")
+    @SendTo("/topic/game_join")
+    public Player joinWs(@PathVariable("id") UUID id, String nick) {
+        return join(id, nick).getBody();
+    }
+
     @PostMapping("{id}/{nick}")
-    public ResponseEntity<Boolean> join(@PathVariable("id") UUID id, @PathVariable("nick") String nickname) {
-        if (nickname == null || nickname.isBlank()) {
+    public ResponseEntity<Player> join(@PathVariable("id") UUID id, @PathVariable("nick") String nick) {
+        if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         Game game = gameService.findById(id);
@@ -64,11 +72,11 @@ public class GameController {
             return ResponseEntity.notFound().build();
         }
 
-        Player p = new Player(nickname);
+        Player p = new Player(nick);
         boolean success = game.addPlayer(p);
 
         if (!success) return ResponseEntity.status(401).build();
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(p);
     }
 
     @GetMapping("{id}")

@@ -15,17 +15,26 @@
  */
 package client.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import commons.Game;
+import commons.Player;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
+
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import commons.Game;
-import commons.Player;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 public class ServerUtils {
 
@@ -34,6 +43,7 @@ public class ServerUtils {
     private final URI kGameUrl;
 
     private final HttpClient client;
+    private StompSession session = connect("ws://localhost:8080/websocket");
 
     public ServerUtils() {
         this.kBaseUrl = URI.create("http://localhost:8080");
@@ -57,16 +67,49 @@ public class ServerUtils {
         return gameId;
     }
 
-    public void joinGame() throws IOException, InterruptedException {
+    public void joinGame(String nick) throws IOException, InterruptedException {
         // POST requests to add players to game
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(kGameUrl.resolve("./lohithsai"))
+                .uri(kGameUrl.resolve("./" + nick))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
+    }
+
+    private StompSession connect(String url) {
+        var client = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try {
+            return stomp.connect(url, new StompSessionHandlerAdapter() {
+            }).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw new RuntimeException();
+        }
+        throw new IllegalStateException();
+    }
+
+    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
+        session.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return type;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((T) payload);
+            }
+        });
+    }
+
+    public void send(String dest, Object o) {
+        session.send(dest, o);
     }
 
     // GET request to get list of players from game and to deserialize them
