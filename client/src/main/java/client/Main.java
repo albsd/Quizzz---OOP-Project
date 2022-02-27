@@ -15,14 +15,16 @@
  */
 package client;
 
-import static com.google.inject.Guice.createInjector;
 import client.scenes.SplashController;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
 import java.io.IOException;
+
+import static com.google.inject.Guice.createInjector;
 
 
 public class Main extends Application {

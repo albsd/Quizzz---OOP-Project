@@ -15,9 +15,8 @@
  */
 package client.scenes;
 
-import com.google.inject.Inject;
-
 import client.utils.ServerUtils;
+import com.google.inject.Inject;
 import commons.Person;
 import commons.Quote;
 import jakarta.ws.rs.WebApplicationException;
