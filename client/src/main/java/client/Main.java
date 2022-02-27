@@ -15,20 +15,17 @@
  */
 package client;
 
-import static com.google.inject.Guice.createInjector;
+import client.scenes.AddQuoteCtrl;
+import client.scenes.MainCtrl;
+import client.scenes.QuoteOverviewCtrl;
+import com.google.inject.Injector;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import com.google.inject.Injector;
-
-import client.scenes.AddQuoteCtrl;
-import client.scenes.MainCtrl;
-import client.scenes.QuoteOverviewCtrl;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import static com.google.inject.Guice.createInjector;
 
 public class Main extends Application {
 

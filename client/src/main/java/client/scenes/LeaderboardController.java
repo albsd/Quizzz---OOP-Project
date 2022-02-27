@@ -28,7 +28,7 @@ public class LeaderboardController {
 
     @FXML
     protected void onConfirmButtonClick(ActionEvent e) throws IOException {
-        root = FXMLLoader.load(Main.LeaderboardApplication.class.getResource("placeholder-view.fxml"));
+        root = FXMLLoader.load(Main.class.getResource("placeholder-view.fxml"));
         stage = (Stage)((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -52,7 +52,7 @@ public class LeaderboardController {
 
     @FXML
     public void switchToLeaderboard(ActionEvent e) throws IOException {
-        root = FXMLLoader.load(Main.LeaderboardApplication.class.getResource("leaderboard-view.fxml"));
+        root = FXMLLoader.load(Main.class.getResource("leaderboard-view.fxml"));
         stage = (Stage)((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
