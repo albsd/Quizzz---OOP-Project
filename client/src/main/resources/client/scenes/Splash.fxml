@@ -16,32 +16,36 @@
                <Font name="System Bold" size="18.0" />
             </font></Button>
             <Button fx:id="exitButton" layoutX="1207.0" layoutY="9.0" mnemonicParsing="false" onAction="#exitApp" prefHeight="39.0" prefWidth="38.0" text="X" />
-            <Button fx:id="singleplayerButton" layoutX="89.0" layoutY="529.0" mnemonicParsing="false" onAction="#singleGame" prefHeight="97.0" prefWidth="207.0" text="Singleplayer">
+            <Button fx:id="singleplayerButton" layoutX="104.0" layoutY="528.0" mnemonicParsing="false" onAction="#singleGame" prefHeight="97.0" prefWidth="207.0" text="Singleplayer">
             <font>
                <Font size="24.0" />
             </font></Button>
-            <Button fx:id="multiplayerButton" layoutX="968.0" layoutY="520.0" mnemonicParsing="false" onAction="#lobby" prefHeight="98.0" prefWidth="209.0" text="Multiplayer">
+            <Button fx:id="multiplayerButton" layoutX="948.0" layoutY="528.0" mnemonicParsing="false" onAction="#lobby" prefHeight="98.0" prefWidth="209.0" text="Multiplayer">
             <font>
                <Font size="24.0" />
             </font></Button>
-            <Button fx:id="leaderBoardButton" layoutX="543.0" layoutY="520.0" mnemonicParsing="false" onAction="#leaderBoard" prefHeight="98.0" prefWidth="208.0" text="Leaderboard">
+            <Button fx:id="leaderBoardButton" layoutX="543.0" layoutY="527.0" mnemonicParsing="false" onAction="#leaderBoard" prefHeight="98.0" prefWidth="208.0" text="Leaderboard">
             <font>
                <Font size="24.0" />
             </font></Button>
 
-            <Label fx:id="exitLabel" layoutX="1178.0" layoutY="55.0" prefHeight="29.0" prefWidth="82.0" text="Exit game" textAlignment="CENTER">
+            <Label fx:id="exitLabel" layoutX="1163.0" layoutY="55.0" prefHeight="30.0" prefWidth="97.0" text="Exit game">
             <font>
                <Font size="18.0" />
             </font></Label>
-            <Label fx:id="title" layoutX="312.0" layoutY="55.0" prefHeight="169.0" prefWidth="636.0" text="Energy Quizzz" textAlignment="CENTER">
+            <Label fx:id="title" layoutX="204.0" layoutY="52.0" prefHeight="169.0" prefWidth="807.0" text="Energy Quizzz">
                 <font>
                     <Font name="System Bold" size="96.0" />
                 </font>
             </Label>
-            <TextField fx:id="userField" alignment="CENTER" layoutX="502.0" layoutY="326.0" prefHeight="78.0" prefWidth="290.0" text="Input nickname">
+            <TextField fx:id="userField" alignment="CENTER" layoutX="388.0" layoutY="340.0" prefHeight="86.0" prefWidth="518.0" promptText="Input nickname">
             <font>
                <Font size="36.0" />
             </font></TextField>
+         <Label fx:id="warning" layoutX="492.0" layoutY="439.0" prefHeight="31.0" prefWidth="275.0">
+            <font>
+               <Font size="14.0" />
+            </font></Label>
         </children>
     </AnchorPane>
 <!--    <ScrollPane prefHeight="200.0" prefWidth="200.0" />-->
