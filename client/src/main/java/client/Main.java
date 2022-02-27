@@ -27,11 +27,6 @@ import java.io.IOException;
 import static com.google.inject.Guice.createInjector;
 
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import static com.google.inject.Guice.createInjector;
-
 public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
