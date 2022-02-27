@@ -8,10 +8,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class LeaderboardController {
 
@@ -34,13 +37,18 @@ public class LeaderboardController {
 
     @FXML
     protected void onReturnButtonClick(ActionEvent e) throws IOException {
-        root = FXMLLoader.load(Main.LeaderboardApplication.class.getResource("leaderboard-leave-confirmation-view.fxml"));
-        stage = (Stage)((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Confirmation Screen");
+        alert.setHeaderText("Confirmation needed!");
+        alert.setContentText("You are about to leave to the main screen. Are you sure?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() == ButtonType.YES){
+            onConfirmButtonClick(e);
+        }
+        else{
+            switchToLeaderboard(e);
+        }
     }
-
 
     @FXML
     public void switchToLeaderboard(ActionEvent e) throws IOException {
