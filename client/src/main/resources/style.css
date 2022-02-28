@@ -1,0 +1,8 @@
+.returnMenuButton{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.returnMenuButton:hover{
+    -fx-border-color: black;
+}

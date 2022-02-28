@@ -3,6 +3,8 @@ package client.scenes;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -21,14 +23,14 @@ public class SplashController {
     public void help(ActionEvent e) throws IOException {
         //When we have the help.fxml and helpController class
 
-//        FXMLLoader loader = new FXMLLoader(SplashController.class.getResource("Help.fxml"));
-//        root = loader.load();
-//        HelpController helpController = loader.getController();
-//
-//        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-//        scene = new Scene(root);
-//        stage.setScene(scene);
-//        stage.show();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Help.fxml"));
+        root = loader.load();
+        HelpController helpController = loader.getController();
+
+        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void exitApp(ActionEvent e) {
