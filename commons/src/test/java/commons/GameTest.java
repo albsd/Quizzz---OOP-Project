@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,7 +16,8 @@ public class GameTest {
     @BeforeEach
     void setup() {
         p = List.of(new Player[]{new Player("test1"), new Player("test2"), new Player("test3")});
-        g = new Game(p);
+        g = new Game(UUID.randomUUID());
+        for (Player p: p) g.addPlayer(p);
     }
 
     @Test
