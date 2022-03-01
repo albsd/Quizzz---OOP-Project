@@ -26,9 +26,7 @@ import java.io.IOException;
 
 import static com.google.inject.Guice.createInjector;
 
-import client.scenes.MainCtrl;
-import javafx.application.Application;
-import javafx.stage.Stage;
+
 
 public class Main extends Application {
 

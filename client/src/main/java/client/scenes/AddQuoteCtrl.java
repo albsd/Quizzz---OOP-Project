@@ -17,10 +17,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Person;
-import commons.Quote;
-import jakarta.ws.rs.WebApplicationException;
-import javafx.fxml.FXML;
+
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 
