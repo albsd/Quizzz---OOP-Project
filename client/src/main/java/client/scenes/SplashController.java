@@ -3,19 +3,14 @@ package client.scenes;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-public class SplashController implements Initializable {
+public class SplashController {
     @FXML
     private TextField userField;
     @FXML
@@ -24,17 +19,11 @@ public class SplashController implements Initializable {
     private Label title;
     @FXML
     private Label exitLabel;
+
     private Stage stage;
     private Scene scene;
     private Parent root;
-
-    @FXML
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        warning.setTextAlignment(TextAlignment.CENTER);
-        title.setTextAlignment(TextAlignment.CENTER);
-        exitLabel.setTextAlignment(TextAlignment.CENTER);
-    }
+    
 
     public void help(ActionEvent e) throws IOException {
         //When we have the help.fxml and helpController class
@@ -83,17 +72,11 @@ public class SplashController implements Initializable {
     }
 
     public void lobby(ActionEvent e) {
-        String user = userField.getText();
-        if(!checkNicknameLength(user)){
-            warning.setText("Nickname should be min 3, max 6 characters");
-        }
-        else{
-            warning.setText("Nickname set");
-        }
 //        FXMLLoader loader = new FXMLLoader(SplashController.class.getResource("Single.fxml"));
 //        String user = userField.getText();
 //        root = loader.load();
 //        multiController multiController = loader.getController();
+//
 //        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 //        scene = new Scene(root);
 //        stage.setScene(scene);
