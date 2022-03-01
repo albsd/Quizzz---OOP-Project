@@ -15,7 +15,7 @@ public class PlayerTest {
 
     @Test
     void testGetters() {
-        assertEquals("numpy as np", p.getName());
+        assertEquals("numpy as np", p.getNick());
         assertEquals(0, p.getTime());
         assertEquals(0, p.getScore());
     }
