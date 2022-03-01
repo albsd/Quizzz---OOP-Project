@@ -13,7 +13,7 @@ import static java.nio.file.Files.readAllBytes;
 public class Question {
 
     @Id
-    @JsonProperty("nick")
+    @JsonProperty("prompt")
     private final String prompt;
 
     @JsonProperty("imageBytes")
@@ -31,7 +31,8 @@ public class Question {
             bytes = readAllBytes(imagePath);
         } catch (Exception e1) {
             try {
-                System.err.println("Could not load path '" + imagePath.toString() + "', loading default image instead.");
+                System.err
+                        .println("Could not load path '" + imagePath.toString() + "', loading default image instead.");
                 URI uri = getClass().getClassLoader().getResource("default.jpg").toURI();
                 bytes = readAllBytes(Path.of(uri));
             } catch (Exception e2) {

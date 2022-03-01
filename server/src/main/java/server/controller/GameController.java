@@ -49,6 +49,7 @@ public class GameController {
         return gameService.getAll();
     }
 
+    @Deprecated
     @PostMapping("")
     public UUID create() {
         UUID uuid = UUID.randomUUID();
@@ -75,14 +76,16 @@ public class GameController {
         Player p = new Player(nick);
         boolean success = game.addPlayer(p);
 
-        if (!success) return ResponseEntity.status(401).build();
+        if (!success)
+            return ResponseEntity.status(403).build();
         return ResponseEntity.ok(p);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Game> getById(@PathVariable("id") UUID id) {
         Game game = gameService.findById(id);
-        if (game == null) return ResponseEntity.badRequest().build();
+        if (game == null)
+            return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(game);
     }
 

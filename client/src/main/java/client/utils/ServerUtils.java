@@ -53,6 +53,7 @@ public class ServerUtils {
     }
 
     // Initial POST request to get gameId
+    @Deprecated
     public String createGame() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(kGameUrl)
