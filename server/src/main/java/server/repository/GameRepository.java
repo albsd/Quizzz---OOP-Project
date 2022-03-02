@@ -18,19 +18,23 @@ package server.repository;
 import commons.Game;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
+import java.util.Optional;
 
 @Repository
 public class GameRepository {
 
-    private static Set<Game> GAMES = new HashSet<>();
+    private static Set<Game> games = new HashSet<>();
 
     public List<Game> getGames() {
-        return GAMES.stream().toList();
+        return games.stream().toList();
     }
 
-    public Game findById(UUID id) {
-        Optional<Game> optional = GAMES.stream()
+    public Game findById(final UUID id) {
+        Optional<Game> optional = games.stream()
                 .filter(g -> g.getId().equals(id))
                 .findFirst();
 
@@ -38,15 +42,15 @@ public class GameRepository {
         return optional.get();
     }
 
-    public UUID addGame(Game game) {
-        GAMES.add(game);
+    public UUID addGame(final Game game) {
+        games.add(game);
         return game.getId();
     }
-    public void removeAllGames(){
-        GAMES = new HashSet<>();;
+    public void removeAllGames() {
+        games = new HashSet<>();
     }
-    public boolean removeGame(UUID id) {
-        return GAMES.removeIf(g -> g.getId().equals(id));
+    public boolean removeGame(final UUID id) {
+        return games.removeIf(g -> g.getId().equals(id));
     }
 
 }

@@ -40,7 +40,7 @@ public class GameController {
     private final GameService gameService;
 
     @Autowired
-    public GameController(GameService gameService) {
+    public GameController(final GameService gameService) {
         this.gameService = gameService;
     }
 
@@ -59,12 +59,14 @@ public class GameController {
 
     @MessageMapping("{id}/join")
     @SendTo("/topic/game_join")
-    public Player joinWs(@PathVariable("id") UUID id, String nick) {
+    public Player joinWs(final @PathVariable("id") UUID id, final String nick) {
         return join(id, nick).getBody();
     }
 
     @PostMapping("{id}/{nick}")
-    public ResponseEntity<Player> join(@PathVariable("id") UUID id, @PathVariable("nick") String nick) {
+    public ResponseEntity<Player> join(
+            final @PathVariable("id") UUID id,
+            final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
@@ -76,16 +78,15 @@ public class GameController {
         Player p = new Player(nick);
         boolean success = game.addPlayer(p);
 
-        if (!success)
-            return ResponseEntity.status(403).build();
+        final int errorCode = 403;
+        if (!success) return ResponseEntity.status(errorCode).build();
         return ResponseEntity.ok(p);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Game> getById(@PathVariable("id") UUID id) {
+    public ResponseEntity<Game> getById(final @PathVariable("id") UUID id) {
         Game game = gameService.findById(id);
-        if (game == null)
-            return ResponseEntity.badRequest().build();
+        if (game == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(game);
     }
 

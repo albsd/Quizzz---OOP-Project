@@ -19,14 +19,15 @@ public class Main extends Application {
         private static final Injector INJECTOR = createInjector(new MyModule());
         private static final MyFXML FXML = new MyFXML(INJECTOR);
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         launch();
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(final Stage stage) throws IOException {
 //        Parent root = FXMLLoader.load(Main.class.getResource("Splash.fxml"));
-        var root  = FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
+        var root  = FXML.load(SplashController.class,
+                "client", "scenes", "Splash.fxml");
         Scene scene = new Scene(root.getValue());
         Image logo = new Image(Main.class.getResourceAsStream("/icon.png"));
         stage.getIcons().add(logo);

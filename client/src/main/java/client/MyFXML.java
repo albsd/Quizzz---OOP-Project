@@ -33,13 +33,14 @@ public class MyFXML {
 
     private Injector injector;
 
-    public MyFXML(Injector injector) {
+    public MyFXML(final Injector injector) {
         this.injector = injector;
     }
 
-    public <T> Pair<T, Parent> load(Class<T> c, String... parts) {
+    public <T> Pair<T, Parent> load(final Class<T> c, final String... parts) {
         try {
-            var loader = new FXMLLoader(getLocation(parts), null, null, new MyFactory(), StandardCharsets.UTF_8);
+            var loader = new FXMLLoader(getLocation(parts),
+                    null, null, new MyFactory(), StandardCharsets.UTF_8);
             Parent parent = loader.load();
             T ctrl = loader.getController();
             return new Pair<>(ctrl, parent);
@@ -48,16 +49,17 @@ public class MyFXML {
         }
     }
 
-    private URL getLocation(String... parts) {
+    private URL getLocation(final String... parts) {
         var path = Path.of("", parts).toString();
         return MyFXML.class.getClassLoader().getResource(path);
     }
 
-    private class MyFactory implements BuilderFactory, Callback<Class<?>, Object> {
+    private class MyFactory
+            implements BuilderFactory, Callback<Class<?>, Object> {
 
         @Override
         @SuppressWarnings("rawtypes")
-        public Builder<?> getBuilder(Class<?> type) {
+        public Builder<?> getBuilder(final Class<?> type) {
             return new Builder() {
                 @Override
                 public Object build() {
@@ -67,7 +69,7 @@ public class MyFXML {
         }
 
         @Override
-        public Object call(Class<?> type) {
+        public Object call(final Class<?> type) {
             return injector.getInstance(type);
         }
     }

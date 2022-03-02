@@ -68,7 +68,8 @@ public class ServerUtils {
         return gameId;
     }
 
-    public void joinGame(String nick) throws IOException, InterruptedException {
+    public void joinGame(final String nick)
+            throws IOException, InterruptedException {
         // POST requests to add players to game
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(kGameUrl.resolve("./" + nick))
@@ -80,9 +81,9 @@ public class ServerUtils {
         System.out.println(response.body());
     }
 
-    private StompSession connect(String url) {
-        var client = new StandardWebSocketClient();
-        var stomp = new WebSocketStompClient(client);
+    private StompSession connect(final String url) {
+        var wsClient = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(wsClient);
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
         try {
             return stomp.connect(url, new StompSessionHandlerAdapter() {
@@ -95,21 +96,24 @@ public class ServerUtils {
         throw new IllegalStateException();
     }
 
-    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
+    public <T> void registerForMessages(final String dest,
+                                        final Class<T> type,
+                                        final Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
-            public Type getPayloadType(StompHeaders headers) {
+            public Type getPayloadType(final StompHeaders headers) {
                 return type;
             }
 
             @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
+            public void handleFrame(final StompHeaders headers,
+                                    final Object payload) {
                 consumer.accept((T) payload);
             }
         });
     }
 
-    public void send(String dest, Object o) {
+    public void send(final String dest, final Object o) {
         session.send(dest, o);
     }
 
@@ -120,7 +124,8 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
 
         // parse JSON into objects
