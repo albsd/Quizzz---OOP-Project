@@ -3,7 +3,6 @@ package client.scenes;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -25,10 +24,11 @@ public class SplashController {
     private Parent root;
     
 
-    public void help(ActionEvent e) throws IOException {
-        //When we have the help.fxml and helpController class
+    public void help(final ActionEvent e) throws IOException {
+        // When we have the help.fxml and helpController class
 
-//        FXMLLoader loader = new FXMLLoader(SplashController.class.getResource("Help.fxml"));
+//        FXMLLoader loader = new FXMLLoader(
+//                SplashController.class.getResource("Help.fxml"));
 //        root = loader.load();
 //        HelpController helpController = loader.getController();
 //
@@ -38,31 +38,27 @@ public class SplashController {
 //        stage.show();
     }
 
-    public void exitApp(ActionEvent e) {
+    public void exitApp(final ActionEvent e) {
         Platform.exit();
     }
 
-
-    public boolean checkNicknameLength(String user) {
-        int maxChrLimit = 6;
-        int minChrLimit = 3;
+    public boolean checkNicknameLength(final String user) {
+        final int maxChrLimit = 8;
+        final int minChrLimit = 3;
         int userLength = user.length();
-        if (userLength > maxChrLimit || userLength < minChrLimit) {
-            return false;
-        }
-        return true;
+        return (userLength <= maxChrLimit && userLength >= minChrLimit);
     }
 
-    public void singleGame(ActionEvent e) throws IOException {
+    public void singleGame(final ActionEvent e) throws IOException {
         String user = userField.getText();
-        if(!checkNicknameLength(user)){
-            warning.setText("Nickname should be min 3, max 6 characters");
-        }
-        else{
+        if (!checkNicknameLength(user)) {
+            warning.setText("Nickname should be min 3, max 8 characters");
+        } else {
             warning.setText("Nickname set");
         }
 
-//        FXMLLoader loader = new FXMLLoader(SplashController.class.getResource("Single.fxml"));
+//        FXMLLoader loader = new FXMLLoader(S
+//                plashController.class.getResource("Single.fxml"));
 //        root = loader.load();
 //        SingleController singleController = loader.getController();
 //        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
@@ -71,8 +67,9 @@ public class SplashController {
 //        stage.show();
     }
 
-    public void lobby(ActionEvent e) {
-//        FXMLLoader loader = new FXMLLoader(SplashController.class.getResource("Single.fxml"));
+    public void lobby(final ActionEvent e) {
+//        FXMLLoader loader = new FXMLLoader(
+//                SplashController.class.getResource("Single.fxml"));
 //        String user = userField.getText();
 //        root = loader.load();
 //        multiController multiController = loader.getController();
@@ -83,10 +80,11 @@ public class SplashController {
 //        stage.show();
     }
 
-    public void leaderBoard(ActionEvent e) {
+    public void leaderBoard(final ActionEvent e) {
         //When we have the leaderboard.fxml and leaderboardController class
 
-//        FXMLLoader loader = new FXMLLoader(SplashController.class.getResource("learderboard.fxml"));
+//        FXMLLoader loader = new FXMLLoader(
+//                SplashController.class.getResource("learderboard.fxml"));
 //        root = loader.load();
 //        LeaderboardController leaderController = loader.getController();
 //

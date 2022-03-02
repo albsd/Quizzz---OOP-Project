@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class Game {
+    private final int questionCount = 20;
+    private final int questionTime = 20000;
+
     @JsonProperty("id")
     private UUID id;
 
@@ -19,10 +22,10 @@ public class Game {
     @JsonProperty("currentQuestion")
     private int currentQuestion;
 
-    public Game(UUID id) {
+    public Game(final UUID id) {
         this.id = id;
         this.players = new ArrayList<>();
-        this.questions = new Question[20];
+        this.questions = new Question[questionCount];
         // Generating questions is not implemented yet:
         // this.questions = QuestionService.generateQuestions()
         this.currentQuestion = 0;
@@ -40,9 +43,8 @@ public class Game {
         return this.questions[this.currentQuestion];
     }
 
-    public boolean addPlayer(Player p) {
-        if (players.contains(p))
-            return false;
+    public boolean addPlayer(final Player p) {
+        if (players.contains(p)) return false;
         players.add(p);
         return true;
     }
@@ -52,17 +54,17 @@ public class Game {
     }
 
     public void start() {
-        while (currentQuestion < 20) {
-            if (currentQuestion == 10) {
+        while (currentQuestion < questionCount) {
+            //if (currentQuestion == questionCount / 2) {
                 // Show intermediary leaderboard
 
                 // Sleep 5 seconds
-            }
+            //}
             // Show new question
 
             // Reset time for all players
             for (Player p : this.players) {
-                p.setTime(20000);
+                p.setTime(questionTime);
             }
             // Start timer for all players
 

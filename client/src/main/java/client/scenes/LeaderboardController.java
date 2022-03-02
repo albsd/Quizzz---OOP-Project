@@ -27,33 +27,35 @@ public class LeaderboardController {
 
 
     @FXML
-    protected void onConfirmButtonClick(ActionEvent e) throws IOException {
+    protected void onConfirmButtonClick(final ActionEvent e)
+            throws IOException {
         root = FXMLLoader.load(Main.class.getResource("placeholder-view.fxml"));
-        stage = (Stage)((Node) e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
     @FXML
-    protected void onReturnButtonClick(ActionEvent e) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
+    protected void onReturnButtonClick(final ActionEvent e) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.WARNING,
+                "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation Screen");
         alert.setHeaderText("Confirmation needed!");
-        alert.setContentText("You are about to leave to the main screen. Are you sure?");
+        alert.setContentText(
+                "You are about to leave to the main screen. Are you sure?");
         Optional<ButtonType> result = alert.showAndWait();
-        if(result.get() == ButtonType.YES){
+        if (result.get() == ButtonType.YES) {
             onConfirmButtonClick(e);
-        }
-        else{
+        } else {
             switchToLeaderboard(e);
         }
     }
 
     @FXML
-    public void switchToLeaderboard(ActionEvent e) throws IOException {
+    public void switchToLeaderboard(final ActionEvent e) throws IOException {
         root = FXMLLoader.load(Main.class.getResource("leaderboard-view.fxml"));
-        stage = (Stage)((Node) e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();

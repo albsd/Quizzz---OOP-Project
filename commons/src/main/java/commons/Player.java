@@ -2,6 +2,8 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
+
 public class Player {
     @JsonProperty("nick_name")
     private final String nick;
@@ -12,7 +14,7 @@ public class Player {
     @JsonProperty("score")
     private int score;
 
-    public Player(String nick) {
+    public Player(final String nick) {
         this.nick = nick;
     }
 
@@ -28,24 +30,30 @@ public class Player {
         return this.score;
     }
 
-    public void setTime(int ms) {
+    public void setTime(final int ms) {
         this.time = ms;
     }
 
-    public void setScore(int amount) {
+    public void setScore(final int amount) {
         this.score = amount;
     }
 
-    public void addScore(int amount) {
+    public void addScore(final int amount) {
         this.score += amount;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == null)
-            return false;
+    public int hashCode() {
+        return Objects.hash(nick, time, score);
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (other == null) return false;
         if (other instanceof Player that) {
-            return nick.equals(that.nick) && score == that.score && time == that.time;
+            return nick.equals(that.nick)
+                    && score == that.score
+                    && time == that.time;
         }
         return false;
     }
