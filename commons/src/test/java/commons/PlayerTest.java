@@ -6,7 +6,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PlayerTest {
-    Player p;
+    private Player p;
+    private final int testNumber1 = 80;
+    private final int testNumber2 = 100;
+    private final int testTime = 20000;
 
     @BeforeEach
     void setup() {
@@ -22,16 +25,16 @@ public class PlayerTest {
 
     @Test
     void testTime() {
-        p.setTime(20000);
-        assertEquals(20000, p.getTime());
+        p.setTime(testTime);
+        assertEquals(testTime, p.getTime());
     }
 
     @Test
     void testScore() {
-        p.addScore(80);
-        assertEquals(80, p.getScore());
-        p.addScore(100);
-        assertEquals(180, p.getScore());
+        p.addScore(testNumber1);
+        assertEquals(testNumber1, p.getScore());
+        p.addScore(testNumber2);
+        assertEquals(testNumber1 + testNumber2, p.getScore());
         p.setScore(0);
         assertEquals(0, p.getScore());
     }

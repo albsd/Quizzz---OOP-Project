@@ -8,13 +8,14 @@ import commons.Game;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameRepositoryTest {
 
-    Game game1;
-    Game game2;
-    GameRepository repo;
+    private Game game1;
+    private Game game2;
+    private GameRepository repo;
 
     @BeforeEach
     void setUp() {
@@ -27,9 +28,10 @@ class GameRepositoryTest {
 
     @Test
     void getGames() {
-        assertTrue(
-                Arrays.asList(new Game[] { game1, game2 }).containsAll(repo.getGames()) && repo.getGames().containsAll(
-                        Arrays.asList(new Game[] { game1, game2 })));
+        assertTrue(Arrays.asList(new Game[] {game1, game2})
+                .containsAll(repo.getGames()));
+        assertTrue(repo.getGames()
+                .containsAll(Arrays.asList(game1, game2)));
         repo.removeAllGames();
     }
 
