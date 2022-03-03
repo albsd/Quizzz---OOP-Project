@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Game {
-    private final int questionCount = 20;
+    private final int questionLimit = 20;
     private final int questionTime = 20000;
 
     @JsonProperty("id")
@@ -21,16 +21,18 @@ public class Game {
 
     @JsonProperty("currentQuestion")
     private int currentQuestion;
+
     @JsonProperty("gameState")
-    private String gameState = "waiting";
+    private String gameState;
 
     public Game(final UUID id) {
         this.id = id;
         this.players = new ArrayList<>();
-        this.questions = new Question[questionCount];
+        this.questions = new Question[questionLimit];
         // Generating questions is not implemented yet:
         // this.questions = QuestionService.generateQuestions()
         this.currentQuestion = 0;
+        this.gameState = "waiting";
     }
 
     public UUID getId() {
@@ -45,17 +47,11 @@ public class Game {
         return this.questions[this.currentQuestion];
     }
 
-    public String getGameState() {
-        return gameState;
-    }
 
-    public void setGameState(String gameState) {
-        this.gameState = gameState;
-    }
-
-    public boolean addPlayer(Player p) {
-        if (players.contains(p))
+    public boolean addPlayer(final Player p) {
+        if (players.contains(p)) {
             return false;
+        }
         players.add(p);
         return true;
     }
@@ -66,8 +62,8 @@ public class Game {
 
     public void start() {
         this.gameState = "playing";
-        while (currentQuestion < 20) {
-            if (currentQuestion == 10) {
+        while (currentQuestion < questionLimit) {
+            if (currentQuestion == questionLimit / 2) {
                 // Show intermediary leaderboard
 
                 // Sleep 5 seconds
@@ -87,5 +83,9 @@ public class Game {
                 // Sleep 5 seconds
             }
         }
+    }
+
+    public String getGameState() {
+        return this.gameState;
     }
 }

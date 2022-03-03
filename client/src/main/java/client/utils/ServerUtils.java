@@ -47,7 +47,7 @@ public class ServerUtils {
 
     public ServerUtils() {
         this.kBaseUrl = "http://localhost:8080";
-        this.kGameUrl = kBaseUrl+"/game";
+        this.kGameUrl = kBaseUrl + "/game";
 
         this.client = HttpClient.newHttpClient();
     }
@@ -70,9 +70,9 @@ public class ServerUtils {
     public void joinGame(final String nick)
             throws IOException, InterruptedException {
         // POST requests to add players to game
-        System.out.println(URI.create(kGameUrl+"/" + nick+"/join"));
+        System.out.println(URI.create(kGameUrl + "/" + nick + "/join"));
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl+"/" + nick+"/join"))
+                .uri(URI.create(kGameUrl + "/" + nick + "/join"))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
