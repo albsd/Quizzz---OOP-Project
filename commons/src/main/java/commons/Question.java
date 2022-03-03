@@ -1,27 +1,48 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.net.URI;
 import java.nio.file.Path;
 
 import static java.nio.file.Files.readAllBytes;
 
+@Entity
 public class Question {
+
+    @Id
+    @JsonProperty("prompt")
     private final String prompt;
+
+    @JsonProperty("imageBytes")
     private final byte[] imageBytes;
+
+    @JsonProperty("options")
     private final String[] options;
+
+    @JsonProperty("answer")
     private final int answer;
 
-    public Question(String prompt, Path imagePath, String[] options, int answer) {
+    public Question(final String prompt,
+                    final Path imagePath,
+                    final String[] options,
+                    final int answer) {
         byte[] bytes;
         try {
             bytes = readAllBytes(imagePath);
         } catch (Exception e1) {
             try {
-                System.err.println("Could not load path '" + imagePath.toString() + "', loading default image instead.");
-                URI uri = getClass().getClassLoader().getResource("default.jpg").toURI();
+                System.err.println("Could not load path '"
+                                + imagePath.toString()
+                                + "', loading default image instead.");
+                URI uri = getClass().getClassLoader()
+                        .getResource("default.jpg").toURI();
                 bytes = readAllBytes(Path.of(uri));
             } catch (Exception e2) {
-                System.err.println("Could not load default image, falling back to no image");
+                System.err.println(
+                        "Could not load default image, using no image instead");
                 bytes = new byte[0];
             }
         }

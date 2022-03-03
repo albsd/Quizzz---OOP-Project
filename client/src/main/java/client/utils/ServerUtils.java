@@ -15,48 +15,141 @@
  */
 package client.utils;
 
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import commons.Game;
+import commons.Player;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
-
-import org.glassfish.jersey.client.ClientConfig;
-
-import commons.Quote;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.core.GenericType;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
+    private final URI kBaseUrl;
 
-    public void getQuotesTheHardWay() throws IOException {
-        var url = new URL("http://localhost:8080/api/quotes");
-        var is = url.openConnection().getInputStream();
-        var br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
+    private final URI kGameUrl;
+
+    private final HttpClient client;
+    private StompSession session = connect("ws://localhost:8080/websocket");
+
+    public ServerUtils() {
+        this.kBaseUrl = URI.create("http://localhost:8080");
+        this.kGameUrl = kBaseUrl.resolve("./game");
+
+        this.client = HttpClient.newHttpClient();
+    }
+
+    // Initial POST request to get gameId
+    @Deprecated
+    public String createGame() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(kGameUrl)
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        HttpResponse<String> response = client.send(request,
+                HttpResponse.BodyHandlers.ofString());
+        String gameId = response.body().replaceAll("^\"|\"$", "");
+
+        System.out.println(gameId);
+        return gameId;
+    }
+
+    public void joinGame(final String nick)
+            throws IOException, InterruptedException {
+        // POST requests to add players to game
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(kGameUrl.resolve("./" + nick))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        HttpResponse<String> response = client.send(request,
+                HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+    }
+
+    private StompSession connect(final String url) {
+        var wsClient = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(wsClient);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try {
+            return stomp.connect(url, new StompSessionHandlerAdapter() {
+            }).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw new RuntimeException();
         }
+        throw new IllegalStateException();
     }
 
-    public List<Quote> getQuotes() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Quote>>() {});
+    public <T> void registerForMessages(final String dest,
+                                        final Class<T> type,
+                                        final Consumer<T> consumer) {
+        session.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(final StompHeaders headers) {
+                return type;
+            }
+
+            @Override
+            public void handleFrame(final StompHeaders headers,
+                                    final Object payload) {
+                consumer.accept((T) payload);
+            }
+        });
     }
 
-    public Quote addQuote(Quote quote) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
+    public void send(final String dest, final Object o) {
+        session.send(dest, o);
     }
+
+    // GET request to get list of players from game and to deserialize them
+    public List<Player> getPlayers() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(kBaseUrl)
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+
+        // parse JSON into objects
+        ObjectMapper mapper = new ObjectMapper();
+        Game game = mapper.readValue((String) response.body(), Game.class);
+        System.out.println(game.getPlayers().get(0).getNick());
+        System.out.println(game.getPlayers().get(1).getNick());
+
+        return game.getPlayers();
+    }
+
+    // public List<Quote> getQuotes() {
+    // return ClientBuilder.newClient(new ClientConfig()) //
+    // .target(SERVER).path("api/quotes") //
+    // .request(APPLICATION_JSON) //
+    // .accept(APPLICATION_JSON) //
+    // .get(new GenericType<List<Quote>>() {});
+    // }
+
+    // public Quote addQuote(Quote quote) {
+    // return ClientBuilder.newClient(new ClientConfig()) //
+    // .target(SERVER).path("api/quotes") //
+    // .request(APPLICATION_JSON) //
+    // .accept(APPLICATION_JSON) //
+    // .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
+    // }
 }

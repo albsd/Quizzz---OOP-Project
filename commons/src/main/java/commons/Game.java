@@ -1,17 +1,38 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Game {
+    private final int questionCount = 20;
+    private final int questionTime = 20000;
+
+    @JsonProperty("id")
+    private UUID id;
+
+    @JsonProperty("players")
     private List<Player> players;
+
+    @JsonProperty("questions")
     private Question[] questions;
+
+    @JsonProperty("currentQuestion")
     private int currentQuestion;
 
-    public Game(List<Player> players) {
-        this.players = players;
+    public Game(final UUID id) {
+        this.id = id;
+        this.players = new ArrayList<>();
+        this.questions = new Question[questionCount];
         // Generating questions is not implemented yet:
         // this.questions = QuestionService.generateQuestions()
         this.currentQuestion = 0;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public List<Player> getPlayers() {
@@ -22,22 +43,28 @@ public class Game {
         return this.questions[this.currentQuestion];
     }
 
+    public boolean addPlayer(final Player p) {
+        if (players.contains(p)) return false;
+        players.add(p);
+        return true;
+    }
+
     public void nextQuestion() {
         this.currentQuestion++;
     }
 
     public void start() {
-        while (currentQuestion < 20) {
-            if (currentQuestion == 10) {
+        while (currentQuestion < questionCount) {
+            //if (currentQuestion == questionCount / 2) {
                 // Show intermediary leaderboard
 
                 // Sleep 5 seconds
-            }
+            //}
             // Show new question
 
             // Reset time for all players
             for (Player p : this.players) {
-                p.setTime(20000);
+                p.setTime(questionTime);
             }
             // Start timer for all players
 
