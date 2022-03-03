@@ -41,7 +41,7 @@ public class Main extends Application {
 //        Parent root = FXMLLoader.load(Main.class.getResource("Splash.fxml"));
         var root  = FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
         Scene scene = new Scene(root.getValue());
-        Image logo = new Image(Main.class.getResourceAsStream("/icon.png"));
+        Image logo = new Image(Main.class.getResourceAsStream("/images/icon.png"));
         stage.getIcons().add(logo);
         stage.setTitle("Energy Quizzz");
         stage.setScene(scene);

@@ -17,17 +17,17 @@
                     <Font name="System Bold" size="60.0" />
                 </font>
             </Label>
-         <Button alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" layoutX="8.0" layoutY="9.0" mnemonicParsing="false" onAction="#splash" pickOnBounds="false" prefHeight="79.0" prefWidth="102.0" styleClass="returnMenuButton" stylesheets="@/style.css" textAlignment="CENTER">
+         <Button alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" layoutX="8.0" layoutY="9.0" mnemonicParsing="false" onAction="#splash" pickOnBounds="false" prefHeight="79.0" prefWidth="102.0" styleClass="returnMenuButton" stylesheets="@/stylesheets/style.css" textAlignment="CENTER">
             <graphic>
                <ImageView fitHeight="84.0" fitWidth="95.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                     <Image url="@/returnMainMenu.png" />
+                     <Image url="@/images/returnMainMenu.png" />
                   </image>
                </ImageView>
             </graphic></Button>
          <ImageView fitHeight="74.0" fitWidth="74.0" layoutX="989.0" layoutY="563.0" pickOnBounds="true" preserveRatio="true">
             <image>
-               <Image url="@/disconnected.png" />
+               <Image url="@/images/disconnected.png" />
             </image>
          </ImageView>
          <TextFlow layoutX="360.0" layoutY="137.0" lineSpacing="20.0" prefHeight="486.0" prefWidth="438.0">
@@ -79,17 +79,17 @@
          </TextFlow>
          <ImageView fitHeight="74.0" fitWidth="80.0" layoutX="11.0" layoutY="184.0" pickOnBounds="true" preserveRatio="true">
             <image>
-               <Image url="@/poweruphalfTime.png" />
+               <Image url="@/images/poweruphalfTime.png" />
             </image>
          </ImageView>
          <ImageView fitHeight="74.0" fitWidth="80.0" layoutX="8.0" layoutY="301.0" pickOnBounds="true" preserveRatio="true">
             <image>
-               <Image url="@/powerupDouble.png" />
+               <Image url="@/images/powerupDouble.png" />
             </image>
          </ImageView>
          <ImageView fitHeight="74.0" fitWidth="80.0" layoutX="8.0" layoutY="407.0" pickOnBounds="true" preserveRatio="true">
             <image>
-               <Image url="@/powerupRemove.png" />
+               <Image url="@/images/powerupRemove.png" />
             </image>
          </ImageView>
         </children>
