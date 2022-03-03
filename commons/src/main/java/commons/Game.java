@@ -21,6 +21,8 @@ public class Game {
 
     @JsonProperty("currentQuestion")
     private int currentQuestion;
+    @JsonProperty("gameState")
+    private String gameState = "waiting";
 
     public Game(final UUID id) {
         this.id = id;
@@ -43,8 +45,17 @@ public class Game {
         return this.questions[this.currentQuestion];
     }
 
-    public boolean addPlayer(final Player p) {
-        if (players.contains(p)) return false;
+    public String getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(String gameState) {
+        this.gameState = gameState;
+    }
+
+    public boolean addPlayer(Player p) {
+        if (players.contains(p))
+            return false;
         players.add(p);
         return true;
     }
@@ -54,8 +65,9 @@ public class Game {
     }
 
     public void start() {
-        while (currentQuestion < questionCount) {
-            //if (currentQuestion == questionCount / 2) {
+        this.gameState = "playing";
+        while (currentQuestion < 20) {
+            if (currentQuestion == 10) {
                 // Show intermediary leaderboard
 
                 // Sleep 5 seconds

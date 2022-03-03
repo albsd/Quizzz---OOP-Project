@@ -33,4 +33,5 @@ public class GameService {
     public Game findById(final UUID id) {
         return repo.findById(id);
     }
+
 }

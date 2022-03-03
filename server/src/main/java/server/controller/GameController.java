@@ -49,12 +49,28 @@ public class GameController {
         return gameService.getAll();
     }
 
-    @Deprecated
+
     @PostMapping("")
     public UUID create() {
         UUID uuid = UUID.randomUUID();
         Game game = new Game(uuid);
         return gameService.addGame(game);
+    }
+
+    @GetMapping("{nick}/join")
+    public ResponseEntity<Game> decideGameCreationJoin(final @PathVariable("nick") String nick){
+        UUID waitingGameId = gameService.getWaitingGameId();
+        if(waitingGameId == null){
+            UUID gameId = this.create();
+            this.join(gameId, nick);
+            //after the client recieves the game id, make sure it sends a websocket connection upgade request
+            //this.joinWs(gameId, nick);
+            return ResponseEntity.ok(gameService.findById(gameId));
+        }
+        this.join(waitingGameId, nick);
+        //after the client recieves the game id, make sure it sends a websocket connection upgade request
+        //this.joinWs(waitingGameId, nick);
+        return ResponseEntity.ok(gameService.findById(waitingGameId));
     }
 
     @MessageMapping("{id}/join")
