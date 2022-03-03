@@ -3,6 +3,8 @@ package client.scenes;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -67,17 +69,16 @@ public class SplashController {
 //        stage.show();
     }
 
-    public void lobby(final ActionEvent e) {
-//        FXMLLoader loader = new FXMLLoader(
-//                SplashController.class.getResource("Single.fxml"));
-//        String user = userField.getText();
-//        root = loader.load();
-//        multiController multiController = loader.getController();
-//
-//        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-//        scene = new Scene(root);
-//        stage.setScene(scene);
-//        stage.show();
+    public void lobby(final ActionEvent e) throws IOException{
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("Lobby.fxml"));
+        String user = userField.getText();
+        root = loader.load();
+        //multiController multiController = loader.getController();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void leaderBoard(final ActionEvent e) {
