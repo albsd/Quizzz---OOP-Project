@@ -11,19 +11,19 @@
     </padding>
     <AnchorPane prefHeight="682.0" prefWidth="1240.0">
       <children>
-         <Button contentDisplay="TOP" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="141.0" text="Return to main menu" textAlignment="CENTER" />
+         <Button contentDisplay="TOP" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#returnMenu" prefHeight="50.0" prefWidth="141.0" text="Return to main menu" textAlignment="CENTER" />
          <Pane layoutX="38.0" layoutY="139.0" prefHeight="471.0" prefWidth="699.0">
             <children>
                <ScrollPane layoutY="42.0" prefHeight="379.0" prefWidth="697.0" vvalue="1.0">
                   <content>
-                     <Label alignment="BOTTOM_LEFT" text="1&#10;2&#10;3&#10;4&#10;5&#10;6&#10;7&#10;8&#10;9&#10;10&#10;11&#10;12&#10;13" wrapText="true">
+                     <Label fx:id="chatText" alignment="BOTTOM_LEFT" text="1&#10;2&#10;3&#10;4&#10;5&#10;6&#10;7&#10;8&#10;9&#10;10&#10;11&#10;12&#10;13" wrapText="true">
                         <font>
                            <Font size="24.0" />
                         </font>
                      </Label>
                   </content>
                </ScrollPane>
-               <TextField layoutX="1.0" layoutY="421.0" prefHeight="25.0" prefWidth="697.0" promptText="Enter your message....">
+               <TextField fx:id="chatInput" layoutX="1.0" layoutY="421.0" prefHeight="25.0" prefWidth="697.0" promptText="Enter your message....">
                   <font>
                      <Font size="24.0" />
                   </font></TextField>
@@ -50,12 +50,12 @@
                   <content>
                      <TextFlow focusTraversable="true" prefHeight="331.0" prefWidth="377.0">
                         <children>
-                           <Label alignment="TOP_CENTER" prefHeight="520.0" prefWidth="200.0" text="name1&#10;&#10;name3&#10;&#10;name5&#10;&#10;name7&#10;&#10;name9&#10;&#10;name11" textAlignment="CENTER">
+                           <Label fx:id="playersLeft" alignment="TOP_CENTER" prefHeight="520.0" prefWidth="200.0" text="name1&#10;&#10;name3&#10;&#10;name5&#10;&#10;name7&#10;&#10;name9&#10;&#10;name11" textAlignment="CENTER">
                               <font>
                                  <Font size="24.0" />
                               </font>
                            </Label>
-                           <Label alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="520.0" prefWidth="176.0" text="name2&#10;&#10;name4&#10;&#10;name6&#10;&#10;name8&#10;&#10;name10" textAlignment="CENTER">
+                           <Label fx:id="playersRight" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="520.0" prefWidth="176.0" text="name2&#10;&#10;name4&#10;&#10;name6&#10;&#10;name8&#10;&#10;name10" textAlignment="CENTER">
                               <font>
                                  <Font size="24.0" />
                               </font>
@@ -66,7 +66,7 @@
                </ScrollPane>
             </children>
          </Pane>
-         <Button layoutX="927.0" layoutY="594.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="183.0" text="Start">
+         <Button layoutX="927.0" layoutY="594.0" mnemonicParsing="false" onAction="#start" prefHeight="50.0" prefWidth="183.0" text="Start">
             <font>
                <Font size="24.0" />
             </font></Button>
