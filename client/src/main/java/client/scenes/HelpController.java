@@ -21,7 +21,6 @@ public class HelpController {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Splash.fxml"));
         root = loader.load();
-        SplashController splashController = loader.getController();
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
         scene = new Scene(root);
