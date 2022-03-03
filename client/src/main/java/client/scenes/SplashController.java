@@ -69,7 +69,7 @@ public class SplashController {
 //        stage.show();
     }
 
-    public void lobby(final ActionEvent e) throws IOException{
+    public void lobby(final ActionEvent e) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("Lobby.fxml"));
         String user = userField.getText();

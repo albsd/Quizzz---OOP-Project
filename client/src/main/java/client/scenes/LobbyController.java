@@ -1,6 +1,5 @@
 package client.scenes;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +24,7 @@ public class LobbyController {
     private Scene scene;
     private Parent root;
 
-    public void returnMenu(final ActionEvent e) throws IOException{
+    public void returnMenu(final ActionEvent e) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("Splash.fxml"));
         root = loader.load();
@@ -35,7 +34,7 @@ public class LobbyController {
         stage.show();
     }
 
-    public void start(final ActionEvent e) throws IOException{
+    public void start(final ActionEvent e) throws IOException {
         //Starting the game
 
 //        FXMLLoader loader = new FXMLLoader(
