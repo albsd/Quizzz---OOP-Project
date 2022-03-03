@@ -38,16 +38,16 @@ import java.util.function.Consumer;
 
 public class ServerUtils {
 
-    private final URI kBaseUrl;
+    private final String kBaseUrl;
 
-    private final URI kGameUrl;
+    private final String kGameUrl;
 
     private final HttpClient client;
     private StompSession session = connect("ws://localhost:8080/websocket");
 
     public ServerUtils() {
-        this.kBaseUrl = URI.create("http://localhost:8080");
-        this.kGameUrl = kBaseUrl.resolve("./game");
+        this.kBaseUrl = "http://localhost:8080";
+        this.kGameUrl = kBaseUrl+"./game";
 
         this.client = HttpClient.newHttpClient();
     }
@@ -56,7 +56,7 @@ public class ServerUtils {
     @Deprecated
     public String createGame() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(kGameUrl)
+                .uri(URI.create(kGameUrl))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
@@ -72,7 +72,7 @@ public class ServerUtils {
             throws IOException, InterruptedException {
         // POST requests to add players to game
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(kGameUrl.resolve("./" + nick))
+                .uri(URI.create(kGameUrl+"/" + nick))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
@@ -120,7 +120,7 @@ public class ServerUtils {
     // GET request to get list of players from game and to deserialize them
     public List<Player> getPlayers() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(kBaseUrl)
+                .uri(URI.create(kBaseUrl))
                 .header("accept", "application/json")
                 .GET()
                 .build();
