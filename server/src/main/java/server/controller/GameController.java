@@ -49,7 +49,6 @@ public class GameController {
         return gameService.getAll();
     }
 
-
     @PostMapping("")
     public UUID create() {
         UUID uuid = UUID.randomUUID();
@@ -64,28 +63,29 @@ public class GameController {
         if (waitingGameId == null) {
             UUID gameId = this.create();
             this.join(gameId, nick);
-            //after the client recieves the game id,
+            // after the client recieves the game id,
             // make sure it sends a websocket connection upgade request
-            //this.joinWs(gameId, nick);
+            // this.joinWs(gameId, nick);
             return ResponseEntity.ok(gameService.findById(gameId));
         }
         this.join(waitingGameId, nick);
-        //after the client recieves
+        // after the client recieves
         // the game id, make sure it sends a websocket connection upgade request
-        //this.joinWs(waitingGameId, nick);
+        // this.joinWs(waitingGameId, nick);
         return ResponseEntity.ok(gameService.findById(waitingGameId));
     }
 
     @MessageMapping("{id}/join")
     @SendTo("/topic/game_join")
-    public Player joinWs(final @PathVariable("id") UUID id, final String nick) {
-        return join(id, nick).getBody();
+    public Player joinWs(final String nick) {
+        return join(gameService.getLobbyId(), nick).getBody();
     }
 
     @PostMapping("{id}/{nick}")
     public ResponseEntity<Player> join(
             final @PathVariable("id") UUID id,
             final @PathVariable("nick") String nick) {
+        System.out.println("player " + nick + " joining game " + id);
         if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
@@ -98,14 +98,16 @@ public class GameController {
         boolean success = game.addPlayer(p);
 
         final int errorCode = 403;
-        if (!success) return ResponseEntity.status(errorCode).build();
+        if (!success)
+            return ResponseEntity.status(errorCode).build();
         return ResponseEntity.ok(p);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Game> getById(final @PathVariable("id") UUID id) {
         Game game = gameService.findById(id);
-        if (game == null) return ResponseEntity.badRequest().build();
+        if (game == null)
+            return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(game);
     }
 

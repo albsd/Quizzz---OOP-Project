@@ -120,7 +120,6 @@
     <!-- Checks for class design                         -->
     <!-- See https://checkstyle.org/config_design.html -->
     <module name="InterfaceIsType"/>
-    <module name="VisibilityModifier"/>
 
     <!-- Miscellaneous other checks.                   -->
     <!-- See https://checkstyle.org/config_misc.html -->

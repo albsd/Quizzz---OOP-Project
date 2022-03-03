@@ -20,7 +20,11 @@ package client.scenes;
 // import javafx.stage.Stage;
 // import javafx.util.Pair;
 
+import javafx.scene.paint.Color;
+
 public class MainCtrl {
+    public final Color red = new Color(0.8, 0, 0, 1);
+    public final Color green = new Color(0, 0.6, 0, 1);
 
     // private Stage primaryStage;
 

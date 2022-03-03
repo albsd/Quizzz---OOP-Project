@@ -12,6 +12,7 @@ import java.util.UUID;
 public class GameService {
 
     private final GameRepository repo;
+    private UUID lobbyId;
 
     @Autowired
     public GameService(final GameRepository repo) {
