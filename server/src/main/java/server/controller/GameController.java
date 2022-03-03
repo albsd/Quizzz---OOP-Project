@@ -21,7 +21,6 @@ import java.util.UUID;
 import commons.Game;
 import commons.Player;
 
-import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -53,24 +52,26 @@ public class GameController {
 
     @PostMapping("")
     public UUID create() {
-        System.out.println("create method started");
         UUID uuid = UUID.randomUUID();
         Game game = new Game(uuid);
         return gameService.addGame(game);
     }
 
-    @PostMapping("{nick}/join")
-    public ResponseEntity<Game> decideGameCreationJoin(final @PathVariable("nick") String nick){
+    @GetMapping("{nick}/join")
+    public ResponseEntity<Game> decideGameCreationJoin(
+            final @PathVariable("nick") String nick) {
         UUID waitingGameId = gameService.getWaitingGameId();
-        if(waitingGameId == null){
+        if (waitingGameId == null) {
             UUID gameId = this.create();
             this.join(gameId, nick);
-            //after the client recieves the game id, make sure it sends a websocket connection upgade request
+            //after the client recieves the game id,
+            // make sure it sends a websocket connection upgade request
             //this.joinWs(gameId, nick);
             return ResponseEntity.ok(gameService.findById(gameId));
         }
         this.join(waitingGameId, nick);
-        //after the client recieves the game id, make sure it sends a websocket connection upgade request
+        //after the client recieves
+        // the game id, make sure it sends a websocket connection upgade request
         //this.joinWs(waitingGameId, nick);
         return ResponseEntity.ok(gameService.findById(waitingGameId));
     }
