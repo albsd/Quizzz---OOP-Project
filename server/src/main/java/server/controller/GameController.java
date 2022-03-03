@@ -21,6 +21,7 @@ import java.util.UUID;
 import commons.Game;
 import commons.Player;
 
+import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -52,12 +53,13 @@ public class GameController {
 
     @PostMapping("")
     public UUID create() {
+        System.out.println("create method started");
         UUID uuid = UUID.randomUUID();
         Game game = new Game(uuid);
         return gameService.addGame(game);
     }
 
-    @GetMapping("{nick}/join")
+    @PostMapping("{nick}/join")
     public ResponseEntity<Game> decideGameCreationJoin(final @PathVariable("nick") String nick){
         UUID waitingGameId = gameService.getWaitingGameId();
         if(waitingGameId == null){
