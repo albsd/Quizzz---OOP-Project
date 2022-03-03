@@ -33,7 +33,7 @@ public class SplashController {
         root = loader.load();
         HelpController helpController = loader.getController();
 
-        stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
