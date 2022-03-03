@@ -71,20 +71,21 @@ public class Game {
                 // Show intermediary leaderboard
 
                 // Sleep 5 seconds
-            //}
-            // Show new question
+                //}
+                // Show new question
 
-            // Reset time for all players
-            for (Player p : this.players) {
-                p.setTime(questionTime);
+                // Reset time for all players
+                for (Player p : this.players) {
+                    p.setTime(questionTime);
+                }
+                // Start timer for all players
+
+                // Wait until all timers reach 0
+
+                // Show answers
+
+                // Sleep 5 seconds
             }
-            // Start timer for all players
-
-            // Wait until all timers reach 0
-
-            // Show answers
-
-            // Sleep 5 seconds
         }
     }
 }
