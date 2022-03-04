@@ -62,7 +62,7 @@ public class GameController {
      * Fetches the game by its UUID
      * 
      * @param id The UUID of the game
-     * @return Game or an error, depending whether the game exists
+     * @return Game or an error, depending on whether the game exists
      */
     @Deprecated
     @GetMapping("{id}")
@@ -89,7 +89,7 @@ public class GameController {
         Player p = new Player(nick);
         boolean success = lobby.addPlayer(p);
 
-        final int errorCode = 403;
+        final int errorCode = 403; // FORBIDDEN
         if (!success)
             return ResponseEntity.status(errorCode).build();
 
@@ -111,14 +111,15 @@ public class GameController {
 
     /**
      * Starts the current game
+     * Do not allow starting a game with less than 2 players
      * 
      * @return The game which has been started
      */
     @PostMapping("/start")
     public ResponseEntity<Game> startCurrentGame() {
         Game lobby = gameService.getCurrentGame();
-        if (lobby.getPlayers().isEmpty())
-            return ResponseEntity.status(405).build();
+        if (!lobby.isPlayable())
+            return ResponseEntity.status(405).build(); // NOT_ALLOWED
 
         return ResponseEntity.ok(gameService.newGame());
     }

@@ -36,8 +36,9 @@ public class GameService {
      * @return Game that has been created
      */
     public Game newGame() {
+        lobby.start();
         repo.addGame(lobby);
-        this.lobby = new Game(UUID.randomUUID());
+        lobby = new Game(UUID.randomUUID());
         return lobby;
     }
 

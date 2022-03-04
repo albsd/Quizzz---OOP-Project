@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+enum GameState { waiting, playing }
+
 public class Game {
     private final int questionLimit = 20;
     private final int questionTime = 20000;
@@ -23,7 +25,7 @@ public class Game {
     private int currentQuestion;
 
     @JsonProperty("gameState")
-    private String gameState;
+    private GameState gameState;
 
     public Game(final UUID id) {
         this.id = id;
@@ -32,7 +34,7 @@ public class Game {
         // Generating questions is not implemented yet:
         // this.questions = QuestionService.generateQuestions()
         this.currentQuestion = 0;
-        this.gameState = "waiting";
+        this.gameState = GameState.waiting;
     }
 
     public UUID getId() {
@@ -43,10 +45,17 @@ public class Game {
         return players;
     }
 
+    public GameState getGameState() {
+        return this.gameState;
+    }
+
     public Question getCurrentQuestion() {
         return this.questions[this.currentQuestion];
     }
 
+    public boolean isPlayable() {
+        return players.size() >= 2;
+    }
 
     public boolean addPlayer(final Player p) {
         if (players.contains(p)) {
@@ -61,7 +70,7 @@ public class Game {
     }
 
     public void start() {
-        this.gameState = "playing";
+        this.gameState = GameState.playing;
         while (currentQuestion < questionLimit) {
             if (currentQuestion == questionLimit / 2) {
                 // Show intermediary leaderboard
@@ -85,7 +94,4 @@ public class Game {
         }
     }
 
-    public String getGameState() {
-        return this.gameState;
-    }
 }
