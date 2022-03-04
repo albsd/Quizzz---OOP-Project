@@ -13,7 +13,8 @@ import static com.google.inject.Guice.createInjector;
 
 public class Main extends Application {
 
-    public static final MyFXML FXML = new MyFXML(createInjector(new MyModule()));
+    public static final MyFXML FXML = new MyFXML(
+            createInjector(new MyModule()));
 
     public static void main(final String[] args) {
         launch();

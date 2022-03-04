@@ -65,8 +65,8 @@ public class ServerUtils {
     }
 
     public <T> void registerForMessages(final String dest,
-                                        final Class<T> type,
-                                        final Consumer<T> consumer) {
+            final Class<T> type,
+            final Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(final StompHeaders headers) {
@@ -75,7 +75,7 @@ public class ServerUtils {
 
             @Override
             public void handleFrame(final StompHeaders headers,
-                                    final Object payload) {
+                    final Object payload) {
                 consumer.accept((T) payload);
             }
         });
@@ -86,10 +86,12 @@ public class ServerUtils {
     }
 
     /**
-     * Calls the REST endpoint to join the current active lobby
+     * Calls the REST endpoint to join the current active lobby.
+     * 
      * @param nick String of the user nickname
      * @throws IOException
      * @throws InterruptedException
+     * @return Player that has joined the game
      */
     public Player joinGame(final String nick)
             throws IOException, InterruptedException {
@@ -102,7 +104,9 @@ public class ServerUtils {
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200) return null;
+        if (response.statusCode() != 200) {
+            return null;
+        }
 
         ObjectMapper mapper = new ObjectMapper();
         Player player = mapper.readValue(response.body(), Player.class);
@@ -113,7 +117,8 @@ public class ServerUtils {
     }
 
     /**
-     * Calls the REST endpoint to get list of all players in the lobby
+     * Calls the REST endpoint to get list of all players in the lobby.
+     * 
      * @return List of players in a lobby
      * @throws IOException
      * @throws InterruptedException
@@ -124,8 +129,7 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
 
         // parse JSON into objects

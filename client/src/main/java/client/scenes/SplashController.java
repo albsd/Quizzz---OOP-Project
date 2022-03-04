@@ -42,7 +42,7 @@ public class SplashController {
     private Scene scene;
 
     @Inject
-    public SplashController(ServerUtils server) {
+    public SplashController(final ServerUtils server) {
         this.server = server;
     }
 
@@ -78,8 +78,9 @@ public class SplashController {
 
     public void singleGame(final ActionEvent event) {
         String user = nickField.getText();
-        if (!validateNicknameLength(user))
+        if (!validateNicknameLength(user)) {
             return;
+        }
         // TODO: load the fxml and display it
     }
 
@@ -88,8 +89,9 @@ public class SplashController {
                 "client", "scenes", "Lobby.fxml");
 
         String nick = nickField.getText();
-        if (!validateNicknameLength(nick))
+        if (!validateNicknameLength(nick)) {
             return;
+        }
 
         // try {
         final Player player = server.joinGame(nick);

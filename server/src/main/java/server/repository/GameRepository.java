@@ -38,8 +38,9 @@ public class GameRepository {
                 .filter(g -> g.getId().equals(id))
                 .findFirst();
 
-        if (optional.isEmpty())
+        if (optional.isEmpty()) {
             return null;
+        }
         return optional.get();
     }
 

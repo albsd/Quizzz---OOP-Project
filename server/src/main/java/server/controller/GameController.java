@@ -21,7 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import server.service.GameService;
 
 import java.util.List;
@@ -39,7 +44,7 @@ public class GameController {
     }
 
     /**
-     * Fetches all the games that have been played and are to be played
+     * Fetches all the games that have been played and are to be played.
      * 
      * @return List of all Games
      */
@@ -49,7 +54,7 @@ public class GameController {
     }
 
     /**
-     * Fetches the active game lobby
+     * Fetches the active game lobby.
      * 
      * @return The current active game which accepts new players
      */
@@ -59,7 +64,7 @@ public class GameController {
     }
 
     /**
-     * Fetches the game by its UUID
+     * Fetches the game by its UUID.
      * 
      * @param id The UUID of the game
      * @return Game or an error, depending on whether the game exists
@@ -68,13 +73,14 @@ public class GameController {
     @GetMapping("{id}")
     public ResponseEntity<Game> getById(final @PathVariable("id") UUID id) {
         Game game = gameService.findById(id);
-        if (game == null)
+        if (game == null) {
             return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(game);
     }
 
     /**
-     * Join the active game lobby as a Player with id "nick"
+     * Join the active game lobby as a Player with id "nick".
      * 
      * @param nick User's nickname which identifies a given player in a game
      * @return Game to which the user has joined
@@ -90,15 +96,15 @@ public class GameController {
         boolean success = lobby.addPlayer(p);
 
         final int errorCode = 403; // FORBIDDEN
-        if (!success)
+        if (!success) {
             return ResponseEntity.status(errorCode).build();
-
+        }
         return ResponseEntity.ok(p);
     }
 
     /**
-     * A Websocket endpoint for sending updates about the current lobby status
-     * Namely updates the active players in the lobby for all clients
+     * A Websocket endpoint for sending updates about the current lobby status.
+     * Namely updates the active players in the lobby for all clients.
      * 
      * @param nick The player nickname who has joined the most recently
      * @return The Player object created from the nick
@@ -110,17 +116,17 @@ public class GameController {
     }
 
     /**
-     * Starts the current game
-     * Do not allow starting a game with less than 2 players
+     * Starts the current game.
+     * Do not allow starting a game with less than 2 players.
      * 
      * @return The game which has been started
      */
     @PostMapping("/start")
     public ResponseEntity<Game> startCurrentGame() {
         Game lobby = gameService.getCurrentGame();
-        if (!lobby.isPlayable())
+        if (!lobby.isPlayable()) {
             return ResponseEntity.status(405).build(); // NOT_ALLOWED
-
+        }
         return ResponseEntity.ok(gameService.newGame());
     }
 }
