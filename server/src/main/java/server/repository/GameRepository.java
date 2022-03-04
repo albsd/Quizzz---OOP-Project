@@ -16,9 +16,11 @@
 package server.repository;
 
 import commons.Game;
+import commons.Player;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class GameRepository {
@@ -47,6 +49,13 @@ public class GameRepository {
     }
     public boolean removeGame(UUID id) {
         return GAMES.removeIf(g -> g.getId().equals(id));
+    }
+
+    public List<Player> getLeaderboard(UUID id) {
+        Game game = this.findById(id);
+        List<Player> players = game.getPlayers();
+        return players.stream().sorted(Comparator.comparingInt(Player::getScore))
+                .collect(Collectors.toList());
     }
 
 }

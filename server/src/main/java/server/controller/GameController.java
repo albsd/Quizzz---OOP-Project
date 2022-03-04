@@ -15,23 +15,17 @@
  */
 package server.controller;
 
-import java.util.List;
-import java.util.UUID;
-
 import commons.Game;
 import commons.Player;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import server.service.GameService;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/game")
@@ -89,4 +83,10 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
+    @GetMapping("{id}/leaderboard")
+    public ResponseEntity<List<Player>> getLeaderboard(@PathVariable UUID id){
+        if (gameService.findById(id) == null)
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(gameService.getLeaderboard(id));
+    }
 }

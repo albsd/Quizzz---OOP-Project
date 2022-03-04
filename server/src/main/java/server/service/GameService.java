@@ -1,6 +1,7 @@
 package server.service;
 
 import commons.Game;
+import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.GameRepository;
@@ -32,5 +33,9 @@ public class GameService {
 
     public Game findById(UUID id) {
         return repo.findById(id);
+    }
+
+    public List<Player> getLeaderboard(UUID id) {
+        return repo.getLeaderboard(id);
     }
 }
