@@ -1,5 +1,7 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -37,6 +39,19 @@ public class Game {
         this.gameState = GameState.waiting;
     }
 
+    @JsonCreator
+    public Game(final @JsonProperty("id") UUID id,
+                final @JsonProperty("players") List<Player> players,
+                final @JsonProperty("questions") Question[] questions,
+                final @JsonProperty("currentQuestion") int currentQuestion,
+                final @JsonProperty("gameState") GameState gameState) {
+        this.id = id;
+        this.players = players;
+        this.questions = questions;
+        this.currentQuestion = currentQuestion;
+        this.gameState = gameState;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -53,6 +68,7 @@ public class Game {
         return this.questions[this.currentQuestion];
     }
 
+    @JsonIgnore
     public boolean isPlayable() {
         return players.size() >= 2;
     }

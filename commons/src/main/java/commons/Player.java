@@ -20,9 +20,9 @@ public class Player {
     }
 
     @JsonCreator
-    public Player(@JsonProperty("nick") final String nick,
-                  @JsonProperty("time")final int time,
-                  @JsonProperty("score") final int score) {
+    public Player(final @JsonProperty("nick") String nick,
+                  final @JsonProperty("time") int time,
+                  final @JsonProperty("score") int score) {
         this.nick = nick;
         this.time = time;
         this.score = score;

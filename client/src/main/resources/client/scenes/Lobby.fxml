@@ -50,7 +50,7 @@
                   <content>
                      <TextFlow focusTraversable="true" prefHeight="331.0" prefWidth="377.0">
                         <children>
-                           <Label fx:id="playersLeft" alignment="TOP_CENTER" prefHeight="520.0" prefWidth="200.0" text="name1&#10;&#10;name3&#10;&#10;name5&#10;&#10;name7&#10;&#10;name9&#10;&#10;name11" textAlignment="CENTER">
+                           <Label fx:id="playersLeft" alignment="TOP_CENTER" prefHeight="520.0" prefWidth="200.0" text="" textAlignment="CENTER">
                               <font>
                                  <Font size="24.0" />
                               </font>

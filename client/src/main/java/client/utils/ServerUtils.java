@@ -18,7 +18,6 @@ package client.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Game;
 import commons.Player;
-import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -45,14 +44,14 @@ public class ServerUtils {
 
     private final HttpClient client;
 
-    private StompSession session = connect("ws://localhost:8080/websocket");
+    private static StompSession session = connect("ws://localhost:8080/websocket");
 
     public ServerUtils() {
         this.kGameUrl = "http://localhost:8080/game";
         this.client = HttpClient.newHttpClient();
     }
 
-    private StompSession connect(final String url) {
+    private static StompSession connect(final String url) {
         var wsClient = new StandardWebSocketClient();
         var stomp = new WebSocketStompClient(wsClient);
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
@@ -131,21 +130,28 @@ public class ServerUtils {
      * @throws IOException
      * @throws InterruptedException
      */
-    public List<Player> getPlayers() throws IOException, InterruptedException {
+    public List<Player> getPlayers() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/current"))
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
 
-        // parse JSON into objects
-        ObjectMapper mapper = new ObjectMapper();
-        Game game = mapper.readValue(response.body(), Game.class);
-        System.out.println(game.getPlayers().get(0).getNick());
-        System.out.println(game.getPlayers().get(1).getNick());
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
 
-        return game.getPlayers();
+            // parse JSON into objects
+            ObjectMapper mapper = new ObjectMapper();
+            Game game = mapper.readValue(response.body(), Game.class);
+
+            return game.getPlayers();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+       return null;
     }
 }
