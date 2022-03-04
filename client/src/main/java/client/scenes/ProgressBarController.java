@@ -22,39 +22,44 @@ public class ProgressBarController {
     @FXML
     private Label label;
 
-    /*public void setBar(ProgressBar bar) {
-        this.bar = bar;
-    }*/
-
-    double currentTime = 20000;
-    Timer timer = new Timer();
-    TimerTask task = new TimerTask() {
+    private double currentTime = 20000;
+    private Timer timer = new Timer();
+    private TimerTask task = new TimerTask() {
         public void run() {
             currentTime -= 25;
-            if(currentTime <= 0){
-                //System.out.println("Time's over!");
+            if (currentTime <= 0) {
                 Platform.runLater(() -> label.setText("Time's over!"));
                 currentTime = 0;
                 timer.cancel();
                 timer.purge();
             }
-            //System.out.println(currentTime / 1000);
             Platform.runLater(() -> label.setText(String.format("%.2f", currentTime / 1000)));
             Platform.runLater(() -> bar.setProgress(currentTime / 20000));
-            if(currentTime <= 0){
+            if (currentTime <= 0) {
                 currentTime = 0;
                 Platform.runLater(() -> label.setText("Time's over!"));
             }
-            //bar.setProgress(currentTime / 2000);
 
         }
     };
 
-    public void start(){
+    public double getCurrentTime() {
+        return currentTime;
+    }
+
+    public void start() {
         timer.scheduleAtFixedRate(task, 25, 25);
     }
 
-    public void halve(){
+    public Timer getTimer() {
+        return timer;
+    }
+
+    public TimerTask getTask() {
+        return task;
+    }
+
+    public void halve() {
         currentTime /= 2;
     }
 
