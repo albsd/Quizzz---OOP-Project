@@ -1,5 +1,6 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -16,6 +17,15 @@ public class Player {
 
     public Player(final String nick) {
         this.nick = nick;
+    }
+
+    @JsonCreator
+    public Player(@JsonProperty("nick") final String nick,
+                  @JsonProperty("time")final int time,
+                  @JsonProperty("score") final int score) {
+        this.nick = nick;
+        this.time = time;
+        this.score = score;
     }
 
     public String getNick() {

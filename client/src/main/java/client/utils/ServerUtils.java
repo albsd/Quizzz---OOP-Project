@@ -18,11 +18,13 @@ package client.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Game;
 import commons.Player;
+import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
@@ -36,6 +38,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+@Controller
 public class ServerUtils {
 
     private final String kGameUrl;
@@ -93,27 +96,32 @@ public class ServerUtils {
      * @throws InterruptedException
      * @return Player that has joined the game
      */
-    public Player joinGame(final String nick)
-            throws IOException, InterruptedException {
+    public Player joinGame(final String nick) {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/join/" + nick))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
+        try {
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200) {
-            return null;
+            if (response.statusCode() != 200) {
+                return null;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            Player player = mapper.readValue(response.body(), Player.class);
+            return player;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        Player player = mapper.readValue(response.body(), Player.class);
-
-        System.out.println(player.getNick());
-
-        return player;
+        return null;
     }
 
     /**

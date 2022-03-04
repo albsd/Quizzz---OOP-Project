@@ -11,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ public class LobbyController {
 
     private final List<Player> players;
 
+    @Autowired
     private final ServerUtils server;
 
     @Inject
