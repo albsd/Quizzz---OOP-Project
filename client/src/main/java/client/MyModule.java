@@ -15,15 +15,21 @@
 //  */
 package client;
 
+import client.scenes.HelpController;
+import client.scenes.LeaderboardController;
+import client.scenes.LobbyController;
+import client.scenes.SplashController;
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.Scopes;
 
 public class MyModule implements Module {
 
     @Override
     public void configure(final Binder binder) {
-        // binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-        // binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
-        // binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(SplashController.class).in(Scopes.SINGLETON);
+        binder.bind(LobbyController.class).in(Scopes.SINGLETON);
+        binder.bind(LeaderboardController.class).in(Scopes.SINGLETON);
+        binder.bind(HelpController.class).in(Scopes.SINGLETON);
     }
 }

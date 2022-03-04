@@ -2,7 +2,6 @@
 package client;
 
 import client.scenes.SplashController;
-import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -14,8 +13,7 @@ import static com.google.inject.Guice.createInjector;
 
 public class Main extends Application {
 
-    private static final Injector INJECTOR = createInjector(new MyModule());
-    private static final MyFXML FXML = new MyFXML(INJECTOR);
+    public static final MyFXML FXML = new MyFXML(createInjector(new MyModule()));
 
     public static void main(final String[] args) {
         launch();

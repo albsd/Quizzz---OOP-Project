@@ -3,15 +3,12 @@ package client.scenes;
 import client.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-
 
 import java.io.IOException;
 import java.util.Optional;
@@ -22,16 +19,15 @@ public class LeaderboardController {
     private Stage stage;
     @FXML
     private Scene scene;
-    @FXML
-    private Parent root;
-
 
     @FXML
     protected void onConfirmButtonClick(final ActionEvent e)
             throws IOException {
-        root = FXMLLoader.load(Main.class.getResource("placeholder-view.fxml"));
+        var root = Main.FXML.load(SplashController.class,
+                "client", "scenes", "Splash.fxml");
+
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+        scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }
@@ -54,9 +50,11 @@ public class LeaderboardController {
 
     @FXML
     public void switchToLeaderboard(final ActionEvent e) throws IOException {
-        root = FXMLLoader.load(Main.class.getResource("leaderboard-view.fxml"));
+        var root = Main.FXML.load(LeaderboardController.class,
+                "client", "scenes", "Leaderboard.fxml");
+
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+        scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }
