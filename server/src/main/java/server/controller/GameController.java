@@ -15,23 +15,17 @@
  */
 package server.controller;
 
-import java.util.List;
-import java.util.UUID;
-
 import commons.Game;
 import commons.Player;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import server.service.GameService;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/game")
@@ -44,65 +38,33 @@ public class GameController {
         this.gameService = gameService;
     }
 
+    /**
+     * Fetches all the games that have been played and are to be played
+     * 
+     * @return List of all Games
+     */
     @GetMapping(path = { "", "/" })
     public List<Game> getAll() {
         return gameService.getAll();
     }
 
-    @PostMapping("")
-    public UUID create() {
-        UUID uuid = UUID.randomUUID();
-        Game game = new Game(uuid);
-        return gameService.addGame(game);
+    /**
+     * Fetches the active game lobby
+     * 
+     * @return The current active game which accepts new players
+     */
+    @GetMapping("/current")
+    public Game getCurrentGame() {
+        return gameService.getCurrentGame();
     }
 
-    @GetMapping("{nick}/join")
-    public ResponseEntity<Game> decideGameCreationJoin(
-            final @PathVariable("nick") String nick) {
-        UUID waitingGameId = gameService.getWaitingGameId();
-        if (waitingGameId == null) {
-            UUID gameId = this.create();
-            this.join(gameId, nick);
-            // after the client recieves the game id,
-            // make sure it sends a websocket connection upgade request
-            // this.joinWs(gameId, nick);
-            return ResponseEntity.ok(gameService.findById(gameId));
-        }
-        this.join(waitingGameId, nick);
-        // after the client recieves
-        // the game id, make sure it sends a websocket connection upgade request
-        // this.joinWs(waitingGameId, nick);
-        return ResponseEntity.ok(gameService.findById(waitingGameId));
-    }
-
-    @MessageMapping("{id}/join")
-    @SendTo("/topic/game_join")
-    public Player joinWs(final String nick) {
-        return join(gameService.getLobbyId(), nick).getBody();
-    }
-
-    @PostMapping("{id}/{nick}")
-    public ResponseEntity<Player> join(
-            final @PathVariable("id") UUID id,
-            final @PathVariable("nick") String nick) {
-        System.out.println("player " + nick + " joining game " + id);
-        if (nick == null || nick.isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-        Game game = gameService.findById(id);
-        if (game == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Player p = new Player(nick);
-        boolean success = game.addPlayer(p);
-
-        final int errorCode = 403;
-        if (!success)
-            return ResponseEntity.status(errorCode).build();
-        return ResponseEntity.ok(p);
-    }
-
+    /**
+     * Fetches the game by its UUID
+     * 
+     * @param id The UUID of the game
+     * @return Game or an error, depending whether the game exists
+     */
+    @Deprecated
     @GetMapping("{id}")
     public ResponseEntity<Game> getById(final @PathVariable("id") UUID id) {
         Game game = gameService.findById(id);
@@ -111,4 +73,53 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
+    /**
+     * Join the active game lobby as a Player with id "nick"
+     * 
+     * @param nick User's nickname which identifies a given player in a game
+     * @return Game to which the user has joined
+     */
+    @PostMapping("/join/{nick}")
+    public ResponseEntity<Player> joinCurrentGame(final @PathVariable("nick") String nick) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game lobby = gameService.getCurrentGame();
+        Player p = new Player(nick);
+        boolean success = lobby.addPlayer(p);
+
+        final int errorCode = 403;
+        if (!success)
+            return ResponseEntity.status(errorCode).build();
+
+        return ResponseEntity.ok(p);
+    }
+
+    /**
+     * A Websocket endpoint for sending updates about the current lobby status
+     * Namely updates the active players in the lobby for all clients
+     * 
+     * @param nick The player nickname who has joined the most recently
+     * @return The Player object created from the nick
+     */
+    @MessageMapping("/join/{nick}") // /app/join/{nick}
+    @SendTo("/topic/game_join")
+    public Player joinWebsocket(final String nick) {
+        return joinCurrentGame(nick).getBody();
+    }
+
+    /**
+     * Starts the current game
+     * 
+     * @return The game which has been started
+     */
+    @PostMapping("/start")
+    public ResponseEntity<Game> startCurrentGame() {
+        Game lobby = gameService.getCurrentGame();
+        if (lobby.getPlayers().isEmpty())
+            return ResponseEntity.status(405).build();
+
+        return ResponseEntity.ok(gameService.newGame());
+    }
 }

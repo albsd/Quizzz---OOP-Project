@@ -55,5 +55,4 @@ public class GameRepository {
     public boolean removeGame(final UUID id) {
         return games.removeIf(g -> g.getId().equals(id));
     }
-
 }
