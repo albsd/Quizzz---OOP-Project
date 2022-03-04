@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class Player {
-    @JsonProperty("nick_name")
+    @JsonProperty("nick")
     private final String nick;
 
     @JsonProperty("time")

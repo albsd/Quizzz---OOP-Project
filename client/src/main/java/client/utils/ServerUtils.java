@@ -38,47 +38,15 @@ import java.util.function.Consumer;
 
 public class ServerUtils {
 
-    private final String kBaseUrl;
-
     private final String kGameUrl;
 
     private final HttpClient client;
+
     private StompSession session = connect("ws://localhost:8080/websocket");
 
     public ServerUtils() {
-        this.kBaseUrl = "http://localhost:8080";
-        this.kGameUrl = kBaseUrl + "/game";
-
+        this.kGameUrl = "http://localhost:8080/game";
         this.client = HttpClient.newHttpClient();
-    }
-
-    // Initial POST request to get gameId
-    public String createGame() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl))
-                .POST(HttpRequest.BodyPublishers.ofString(""))
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-        String gameId = response.body().replaceAll("^\"|\"$", "");
-
-        System.out.println(gameId);
-        return gameId;
-    }
-
-    public void joinGame(final String nick)
-            throws IOException, InterruptedException {
-        // POST requests to add players to game
-        System.out.println(URI.create(kGameUrl + "/" + nick + "/join"));
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/" + nick + "/join"))
-                .POST(HttpRequest.BodyPublishers.ofString(""))
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
     }
 
     private StompSession connect(final String url) {
@@ -97,8 +65,8 @@ public class ServerUtils {
     }
 
     public <T> void registerForMessages(final String dest,
-            final Class<T> type,
-            final Consumer<T> consumer) {
+                                        final Class<T> type,
+                                        final Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(final StompHeaders headers) {
@@ -107,7 +75,7 @@ public class ServerUtils {
 
             @Override
             public void handleFrame(final StompHeaders headers,
-                    final Object payload) {
+                                    final Object payload) {
                 consumer.accept((T) payload);
             }
         });
@@ -117,38 +85,55 @@ public class ServerUtils {
         session.send(dest, o);
     }
 
-    // GET request to get list of players from game and to deserialize them
+    /**
+     * Calls the REST endpoint to join the current active lobby
+     * @param nick String of the user nickname
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public Player joinGame(final String nick)
+            throws IOException, InterruptedException {
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/join/" + nick))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        HttpResponse<String> response = client.send(request,
+                HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) return null;
+
+        ObjectMapper mapper = new ObjectMapper();
+        Player player = mapper.readValue(response.body(), Player.class);
+
+        System.out.println(player.getNick());
+
+        return player;
+    }
+
+    /**
+     * Calls the REST endpoint to get list of all players in the lobby
+     * @return List of players in a lobby
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public List<Player> getPlayers() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kBaseUrl))
+                .uri(URI.create(kGameUrl + "/current"))
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
 
         // parse JSON into objects
         ObjectMapper mapper = new ObjectMapper();
-        Game game = mapper.readValue((String) response.body(), Game.class);
+        Game game = mapper.readValue(response.body(), Game.class);
         System.out.println(game.getPlayers().get(0).getNick());
         System.out.println(game.getPlayers().get(1).getNick());
 
         return game.getPlayers();
     }
-
-    // public List<Quote> getQuotes() {
-    // return ClientBuilder.newClient(new ClientConfig()) //
-    // .target(SERVER).path("api/quotes") //
-    // .request(APPLICATION_JSON) //
-    // .accept(APPLICATION_JSON) //
-    // .get(new GenericType<List<Quote>>() {});
-    // }
-
-    // public Quote addQuote(Quote quote) {
-    // return ClientBuilder.newClient(new ClientConfig()) //
-    // .target(SERVER).path("api/quotes") //
-    // .request(APPLICATION_JSON) //
-    // .accept(APPLICATION_JSON) //
-    // .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
-    // }
 }
