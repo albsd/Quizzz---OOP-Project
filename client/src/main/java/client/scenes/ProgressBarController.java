@@ -21,40 +21,66 @@ public class ProgressBarController {
 
     @FXML
     private Label label;
+
     private final double maxTime = 20000;
     private final double oneSecond = 1000;
     private final double decrement = 25;    // 25ms
-    private double currentTime = maxTime;
-    private Timer timer = new Timer();
-    private TimerTask task = new TimerTask() {
-        public void run() {
 
+    private double currentTime = maxTime;
+    private boolean started = false;
+
+    private Timer timer = new Timer();
+    private TimerTask currentTask;
+
+    private TimerTask newTimerTask() {
+        return new TimerTask() {
+            public void run() {
+                currentTime -= decrement;
+                if (currentTime <= 0) {
+                    Platform.runLater(() -> label.setText("Time's over!"));
+                    currentTime = 0;
+                    cancel();
+                }
+                else{
+                    Platform.runLater(() -> label.setText(
+                            String.format("%.2f", currentTime / oneSecond)));
+                    Platform.runLater(() -> bar.setProgress(currentTime / maxTime));
+                }
+            }
+        };
+    }
+
+    /*private TimerTask task = new TimerTask() {
+        public void run() {
             currentTime -= decrement;
             if (currentTime <= 0) {
                 Platform.runLater(() -> label.setText("Time's over!"));
                 currentTime = 0;
-                timer.cancel();
-                timer.purge();
+                task.cancel();
             }
-            Platform.runLater(() -> label.setText(
-                    String.format("%.2f", currentTime / oneSecond)));
-            Platform.runLater(() -> bar.setProgress(currentTime / maxTime));
-            if (currentTime <= 0) {
-                currentTime = 0;
-                Platform.runLater(() -> label.setText("Time's over!"));
+            else{
+                Platform.runLater(() -> label.setText(
+                        String.format("%.2f", currentTime / oneSecond)));
+                Platform.runLater(() -> bar.setProgress(currentTime / maxTime));
             }
-
         }
-    };
+    };*/
 
     public double getCurrentTime() {
         return currentTime;
     }
 
     public void start() {
-        final int delay = 25;
-        final int period = 25;
-        timer.scheduleAtFixedRate(task, delay, period);
+        if(started){
+            System.out.println("Already started! Reset first.");
+        }
+        else{
+            started = true;
+            final int delay = 25;
+            final int period = 25;
+            currentTask = newTimerTask();
+            timer.scheduleAtFixedRate(currentTask, delay, period);
+        }
     }
 
     public Timer getTimer() {
@@ -62,11 +88,29 @@ public class ProgressBarController {
     }
 
     public TimerTask getTask() {
-        return task;
+        return currentTask;
     }
 
     public void halve() {
-        currentTime /= 2;
+        if(started){
+            if(currentTime <= 0){
+                System.out.println("Already finished!");
+            }
+            else{
+                currentTime /= 2;
+            }
+        }
+        else{
+            System.out.println("Not started yet!");
+        }
+    }
+
+    public void reset(){
+        currentTask.cancel();
+        started = false;
+        currentTime = maxTime;
+        Platform.runLater(() -> label.setText(String.valueOf(currentTime / oneSecond)));
+        Platform.runLater(() -> bar.setProgress(currentTime / maxTime));
     }
 
 }
