@@ -19,6 +19,7 @@ import commons.Game;
 import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -104,14 +105,14 @@ public class GameController {
 
     /**
      * A Websocket endpoint for sending updates about the current lobby status.
-     * Namely updates the active players in the lobby for all clients.
+     * Namely, updates the active players in the lobby for all clients.
      * 
      * @param nick The player nickname who has joined the most recently
      * @return The Player object created from the nick
      */
     @MessageMapping("/join/{nick}") // /app/game/join/{nick}
     @SendTo("/topic/game_join")
-    public Player joinWebsocket(final @PathVariable("nick") String nick) {
+    public Player joinWebsocket(final @DestinationVariable("nick") String nick) {
         return joinCurrentGame(nick).getBody();
     }
 

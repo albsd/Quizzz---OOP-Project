@@ -89,6 +89,7 @@ public class SplashController {
     public void lobby(final ActionEvent event) throws IOException, InterruptedException {
         var root = Main.FXML.load(LobbyController.class,
                 "client", "scenes", "Lobby.fxml");
+        var ctrl = root.getKey();
 
         String nick = nickField.getText();
         if (!validateNicknameLength(nick)) {
@@ -105,6 +106,7 @@ public class SplashController {
         }
 
         server.send("app/game/join/" + nick, nick);
+        ctrl.addPlayer(player);
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root.getValue());
