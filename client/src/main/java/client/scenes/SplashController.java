@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,116 +9,116 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.util.function.Consumer;
 
 public class SplashController {
 
+    public final Color red = new Color(0.8, 0, 0, 1);
+    public final Color green = new Color(0, 0.6, 0, 1);
+
     private final ServerUtils server;
-    private final MainCtrl mainCtrl;
 
     @FXML
-    private TextField userField;
+    private TextField nickField;
+
     @FXML
     private Label warning;
+
     @FXML
     private Label title;
+
     @FXML
     private Label exitLabel;
 
     private Stage stage;
+
     private Scene scene;
+
     private Parent root;
 
     @Inject
-    public SplashController(final ServerUtils server, final MainCtrl mainCtrl) {
-        this.mainCtrl = mainCtrl;
+    public SplashController(final ServerUtils server) {
         this.server = server;
     }
 
-    public void help(final ActionEvent e) throws IOException {
-        // When we have the help.fxml and helpController class
+    public void help(final ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("Help.fxml"));
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Help.fxml"));
         root = loader.load();
-        HelpController helpController = loader.getController();
-
-        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
-    public void exitApp(final ActionEvent e) {
+    public void exitApp(final ActionEvent event) {
         Platform.exit();
     }
 
     public boolean validateNicknameLength(final String user) {
         final int maxChrLimit = 8;
         final int minChrLimit = 3;
-        int userLength = user.length();
-        boolean valid = userLength <= maxChrLimit && userLength >= minChrLimit;
-        if (valid) {
-            warning.setTextFill(mainCtrl.green);
-            warning.setText("Nickname set");
-        } else {
-            warning.setTextFill(mainCtrl.red);
+        int len = user.length();
+
+        if (len < minChrLimit && len > maxChrLimit) {
+            warning.setTextFill(red);
             warning.setText("Nickname should be between 3 and 8 characters");
+            return false;
         }
-        return valid;
+
+        warning.setTextFill(green);
+        warning.setText("Nickname set");
+        return true;
     }
 
-    public void singleGame(final ActionEvent e) throws IOException {
-        String user = userField.getText();
+    public void singleGame(final ActionEvent event) {
+        String user = nickField.getText();
         if (!validateNicknameLength(user))
             return;
-
-        // FXMLLoader loader = new FXMLLoader(S
-        // plashController.class.getResource("Single.fxml"));
-        // root = loader.load();
-        // SingleController singleController = loader.getController();
-        // stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        // scene = new Scene(root);
-        // stage.setScene(scene);
-        // stage.show();
+        // TODO: load the fxml and display it
     }
 
-    public void lobby(final ActionEvent e) throws IOException {
+    public void lobby(final ActionEvent event) {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("Lobby.fxml"));
-        String user = userField.getText();
-        if (!validateNicknameLength(user))
+
+        String nick = nickField.getText();
+        if (!validateNicknameLength(nick))
             return;
 
-        Consumer<Player> gameJoinConsumer = player -> {
-            System.out.println("Player " + player.getNick() + " joined");
-        };
-        server.registerForMessages("/topic/game_join", Player.class,
-                gameJoinConsumer);
-        server.send("/game/join", user);
+        try {
+            server.joinGame(nick);
+            server.send("app/game/join/" + nick, nick);
 
+            root = loader.load();
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException | InterruptedException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    public void leaderBoard(final ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("leaderboard-view.fxml"));
         root = loader.load();
-        // multiController multiController = loader.getController();
-        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-    }
-
-    public void leaderBoard(final ActionEvent e) {
-        // When we have the leaderboard.fxml and leaderboardController class
-
-        // FXMLLoader loader = new FXMLLoader(
-        // SplashController.class.getResource("learderboard.fxml"));
-        // root = loader.load();
-        // LeaderboardController leaderController = loader.getController();
-        //
-        // stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        // scene = new Scene(root);
-        // stage.setScene(scene);
-        // stage.show();
     }
 }

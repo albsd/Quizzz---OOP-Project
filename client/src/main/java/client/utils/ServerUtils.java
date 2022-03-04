@@ -97,8 +97,8 @@ public class ServerUtils {
     }
 
     public <T> void registerForMessages(final String dest,
-                                        final Class<T> type,
-                                        final Consumer<T> consumer) {
+            final Class<T> type,
+            final Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(final StompHeaders headers) {
@@ -107,7 +107,7 @@ public class ServerUtils {
 
             @Override
             public void handleFrame(final StompHeaders headers,
-                                    final Object payload) {
+                    final Object payload) {
                 consumer.accept((T) payload);
             }
         });
@@ -124,8 +124,7 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
 
         // parse JSON into objects

@@ -103,9 +103,9 @@ public class GameController {
      * @param nick The player nickname who has joined the most recently
      * @return The Player object created from the nick
      */
-    @MessageMapping("/join/{nick}") // /app/join/{nick}
+    @MessageMapping("/join/{nick}") // /app/game/join/{nick}
     @SendTo("/topic/game_join")
-    public Player joinWebsocket(final String nick) {
+    public Player joinWebsocket(final @PathVariable("nick") String nick) {
         return joinCurrentGame(nick).getBody();
     }
 

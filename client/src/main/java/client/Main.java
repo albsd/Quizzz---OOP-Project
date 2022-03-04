@@ -23,7 +23,6 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage stage) throws IOException {
-        // Parent root = FXMLLoader.load(Main.class.getResource("Splash.fxml"));
         var root = FXML.load(SplashController.class,
                 "client", "scenes", "Splash.fxml");
         Scene scene = new Scene(root.getValue());
@@ -34,10 +33,6 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-
-        // ServerUtils server = new ServerUtils();
-        // server.joinGame("lolo");
-        // System.out.println(server.createGame());
     }
 
 }
