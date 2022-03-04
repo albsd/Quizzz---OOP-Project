@@ -40,11 +40,11 @@ public class ProgressBarController {
                     Platform.runLater(() -> label.setText("Time's over!"));
                     currentTime = 0;
                     cancel();
-                }
-                else {
+                } else {
                     Platform.runLater(() -> label.setText(
                             String.format("%.2f", currentTime / oneSecond)));
-                    Platform.runLater(() -> bar.setProgress(currentTime / maxTime));
+                    Platform.runLater(() ->
+                            bar.setProgress(currentTime / maxTime));
                 }
             }
         };
@@ -73,8 +73,7 @@ public class ProgressBarController {
     public void start() {
         if (started) {
             System.out.println("Already started! Reset first.");
-        }
-        else {
+        } else {
             started = true;
             final int delay = 25;
             final int period = 25;
@@ -92,15 +91,13 @@ public class ProgressBarController {
     }
 
     public void halve() {
-        if (started){
+        if (started) {
             if (currentTime <= 0) {
                 System.out.println("Already finished!");
-            }
-            else {
+            } else {
                 currentTime /= 2;
             }
-        }
-        else {
+        } else {
             System.out.println("Not started yet!");
         }
     }
