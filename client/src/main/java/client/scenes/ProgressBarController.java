@@ -36,8 +36,8 @@ public class ProgressBarController {
                 timer.cancel();
                 timer.purge();
             }
-            Platform.runLater(() -> label.setText
-                    (String.format("%.2f", currentTime / oneSecond)));
+            Platform.runLater(() -> label.setText(
+                    String.format("%.2f", currentTime / oneSecond)));
             Platform.runLater(() -> bar.setProgress(currentTime / maxTime));
             if (currentTime <= 0) {
                 currentTime = 0;
