@@ -23,13 +23,14 @@ public class ProgressBarController {
     private Label label;
     private final double maxTime = 20000;
     private final double oneSecond = 1000;
+    private final double decrement = 25;    // 25ms
     private double currentTime = maxTime;
     private Timer timer = new Timer();
     private TimerTask task = new TimerTask() {
         public void run() {
-            currentTime -= 25;
-            int zeroNumber = 0;
-            if (currentTime <= zeroNumber) {
+
+            currentTime -= decrement;
+            if (currentTime <= 0) {
                 Platform.runLater(() -> label.setText("Time's over!"));
                 currentTime = 0;
                 timer.cancel();
@@ -51,8 +52,8 @@ public class ProgressBarController {
     }
 
     public void start() {
-        int delay = 25;
-        int period = 25;
+        final int delay = 25;
+        final int period = 25;
         timer.scheduleAtFixedRate(task, delay, period);
     }
 
