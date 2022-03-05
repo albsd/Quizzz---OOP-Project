@@ -73,7 +73,8 @@ public class SplashController {
                 getClass().getResource("Lobby.fxml"));
         String user = userField.getText();
         root = loader.load();
-        //multiController multiController = loader.getController();
+        LobbyController lobbyController = loader.getController();
+        lobbyController.sendNickname(user);
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);

@@ -17,6 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class LobbyController implements Initializable {
@@ -52,6 +54,8 @@ public class LobbyController implements Initializable {
 
     private Scene scene;
 
+    private String nickname;
+
     private final List<Player> players = new ArrayList<>();
 
     private final ServerUtils server;
@@ -65,7 +69,11 @@ public class LobbyController implements Initializable {
             if (keyEvent.getCode() == KeyCode.ENTER)  {
                 String chatMsg = chatInput.getText();
                 chatInput.setText("");
-                sendMessage(chatMsg);
+                try {
+                    sendMessage(chatMsg);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -115,25 +123,28 @@ public class LobbyController implements Initializable {
         stage.show();
     }
 
-    //to call this '/app/chat'
-    //now send this to topic which is our broker
-    @MessageMapping("/chat")
-    @SendTo("/topic/chat")
+    //send this to topic which is our broker
+    @MessageMapping("/lobby/{id}/message")
+    @SendTo("/topic/{id}/message")
     private Message sendMessage(final String msg) throws InterruptedException {
         Thread.sleep(1000);
         //escapes special characters in input
         Message message = new Message(HtmlUtils.htmlEscape(msg));
-        message.setNick("Nick");
+        message.setNick(getNickname());
         message.setTime(24);
         return message;
-        // TODO: how to get player's nickname
     }
 
+    public void sendNickname(String nickname){
+        this.nickname = nickname;
+    }
 
+    public String getNickname() {
+        return nickname;
+    }
 
     public void start(final ActionEvent event) {
         // TODO: display the multiplayer fxml
         // server.startGame();
     }
-
 }
