@@ -75,6 +75,7 @@ public class ServerUtils {
                 return type;
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             public void handleFrame(final StompHeaders headers,
                     final Object payload) {
@@ -91,8 +92,6 @@ public class ServerUtils {
      * Calls the REST endpoint to join the current active lobby.
      * 
      * @param nick String of the user nickname
-     * @throws IOException
-     * @throws InterruptedException
      * @return Player that has joined the game
      */
     public Player joinGame(final String nick) {
@@ -127,8 +126,6 @@ public class ServerUtils {
      * Calls the REST endpoint to get list of all players in the lobby.
      * 
      * @return List of players in a lobby
-     * @throws IOException
-     * @throws InterruptedException
      */
     public List<Player> getPlayers() {
         HttpRequest request = HttpRequest.newBuilder()
@@ -152,6 +149,6 @@ public class ServerUtils {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-       return null;
+        return null;
     }
 }

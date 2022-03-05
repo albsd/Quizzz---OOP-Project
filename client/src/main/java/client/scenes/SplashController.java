@@ -96,7 +96,6 @@ public class SplashController {
             return;
         }
 
-        // try {
         final Player player = server.joinGame(nick);
         if (player == null) {
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -105,21 +104,13 @@ public class SplashController {
             alert.showAndWait();
         }
 
-        server.send("app/game/join/" + nick, nick);
-        ctrl.addPlayer(player);
+        server.send("/app/join", player);
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
 
-        // } catch (IOException | InterruptedException e) {
-        // var alert = new Alert(Alert.AlertType.ERROR);
-        // alert.initModality(Modality.APPLICATION_MODAL);
-        // System.err.println(e.getMessage());
-        // alert.setContentText(e.getMessage());
-        // alert.showAndWait();
-        // }
     }
 
     public void leaderBoard(final ActionEvent event) throws IOException {

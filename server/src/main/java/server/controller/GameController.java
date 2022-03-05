@@ -19,7 +19,6 @@ import commons.Game;
 import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,7 +70,7 @@ public class GameController {
      * @return Game or an error, depending on whether the game exists
      */
     @Deprecated
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Game> getById(final @PathVariable("id") UUID id) {
         Game game = gameService.findById(id);
         if (game == null) {
@@ -107,13 +106,13 @@ public class GameController {
      * A Websocket endpoint for sending updates about the current lobby status.
      * Namely, updates the active players in the lobby for all clients.
      * 
-     * @param nick The player nickname who has joined the most recently
+     * @param player The player object who has joined the most recently
      * @return The Player object created from the nick
      */
-    @MessageMapping("/join/{nick}") // /app/game/join/{nick}
-    @SendTo("/topic/game_join")
-    public Player joinWebsocket(final @DestinationVariable("nick") String nick) {
-        return joinCurrentGame(nick).getBody();
+    @MessageMapping("/join") // /app/join
+    @SendTo("/topic/join")
+    public Player joinWebsocket(final Player player) {
+        return player;
     }
 
     /**
