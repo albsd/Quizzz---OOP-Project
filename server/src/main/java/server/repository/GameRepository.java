@@ -18,7 +18,9 @@ package server.repository;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
+import commons.Question;
 import org.springframework.stereotype.Repository;
+import server.FakeDatabase;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -68,5 +70,10 @@ public class GameRepository {
         Collections.reverse(rank);
         leaderboard.setRanking(rank);
         return leaderboard;
+    }
+
+    public Question getQuestion(int questionNumber){
+        FakeDatabase fd = new FakeDatabase();
+        return fd.getFakeQuestions().get(questionNumber);
     }
 }

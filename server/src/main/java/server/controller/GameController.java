@@ -18,6 +18,7 @@ package server.controller;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
+import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -90,5 +91,12 @@ public class GameController {
         if (gameService.findById(id) == null)
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(gameService.getLeaderboard(id));
+    }
+
+    @GetMapping("{id}/question/{questionNumber}")
+    public ResponseEntity<Question> getLeaderboard(@PathVariable UUID id, @PathVariable int questionNumber){
+        if (gameService.findById(id) == null)
+            return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(gameService.getQuestion(questionNumber));
     }
 }

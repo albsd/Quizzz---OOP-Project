@@ -3,6 +3,7 @@ package server.service;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
+import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.GameRepository;
@@ -38,5 +39,9 @@ public class GameService {
 
     public Leaderboard getLeaderboard(UUID id) {
         return repo.getLeaderboard(id);
+    }
+
+    public Question getQuestion(int questionNumber) {
+        return repo.getQuestion(questionNumber);
     }
 }
