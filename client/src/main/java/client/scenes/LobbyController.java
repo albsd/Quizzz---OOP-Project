@@ -8,8 +8,10 @@ import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -17,7 +19,6 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.IOException;
@@ -25,7 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class LobbyController implements Initializable {
@@ -114,11 +114,10 @@ public class LobbyController implements Initializable {
         });
     };
 
-    public void returnMenu(final ActionEvent e) {
-        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
-
+    public void returnMenu(final ActionEvent e) throws IOException {
+        Parent root = FXMLLoader.load(Main.class.getResource("Splash.fxml"));
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
+        scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
