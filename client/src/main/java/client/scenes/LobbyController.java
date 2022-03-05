@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -32,6 +33,9 @@ public class LobbyController implements Initializable {
 
     @FXML
     private TextField userField;
+
+    @FXML
+    private ScrollPane chatArea;
 
     @FXML
     private Label chatText;
@@ -119,11 +123,15 @@ public class LobbyController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
+                String nickname = m.getNick();
+                int time = m.getTime();
                 String content = m.getMessageContent();
+                TextField text = new TextField();
+                text.setText(nickname + " (" + time + ") - " + content);
+                chatArea.setContent(text);
             }
         });
     };
-
 
     public void returnMenu(final ActionEvent e) throws IOException {
         Parent root = FXMLLoader.load(Main.class.getResource("Splash.fxml"));
