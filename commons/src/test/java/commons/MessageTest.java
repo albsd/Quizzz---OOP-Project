@@ -22,11 +22,15 @@ class MessageTest {
         nick1 = "Adam";
         time1 = 12;
         content1 = "Lets start the game!";
+        message1 = new Message(nick1, time1, content1);
+        message2 = new Message(nick1, time1, content1);
     }
 
     @Test
     void testGetters() {
-
+        assertEquals(nick1, message1.getNick());
+        assertEquals(time1, message1.getTime());
+        assertEquals(content1, message1.getMessageContent());
     }
 
     @Test

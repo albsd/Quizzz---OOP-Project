@@ -141,10 +141,7 @@ public class LobbyController implements Initializable {
     private Message sendMessage(final String msg) throws InterruptedException {
         Thread.sleep(1000);
         //escapes special characters in input
-        Message message = new Message(HtmlUtils.htmlEscape(msg));
-        message.setNick(getNickname());
-        message.setTime(24);
-        return message;
+        return new Message(getNickname(), 25, HtmlUtils.htmlEscape(msg));
     }
 
     public void sendNickname(String nickname){

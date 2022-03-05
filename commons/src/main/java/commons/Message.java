@@ -14,7 +14,9 @@ public class Message {
     @JsonProperty("content")
     private String messageContent;
 
-    public Message(String messageContent) {
+    public Message(String nick, int time, String messageContent) {
+        this.nick = nick;
+        this.time = time;
         this.messageContent = messageContent;
     }
 
