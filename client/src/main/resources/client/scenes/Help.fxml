@@ -1,78 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
     <AnchorPane prefHeight="682.0" prefWidth="1240.0">
         <children>
-            <Label fx:id="title" layoutX="442.0" layoutY="14.0" prefHeight="103.0" prefWidth="356.0" text="How to play" textAlignment="CENTER">
+            <Label fx:id="title" alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" text="How to play" textAlignment="CENTER">
                 <font>
                     <Font name="System Bold" size="60.0" />
                 </font>
             </Label>
-         <Button alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" layoutX="8.0" layoutY="9.0" mnemonicParsing="false" onAction="#splash" pickOnBounds="false" prefHeight="79.0" prefWidth="102.0" styleClass="returnMenuButton" stylesheets="@/stylesheets/style.css" textAlignment="CENTER">
-            <graphic>
-               <ImageView fitHeight="84.0" fitWidth="95.0" pickOnBounds="true" preserveRatio="true">
+         <GridPane layoutX="8.0" layoutY="138.0">
+           <columnConstraints>
+             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+             <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
+           </columnConstraints>
+           <rowConstraints>
+               <RowConstraints vgrow="SOMETIMES" />
+             <RowConstraints minHeight="64.0" prefHeight="100.0" vgrow="SOMETIMES" />
+             <RowConstraints minHeight="64.0" prefHeight="100.0" vgrow="SOMETIMES" />
+             <RowConstraints minHeight="64.0" prefHeight="100.0" vgrow="SOMETIMES" />
+               <RowConstraints vgrow="SOMETIMES" />
+               <RowConstraints minHeight="64.0" prefHeight="100.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+            <children>
+               <ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
                   <image>
-                     <Image url="@/images/returnMainMenu.png" />
+                     <Image url="@../../images/time.png" />
                   </image>
                </ImageView>
-            </graphic></Button>
-         <Label layoutX="102.0" layoutY="137.0" text="Power-ups:">
-            <font>
-               <Font name="System Bold" size="24.0" />
-            </font>
-         </Label>
-         <TextFlow layoutX="102.0" layoutY="184.0" lineSpacing="35.0" prefHeight="132.0" prefWidth="131.0">
-            <children>
-               <Label alignment="TOP_LEFT" prefHeight="72.0" prefWidth="234.0" text="Halves time for everyone but you" wrapText="true">
-                  <font>
-                     <Font size="24.0" />
-                  </font></Label>
-               <Label alignment="TOP_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="70.0" prefWidth="237.0" text="Doubles your score for this question" wrapText="true">
+               <ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
+                  <image>
+                     <Image url="@../../images/score.png" />
+                  </image>
+               </ImageView>
+               <ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="3">
+                  <image>
+                     <Image url="@../../images/remove.png" />
+                  </image>
+               </ImageView>
+               <Label alignment="TOP_LEFT" prefHeight="72.0" prefWidth="234.0" text="Halves time for everyone but you" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label alignment="TOP_LEFT" layoutX="10.0" layoutY="50.0" prefHeight="71.0" prefWidth="205.0" text="Removes one wrong answer" wrapText="true">
+               <Label alignment="TOP_LEFT" prefHeight="70.0" prefWidth="237.0" text="Doubles your score for this question" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                   <font>
                      <Font size="24.0" />
+                  </font>
+               </Label>
+               <Label alignment="TOP_LEFT" prefHeight="71.0" prefWidth="205.0" text="Removes one wrong answer" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+               <Label text="Power-ups:" GridPane.columnIndex="1">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
+                  </font>
+               </Label>
+               <Label text="Chat:" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
+                  </font>
+               </Label>
+               <Label alignment="TOP_LEFT" prefHeight="71.0" prefWidth="205.0" text="Represents a player leaving" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+               <ImageView pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="5">
+                  <image>
+                     <Image url="@../../images/leave.png" />
+                  </image>
+               </ImageView>
+            </children>
+         </GridPane>
+         <GridPane layoutX="385.0" layoutY="135.0">
+           <columnConstraints>
+             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="800.0" />
+           </columnConstraints>
+           <rowConstraints>
+             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+            <children>
+               <Label alignment="TOP_LEFT" text="The game has 20 questions regarding renewable energy and energy consumption. There is a timer at the bottom. The faster you answer correctly, the more points you get. But, be aware that you can’t change your answer, it’s final!&#10;&#10;You can either play Singleplayer or Multiplayer:&#10;" wrapText="true">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+                  <GridPane.margin>
+                     <Insets bottom="24.0" />
+                  </GridPane.margin>
+               </Label>
+               <Label alignment="TOP_LEFT" text="Singleplayer" wrapText="true" GridPane.rowIndex="1">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
+                  </font>
+               </Label>
+               <Label alignment="TOP_LEFT" text="Compete for the global leaderboard! There are no powerups involved." wrapText="true" GridPane.rowIndex="2">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+                  <GridPane.margin>
+                     <Insets bottom="24.0" />
+                  </GridPane.margin>
+               </Label>
+               <Label alignment="TOP_LEFT" text="Play with others and compete for the highest score in the game! You have the ability to use power ups. You can also use emotes to interact with others. Any number of players per lobby. Woah!" wrapText="true" GridPane.rowIndex="4">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+               <Label alignment="TOP_LEFT" text="Multiplayer" wrapText="true" GridPane.rowIndex="3">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
             </children>
-         </TextFlow>
-         <ImageView fitHeight="74.0" fitWidth="80.0" layoutX="11.0" layoutY="184.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@/images/poweruphalfTime.png" />
-            </image>
-         </ImageView>
-         <ImageView fitHeight="74.0" fitWidth="80.0" layoutX="8.0" layoutY="301.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@/images/powerupDouble.png" />
-            </image>
-         </ImageView>
-         <ImageView fitHeight="74.0" fitWidth="80.0" layoutX="8.0" layoutY="407.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@/images/powerupRemove.png" />
-            </image>
-         </ImageView>
-         <Label layoutX="331.0" layoutY="144.0" prefHeight="527.0" prefWidth="935.0" text="The game has 20 questions regarding renewable energy and energy consumption. There is a timer at the bottom. The faster you answer correctly, the more points you get. But, be aware that you can’t change your answer, it’s final!&#10;&#10;You can either play as a Singleplayer or Multiplayer:&#10;&#10;Singleplayer&#10;Compete for the global leaderboard! There are no powerups involved.&#10;&#10;Multiplayer&#10;Play with others and compete for the highest score in the game! You have the ability to use power ups. You can also use emotes to interact with others. Any number of players per lobby. Woah!&#10;&#10;Disconnected players are represented in the minichat with" wrapText="true">
-            <font>
-               <Font size="24.0" />
-            </font>
-         </Label>
-         <ImageView fitHeight="74.0" fitWidth="74.0" layoutX="966.0" layoutY="599.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@/images/disconnected.png" />
-            </image>
-         </ImageView>
+         </GridPane>
+         <Button alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#splash" pickOnBounds="false" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" stylesheets="@/stylesheets/style.css" textAlignment="CENTER">
+            <graphic>
+               <ImageView focusTraversable="true" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../../images/back.png" />
+                  </image>
+               </ImageView>
+            </graphic></Button>
         </children>
     </AnchorPane>
     <!--    <ScrollPane prefHeight="200.0" prefWidth="200.0" />-->
