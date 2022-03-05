@@ -6,7 +6,6 @@ import com.google.inject.Inject;
 import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -14,8 +13,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 
 import java.io.IOException;
 import java.net.URL;
@@ -113,16 +113,19 @@ public class LobbyController implements Initializable {
         stage.show();
     }
 
+    //to call this '/app/chat'
+    //now send this to topic which is our broker
+    @MessageMapping("/chat")
+    @SendTo("/topic/chat")
+    private String sendMessage(final String msg) throws InterruptedException {
+        Thread.sleep(1000);
 
-    private void sendMessage(String msg){
-        if (!checkNicknameLength(user)) {
-            warning.setText("Nickname should be min 3, max 8 characters");
-        } else {
-            warning.setText("Nickname set");
-        }
-
-
+        //escape special messages
+//        return msg;
+        //find how to get player's nickname
     }
+
+
 
     public void start(final ActionEvent event) {
         // TODO: display the multiplayer fxml
