@@ -64,6 +64,7 @@ public class LobbyController implements Initializable {
     public LobbyController(final ServerUtils server) {
         this.server = server;
         server.registerForMessages("/topic/join", Player.class, playerConsumer);
+        server.registerForMessages("/topic/lobby/chat", Message.class, messageConsumer);
 
         chatInput.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER)  {
@@ -88,7 +89,9 @@ public class LobbyController implements Initializable {
             }
         }
     }
-
+    /**
+     * private utilities related to websockets. Receives broadcast from server
+     */
     private Consumer<Player> playerConsumer = p -> {
         System.out.println("Player " + p.getNick() + " joined");
         players.add(p);
@@ -110,6 +113,18 @@ public class LobbyController implements Initializable {
         });
     };
 
+    private Consumer<Message> messageConsumer = m -> {
+        System.out.println("Message received");
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                String content = m.getMessageContent();
+            }
+        });
+    };
+
+
     public void returnMenu(final ActionEvent e) throws IOException {
         Parent root = FXMLLoader.load(Main.class.getResource("Splash.fxml"));
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
@@ -118,9 +133,11 @@ public class LobbyController implements Initializable {
         stage.show();
     }
 
-    //send this to topic which is our broker
-    @MessageMapping("/lobby/{id}/message")
-    @SendTo("/topic/{id}/message")
+
+    //app/lobby/chat
+    @MessageMapping("/lobby/chat")
+    //whatever is in mapping should be beneath after topic
+    @SendTo("/topic/lobby/chat")
     private Message sendMessage(final String msg) throws InterruptedException {
         Thread.sleep(1000);
         //escapes special characters in input
