@@ -90,4 +90,11 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
+    //app/game/message
+    @MessageMapping("{id}/message")
+    @SendTo("/topic/message")
+    public String sendMsg(final @PathVariable("id") UUID id, final String message){
+        return message;
+    }
+
 }
