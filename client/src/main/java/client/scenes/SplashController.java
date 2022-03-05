@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
-import java.io.IOException;
 
 public class SplashController {
 
@@ -48,9 +47,8 @@ public class SplashController {
         this.server = server;
     }
 
-    public void help(final ActionEvent event) throws IOException {
-        var root = Main.FXML.load(HelpController.class,
-                "client", "scenes", "Help.fxml");
+    public void help(final ActionEvent event) {
+        var root = Main.FXML.load(HelpController.class, "client", "scenes", "Help.fxml");
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root.getValue());
@@ -86,10 +84,8 @@ public class SplashController {
         // TODO: load the fxml and display it
     }
 
-    public void lobby(final ActionEvent event) throws IOException, InterruptedException {
-        var root = Main.FXML.load(LobbyController.class,
-                "client", "scenes", "Lobby.fxml");
-        var ctrl = root.getKey();
+    public void lobby(final ActionEvent event) {
+        var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
 
         String nick = nickField.getText();
         if (!validateNicknameLength(nick)) {
@@ -113,9 +109,8 @@ public class SplashController {
 
     }
 
-    public void leaderBoard(final ActionEvent event) throws IOException {
-        var root = Main.FXML.load(LeaderboardController.class,
-                "client", "scenes", "Leaderboard.fxml");
+    public void leaderBoard(final ActionEvent event) {
+        var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root.getValue());

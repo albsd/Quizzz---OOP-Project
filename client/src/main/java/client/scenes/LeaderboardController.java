@@ -10,7 +10,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.Optional;
 
 public class LeaderboardController {
@@ -21,10 +20,8 @@ public class LeaderboardController {
     private Scene scene;
 
     @FXML
-    protected void onConfirmButtonClick(final ActionEvent e)
-            throws IOException {
-        var root = Main.FXML.load(SplashController.class,
-                "client", "scenes", "Splash.fxml");
+    protected void onConfirmButtonClick(final ActionEvent e) {
+        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root.getValue());
@@ -33,9 +30,8 @@ public class LeaderboardController {
     }
 
     @FXML
-    protected void onReturnButtonClick(final ActionEvent e) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.WARNING,
-                "", ButtonType.YES, ButtonType.NO);
+    protected void onReturnButtonClick(final ActionEvent e) {
+        Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation Screen");
         alert.setHeaderText("Confirmation needed!");
         alert.setContentText(
@@ -49,9 +45,8 @@ public class LeaderboardController {
     }
 
     @FXML
-    public void switchToLeaderboard(final ActionEvent e) throws IOException {
-        var root = Main.FXML.load(LeaderboardController.class,
-                "client", "scenes", "Leaderboard.fxml");
+    public void switchToLeaderboard(final ActionEvent e) {
+        var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
 
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root.getValue());

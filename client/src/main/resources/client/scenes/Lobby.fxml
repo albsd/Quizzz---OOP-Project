@@ -41,7 +41,7 @@
          </Label>
          <Pane layoutX="839.0" layoutY="180.0" prefHeight="379.0" prefWidth="379.0">
             <children>
-               <Label alignment="CENTER" prefHeight="35.0" prefWidth="379.0" text="Current number of players: 5" textAlignment="CENTER">
+               <Label fx:id="playerCount" alignment="CENTER" prefHeight="35.0" prefWidth="379.0" text="Number of players: 0" textAlignment="CENTER">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
@@ -50,12 +50,12 @@
                   <content>
                      <TextFlow focusTraversable="true" prefHeight="331.0" prefWidth="377.0">
                         <children>
-                           <Label fx:id="playersLeft" alignment="TOP_CENTER" prefHeight="520.0" prefWidth="200.0" text="" textAlignment="CENTER">
+                           <Label fx:id="playersLeft" alignment="TOP_CENTER" prefHeight="520.0" prefWidth="180.0" text="" textAlignment="CENTER">
                               <font>
                                  <Font size="24.0" />
                               </font>
                            </Label>
-                           <Label fx:id="playersRight" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="520.0" prefWidth="176.0" text="name2&#10;&#10;name4&#10;&#10;name6&#10;&#10;name8&#10;&#10;name10" textAlignment="CENTER">
+                           <Label fx:id="playersRight" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="520.0" prefWidth="180.0" text="" textAlignment="CENTER">
                               <font>
                                  <Font size="24.0" />
                               </font>

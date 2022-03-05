@@ -37,6 +37,8 @@
   <module name="LineLength">
     <property name="fileExtensions" value="java"/> 
     <property name="max" value="120"/>
+    <property name="ignorePattern" value="^ *[/*]"/>
+
   </module>
 
   <module name="TreeWalker">
