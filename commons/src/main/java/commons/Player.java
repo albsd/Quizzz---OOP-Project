@@ -4,14 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Player {
     @JsonProperty("nick_name")
-    private final String nick;
+    private String nick;
 
     @JsonProperty("time")
     private int time;
 
     @JsonProperty("score")
     private int score;
+    private Player() {
 
+    }
     public Player(String nick) {
         this.nick = nick;
     }

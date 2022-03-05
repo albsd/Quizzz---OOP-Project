@@ -37,7 +37,7 @@ public class Main extends Application {
         stage.setResizable(false);
         stage.show();
         ServerUtils server = new ServerUtils();
-        System.out.println(server.getLeaderboard("c46f5d3e-ad0b-4bf1-8f63-75051f6786e0"));
+        System.out.println(server.getLeaderboard("9bec99d8-49ae-445b-b77a-103eee9be154"));
     }
 
 }

@@ -46,16 +46,8 @@ public class AddQuoteCtrl {
     }
 
     public void ok() {
-        try {
-            String nick = "jakub"; // TODO: get from TextField
-            server.joinGame(nick);
-            server.send("/app/game_join", nick);
-        } catch (IOException | InterruptedException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-            return;
-        }
+        String nick = "jakub"; // TODO: get from TextField
+        server.joinGame(nick);
+        server.send("/app/game_join", nick);
     }
 }

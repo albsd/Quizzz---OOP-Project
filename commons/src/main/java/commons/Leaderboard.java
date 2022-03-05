@@ -1,9 +1,13 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Leaderboard {
-    private List<Player> ranking;
+    @JsonProperty("ranking")
+    private List<Player> ranking = new ArrayList<>();
 
     public List<Player> getRanking() {
         return ranking;
