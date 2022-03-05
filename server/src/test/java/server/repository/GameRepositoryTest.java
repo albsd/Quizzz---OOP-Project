@@ -1,10 +1,13 @@
 package server.repository;
 
+import commons.Player;
+import commons.Question;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import commons.Game;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -56,5 +59,32 @@ class GameRepositoryTest {
         assertTrue(repo.removeGame(game2.getId()));
         assertNull(repo.findById(game2.getId()));
         repo.removeAllGames();
+    }
+
+    @Test
+    void getLeaderboard(){
+        Player player1 = new Player("player1");
+        Player player2 = new Player("player2");
+        Player player3 = new Player("player3");
+        player1.setScore(10);
+        player2.setScore(20);
+        player3.setScore(30);
+        game1.addPlayer(player1);
+        game1.addPlayer(player2);
+        game1.addPlayer(player3);
+        assertEquals(Arrays.asList(player3, player2, player1), repo.getLeaderboard(game1.getId()).getRanking());
+    }
+
+    @Test
+    public void getQuestion() {
+        assertEquals(repo.getQuestion(0),
+                new Question("this is q1", Paths.get("INVALID"),
+                        new String[]{"answer 1", "answer 2", "answer 2"}, 0));
+        assertEquals(repo.getQuestion(1),
+                new Question("this is q2", Paths.get("INVALID"),
+                        new String[]{"answer 1", "answer 2", "answer 2"}, 0));
+        assertEquals(repo.getQuestion(2),
+                new Question("this is q3", Paths.get("INVALID"),
+                        new String[]{"answer 1", "answer 2", "answer 2"}, 0));
     }
 }
