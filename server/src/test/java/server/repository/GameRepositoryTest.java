@@ -62,17 +62,21 @@ class GameRepositoryTest {
     }
 
     @Test
-    void getLeaderboard(){
+    void getLeaderboard() {
         Player player1 = new Player("player1");
         Player player2 = new Player("player2");
         Player player3 = new Player("player3");
-        player1.setScore(10);
-        player2.setScore(20);
-        player3.setScore(30);
+        final int ten = 10;
+        final int twenty = 20;
+        final int thirty = 30;
+        player1.setScore(ten);
+        player2.setScore(twenty);
+        player3.setScore(thirty);
         game1.addPlayer(player1);
         game1.addPlayer(player2);
         game1.addPlayer(player3);
-        assertEquals(Arrays.asList(player3, player2, player1), repo.getLeaderboard(game1.getId()).getRanking());
+        assertEquals(Arrays.asList(player3, player2, player1),
+                repo.getLeaderboard(game1.getId()).getRanking());
     }
 
     @Test

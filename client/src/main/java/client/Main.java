@@ -2,7 +2,6 @@
 package client;
 
 import client.scenes.SplashController;
-import client.utils.ServerUtils;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -10,7 +9,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.io.Serial;
 
 import static com.google.inject.Guice.createInjector;
 

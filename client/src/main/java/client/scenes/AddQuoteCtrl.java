@@ -18,10 +18,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
-import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 
-import java.io.IOException;
 
 // TODO: add the logic to the SplashController
 public class AddQuoteCtrl {

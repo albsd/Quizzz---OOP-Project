@@ -2,7 +2,6 @@ package server.service;
 
 import commons.Game;
 import commons.Leaderboard;
-import commons.Player;
 import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,14 +36,14 @@ public class GameService {
         return repo.findById(id);
     }
 
-    public Leaderboard getLeaderboard(UUID id) {
+    public Leaderboard getLeaderboard(final UUID id) {
         return repo.getLeaderboard(id);
     }
 
-    public Question getQuestion(int questionNumber, long seed) {
+    public Question getQuestion(final int questionNumber, final long seed) {
         return repo.getQuestion(questionNumber, seed);
     }
-    public long generateSeed(UUID id) {
+    public long generateSeed(final UUID id) {
         return repo.generateSeed(id);
     }
 }

@@ -94,7 +94,9 @@ public class LobbyController implements Initializable {
         players.add(p);
 
         // GUI Updates must be run later
-        // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
+        // https://stackoverflow.com/questions/
+        // 21083945/how-to-avoid-not-on-fx-application-
+        // thread-currentthread-javafx-application-th
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -122,15 +124,17 @@ public class LobbyController implements Initializable {
     @MessageMapping("/lobby/{id}/message")
     @SendTo("/topic/{id}/message")
     private Message sendMessage(final String msg) throws InterruptedException {
-        Thread.sleep(1000);
+        final int sleep = 1000;
+        final int time = 24;
+        Thread.sleep(sleep);
         //escapes special characters in input
         Message message = new Message(HtmlUtils.htmlEscape(msg));
         message.setNick(getNickname());
-        message.setTime(24);
+        message.setTime(time);
         return message;
     }
 
-    public void sendNickname(String nickname){
+    public void sendNickname(final String nickname) {
         this.nickname = nickname;
     }
 

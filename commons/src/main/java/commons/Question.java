@@ -1,6 +1,5 @@
 package commons;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
@@ -28,7 +27,7 @@ public class Question {
     @JsonProperty("answer")
     private int answer;
 
-    public Question(){
+    public Question() {
 
     }
 
@@ -77,10 +76,22 @@ public class Question {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question question = (Question) o;
-        return answer == question.answer && Objects.equals(prompt, question.prompt) && Arrays.equals(imageBytes, question.imageBytes) && Arrays.equals(options, question.options);
+        return answer == question.answer
+                && Objects.equals(prompt, question.prompt)
+                && Arrays.equals(imageBytes, question.imageBytes)
+                && Arrays.equals(options, question.options);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(prompt, answer);
+        final int hashInt = 31;
+        result = hashInt * result + Arrays.hashCode(imageBytes);
+        result = hashInt * result + Arrays.hashCode(options);
+        return result;
     }
 }

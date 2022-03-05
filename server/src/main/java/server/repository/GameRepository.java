@@ -22,14 +22,16 @@ import commons.Question;
 import org.springframework.stereotype.Repository;
 import server.FakeDatabase;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
-import java.util.Optional;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Collections;
+import java.util.Random;
 
 @Repository
 public class GameRepository {
@@ -61,29 +63,30 @@ public class GameRepository {
         return games.removeIf(g -> g.getId().equals(id));
     }
 
-    public Leaderboard getLeaderboard(UUID id) {
+    public Leaderboard getLeaderboard(final UUID id) {
         Game game = this.findById(id);
         List<Player> players = game.getPlayers();
         Leaderboard leaderboard = new Leaderboard();
-        List<Player> rank = players.stream().sorted(Comparator.comparingInt(Player::getScore))
+        List<Player> rank = players.stream().
+                sorted(Comparator.comparingInt(Player::getScore))
                 .collect(Collectors.toList());
         Collections.reverse(rank);
         leaderboard.setRanking(rank);
         return leaderboard;
     }
 
-    public Question getQuestion(int questionNumber, long seed){
+    public Question getQuestion(final int questionNumber, final long seed) {
         FakeDatabase fd = new FakeDatabase();
         List<Question> questions = fd.getFakeQuestions();
         Collections.shuffle(questions, new Random(seed));
         return questions.get(questionNumber);
     }
-    public long generateSeed(UUID id){
+    public long generateSeed(final UUID id) {
         String str = id.toString();
         long seed = 0;
         for (int i = 0; i < str.length(); i++) {
             char ch = str.charAt(i);
-            seed = seed + (long)ch;
+            seed = seed + (long) ch;
         }
         return seed;
     }

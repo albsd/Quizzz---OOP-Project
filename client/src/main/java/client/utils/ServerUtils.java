@@ -46,7 +46,8 @@ public class ServerUtils {
 
     private final HttpClient client;
 
-    private static StompSession session = connect("ws://localhost:8080/websocket");
+    private static StompSession session =
+            connect("ws://localhost:8080/websocket");
 
     public ServerUtils() {
         this.kGameUrl = "http://localhost:8080/game";
@@ -114,7 +115,7 @@ public class ServerUtils {
      * @return Player that has joined the game
      */
     public Player joinGame(final String nick) {
-
+        final int ok = 200;
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/join/" + nick))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
@@ -123,8 +124,7 @@ public class ServerUtils {
         try {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() != 200) {
+            if (response.statusCode() != ok) {
                 return null;
             }
 
@@ -154,7 +154,8 @@ public class ServerUtils {
                 .build();
 
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println(response.body());
 
             // parse JSON into objects
@@ -171,18 +172,20 @@ public class ServerUtils {
         return null;
     }
 
-    public Leaderboard getLeaderboard(String id) {
+    public Leaderboard getLeaderboard(final String id) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/" + id +"/leaderboard"))
+                .uri(URI.create(kGameUrl + "/" + id + "/leaderboard"))
                 .header("accept", "application/json")
                 .GET()
                 .build();
 
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());
             // parse JSON into objects
             ObjectMapper mapper = new ObjectMapper();
-            Leaderboard leaderboard = mapper.readValue(response.body(), Leaderboard.class);
+            Leaderboard leaderboard =
+                    mapper.readValue(response.body(), Leaderboard.class);
 
             return leaderboard;
 
@@ -193,18 +196,21 @@ public class ServerUtils {
         }
         return null;
     }
-    public Question getQuestion(int questionNumber, String id) {
+    public Question getQuestion(final int questionNumber, final String id) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/" + id +"/question" + "/" + questionNumber))
+                .uri(URI.create(kGameUrl + "/"
+                        + id + "/question" + "/" + questionNumber))
                 .header("accept", "application/json")
                 .GET()
                 .build();
 
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());
             // parse JSON into objects
             ObjectMapper mapper = new ObjectMapper();
-            Question question = mapper.readValue(response.body(), Question.class);
+            Question question = mapper.readValue(
+                    response.body(), Question.class);
 
             return question;
 

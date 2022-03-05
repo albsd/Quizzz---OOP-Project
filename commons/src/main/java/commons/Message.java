@@ -12,14 +12,14 @@ public class Message {
     @JsonProperty("content")
     private String messageContent;
 
-    public Message(String messageContent) {
+    public Message(final String messageContent) {
         this.messageContent = messageContent;
     }
 
     public String getNick() {
         return nick;
     }
-    public void setNick(String nick) {
+    public void setNick(final String nick) {
         this.nick = nick;
     }
 
@@ -27,15 +27,15 @@ public class Message {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(final int time) {
         this.time = time;
     }
 
-    public String getMessageContent(){
+    public String getMessageContent() {
         return messageContent;
     }
 
-    public void setMessageContent(String messageContent){
+    public void setMessageContent(final String messageContent) {
         this.messageContent = messageContent;
     }
 }

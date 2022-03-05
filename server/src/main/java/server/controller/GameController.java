@@ -23,7 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.*;
+
+//import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 import server.service.GameService;
 
 import java.util.List;
@@ -87,17 +93,23 @@ public class GameController {
     }
 
     @GetMapping("{id}/leaderboard")
-    public ResponseEntity<Leaderboard> getLeaderboard(@PathVariable UUID id){
-        if (gameService.findById(id) == null)
+    public ResponseEntity<Leaderboard> getLeaderboard(
+            @PathVariable final UUID id) {
+        if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(gameService.getLeaderboard(id));
     }
 
     @GetMapping("{id}/question/{questionNumber}")
-    public ResponseEntity<Question> getQuestion(@PathVariable UUID id, @PathVariable int questionNumber){
-        if (gameService.findById(id) == null)
+    public ResponseEntity<Question>
+    getQuestion(@PathVariable final UUID id,
+                @PathVariable final int questionNumber) {
+        if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(gameService.getQuestion(questionNumber, gameService.generateSeed(id)));
+        }
+        return ResponseEntity.ok(gameService.getQuestion(questionNumber,
+                gameService.generateSeed(id)));
     }
 
 }
