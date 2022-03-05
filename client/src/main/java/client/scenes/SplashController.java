@@ -13,13 +13,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 public class SplashController {
     @FXML
-    private TextField userField;
+    private TextField nickField;
     @FXML
     private Label warning;
     @FXML
     private Label title;
-    @FXML
-    private Label exitLabel;
 
     private Stage stage;
     private Scene scene;
@@ -51,7 +49,7 @@ public class SplashController {
     }
 
     public void singleGame(final ActionEvent e) throws IOException {
-        String user = userField.getText();
+        String user = nickField.getText();
         if (!checkNicknameLength(user)) {
             warning.setText("Nickname should be min 3, max 8 characters");
         } else {
@@ -71,7 +69,7 @@ public class SplashController {
     public void lobby(final ActionEvent e) throws IOException {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("Lobby.fxml"));
-        String user = userField.getText();
+        String user = nickField.getText();
         root = loader.load();
         LobbyController lobbyController = loader.getController();
         lobbyController.sendNickname(user);
