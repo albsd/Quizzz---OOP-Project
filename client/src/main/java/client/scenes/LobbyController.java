@@ -32,13 +32,7 @@ import java.util.function.Consumer;
 public class LobbyController implements Initializable {
 
     @FXML
-    private TextField userField;
-
-    @FXML
     private ScrollPane chatArea;
-
-    @FXML
-    private Label chatText;
 
     @FXML
     private TextField chatInput;
@@ -129,6 +123,7 @@ public class LobbyController implements Initializable {
                 TextField text = new TextField();
                 text.setText(nickname + " (" + time + ") - " + content);
                 chatArea.setContent(text);
+                chatArea.setPannable(true);
             }
         });
     };
@@ -144,7 +139,6 @@ public class LobbyController implements Initializable {
 
     //app/lobby/chat
     @MessageMapping("/lobby/chat")
-    //whatever is in mapping should be beneath after topic
     @SendTo("/topic/lobby/chat")
     private Message sendMessage(final String msg) throws InterruptedException {
         Thread.sleep(1000);
