@@ -17,6 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.util.HtmlUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -118,12 +119,14 @@ public class LobbyController implements Initializable {
     //now send this to topic which is our broker
     @MessageMapping("/chat")
     @SendTo("/topic/chat")
-    private String sendMessage(final Message msg) throws InterruptedException {
+    private Message sendMessage(final String msg) throws InterruptedException {
         Thread.sleep(1000);
-
-        //escape special messages
-//        return msg;
-        //find how to get player's nickname
+        //escapes special characters in input
+        Message message = new Message(HtmlUtils.htmlEscape(msg));
+        message.setNick("Nick");
+        message.setTime(24);
+        return message;
+        // TODO: how to get player's nickname
     }
 
 
