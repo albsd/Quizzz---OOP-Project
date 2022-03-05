@@ -81,11 +81,7 @@ public class LobbyController implements Initializable {
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         List<Player> lobbyPlayers = null;
-        try {
-            lobbyPlayers = server.getPlayers();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        lobbyPlayers = server.getPlayers();
         if (lobbyPlayers != null) {
             for (Player p : lobbyPlayers) {
                 playerConsumer.accept(p);

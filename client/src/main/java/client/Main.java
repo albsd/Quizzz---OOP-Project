@@ -26,11 +26,7 @@ public class Main extends Application {
     }
 
     @Override
-<<<<<<< HEAD
     public void start(final Stage stage) throws IOException {
-=======
-    public void start(Stage stage) throws IOException, InterruptedException {
->>>>>>> adcf1b52978bcc02729e674b8d25d347c631fb94
 //        Parent root = FXMLLoader.load(Main.class.getResource("Splash.fxml"));
         var root  = FXML.load(SplashController.class,
                 "client", "scenes", "Splash.fxml");
@@ -43,7 +39,7 @@ public class Main extends Application {
         stage.setResizable(false);
         stage.show();
         ServerUtils server = new ServerUtils();
-        System.out.println(server.getLeaderboard("9bec99d8-49ae-445b-b77a-103eee9be154"));
+        System.out.println(server.getLeaderboard("988b7311-e3c6-4eb4-9b07-f2f7117b5f7f"));
     }
 
 }
