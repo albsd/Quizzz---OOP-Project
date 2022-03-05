@@ -72,8 +72,19 @@ public class GameRepository {
         return leaderboard;
     }
 
-    public Question getQuestion(int questionNumber){
+    public Question getQuestion(int questionNumber, long seed){
         FakeDatabase fd = new FakeDatabase();
-        return fd.getFakeQuestions().get(questionNumber);
+        List<Question> questions = fd.getFakeQuestions();
+        Collections.shuffle(questions, new Random(seed));
+        return questions.get(questionNumber);
+    }
+    public long generateSeed(UUID id){
+        String str = id.toString();
+        long seed = 0;
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            seed = seed + (long)ch;
+        }
+        return seed;
     }
 }

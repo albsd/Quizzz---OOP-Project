@@ -97,6 +97,7 @@ public class GameController {
     public ResponseEntity<Question> getQuestion(@PathVariable UUID id, @PathVariable int questionNumber){
         if (gameService.findById(id) == null)
             return ResponseEntity.badRequest().build();
-        return ResponseEntity.ok(gameService.getQuestion(questionNumber));
+        return ResponseEntity.ok(gameService.getQuestion(questionNumber, gameService.generateSeed(id)));
     }
+
 }

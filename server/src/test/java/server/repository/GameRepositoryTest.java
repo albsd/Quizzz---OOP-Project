@@ -76,14 +76,14 @@ class GameRepositoryTest {
     }
 
     @Test
-    public void getQuestion() {
-        assertEquals(repo.getQuestion(0),
+    public void getQuestionForOneGame() {
+        assertEquals(repo.getQuestion(0, repo.generateSeed(game1.getId())),
                 new Question("this is q1", Paths.get("INVALID"),
                         new String[]{"answer 1", "answer 2", "answer 2"}, 0));
-        assertEquals(repo.getQuestion(1),
+        assertEquals(repo.getQuestion(1, repo.generateSeed(game1.getId())),
                 new Question("this is q2", Paths.get("INVALID"),
                         new String[]{"answer 1", "answer 2", "answer 2"}, 0));
-        assertEquals(repo.getQuestion(2),
+        assertEquals(repo.getQuestion(2, repo.generateSeed(game1.getId())),
                 new Question("this is q3", Paths.get("INVALID"),
                         new String[]{"answer 1", "answer 2", "answer 2"}, 0));
     }

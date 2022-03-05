@@ -41,7 +41,10 @@ public class GameService {
         return repo.getLeaderboard(id);
     }
 
-    public Question getQuestion(int questionNumber) {
-        return repo.getQuestion(questionNumber);
+    public Question getQuestion(int questionNumber, long seed) {
+        return repo.getQuestion(questionNumber, seed);
+    }
+    public long generateSeed(UUID id) {
+        return repo.generateSeed(id);
     }
 }
