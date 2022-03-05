@@ -40,7 +40,7 @@ public class AddQuoteCtrl {
 //     private TextField quote;
 
     @Inject
-    public AddQuoteCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AddQuoteCtrl(final ServerUtils server, final MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
     }

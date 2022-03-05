@@ -37,14 +37,15 @@ public class QuoteOverviewCtrl implements Initializable {
     private final List<Player> players;
 
     @Inject
-    public QuoteOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public QuoteOverviewCtrl(final ServerUtils server,
+                             final MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.players = new ArrayList<>();
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         server.registerForMessages("/topic/game_join", Player.class, p -> {
             players.add(p);
         });

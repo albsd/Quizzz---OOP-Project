@@ -30,7 +30,8 @@ public class MainCtrl {
     // private AddQuoteCtrl addCtrl;
     // private Scene add;
 
-    // public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent>
+    // public void initialize(Stage primaryStage,
+    //                        Pair<QuoteOverviewCtrl, Parent>
     // overview,
     // Pair<AddQuoteCtrl, Parent> add) {
     // this.primaryStage = primaryStage;

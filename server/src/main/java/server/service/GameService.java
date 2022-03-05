@@ -16,15 +16,15 @@ public class GameService {
     private final GameRepository repo;
 
     @Autowired
-    public GameService(GameRepository repo) {
+    public GameService(final GameRepository repo) {
         this.repo = repo;
     }
 
-    public UUID addGame(Game game) {
+    public UUID addGame(final Game game) {
         return repo.addGame(game);
     }
 
-    public boolean deleteGame(UUID id) {
+    public boolean deleteGame(final UUID id) {
         return repo.removeGame(id);
     }
 
@@ -32,7 +32,7 @@ public class GameService {
         return repo.getGames();
     }
 
-    public Game findById(UUID id) {
+    public Game findById(final UUID id) {
         return repo.findById(id);
     }
 
