@@ -16,6 +16,8 @@
 package server.repository;
 
 import commons.Game;
+import commons.Leaderboard;
+import commons.Player;
 import org.springframework.stereotype.Repository;
 
 import java.util.Set;
@@ -23,6 +25,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.Optional;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class GameRepository {
@@ -49,8 +54,17 @@ public class GameRepository {
     public void removeAllGames() {
         games = new HashSet<>();
     }
+
     public boolean removeGame(final UUID id) {
         return games.removeIf(g -> g.getId().equals(id));
     }
 
+    public Leaderboard getLeaderboard(UUID id) {
+        Game game = this.findById(id);
+        List<Player> players = game.getPlayers();
+        Leaderboard leaderboard = new Leaderboard();
+        leaderboard.setRanking(players.stream().sorted(Comparator.comparingInt(Player::getScore))
+                .collect(Collectors.toList()));
+        return leaderboard;
+    }
 }

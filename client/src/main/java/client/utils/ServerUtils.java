@@ -17,6 +17,7 @@ package client.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Game;
+import commons.Leaderboard;
 import commons.Player;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -135,6 +136,26 @@ public class ServerUtils {
         System.out.println(game.getPlayers().get(1).getNick());
 
         return game.getPlayers();
+    }
+
+    // GET request to get list of players from game and to deserialize them
+    public List<Player> getLeaderboard(String id) throws IOException, InterruptedException {
+        System.out.println("http://localhost:8080/game" + "/" + id + "/leaderboard");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/game" + "/" + id + "/leaderboard"))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+
+        // parse JSON into objects
+        ObjectMapper mapper = new ObjectMapper();
+        Leaderboard leaderboard = mapper.readValue((String) response.body(), Leaderboard.class);
+        Game game = mapper.readValue(response.body(), Game.class);
+//        System.out.println(leaderboard.getRanking());
+//        return leaderboard.getRanking();
+        return null;
     }
 
     // public List<Quote> getQuotes() {
