@@ -1,5 +1,6 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
@@ -14,21 +15,25 @@ public class Question {
 
     @Id
     @JsonProperty("prompt")
-    private final String prompt;
+    private String prompt;
 
     @JsonProperty("imageBytes")
-    private final byte[] imageBytes;
+    private byte[] imageBytes;
 
     @JsonProperty("options")
-    private final String[] options;
+    private String[] options;
 
     @JsonProperty("answer")
-    private final int answer;
+    private int answer;
 
-    public Question(final String prompt,
-                    final Path imagePath,
-                    final String[] options,
-                    final int answer) {
+    public Question(){
+
+    }
+
+    public Question(final @JsonProperty String prompt,
+                    final @JsonProperty Path imagePath,
+                    final @JsonProperty String[] options,
+                    final @JsonProperty int answer) {
         byte[] bytes;
         try {
             bytes = readAllBytes(imagePath);

@@ -38,8 +38,6 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-        ServerUtils server = new ServerUtils();
-        System.out.println(server.getLeaderboard("988b7311-e3c6-4eb4-9b07-f2f7117b5f7f"));
     }
 
 }

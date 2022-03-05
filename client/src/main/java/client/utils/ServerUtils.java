@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
+import commons.Question;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -179,8 +180,6 @@ public class ServerUtils {
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-
             // parse JSON into objects
             ObjectMapper mapper = new ObjectMapper();
             Leaderboard leaderboard = mapper.readValue(response.body(), Leaderboard.class);
@@ -194,5 +193,26 @@ public class ServerUtils {
         }
         return null;
     }
+    public Question getQuestion(int questionNumber, String id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/" + id +"/question" + "/" + questionNumber))
+                .header("accept", "application/json")
+                .GET()
+                .build();
 
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            // parse JSON into objects
+            ObjectMapper mapper = new ObjectMapper();
+            Question question = mapper.readValue(response.body(), Question.class);
+
+            return question;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
