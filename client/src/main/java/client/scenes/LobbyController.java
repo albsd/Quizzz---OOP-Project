@@ -6,14 +6,18 @@ import com.google.inject.Inject;
 import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +58,24 @@ public class LobbyController implements Initializable {
     public LobbyController(final ServerUtils server) {
         this.server = server;
         server.registerForMessages("/topic/join", Player.class, playerConsumer);
+
+        chatInput.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER)  {
+                String chatMsg = chatInput.getText();
+                chatInput.setText("");
+                sendMessage(chatMsg);
+            }
+        });
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        List<Player> lobbyPlayers = server.getPlayers();
+        List<Player> lobbyPlayers = null;
+        try {
+            lobbyPlayers = server.getPlayers();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
         if (lobbyPlayers != null) {
             for (Player p : lobbyPlayers) {
                 playerConsumer.accept(p);
@@ -94,6 +111,17 @@ public class LobbyController implements Initializable {
         scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
+    }
+
+
+    private void sendMessage(String msg){
+        if (!checkNicknameLength(user)) {
+            warning.setText("Nickname should be min 3, max 8 characters");
+        } else {
+            warning.setText("Nickname set");
+        }
+
+
     }
 
     public void start(final ActionEvent event) {
