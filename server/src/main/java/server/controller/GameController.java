@@ -94,7 +94,7 @@ public class GameController {
     }
 
     @GetMapping("{id}/question/{questionNumber}")
-    public ResponseEntity<Question> getLeaderboard(@PathVariable UUID id, @PathVariable int questionNumber){
+    public ResponseEntity<Question> getQuestion(@PathVariable UUID id, @PathVariable int questionNumber){
         if (gameService.findById(id) == null)
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(gameService.getQuestion(questionNumber));

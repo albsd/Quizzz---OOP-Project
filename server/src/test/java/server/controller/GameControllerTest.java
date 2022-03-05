@@ -22,12 +22,15 @@ import static org.springframework.http.HttpStatus.OK;
 
 import commons.Game;
 import commons.Player;
+import commons.Question;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import server.FakeDatabase;
 import server.repository.GameRepository;
 import server.service.GameService;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,5 +88,17 @@ public class GameControllerTest {
         players.get(1).setScore(2);
         List<Player> expected = Arrays.asList(player1.getBody(), player2.getBody());
         assertEquals(ctrl.getLeaderboard(uuid).getBody().getRanking(), expected);
+    }
+    @Test
+    public void getQuestion() {
+        assertEquals(ctrl.getQuestion(uuid, 0).getBody(),
+                new Question("this is q1", Paths.get("INVALID"),
+                        new String[]{"answer 1", "answer 2", "answer 2"}, 0));
+        assertEquals(ctrl.getQuestion(uuid, 1).getBody(),
+                new Question("this is q2", Paths.get("INVALID"),
+                        new String[]{"answer 1", "answer 2", "answer 2"}, 0));
+        assertEquals(ctrl.getQuestion(uuid, 2).getBody(),
+                new Question("this is q3", Paths.get("INVALID"),
+                        new String[]{"answer 1", "answer 2", "answer 2"}, 0));
     }
 }

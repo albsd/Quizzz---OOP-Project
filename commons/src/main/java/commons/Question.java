@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static java.nio.file.Files.readAllBytes;
 
@@ -72,5 +74,13 @@ public class Question {
 
     public int getAnswer() {
         return this.answer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return answer == question.answer && Objects.equals(prompt, question.prompt) && Arrays.equals(imageBytes, question.imageBytes) && Arrays.equals(options, question.options);
     }
 }
