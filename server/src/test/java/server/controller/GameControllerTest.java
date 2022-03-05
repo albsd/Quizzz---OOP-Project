@@ -20,12 +20,17 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
+import commons.Game;
+import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import server.repository.GameRepository;
 import server.service.GameService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class GameControllerTest {
@@ -65,5 +70,20 @@ public class GameControllerTest {
     public void joinInitializedGameWithValidNickname() {
         var actual = ctrl.join(uuid, "nick");
         assertEquals(OK, actual.getStatusCode());
+    }
+    @Test
+    public void leaderboardEmpty() {
+        assertEquals(service.getLeaderboard(uuid).getRanking(), new ArrayList<Player>());
+    }
+    @Test
+    public void leaderboardSorted() {
+        var player1 = ctrl.join(uuid, "player1");
+        var player2 = ctrl.join(uuid, "player2");
+        Game game = service.findById(uuid);
+        List<Player> players = game.getPlayers();
+        players.get(0).setScore(4);
+        players.get(1).setScore(2);
+        List<Player> expected = Arrays.asList(player1.getBody(), player2.getBody());
+        assertEquals(ctrl.getLeaderboard(uuid).getBody().getRanking(), expected);
     }
 }

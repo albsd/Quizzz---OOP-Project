@@ -63,8 +63,10 @@ public class GameRepository {
         Game game = this.findById(id);
         List<Player> players = game.getPlayers();
         Leaderboard leaderboard = new Leaderboard();
-        leaderboard.setRanking(players.stream().sorted(Comparator.comparingInt(Player::getScore))
-                .collect(Collectors.toList()));
+        List<Player> rank = players.stream().sorted(Comparator.comparingInt(Player::getScore))
+                .collect(Collectors.toList());
+        Collections.reverse(rank);
+        leaderboard.setRanking(rank);
         return leaderboard;
     }
 }
