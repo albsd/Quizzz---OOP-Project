@@ -147,6 +147,7 @@ public class ServerUtils {
         // parse JSON into objects
         ObjectMapper mapper = new ObjectMapper();
         Leaderboard leaderboard = mapper.readValue((String) response.body(), Leaderboard.class);
+        Game game = mapper.readValue(response.body(), Game.class);
 //        System.out.println(leaderboard.getRanking());
 //        return leaderboard.getRanking();
         return null;

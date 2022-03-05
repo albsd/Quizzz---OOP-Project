@@ -16,6 +16,7 @@
 package server.controller;
 
 import commons.Game;
+import commons.Leaderboard;
 import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -84,7 +85,7 @@ public class GameController {
     }
 
     @GetMapping("{id}/leaderboard")
-    public ResponseEntity<List<Player>> getLeaderboard(@PathVariable UUID id){
+    public ResponseEntity<Leaderboard> getLeaderboard(@PathVariable UUID id){
         if (gameService.findById(id) == null)
             return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(gameService.getLeaderboard(id));

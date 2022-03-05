@@ -16,6 +16,7 @@
 package server.repository;
 
 import commons.Game;
+import commons.Leaderboard;
 import commons.Player;
 import org.springframework.stereotype.Repository;
 
@@ -51,11 +52,13 @@ public class GameRepository {
         return GAMES.removeIf(g -> g.getId().equals(id));
     }
 
-    public List<Player> getLeaderboard(UUID id) {
+    public Leaderboard getLeaderboard(UUID id) {
         Game game = this.findById(id);
         List<Player> players = game.getPlayers();
-        return players.stream().sorted(Comparator.comparingInt(Player::getScore))
-                .collect(Collectors.toList());
+        Leaderboard leaderboard = new Leaderboard();
+        leaderboard.setRanking(players.stream().sorted(Comparator.comparingInt(Player::getScore))
+                .collect(Collectors.toList()));
+        return leaderboard;
     }
 
 }
