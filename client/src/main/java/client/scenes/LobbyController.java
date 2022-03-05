@@ -3,6 +3,7 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Message;
 import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -117,7 +118,7 @@ public class LobbyController implements Initializable {
     //now send this to topic which is our broker
     @MessageMapping("/chat")
     @SendTo("/topic/chat")
-    private String sendMessage(final String msg) throws InterruptedException {
+    private String sendMessage(final Message msg) throws InterruptedException {
         Thread.sleep(1000);
 
         //escape special messages
