@@ -112,10 +112,12 @@ public class GameController {
         final int errorCode = 403; // FORBIDDEN
 
         Player p = lobby.getPlayerByNick(nick);
+
         if(p == null){
             return ResponseEntity.status(errorCode).build();
         }
         boolean success = lobby.removePlayer(p);
+        System.out.println(success);
 
         if (!success) {
             return ResponseEntity.status(errorCode).build();

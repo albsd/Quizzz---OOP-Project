@@ -82,7 +82,7 @@ public class Game {
     }
 
     public boolean removePlayer(final Player p) {
-        if (players.contains(p)) {
+        if (!players.contains(p)) {
             return false;
         }
         players.remove(p);

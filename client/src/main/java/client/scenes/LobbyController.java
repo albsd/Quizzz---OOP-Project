@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -94,8 +95,16 @@ public class LobbyController implements Initializable {
 
     private Consumer<Player> playerConsumerLeave = p -> {
         player = p;
+        String playersLeftString = playersLeft.toString();
         System.out.println("Player " + p.getNick() + " left");
         players.remove(p);
+
+        String[] tokens=playersLeftString.split("\n\n");
+        List<String> leftColPlayers = Arrays.asList(tokens);
+//        System.out.println(leftColPlayers.get(1));
+//        System.out.println(leftColPlayers.contains("pllayer1"));
+//
+//        leftColPlayers.remove(p.getNick());
 
         // GUI Updates must be run later
         // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
