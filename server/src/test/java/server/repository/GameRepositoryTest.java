@@ -1,13 +1,18 @@
 package server.repository;
 
 import commons.Player;
+import commons.Question;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import commons.Game;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import java.util.Collections;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -82,16 +87,22 @@ class GameRepositoryTest {
     //TODO: Debug why this test is failing.
     // Might be because games is a static list.
     // Test passes individually but not when all tests are run at once.
-//    @Test
-//    public void getQuestionForOneGame() {
-//        assertEquals(repo.getQuestion(0, repo.generateSeed(game1.getId())),
-//                new Question("this is q1", Paths.get("INVALID"),
-//                        new String[]{"answer 1", "answer 2", "answer 2"}, 0));
-//        assertEquals(repo.getQuestion(1, repo.generateSeed(game1.getId())),
-//                new Question("this is q2", Paths.get("INVALID"),
-//                        new String[]{"answer 1", "answer 2", "answer 2"}, 0));
-//        assertEquals(repo.getQuestion(2, repo.generateSeed(game1.getId())),
-//                new Question("this is q3", Paths.get("INVALID"),
-//                        new String[]{"answer 1", "answer 2", "answer 2"}, 0));
-//    }
+    @Test
+    public void getQuestionForOneGame() {
+        List<Question> questions = Arrays.asList(
+                new Question("this is q1", Paths.get("INVALID"),
+                        new String[]{"answer 1", "answer 2", "answer 2"}, 0),
+                new Question("this is q2", Paths.get("INVALID"),
+                    new String[]{"answer 1", "answer 2", "answer 2"}, 0),
+                new Question("this is q3", Paths.get("INVALID"),
+                        new String[]{"answer 1", "answer 2", "answer 2"}, 0));
+        Collections.shuffle(questions,
+                new Random(repo.generateSeed(game1.getId())));
+        assertEquals(repo.getQuestion(0,
+                repo.generateSeed(game1.getId())), questions.get(0));
+        assertEquals(repo.getQuestion(1,
+                repo.generateSeed(game1.getId())), questions.get(1));
+        assertEquals(repo.getQuestion(2,
+                repo.generateSeed(game1.getId())), questions.get(2));
+    }
 }

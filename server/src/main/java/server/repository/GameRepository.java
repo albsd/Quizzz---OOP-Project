@@ -36,7 +36,7 @@ import java.util.Random;
 @Repository
 public class GameRepository {
 
-    private static Set<Game> games = new HashSet<>();
+    private Set<Game> games = new HashSet<>();
 
     public List<Game> getGames() {
         return games.stream().toList();
