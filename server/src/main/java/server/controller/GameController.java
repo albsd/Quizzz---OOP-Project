@@ -102,6 +102,27 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
+    @PostMapping("/leave/{nick}")
+    public ResponseEntity<Player> leaveCurrentGame(final @PathVariable("nick") String nick) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game lobby = gameService.getCurrentGame();
+        final int errorCode = 403; // FORBIDDEN
+
+        Player p = lobby.getPlayerByNick(nick);
+        if(p == null){
+            return ResponseEntity.status(errorCode).build();
+        }
+        boolean success = lobby.removePlayer(p);
+
+        if (!success) {
+            return ResponseEntity.status(errorCode).build();
+        }
+        return ResponseEntity.ok(p);
+    }
+
     /**
      * A Websocket endpoint for sending updates about the current lobby status.
      * Namely, updates the active players in the lobby for all clients.
@@ -112,6 +133,12 @@ public class GameController {
     @MessageMapping("/join") // /app/join
     @SendTo("/topic/join")
     public Player joinWebsocket(final Player player) {
+        return player;
+    }
+
+    @MessageMapping("/leave") // /app/leave
+    @SendTo("/topic/leave")
+    public Player leaveWebsocket(final Player player) {
         return player;
     }
 

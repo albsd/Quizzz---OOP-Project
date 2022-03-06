@@ -50,10 +50,14 @@ public class LobbyController implements Initializable {
 
     private final ServerUtils server;
 
+    private Player player;
+
     @Inject
     public LobbyController(final ServerUtils server) {
         this.server = server;
-        server.registerForMessages("/topic/join", Player.class, playerConsumer);
+        server.registerForMessages("/topic/join", Player.class, playerConsumerJoin);
+
+        server.registerForMessages("/topic/leave", Player.class, playerConsumerLeave);
     }
 
     @Override
@@ -61,12 +65,13 @@ public class LobbyController implements Initializable {
         List<Player> lobbyPlayers = server.getPlayers();
         if (lobbyPlayers != null) {
             for (Player p : lobbyPlayers) {
-                playerConsumer.accept(p);
+                playerConsumerJoin.accept(p);
             }
         }
     }
 
-    private Consumer<Player> playerConsumer = p -> {
+    private Consumer<Player> playerConsumerJoin = p -> {
+        player = p;
         System.out.println("Player " + p.getNick() + " joined");
         players.add(p);
 
@@ -87,9 +92,33 @@ public class LobbyController implements Initializable {
         });
     };
 
-    public void returnMenu(final ActionEvent e) {
-        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
+    private Consumer<Player> playerConsumerLeave = p -> {
+        player = p;
+        System.out.println("Player " + p.getNick() + " left");
+        players.remove(p);
 
+        // GUI Updates must be run later
+        // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                final Label column = left ? playersLeft : playersRight;
+                left = !left;
+                String colText = column.getText();
+                column.setText(colText + "\n\n" + p.getNick());
+
+                String countText = playerCount.getText();
+                String[] parts = countText.split(":");
+                playerCount.setText(parts[0] + ": " + players.size());
+            }
+        });
+    };
+
+    public void returnMenu(final ActionEvent e) {
+        server.leaveGame(player.getNick());
+        server.send("/app/leave", player);
+
+        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root.getValue());
         stage.setScene(scene);

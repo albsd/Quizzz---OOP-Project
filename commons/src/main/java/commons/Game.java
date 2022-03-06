@@ -81,6 +81,22 @@ public class Game {
         return true;
     }
 
+    public boolean removePlayer(final Player p) {
+        if (players.contains(p)) {
+            return false;
+        }
+        players.remove(p);
+        return true;
+    }
+    public Player getPlayerByNick(final String nick){
+        for(Player p : players){
+            if(p.getNick().equals(nick)){
+                return p;
+            }
+        }
+        return null;
+    }
+
     public void nextQuestion() {
         this.currentQuestion++;
     }

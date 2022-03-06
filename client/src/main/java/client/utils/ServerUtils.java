@@ -122,6 +122,34 @@ public class ServerUtils {
         return null;
     }
 
+    public Player leaveGame(final String nick) {
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/leave/" + nick))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                return null;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            Player player = mapper.readValue(response.body(), Player.class);
+            return player;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     /**
      * Calls the REST endpoint to get list of all players in the lobby.
      * 
