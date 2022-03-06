@@ -113,7 +113,7 @@ public class GameController {
 
         Player p = lobby.getPlayerByNick(nick);
 
-        if(p == null){
+        if (p == null) {
             return ResponseEntity.status(errorCode).build();
         }
         boolean success = lobby.removePlayer(p);

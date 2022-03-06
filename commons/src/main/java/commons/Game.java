@@ -88,9 +88,9 @@ public class Game {
         players.remove(p);
         return true;
     }
-    public Player getPlayerByNick(final String nick){
-        for(Player p : players){
-            if(p.getNick().equals(nick)){
+    public Player getPlayerByNick(final String nick) {
+        for (Player p : players) {
+            if (p.getNick().equals(nick)) {
                 return p;
             }
         }

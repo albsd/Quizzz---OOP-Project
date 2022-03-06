@@ -10,16 +10,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.Optional;
 
 public class LobbyController implements Initializable {
 
@@ -97,19 +101,9 @@ public class LobbyController implements Initializable {
         player = p;
         String playersLeftString = playersLeft.toString();
         System.out.println("Player " + p.getNick() + " left");
-        System.out.println(players);
-        System.out.println(players.indexOf(p));
-        int index = players.indexOf(p);
-        if(index % 2 == 0){
-            System.out.println("left column" + " row: " + index/2);
-
-        }
-        else{
-            System.out.println("right column"+ "row: " + index/2);
-        }
         players.remove(p);
 
-        String[] tokens=playersLeftString.split("\n\n");
+        String[] tokens = playersLeftString.split("\n\n");
         List<String> leftColPlayers = Arrays.asList(tokens);
 //        System.out.println(leftColPlayers.get(1));
 //        System.out.println(p.getNick());
@@ -117,7 +111,7 @@ public class LobbyController implements Initializable {
 
 
 //        leftColPlayers.remove(p.getNick());
-
+        //TODO: Fix display names of players who left after better replacement is found for label object
         // GUI Updates must be run later
         // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
         Platform.runLater(new Runnable() {
@@ -126,7 +120,7 @@ public class LobbyController implements Initializable {
                 playersLeft.setText("");
                 playersRight.setText("");
 
-                for(int i= 0; i<players.size();i++) {
+                for (int i = 0; i < players.size(); i++) {
                     Player p = players.get(i);
                     final Label column = left ? playersLeft : playersRight;
                     left = !left;
@@ -154,6 +148,41 @@ public class LobbyController implements Initializable {
         server.send("/app/leave", player);
 
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
+
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        scene = new Scene(root.getValue());
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+
+    @FXML
+    protected void onConfirmButtonClick(final ActionEvent e) {
+        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
+
+        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        scene = new Scene(root.getValue());
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
+    protected void onReturnButtonClick(final ActionEvent e) {
+        Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Confirmation Screen");
+        alert.setHeaderText("Confirmation needed!");
+        alert.setContentText(
+                "You are about to leave to the main screen. Are you sure?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.YES) {
+            returnMenu(e);
+        }
+    }
+    @FXML
+    public void switchToLobby(final ActionEvent e) {
+        var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Lobby.fxml");
+
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         scene = new Scene(root.getValue());
         stage.setScene(scene);
