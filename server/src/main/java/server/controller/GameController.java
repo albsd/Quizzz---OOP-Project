@@ -18,15 +18,19 @@ package server.controller;
 import commons.Game;
 import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import server.service.GameService;
 
 import java.util.List;
@@ -85,6 +89,7 @@ public class GameController {
      * @param nick User's nickname which identifies a given player in a game
      * @return Game to which the user has joined
      */
+    //add sessionId to path so it can be used to find player
     @PostMapping("/join/{nick}")
     public ResponseEntity<Player> joinCurrentGame(final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
@@ -92,6 +97,7 @@ public class GameController {
         }
 
         Game lobby = gameService.getCurrentGame();
+        //Instead find player from players list using nickname
         Player p = new Player(nick);
         boolean success = lobby.addPlayer(p);
 
@@ -100,6 +106,22 @@ public class GameController {
             return ResponseEntity.status(errorCode).build();
         }
         return ResponseEntity.ok(p);
+    }
+    //send generated session id to client so that it can send it back when joining lobby after nickname
+    @EventListener
+    @SendTo
+    private void handleSessionConnected(SessionConnectEvent event) {
+        System.out.println("Client connection");
+        System.out.println(event);
+        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
+        System.out.println(headers.getSessionId());
+    }
+    //add leave game code onDisconnect
+    @EventListener
+    private void handleSessionDisconnect(SessionDisconnectEvent event) {
+        System.out.println("Client disconnected");
+        System.out.println(event.getSessionId());
+
     }
 
     @PostMapping("/leave/{nick}")
