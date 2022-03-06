@@ -16,7 +16,9 @@
 package server.controller;
 
 import commons.Game;
+import commons.JoinMessage;
 import commons.Player;
+import org.hibernate.mapping.Join;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -147,23 +149,31 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
-    /**
-     * A Websocket endpoint for sending updates about the current lobby status.
-     * Namely, updates the active players in the lobby for all clients.
-     * 
-     * @param player The player object who has joined the most recently
-     * @return The Player object created from the nick
-     */
-    @MessageMapping("/join") // /app/join
-    @SendTo("/topic/join")
-    public Player joinWebsocket(final Player player) {
-        return player;
-    }
+//    /**
+//     * A Websocket endpoint for sending updates about the current lobby status.
+//     * Namely, updates the active players in the lobby for all clients.
+//     *
+//     * @param player The player object who has joined the most recently
+//     * @return The Player object created from the nick
+//     */
+//    @MessageMapping("/join") // /app/join
+//    @SendTo("/topic/join")
+//    public JoinMessage joinWebsocket(final JoinMessage jm) {
+//        return jm;
+//    }
+//
+//    @MessageMapping("/leave") // /app/leave
+//    @SendTo("/topic/leave")
+//    public Player leaveWebsocket(final Player player) {
+//        return player;
+//    }
 
-    @MessageMapping("/leave") // /app/leave
-    @SendTo("/topic/leave")
-    public Player leaveWebsocket(final Player player) {
-        return player;
+    @MessageMapping("/joinAndLeave")
+    @SendTo("/topic/joinAndLeave")
+    public JoinMessage joinAndLeaveWebsocket(final JoinMessage joinMessage) {
+        System.out.println(joinMessage.getPlayer().getNick());
+        System.out.println(joinMessage.isJoining());
+        return joinMessage;
     }
 
     /**

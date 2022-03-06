@@ -3,6 +3,7 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.JoinMessage;
 import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -51,7 +52,7 @@ public class LobbyController implements Initializable {
 
     private Scene scene;
 
-    private final List<Player> players = new ArrayList<>();
+    private final List<JoinMessage> players = new ArrayList<>();
 
     private final ServerUtils server;
 
@@ -60,9 +61,10 @@ public class LobbyController implements Initializable {
     @Inject
     public LobbyController(final ServerUtils server) {
         this.server = server;
-        server.registerForMessages("/topic/join", Player.class, playerConsumerJoin);
-
-        server.registerForMessages("/topic/leave", Player.class, playerConsumerLeave);
+//        server.registerForMessages("/topic/join", Player.class, playerConsumerJoin);
+//
+//        server.registerForMessages("/topic/leave", Player.class, playerConsumerLeave);
+        server.registerForMessages("/topic/joinAndLeave", JoinMessage.class, playerConsumerJoinAndLeave);
     }
 
     @Override
@@ -70,82 +72,71 @@ public class LobbyController implements Initializable {
         List<Player> lobbyPlayers = server.getPlayers();
         if (lobbyPlayers != null) {
             for (Player p : lobbyPlayers) {
-                playerConsumerJoin.accept(p);
+                playerConsumerJoinAndLeave.accept(new JoinMessage(p, true));
             }
         }
     }
 
-    private Consumer<Player> playerConsumerJoin = p -> {
-        player = p;
-        System.out.println("Player " + p.getNick() + " joined");
-        players.add(p);
+    private Consumer<JoinMessage> playerConsumerJoinAndLeave = p -> {
+        System.out.println("called" + p.getPlayer().getNick());
+        if(p.isJoining()){
+            player = p.getPlayer();
+            System.out.println("Player " + player.getNick() + " joined");
+            players.add(p);
 
-        // GUI Updates must be run later
-        // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                final Label column = left ? playersLeft : playersRight;
-                left = !left;
-                String colText = column.getText();
-                column.setText(colText + "\n\n" + p.getNick());
-
-                String countText = playerCount.getText();
-                String[] parts = countText.split(":");
-                playerCount.setText(parts[0] + ": " + players.size());
-            }
-        });
-    };
-
-    private Consumer<Player> playerConsumerLeave = p -> {
-        player = p;
-        String playersLeftString = playersLeft.toString();
-        System.out.println("Player " + p.getNick() + " left");
-        players.remove(p);
-
-        String[] tokens = playersLeftString.split("\n\n");
-        List<String> leftColPlayers = Arrays.asList(tokens);
-//        System.out.println(leftColPlayers.get(1));
-//        System.out.println(p.getNick());
-//        System.out.println(leftColPlayers.contains(p.getNick()));
-
-
-//        leftColPlayers.remove(p.getNick());
-        //TODO: Fix display names of players who left after better replacement is found for label object
-        // GUI Updates must be run later
-        // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                playersLeft.setText("");
-                playersRight.setText("");
-
-                for (int i = 0; i < players.size(); i++) {
-                    Player p = players.get(i);
+            // GUI Updates must be run later
+            // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
                     final Label column = left ? playersLeft : playersRight;
                     left = !left;
                     String colText = column.getText();
-                    column.setText(colText + "\n\n" + p.getNick());
+                    column.setText(colText + "\n\n" + player.getNick());
 
                     String countText = playerCount.getText();
                     String[] parts = countText.split(":");
                     playerCount.setText(parts[0] + ": " + players.size());
                 }
-//                final Label column = left ? playersLeft : playersRight;
-//                left = !left;
-//                String colText = column.getText();
-//                column.setText(colText + "\n\n" + p.getNick());
-//
-//                String countText = playerCount.getText();
-//                String[] parts = countText.split(":");
-//                playerCount.setText(parts[0] + ": " + players.size());
-            }
-        });
+            });
+        }
+        else {
+            player = p.getPlayer();
+            String playersLeftString = playersLeft.toString();
+            System.out.println("Player " + player.getNick() + " left");
+            players.remove(p);
+
+            String[] tokens = playersLeftString.split("\n\n");
+            List<String> leftColPlayers = Arrays.asList(tokens);
+
+            //TODO: Fix display names of players who left after better replacement is found for label object
+            // GUI Updates must be run later
+            // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    playersLeft.setText("");
+                    playersRight.setText("");
+
+                    for (int i = 0; i < players.size(); i++) {
+                        Player p = players.get(i).getPlayer();
+                        final Label column = left ? playersLeft : playersRight;
+                        left = !left;
+                        String colText = column.getText();
+                        column.setText(colText + "\n\n" + p.getNick());
+
+                        String countText = playerCount.getText();
+                        String[] parts = countText.split(":");
+                        playerCount.setText(parts[0] + ": " + players.size());
+                    }
+                }
+            });
+        }
     };
 
     public void returnMenu(final ActionEvent e) {
         server.leaveGame(player.getNick());
-        server.send("/app/leave", player);
+        server.send("/app/joinAndLeave", new JoinMessage(player, false));
 
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 
