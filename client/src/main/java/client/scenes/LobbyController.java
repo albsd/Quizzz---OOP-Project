@@ -97,13 +97,25 @@ public class LobbyController implements Initializable {
         player = p;
         String playersLeftString = playersLeft.toString();
         System.out.println("Player " + p.getNick() + " left");
+        System.out.println(players);
+        System.out.println(players.indexOf(p));
+        int index = players.indexOf(p);
+        if(index % 2 == 0){
+            System.out.println("left column" + " row: " + index/2);
+
+        }
+        else{
+            System.out.println("right column"+ "row: " + index/2);
+        }
         players.remove(p);
 
         String[] tokens=playersLeftString.split("\n\n");
         List<String> leftColPlayers = Arrays.asList(tokens);
 //        System.out.println(leftColPlayers.get(1));
-//        System.out.println(leftColPlayers.contains("pllayer1"));
-//
+//        System.out.println(p.getNick());
+//        System.out.println(leftColPlayers.contains(p.getNick()));
+
+
 //        leftColPlayers.remove(p.getNick());
 
         // GUI Updates must be run later
@@ -111,14 +123,28 @@ public class LobbyController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                final Label column = left ? playersLeft : playersRight;
-                left = !left;
-                String colText = column.getText();
-                column.setText(colText + "\n\n" + p.getNick());
+                playersLeft.setText("");
+                playersRight.setText("");
 
-                String countText = playerCount.getText();
-                String[] parts = countText.split(":");
-                playerCount.setText(parts[0] + ": " + players.size());
+                for(int i= 0; i<players.size();i++) {
+                    Player p = players.get(i);
+                    final Label column = left ? playersLeft : playersRight;
+                    left = !left;
+                    String colText = column.getText();
+                    column.setText(colText + "\n\n" + p.getNick());
+
+                    String countText = playerCount.getText();
+                    String[] parts = countText.split(":");
+                    playerCount.setText(parts[0] + ": " + players.size());
+                }
+//                final Label column = left ? playersLeft : playersRight;
+//                left = !left;
+//                String colText = column.getText();
+//                column.setText(colText + "\n\n" + p.getNick());
+//
+//                String countText = playerCount.getText();
+//                String[] parts = countText.split(":");
+//                playerCount.setText(parts[0] + ": " + players.size());
             }
         });
     };
