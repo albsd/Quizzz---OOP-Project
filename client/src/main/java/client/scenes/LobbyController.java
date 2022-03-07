@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class LobbyController{
+public class LobbyController {
 
     @FXML
     private ScrollPane chatArea;
@@ -56,14 +56,17 @@ public class LobbyController{
     @Inject
     public LobbyController(final ServerUtils server) {
         this.server = server;
-        server.registerForMessages("/topic/lobby/chat", Message.class, messageConsumer);
+        server.registerForMessages("/topic/lobby/chat",
+                Message.class, messageConsumer);
 
         chatInput.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER)  {
                 String content = chatInput.getText();
                 chatInput.setText("");
                 //escapes special characters in input
-                server.send("/app/lobby/chat", new Message(getNickname(), 23, HtmlUtils.htmlEscape(content)));
+                int demoTime = 23;
+                server.send("/app/lobby/chat",
+                        new Message(getNickname(), demoTime, HtmlUtils.htmlEscape(content)));
             }
         });
     }
@@ -73,12 +76,12 @@ public class LobbyController{
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                String nickname = m.getNick();
+                String nick = m.getNick();
                 int time = m.getTime();
                 String content = m.getMessageContent();
                 //change. Scroll pane is not place to put messages
                 TextField text = new TextField();
-                text.setText(nickname + " (" + time + ") - " + content);
+                text.setText(nick + " (" + time + ") - " + content);
                 chatArea.setContent(text);
                 chatArea.setPannable(true);
             }
