@@ -1,4 +1,4 @@
-package commons;
+package client.scenes;
 
 import javafx.application.Platform;
 import javafx.scene.control.Button;
@@ -20,27 +20,6 @@ public class QuestionTimer {
 
     private Timer timer = new Timer();
     private TimerTask currentTask;
-
-    private TimerTask serverTimerTask() {
-        return new TimerTask() {
-            @Override
-            public void run() {
-                currentTime -= decrement;
-                if (currentTime <= 0) {
-                    System.out.println("Time's over!");
-                    currentTime = 0;
-
-                    // This is where the server should
-                    // send a message to the client(s)
-                    // that the timer ended
-                    // (and call their own cancel functions)
-
-                    cancel();
-                }
-            }
-        };
-
-    }
 
     private TimerTask clientTimerTask(
             final Label label, final ProgressBar bar,
@@ -101,6 +80,7 @@ public class QuestionTimer {
         }
     }
 
+
     public Timer getTimer() {
         return timer;
     }
@@ -121,17 +101,6 @@ public class QuestionTimer {
             System.out.println("Timer not started yet!");
         }
     }
-
-    /*public void reset(final Label label, final ProgressBar bar) {
-        System.out.println("Reset.");
-        currentTask.cancel();
-        started = false;
-        currentTime = maxTime;
-        Platform.runLater(() ->
-                label.setText(String.valueOf(currentTime / oneSecond)));
-        Platform.runLater(() ->
-                bar.setProgress(currentTime / maxTime));
-    }*/
 
     public void reset() {
         over = false;
