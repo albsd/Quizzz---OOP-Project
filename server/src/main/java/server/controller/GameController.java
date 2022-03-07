@@ -18,13 +18,13 @@ package server.controller;
 import commons.Game;
 import commons.JoinMessage;
 import commons.Player;
-import org.hibernate.mapping.Join;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -89,9 +89,9 @@ public class GameController {
      * Join the active game lobby as a Player with id "nick".
      * 
      * @param nick User's nickname which identifies a given player in a game
-     * @return Game to which the user has joined
+     * @return Player
      */
-    //add sessionId to path so it can be used to find player
+    // TODO: add sessionId to path so it can be used to construct the player
     @PostMapping("/join/{nick}")
     public ResponseEntity<Player> joinCurrentGame(final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
@@ -99,7 +99,7 @@ public class GameController {
         }
 
         Game lobby = gameService.getCurrentGame();
-        //Instead find player from players list using nickname
+
         Player p = new Player(nick);
         boolean success = lobby.addPlayer(p);
 
@@ -109,24 +109,15 @@ public class GameController {
         }
         return ResponseEntity.ok(p);
     }
-    //send generated session id to client so that it can send it back when joining lobby after nickname
-    @EventListener
-    @SendTo
-    private void handleSessionConnected(SessionConnectEvent event) {
-        System.out.println("Client connection");
-        System.out.println(event);
-        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        System.out.println(headers.getSessionId());
-    }
-    //add leave game code onDisconnect
-    @EventListener
-    private void handleSessionDisconnect(SessionDisconnectEvent event) {
-        System.out.println("Client disconnected");
-        System.out.println(event.getSessionId());
 
-    }
-
-    @PostMapping("/leave/{nick}")
+    /**
+     * Leave the active game lobby as a Player with id "nick".
+     * 
+     * @param nick User's nickname which identifies a given player in a game
+     * @return Player
+     */
+    // TODO: add sessionId to path so it can be used to find player
+    @DeleteMapping("/leave/{nick}")
     public ResponseEntity<Player> leaveCurrentGame(final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
@@ -149,30 +140,36 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
-//    /**
-//     * A Websocket endpoint for sending updates about the current lobby status.
-//     * Namely, updates the active players in the lobby for all clients.
-//     *
-//     * @param player The player object who has joined the most recently
-//     * @return The Player object created from the nick
-//     */
-//    @MessageMapping("/join") // /app/join
-//    @SendTo("/topic/join")
-//    public JoinMessage joinWebsocket(final JoinMessage jm) {
-//        return jm;
-//    }
-//
-//    @MessageMapping("/leave") // /app/leave
-//    @SendTo("/topic/leave")
-//    public Player leaveWebsocket(final Player player) {
-//        return player;
-//    }
+    // TODO: send generated session id to client so that it can send it back when
+    // joining lobby after nickname
+    @EventListener
+    @SendTo
+    private void handleSessionConnected(SessionConnectEvent event) {
+        System.out.println("Client connection");
+        System.out.println(event);
+        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
+        System.out.println(headers.getSessionId());
+    }
 
-    @MessageMapping("/joinAndLeave")
-    @SendTo("/topic/joinAndLeave")
-    public JoinMessage joinAndLeaveWebsocket(final JoinMessage joinMessage) {
-        System.out.println(joinMessage.getPlayer().getNick());
-        System.out.println(joinMessage.isJoining());
+    // add leave game code onDisconnect
+    @EventListener
+    private void handleSessionDisconnect(SessionDisconnectEvent event) {
+        System.out.println("Client disconnected");
+        System.out.println(event.getSessionId());
+
+    }
+
+    /*
+     * A Websocket endpoint for sending updates about the current lobby status.
+     * Namely, updates the active players in the lobby for all clients.
+     *
+     * @param player The player object who has joined the most recently
+     * 
+     * @return The Player object created from the nick
+     */
+    @MessageMapping("/join") // /app/join
+    @SendTo("/topic/join")
+    public JoinMessage joinWebsocket(final JoinMessage joinMessage) {
         return joinMessage;
     }
 

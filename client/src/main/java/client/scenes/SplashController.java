@@ -85,8 +85,16 @@ public class SplashController {
         // TODO: load the fxml and display it
     }
 
+    /**
+     * Enter the lobby from the splash screen
+     * The Player's nickname must be validated against the length constraints and
+     * further agains the names of the current players in the lobby.
+     * 
+     * @param event
+     */
     public void lobby(final ActionEvent event) {
         var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
+        var ctrl = root.getKey();
 
         String nick = nickField.getText();
         if (!validateNicknameLength(nick)) {
@@ -101,7 +109,8 @@ public class SplashController {
             alert.showAndWait();
         }
 
-        server.send("/app/joinAndLeave", new JoinMessage(player, true));
+        ctrl.setMe(player);
+        server.send("/app/join", new JoinMessage(player, true));
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root.getValue());
