@@ -96,13 +96,14 @@ class GameRepositoryTest {
                     new String[]{"answer 1", "answer 2", "answer 2"}, 0),
                 new Question("this is q3", Paths.get("INVALID"),
                         new String[]{"answer 1", "answer 2", "answer 2"}, 0));
+        long r = repo.generateSeed(game1.getId());
         Collections.shuffle(questions,
-                new Random(repo.generateSeed(game1.getId())));
+                new Random(r));
         assertEquals(repo.getQuestion(0,
-                repo.generateSeed(game1.getId())), questions.get(0));
+                r), questions.get(0));
         assertEquals(repo.getQuestion(1,
-                repo.generateSeed(game1.getId())), questions.get(1));
+                r), questions.get(1));
         assertEquals(repo.getQuestion(2,
-                repo.generateSeed(game1.getId())), questions.get(2));
+                r), questions.get(2));
     }
 }
