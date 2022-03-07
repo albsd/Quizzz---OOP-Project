@@ -58,7 +58,6 @@ public class LobbyController implements Initializable {
     public LobbyController(final ServerUtils server) {
         this.server = server;
         this.players = new ArrayList<>();
-        System.out.println("registering for topic join");
         server.registerForMessages("/topic/join", JoinMessage.class, playerConsumer);
     }
 
@@ -90,9 +89,7 @@ public class LobbyController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                String countText = playerCount.getText();
-                String[] parts = countText.split(":");
-                playerCount.setText(parts[0] + ": " + players.size());
+                playerCount.setText("Number of players: " + players.size());
 
                 if (msg.isJoining()) {
                     final Label column = left ? playersLeft : playersRight;
@@ -103,7 +100,6 @@ public class LobbyController implements Initializable {
                         newText += "(me)";
                     }
                     column.setText(newText + "\n\n");
-
 
                 } else {
                     playersLeft.setText("");
@@ -131,8 +127,7 @@ public class LobbyController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation Screen");
         alert.setHeaderText("Confirmation needed!");
-        alert.setContentText(
-                "You are about to leave to the main screen. Are you sure?");
+        alert.setContentText("You are about to leave the lobby. Are you sure?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.YES) {
             returnToMenu(event);
