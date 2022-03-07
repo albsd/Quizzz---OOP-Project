@@ -70,7 +70,6 @@ public class LobbyController{
 
     private Consumer<Message> messageConsumer = m -> {
         System.out.println("Message received");
-
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -94,7 +93,8 @@ public class LobbyController{
         stage.show();
     }
 
-    public void sendNickname(String nickname){
+
+    public void sendNickname(final String nickname) {
         this.nickname = nickname;
     }
 

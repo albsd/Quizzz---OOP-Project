@@ -2,7 +2,6 @@
 package client;
 
 import client.scenes.SplashController;
-import client.utils.ServerUtils;
 import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -10,7 +9,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.io.Serial;
 
 import static com.google.inject.Guice.createInjector;
 
@@ -38,8 +36,6 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-        ServerUtils server = new ServerUtils();
-        System.out.println(server.getLeaderboard("988b7311-e3c6-4eb4-9b07-f2f7117b5f7f"));
     }
 
 }

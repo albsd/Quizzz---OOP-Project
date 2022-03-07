@@ -13,7 +13,7 @@ public class Leaderboard {
         return ranking;
     }
 
-    public void setRanking(List<Player> ranking) {
+    public void setRanking(final List<Player> ranking) {
         this.ranking = ranking;
     }
 }

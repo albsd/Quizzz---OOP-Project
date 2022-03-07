@@ -16,7 +16,7 @@ public class Player {
     private Player() {
 
     }
-    public Player(String nick) {
+    public Player(@JsonProperty final String nick) {
         this.nick = nick;
     }
 
