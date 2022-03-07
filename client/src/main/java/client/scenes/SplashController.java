@@ -88,7 +88,7 @@ public class SplashController {
     /**
      * Enter the lobby from the splash screen
      * The Player's nickname must be validated against the length constraints and
-     * further agains the names of the current players in the lobby.
+     * further against the names of the current players in the lobby.
      * 
      * @param event
      */
@@ -107,6 +107,7 @@ public class SplashController {
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText("User with the given name is already in the game");
             alert.showAndWait();
+            return;
         }
 
         ctrl.setMe(player);

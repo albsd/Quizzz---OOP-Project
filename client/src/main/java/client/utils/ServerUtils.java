@@ -51,6 +51,7 @@ public class ServerUtils {
         this.client = HttpClient.newHttpClient();
     }
 
+
     private static StompSession connect(final String url) {
         var wsClient = new StandardWebSocketClient();
         var stomp = new WebSocketStompClient(wsClient);
@@ -84,9 +85,11 @@ public class ServerUtils {
         });
     }
 
+
     public void send(final String dest, final Object o) {
         session.send(dest, o);
     }
+
 
     /**
      * Calls the REST endpoint to join the current active lobby.
@@ -101,54 +104,26 @@ public class ServerUtils {
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
-        try {
-            HttpResponse<String> response = client.send(request,
-                    HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() != 200) {
-                return null;
-            }
-
-            ObjectMapper mapper = new ObjectMapper();
-            Player player = mapper.readValue(response.body(), Player.class);
-            return player;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return parseResponseToObject(request, Player.class);
     }
 
+
+    /**
+     * Calls the REST endpoint to leave the current active lobby.
+     *
+     * @param nick String of the user nickname
+     * @return Player that has left the game
+     */
     public Player leaveGame(final String nick) {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/leave/" + nick))
-                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .DELETE()
                 .build();
 
-        try {
-            HttpResponse<String> response = client.send(request,
-                    HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() != 200) {
-                return null;
-            }
-
-            ObjectMapper mapper = new ObjectMapper();
-            Player player = mapper.readValue(response.body(), Player.class);
-            return player;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return parseResponseToObject(request, Player.class);
     }
+
 
     /**
      * Calls the REST endpoint to get list of all players in the lobby.
@@ -162,16 +137,30 @@ public class ServerUtils {
                 .GET()
                 .build();
 
+        Game game = parseResponseToObject(request, Game.class);
+        if (game == null) return null;
+        return game.getPlayers();
+    }
+
+
+    /**
+     * Utility method to send and receive a Player object
+     * @param request Request to be sent
+     * @param type Expected type of the response
+     * @return Parsed response as the given instance of class `type`
+     */
+    private <T> T parseResponseToObject(HttpRequest request, Class<T> type) {
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
 
-            // parse JSON into objects
+            if (response.statusCode() != 200) {
+                return null;
+            }
+
             ObjectMapper mapper = new ObjectMapper();
-            Game game = mapper.readValue(response.body(), Game.class);
-
-            return game.getPlayers();
-
+            T obj = mapper.readValue(response.body(), type);
+            return obj;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -179,4 +168,5 @@ public class ServerUtils {
         }
         return null;
     }
+
 }
