@@ -3,14 +3,14 @@ package commons;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MessageTest {
 
     private String nick1;
     private String nick2;
-    private int time1;
-    private int time2;
+    private final int time1 = 12;
+    private final int time2 = 24;
     private String content1;
     private String content2;
     private Message message1;
@@ -21,8 +21,6 @@ class MessageTest {
     void setup() {
         nick1 = "Adam";
         nick2 = "Kevin";
-        time1 = 12;
-        time2 = 24;
         content1 = "Lets start the game!";
         content2 = "Waiting for a friend";
         message1 = new Message(nick1, time1, content1);
