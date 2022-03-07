@@ -64,9 +64,10 @@ public class LobbyController {
                 String content = chatInput.getText();
                 chatInput.setText("");
                 //escapes special characters in input
-                int demoTime = 23;
+                int demoTime = 10;
                 server.send("/app/lobby/chat",
-                        new Message(getNickname(), demoTime, HtmlUtils.htmlEscape(content)));
+                        new Message(getNickname(), demoTime,
+                                HtmlUtils.htmlEscape(content)));
             }
         });
     }
