@@ -1,20 +1,24 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
 public class Message {
-    @JsonProperty("nick_name")
-    private String nick;
+    @JsonProperty("nick")
+    private final String nick;
 
     @JsonProperty("time")
-    private int time;
+    private final int time;
 
     @JsonProperty("content")
-    private String messageContent;
+    private final String messageContent;
 
-    public Message(String nick, int time, String messageContent) {
+    @JsonCreator
+    public Message(final @JsonProperty("nick") String nick,
+                   final @JsonProperty("time") int time,
+                   final @JsonProperty("content") String messageContent){
         this.nick = nick;
         this.time = time;
         this.messageContent = messageContent;
@@ -23,24 +27,13 @@ public class Message {
     public String getNick() {
         return nick;
     }
-    public void setNick(String nick) {
-        this.nick = nick;
-    }
 
     public int getTime() {
         return time;
     }
 
-    public void setTime(int time) {
-        this.time = time;
-    }
-
     public String getMessageContent(){
         return messageContent;
-    }
-
-    public void setMessageContent(String messageContent){
-        this.messageContent = messageContent;
     }
 
     @Override

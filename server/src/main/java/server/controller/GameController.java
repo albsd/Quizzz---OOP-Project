@@ -62,7 +62,7 @@ public class GameController {
     // path is /app/lobby/chat
     @MessageMapping("/lobby/chat")
     @SendTo("/topic/lobby/chat")
-    private static Message sendMessage(final Message msg) throws InterruptedException {
+    private static Message sendMessage(final Message msg) {
         return msg;
     }
 

@@ -35,14 +35,4 @@ class MessageTest {
         assertEquals(time1, message1.getTime());
         assertEquals(content1, message1.getMessageContent());
     }
-
-    @Test
-    void testSetter() {
-        message2.setNick(nick2);
-        message2.setTime(time2);
-        message2.setMessageContent(content2);
-        assertEquals(nick2, message2.getNick());
-        assertEquals(time2, message2.getTime());
-        assertEquals(content2, message2.getMessageContent());
-    }
 }
