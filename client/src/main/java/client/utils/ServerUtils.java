@@ -131,9 +131,7 @@ public class ServerUtils {
             Player player = mapper.readValue(response.body(), Player.class);
             return player;
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -162,9 +160,7 @@ public class ServerUtils {
 
             return game.getPlayers();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
@@ -187,9 +183,7 @@ public class ServerUtils {
 
             return leaderboard;
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
