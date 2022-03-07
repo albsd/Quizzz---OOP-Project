@@ -63,8 +63,8 @@ public class LobbyController {
             if (keyEvent.getCode() == KeyCode.ENTER)  {
                 String content = chatInput.getText();
                 chatInput.setText("");
+                final int demoTime = 10;
                 //escapes special characters in input
-                int demoTime = 10;
                 server.send("/app/lobby/chat",
                         new Message(getNickname(), demoTime,
                                 HtmlUtils.htmlEscape(content)));
