@@ -6,15 +6,17 @@ import java.util.Objects;
 
 public class Player {
     @JsonProperty("nick_name")
-    private final String nick;
+    private String nick;
 
     @JsonProperty("time")
     private int time;
 
     @JsonProperty("score")
     private int score;
+    private Player() {
 
-    public Player(final String nick) {
+    }
+    public Player(@JsonProperty final String nick) {
         this.nick = nick;
     }
 

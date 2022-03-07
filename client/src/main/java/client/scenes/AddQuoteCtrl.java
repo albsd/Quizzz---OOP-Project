@@ -18,10 +18,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
-import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 
-import java.io.IOException;
 
 // TODO: add the logic to the SplashController
 public class AddQuoteCtrl {
@@ -46,16 +43,8 @@ public class AddQuoteCtrl {
     }
 
     public void ok() {
-        try {
-            String nick = "jakub"; // TODO: get from TextField
-            server.joinGame(nick);
-            server.send("/app/game_join", nick);
-        } catch (IOException | InterruptedException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-            return;
-        }
+        String nick = "jakub"; // TODO: get from TextField
+        server.joinGame(nick);
+        server.send("/app/game_join", nick);
     }
 }

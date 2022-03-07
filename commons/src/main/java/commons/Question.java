@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static java.nio.file.Files.readAllBytes;
 
@@ -14,21 +16,25 @@ public class Question {
 
     @Id
     @JsonProperty("prompt")
-    private final String prompt;
+    private String prompt;
 
     @JsonProperty("imageBytes")
-    private final byte[] imageBytes;
+    private byte[] imageBytes;
 
     @JsonProperty("options")
-    private final String[] options;
+    private String[] options;
 
     @JsonProperty("answer")
-    private final int answer;
+    private int answer;
 
-    public Question(final String prompt,
-                    final Path imagePath,
-                    final String[] options,
-                    final int answer) {
+    public Question() {
+
+    }
+
+    public Question(final @JsonProperty String prompt,
+                    final @JsonProperty Path imagePath,
+                    final @JsonProperty String[] options,
+                    final @JsonProperty int answer) {
         byte[] bytes;
         try {
             bytes = readAllBytes(imagePath);
@@ -67,5 +73,25 @@ public class Question {
 
     public int getAnswer() {
         return this.answer;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return answer == question.answer
+                && Objects.equals(prompt, question.prompt)
+                && Arrays.equals(imageBytes, question.imageBytes)
+                && Arrays.equals(options, question.options);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(prompt, answer);
+        final int hashInt = 31;
+        result = hashInt * result + Arrays.hashCode(imageBytes);
+        result = hashInt * result + Arrays.hashCode(options);
+        return result;
     }
 }

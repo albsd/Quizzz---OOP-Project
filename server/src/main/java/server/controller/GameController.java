@@ -15,23 +15,26 @@
  */
 package server.controller;
 
-import java.util.List;
-import java.util.UUID;
-
 import commons.Game;
+import commons.Leaderboard;
+import commons.Message;
 import commons.Player;
-
+import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+
+//import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import server.service.GameService;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/game")
@@ -63,6 +66,13 @@ public class GameController {
         return join(id, nick).getBody();
     }
 
+    // path is /app/lobby/chat
+    @MessageMapping("/lobby/chat")
+    @SendTo("/topic/lobby/chat")
+    private static Message sendMessage(final Message msg) {
+        return msg;
+    }
+
     @PostMapping("{id}/{nick}")
     public ResponseEntity<Player> join(
             final @PathVariable("id") UUID id,
@@ -88,6 +98,26 @@ public class GameController {
         Game game = gameService.findById(id);
         if (game == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(game);
+    }
+
+    @GetMapping("{id}/leaderboard")
+    public ResponseEntity<Leaderboard> getLeaderboard(
+            @PathVariable final UUID id) {
+        if (gameService.findById(id) == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(gameService.getLeaderboard(id));
+    }
+
+    @GetMapping("{id}/question/{questionNumber}")
+    public ResponseEntity<Question>
+    getQuestion(@PathVariable final UUID id,
+                @PathVariable final int questionNumber) {
+        if (gameService.findById(id) == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(gameService.getQuestion(questionNumber,
+                gameService.generateSeed(id)));
     }
 
 }
