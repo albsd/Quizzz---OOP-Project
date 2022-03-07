@@ -17,9 +17,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.IOException;
@@ -29,7 +31,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-public class LobbyController implements Initializable {
+public class LobbyController{
 
     @FXML
     private ScrollPane chatArea;
@@ -61,55 +63,18 @@ public class LobbyController implements Initializable {
     @Inject
     public LobbyController(final ServerUtils server) {
         this.server = server;
-        server.registerForMessages("/topic/join", Player.class, playerConsumer);
         server.registerForMessages("/topic/lobby/chat", Message.class, messageConsumer);
+
 
         chatInput.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER)  {
-                String chatMsg = chatInput.getText();
+                String content = chatInput.getText();
                 chatInput.setText("");
-                try {
-                    sendMessage(chatMsg);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                //escapes special characters in input
+                server.send("/app/lobby/chat", new Message(getNickname(), 23, HtmlUtils.htmlEscape(content)));
             }
         });
     }
-
-    @Override
-    public void initialize(final URL location, final ResourceBundle resources) {
-        List<Player> lobbyPlayers = null;
-        lobbyPlayers = server.getPlayers();
-        if (lobbyPlayers != null) {
-            for (Player p : lobbyPlayers) {
-                playerConsumer.accept(p);
-            }
-        }
-    }
-    /**
-     * private utilities related to websockets. Receives broadcast from server
-     */
-    private Consumer<Player> playerConsumer = p -> {
-        System.out.println("Player " + p.getNick() + " joined");
-        players.add(p);
-
-        // GUI Updates must be run later
-        // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                final Label column = left ? playersLeft : playersRight;
-                left = !left;
-                String colText = column.getText();
-                column.setText(colText + "\n\n" + p.getNick());
-
-                String countText = playerCount.getText();
-                String[] parts = countText.split(":");
-                playerCount.setText(parts[0] + ": " + players.size());
-            }
-        });
-    };
 
     private Consumer<Message> messageConsumer = m -> {
         System.out.println("Message received");
@@ -120,6 +85,7 @@ public class LobbyController implements Initializable {
                 String nickname = m.getNick();
                 int time = m.getTime();
                 String content = m.getMessageContent();
+                //change. Scroll pane is not place to put messages
                 TextField text = new TextField();
                 text.setText(nickname + " (" + time + ") - " + content);
                 chatArea.setContent(text);
@@ -136,16 +102,6 @@ public class LobbyController implements Initializable {
         stage.show();
     }
 
-
-    //app/lobby/chat
-    @MessageMapping("/lobby/chat")
-    @SendTo("/topic/lobby/chat")
-    private Message sendMessage(final String msg) throws InterruptedException {
-        Thread.sleep(1000);
-        //escapes special characters in input
-        return new Message(getNickname(), 25, HtmlUtils.htmlEscape(msg));
-    }
-
     public void sendNickname(String nickname){
         this.nickname = nickname;
     }
@@ -158,4 +114,5 @@ public class LobbyController implements Initializable {
         // TODO: display the multiplayer fxml
         // server.startGame();
     }
+
 }

@@ -67,15 +67,19 @@
                                     </TextFlow>
                                 </content>
                             </ScrollPane>
-                            <ScrollPane fx:id="chatArea" prefHeight="400.0" prefWidth="700.0" vvalue="1.0" GridPane.rowIndex="1">
-                                <content>
-                                    <Label fx:id="chatText" alignment="BOTTOM_LEFT" wrapText="true">
-                                        <font>
-                                            <Font size="24.0" />
-                                        </font>
-                                    </Label>
-                                </content>
-                            </ScrollPane>
+                     <TextFlow GridPane.rowIndex="1">
+                        <children>
+                                  <ScrollPane fx:id="chatArea" prefHeight="400.0" prefWidth="700.0" vvalue="1.0">
+                                      <content>
+                                          <Label fx:id="chatText" alignment="BOTTOM_LEFT" wrapText="true">
+                                              <font>
+                                                  <Font size="24.0" />
+                                              </font>
+                                          </Label>
+                                      </content>
+                                  </ScrollPane>
+                        </children>
+                     </TextFlow>
                             <TextField fx:id="chatInput" prefHeight="25.0" prefWidth="169.0" promptText="Enter your message...." GridPane.rowIndex="2">
                                 <font>
                                     <Font size="24.0" />

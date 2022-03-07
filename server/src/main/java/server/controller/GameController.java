@@ -17,12 +17,14 @@ package server.controller;
 
 import commons.Game;
 import commons.Leaderboard;
+import commons.Message;
 import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 import server.service.GameService;
 
 import java.util.List;
@@ -56,6 +58,13 @@ public class GameController {
     @SendTo("/topic/game_join")
     public Player joinWs(final @PathVariable("id") UUID id, final String nick) {
         return join(id, nick).getBody();
+    }
+
+    // path is /app/lobby/chat
+    @MessageMapping("/lobby/chat")
+    @SendTo("/topic/lobby/chat")
+    private static Message sendMessage(final Message msg) throws InterruptedException {
+        return msg;
     }
 
     @PostMapping("{id}/{nick}")
