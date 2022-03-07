@@ -51,7 +51,7 @@ public class GameController {
 
     /**
      * Fetches all the games that have been played and are to be played.
-     * 
+     *
      * @return List of all Games
      */
     @GetMapping(path = { "", "/" })
@@ -61,7 +61,7 @@ public class GameController {
 
     /**
      * Fetches the active game lobby.
-     * 
+     *
      * @return The current active game which accepts new players
      */
     @GetMapping("/current")
@@ -71,7 +71,7 @@ public class GameController {
 
     /**
      * Fetches the game by its UUID.
-     * 
+     *
      * @param id The UUID of the game
      * @return Game or an error, depending on whether the game exists
      */
@@ -87,7 +87,7 @@ public class GameController {
 
     /**
      * Join the active game lobby as a Player with id "nick".
-     * 
+     *
      * @param nick User's nickname which identifies a given player in a game
      * @return Player
      */
@@ -112,7 +112,7 @@ public class GameController {
 
     /**
      * Leave the active game lobby as a Player with id "nick".
-     * 
+     *
      * @param nick User's nickname which identifies a given player in a game
      * @return Player
      */
@@ -144,7 +144,7 @@ public class GameController {
     // joining lobby after nickname
     @EventListener
     @SendTo
-    private void handleSessionConnected(SessionConnectEvent event) {
+    private void handleSessionConnected(final SessionConnectEvent event) {
         System.out.println("Client connection");
         System.out.println(event);
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
@@ -153,7 +153,7 @@ public class GameController {
 
     // add leave game code onDisconnect
     @EventListener
-    private void handleSessionDisconnect(SessionDisconnectEvent event) {
+    private void handleSessionDisconnect(final SessionDisconnectEvent event) {
         System.out.println("Client disconnected");
         System.out.println(event.getSessionId());
 
@@ -164,7 +164,6 @@ public class GameController {
      * Namely, updates the active players in the lobby for all clients.
      *
      * @param player The player object who has joined the most recently
-     * 
      * @return The Player object created from the nick
      */
     @MessageMapping("/join") // /app/join
@@ -176,7 +175,7 @@ public class GameController {
     /**
      * Starts the current game.
      * Do not allow starting a game with less than 2 players.
-     * 
+     *
      * @return The game which has been started
      */
     @PostMapping("/start")

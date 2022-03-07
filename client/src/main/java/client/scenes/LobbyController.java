@@ -64,6 +64,7 @@ public class LobbyController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        this.players = new ArrayList<>();
         List<Player> lobbyPlayers = server.getPlayers();
         if (lobbyPlayers != null) {
             for (Player p : lobbyPlayers) {

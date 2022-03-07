@@ -4,13 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class JoinMessage {
-    @JsonProperty
+    @JsonProperty("player")
     private Player player;
-    @JsonProperty
+
+    @JsonProperty("joining")
     private boolean joining;
 
     @JsonCreator
-    public JoinMessage(final @JsonProperty("player") Player player, final @JsonProperty("joining") boolean joining) {
+    public JoinMessage(final @JsonProperty("player") Player player,
+                       final @JsonProperty("joining") boolean joining) {
         this.player = player;
         this.joining = joining;
     }
@@ -19,7 +21,7 @@ public class JoinMessage {
         return player;
     }
 
-    public void setPlayer(Player player) {
+    public void setPlayer(final Player player) {
         this.player = player;
     }
 
@@ -27,7 +29,7 @@ public class JoinMessage {
         return joining;
     }
 
-    public void setJoining(boolean joining) {
+    public void setJoining(final boolean joining) {
         this.joining = joining;
     }
 }

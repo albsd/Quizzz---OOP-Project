@@ -40,17 +40,14 @@ import java.util.function.Consumer;
 @Controller
 public class ServerUtils {
 
-    private final String kGameUrl;
-
-    private final HttpClient client;
-
     private static StompSession session = connect("ws://localhost:8080/websocket");
+    private final String kGameUrl;
+    private final HttpClient client;
 
     public ServerUtils() {
         this.kGameUrl = "http://localhost:8080/game";
         this.client = HttpClient.newHttpClient();
     }
-
 
     private static StompSession connect(final String url) {
         var wsClient = new StandardWebSocketClient();
@@ -68,8 +65,8 @@ public class ServerUtils {
     }
 
     public <T> void registerForMessages(final String dest,
-            final Class<T> type,
-            final Consumer<T> consumer) {
+                                        final Class<T> type,
+                                        final Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(final StompHeaders headers) {
@@ -79,21 +76,19 @@ public class ServerUtils {
             @SuppressWarnings("unchecked")
             @Override
             public void handleFrame(final StompHeaders headers,
-                    final Object payload) {
+                                    final Object payload) {
                 consumer.accept((T) payload);
             }
         });
     }
 
-
     public void send(final String dest, final Object o) {
         session.send(dest, o);
     }
 
-
     /**
      * Calls the REST endpoint to join the current active lobby.
-     * 
+     *
      * @param nick String of the user nickname
      * @return Player that has joined the game
      */
@@ -106,7 +101,6 @@ public class ServerUtils {
 
         return parseResponseToObject(request, Player.class);
     }
-
 
     /**
      * Calls the REST endpoint to leave the current active lobby.
@@ -124,10 +118,9 @@ public class ServerUtils {
         return parseResponseToObject(request, Player.class);
     }
 
-
     /**
      * Calls the REST endpoint to get list of all players in the lobby.
-     * 
+     *
      * @return List of players in a lobby
      */
     public List<Player> getPlayers() {
@@ -142,14 +135,15 @@ public class ServerUtils {
         return game.getPlayers();
     }
 
-
     /**
-     * Utility method to send and receive a Player object
+     * Utility method to send and receive a Player object.
+     *
+     * @param <T>     Type the response shall get parsed to
      * @param request Request to be sent
-     * @param type Expected type of the response
+     * @param type    Expected type of the response
      * @return Parsed response as the given instance of class `type`
      */
-    private <T> T parseResponseToObject(HttpRequest request, Class<T> type) {
+    private <T> T parseResponseToObject(final HttpRequest request, final Class<T> type) {
         try {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
