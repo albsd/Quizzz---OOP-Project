@@ -41,11 +41,11 @@
                     <Font name="System Bold" size="96.0" />
                 </font>
             </Label>
-            <TextField fx:id="userField" alignment="CENTER" layoutX="372.0" layoutY="334.0" prefHeight="86.0" prefWidth="518.0" promptText="Input nickname">
+            <TextField fx:id="nickField" alignment="CENTER" layoutX="372.0" layoutY="334.0" prefHeight="86.0" prefWidth="518.0" promptText="Input nickname">
             <font>
                <Font size="36.0" />
             </font></TextField>
-         <Label fx:id="warning" alignment="CENTER" layoutX="474.0" layoutY="442.0" prefHeight="39.0" prefWidth="310.0">
+         <Label fx:id="warning" alignment="CENTER" layoutX="372.0" layoutY="442.0" prefHeight="41.0" prefWidth="519.0" textFill="#c00000">
             <font>
                <Font size="14.0" />
             </font></Label>

@@ -23,6 +23,7 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
@@ -36,52 +37,19 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+@Controller
 public class ServerUtils {
 
-    private final URI kBaseUrl;
-
-    private final URI kGameUrl;
-
+    private static StompSession session = connect("ws://localhost:8080/websocket");
+    private final String kGameUrl;
     private final HttpClient client;
-    private StompSession session = connect("ws://localhost:8080/websocket");
 
     public ServerUtils() {
-        this.kBaseUrl = URI.create("http://localhost:8080");
-        this.kGameUrl = kBaseUrl.resolve("./game");
-
+        this.kGameUrl = "http://localhost:8080/game";
         this.client = HttpClient.newHttpClient();
     }
 
-    // Initial POST request to get gameId
-    @Deprecated
-    public String createGame() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(kGameUrl)
-                .POST(HttpRequest.BodyPublishers.ofString(""))
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-        String gameId = response.body().replaceAll("^\"|\"$", "");
-
-        System.out.println(gameId);
-        return gameId;
-    }
-
-    public void joinGame(final String nick)
-            throws IOException, InterruptedException {
-        // POST requests to add players to game
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(kGameUrl.resolve("./" + nick))
-                .POST(HttpRequest.BodyPublishers.ofString(""))
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-    }
-
-    private StompSession connect(final String url) {
+    private static StompSession connect(final String url) {
         var wsClient = new StandardWebSocketClient();
         var stomp = new WebSocketStompClient(wsClient);
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
@@ -105,6 +73,7 @@ public class ServerUtils {
                 return type;
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             public void handleFrame(final StompHeaders headers,
                                     final Object payload) {
@@ -117,39 +86,81 @@ public class ServerUtils {
         session.send(dest, o);
     }
 
-    // GET request to get list of players from game and to deserialize them
-    public List<Player> getPlayers() throws IOException, InterruptedException {
+    /**
+     * Calls the REST endpoint to join the current active lobby.
+     *
+     * @param nick String of the user nickname
+     * @return Player that has joined the game
+     */
+    public Player joinGame(final String nick) {
+
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(kBaseUrl)
+                .uri(URI.create(kGameUrl + "/join/" + nick))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        return parseResponseToObject(request, Player.class);
+    }
+
+    /**
+     * Calls the REST endpoint to leave the current active lobby.
+     *
+     * @param nick String of the user nickname
+     * @return Player that has left the game
+     */
+    public Player leaveGame(final String nick) {
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/leave/" + nick))
+                .DELETE()
+                .build();
+
+        return parseResponseToObject(request, Player.class);
+    }
+
+    /**
+     * Calls the REST endpoint to get list of all players in the lobby.
+     *
+     * @return List of players in a lobby
+     */
+    public List<Player> getPlayers() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/current"))
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
 
-        // parse JSON into objects
-        ObjectMapper mapper = new ObjectMapper();
-        Game game = mapper.readValue((String) response.body(), Game.class);
-        System.out.println(game.getPlayers().get(0).getNick());
-        System.out.println(game.getPlayers().get(1).getNick());
-
+        Game game = parseResponseToObject(request, Game.class);
+        if (game == null) return null;
         return game.getPlayers();
     }
 
-    // public List<Quote> getQuotes() {
-    // return ClientBuilder.newClient(new ClientConfig()) //
-    // .target(SERVER).path("api/quotes") //
-    // .request(APPLICATION_JSON) //
-    // .accept(APPLICATION_JSON) //
-    // .get(new GenericType<List<Quote>>() {});
-    // }
+    /**
+     * Utility method to send and receive a Player object.
+     *
+     * @param <T>     Type the response shall get parsed to
+     * @param request Request to be sent
+     * @param type    Expected type of the response
+     * @return Parsed response as the given instance of class `type`
+     */
+    private <T> T parseResponseToObject(final HttpRequest request, final Class<T> type) {
+        try {
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
 
-    // public Quote addQuote(Quote quote) {
-    // return ClientBuilder.newClient(new ClientConfig()) //
-    // .target(SERVER).path("api/quotes") //
-    // .request(APPLICATION_JSON) //
-    // .accept(APPLICATION_JSON) //
-    // .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
-    // }
+            if (response.statusCode() != 200) {
+                return null;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            T obj = mapper.readValue(response.body(), type);
+            return obj;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

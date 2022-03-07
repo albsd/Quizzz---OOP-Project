@@ -16,7 +16,7 @@
 package server.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -26,44 +26,69 @@ import org.junit.jupiter.api.Test;
 import server.repository.GameRepository;
 import server.service.GameService;
 
-import java.util.UUID;
-
 public class GameControllerTest {
 
     private GameService service;
 
     private GameController ctrl;
 
-    private UUID uuid;
-
     @BeforeEach
     public void setup() {
         service = new GameService(new GameRepository());
         ctrl = new GameController(service);
-        uuid = ctrl.create();
     }
 
     @Test
-    public void addNullGame() {
-        var actual = ctrl.join(null, "johny");
-        assertEquals(NOT_FOUND, actual.getStatusCode());
+    public void lobbyIsEmpty() {
+        var actual = ctrl.getCurrentGame();
+        assertEquals(0, actual.getPlayers().size());
     }
 
     @Test
     public void addNullNickName() {
-        var actual = ctrl.join(uuid, null);
+        var actual = ctrl.joinCurrentGame(null);
         assertEquals(BAD_REQUEST, actual.getStatusCode());
     }
 
     @Test
-    public void joinUninitializedGameWithValidNickname() {
-        var actual = ctrl.join(UUID.randomUUID(), "nick");
-        assertEquals(NOT_FOUND, actual.getStatusCode());
+    public void addEmptyNickName() {
+        var actual = ctrl.joinCurrentGame("    ");
+        assertEquals(BAD_REQUEST, actual.getStatusCode());
     }
 
     @Test
-    public void joinInitializedGameWithValidNickname() {
-        var actual = ctrl.join(uuid, "nick");
+    public void addValidNickName() {
+        final String nick = "johny";
+        var actual = ctrl.joinCurrentGame(nick);
         assertEquals(OK, actual.getStatusCode());
+        assertEquals(nick, actual.getBody().getNick());
+    }
+
+    @Test
+    public void addValidNickNameTwice() {
+        final String nick = "johny";
+        var actual = ctrl.joinCurrentGame(nick);
+        actual = ctrl.joinCurrentGame(nick);
+        assertEquals(403, actual.getStatusCode().value());
+    }
+
+    @Test
+    public void startTheEmptyLobby() {
+        var actual = ctrl.startCurrentGame();
+        assertEquals(405, actual.getStatusCode().value());
+    }
+
+    @Test
+    public void startTheLobby() {
+        ctrl.joinCurrentGame("johny");
+        ctrl.joinCurrentGame("niko");
+        ctrl.joinCurrentGame("babe");
+
+        var lobby = ctrl.getCurrentGame();
+        var newLobby = ctrl.startCurrentGame();
+
+        assertEquals(ctrl.getAll().size(), 1);
+        assertEquals(lobby.getPlayers().size(), 3);
+        assertNotEquals(lobby, newLobby.getBody());
     }
 }
