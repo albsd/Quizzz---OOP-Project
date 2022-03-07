@@ -18,7 +18,7 @@ public class Message {
     @JsonCreator
     public Message(final @JsonProperty("nick") String nick,
                    final @JsonProperty("time") int time,
-                   final @JsonProperty("content") String messageContent){
+                   final @JsonProperty("content") String messageContent) {
         this.nick = nick;
         this.time = time;
         this.messageContent = messageContent;
@@ -32,7 +32,7 @@ public class Message {
         return time;
     }
 
-    public String getMessageContent(){
+    public String getMessageContent() {
         return messageContent;
     }
 
@@ -42,10 +42,12 @@ public class Message {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Message message = (Message) o;
-        return time == message.time && nick.equals(message.nick) && messageContent.equals(message.messageContent);
+        return time == message.time
+                && nick.equals(message.nick)
+                && messageContent.equals(message.messageContent);
     }
 }
