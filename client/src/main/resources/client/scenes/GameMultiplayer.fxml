@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameMultiplayerController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <AnchorPane prefHeight="720.0" prefWidth="1280.0">
+        <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0" text="0 pts">
+                <font>
+                    <Font name="System Bold" size="30.0" />
+                </font>
+            </Label>
+            <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#returnMenu" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;" styleClass="iconButton" textAlignment="CENTER">
+                <graphic>
+                    <ImageView pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../../images/back.png" />
+                        </image>
+                    </ImageView>
+                </graphic></Button>
+         <ImageView fitHeight="309.0" fitWidth="359.0" layoutX="80.0" layoutY="182.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@/images/placeholderQuestion.png" />
+            </image>
+         </ImageView>
+         <HBox layoutX="80.0" layoutY="501.0" prefHeight="85.0" prefWidth="311.0">
+            <children>
+               <Button mnemonicParsing="false" prefHeight="110.0" prefWidth="132.0" styleClass="iconButton">
+                  <graphic>
+                     <ImageView fitHeight="75.0" fitWidth="89.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@/images/time.png" />
+                        </image></ImageView>
+                  </graphic>
+               </Button>
+               <Button mnemonicParsing="false" prefHeight="110.0" prefWidth="144.0" styleClass="iconButton">
+                  <graphic>
+                     <ImageView fitHeight="75.0" fitWidth="126.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@/images/score.png" />
+                        </image></ImageView>
+                  </graphic>
+               </Button>
+               <Button mnemonicParsing="false" prefHeight="110.0" prefWidth="130.0" styleClass="iconButton">
+                  <graphic>
+                     <ImageView fitHeight="75.0" fitWidth="131.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@/images/remove.png" />
+                        </image></ImageView>
+                  </graphic>
+               </Button>
+            </children>
+         </HBox>
+         <Label layoutX="65.0" layoutY="85.0" prefHeight="80.0" prefWidth="653.0" text="What is the expected energy consumption of an average personal gaming computer system per hour?" wrapText="true">
+            <font>
+               <Font size="24.0" />
+            </font>
+         </Label>
+         <Label layoutX="20.0" layoutY="108.0" text="#1">
+            <font>
+               <Font size="24.0" />
+            </font>
+         </Label>
+         <Button layoutX="510.0" layoutY="182.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="311.0" styleClass="optionButton" text="200 Watts / hour" textFill="#a07400">
+            <font>
+               <Font size="24.0" />
+            </font>
+         </Button>
+         <Button layoutX="510.0" layoutY="310.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="311.0" styleClass="optionButton" text="100 Watts / hour" textFill="#a07400">
+            <font>
+               <Font size="24.0" />
+            </font>
+         </Button>
+         <Button layoutX="510.0" layoutY="431.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="311.0" styleClass="optionButton" text="50 Watts / hour" textFill="#a07400">
+            <font>
+               <Font size="24.0" />
+            </font>
+         </Button>
+         <ScrollPane hbarPolicy="NEVER" layoutX="868.0" layoutY="182.0" prefHeight="309.0" prefWidth="356.0" style="-fx-background: white;">
+            <content>
+               <TextFlow prefHeight="305.0" prefWidth="351.0" />
+            </content>
+         </ScrollPane>
+         <HBox layoutX="868.0" layoutY="501.0" prefHeight="85.0" prefWidth="356.0">
+            <children>
+               <Button mnemonicParsing="false" prefHeight="110.0" prefWidth="132.0" styleClass="iconButton" text="🙃">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Button>
+               <Button mnemonicParsing="false" prefHeight="110.0" prefWidth="144.0" styleClass="iconButton" text="🙀">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Button>
+               <Button mnemonicParsing="false" prefHeight="110.0" prefWidth="130.0" styleClass="iconButton" text="💀">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Button>
+               <Button layoutX="222.0" layoutY="10.0" mnemonicParsing="false" prefHeight="110.0" prefWidth="130.0" styleClass="iconButton" text="🤣">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Button>
+            </children>
+         </HBox>
+        </children>
+    </AnchorPane>
+   <ProgressBar maxWidth="1280.0" prefHeight="150.0" prefWidth="1280.0" progress="0.53" />
+    <!--    <ScrollPane prefHeight="200.0" prefWidth="200.0" />-->
+</VBox>

@@ -1,8 +1,31 @@
+.button {
+    -fx-border-color: transparent;
+}
+
 .returnMenuButton{
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
 }
 
 .returnMenuButton:hover{
     -fx-border-color: black;
+}
+
+.iconButton {
+    -fx-background-color: white;
+}
+
+.iconButton:hover{
+    -fx-border-color: black;
+}
+
+.optionButton {
+    -fx-background-color: #FFD029;
+}
+
+.optionButton:hover{
+    -fx-background-color: #E7BE2D;
+}
+
+.scene {
+    -fx-background-color: white;
 }
