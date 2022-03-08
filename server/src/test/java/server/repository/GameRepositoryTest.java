@@ -99,11 +99,10 @@ class GameRepositoryTest {
         long r = repo.generateSeed(game1.getId());
         Collections.shuffle(questions,
                 new Random(r));
-        assertEquals(repo.getQuestion(0,
-                r), questions.get(0));
-        assertEquals(repo.getQuestion(1,
-                r), questions.get(1));
-        assertEquals(repo.getQuestion(2,
-                r), questions.get(2));
+
+        List<Question> repoQuestions = repo.getQuestions(r);
+        assertEquals(repoQuestions.get(0), questions.get(0));
+        assertEquals(repoQuestions.get(1), questions.get(1));
+        assertEquals(repoQuestions.get(2), questions.get(2));
     }
 }

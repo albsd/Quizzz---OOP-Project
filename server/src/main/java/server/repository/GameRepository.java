@@ -36,7 +36,15 @@ import java.util.Random;
 @Repository
 public class GameRepository {
 
-    private Set<Game> games = new HashSet<>();
+    private Set<Game> games;
+    private final FakeDatabase fd;
+    private final List<Question> questions;
+
+    public GameRepository() {
+        games = new HashSet<>();
+        fd = new FakeDatabase();
+        questions = fd.getFakeQuestions();
+    }
 
     public List<Game> getGames() {
         return games.stream().toList();
@@ -75,12 +83,11 @@ public class GameRepository {
         return leaderboard;
     }
 
-    public Question getQuestion(final int questionNumber, final long seed) {
-        FakeDatabase fd = new FakeDatabase();
-        List<Question> questions = fd.getFakeQuestions();
+    public List<Question> getQuestions(final long seed) {
         Collections.shuffle(questions, new Random(seed));
-        return questions.get(questionNumber);
+        return questions;
     }
+
     public long generateSeed(final UUID id) {
         String str = id.toString();
         long seed = 0;

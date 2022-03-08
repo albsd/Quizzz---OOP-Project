@@ -82,7 +82,7 @@ public class LobbyController {
     }
 
 
-    public void sendNickname(final String nickname) {
+    public void setNickname(final String nickname) {
         this.nickname = nickname;
     }
 

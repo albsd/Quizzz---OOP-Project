@@ -109,11 +109,9 @@ public class GameControllerTest {
                 new String[]{"answer 1", "answer 2", "answer 2"}, 0));
         Collections.shuffle(questions,
                 new Random(repository.generateSeed(uuid)));
-        assertEquals(ctrl.getQuestion(uuid, 0).getBody(),
-               questions.get(0));
-        assertEquals(ctrl.getQuestion(uuid, 1).getBody(),
-                questions.get(1));
-        assertEquals(ctrl.getQuestion(uuid, 2).getBody(),
-                questions.get(2));
+        List<Question> repoQuestions = ctrl.getQuestions(uuid).getBody();
+        assertEquals(repoQuestions.get(0), questions.get(0));
+        assertEquals(repoQuestions.get(1), questions.get(1));
+        assertEquals(repoQuestions.get(2), questions.get(2));
     }
 }

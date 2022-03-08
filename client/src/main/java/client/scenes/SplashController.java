@@ -70,7 +70,7 @@ public class SplashController {
             var root = Main.FXML.load(
                     LobbyController.class, "client", "scenes", "Lobby.fxml");
             LobbyController lobbyController = root.getKey();
-            lobbyController.sendNickname(user);
+            lobbyController.setNickname(user);
             stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             scene = new Scene(root.getValue());
             stage.setScene(scene);

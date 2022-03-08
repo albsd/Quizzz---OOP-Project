@@ -40,8 +40,8 @@ public class GameService {
         return repo.getLeaderboard(id);
     }
 
-    public Question getQuestion(final int questionNumber, final long seed) {
-        return repo.getQuestion(questionNumber, seed);
+    public List<Question> getQuestions(final long seed) {
+        return repo.getQuestions(seed);
     }
     public long generateSeed(final UUID id) {
         return repo.generateSeed(id);

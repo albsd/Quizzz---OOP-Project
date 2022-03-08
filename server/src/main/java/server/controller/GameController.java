@@ -109,15 +109,13 @@ public class GameController {
         return ResponseEntity.ok(gameService.getLeaderboard(id));
     }
 
-    @GetMapping("{id}/question/{questionNumber}")
-    public ResponseEntity<Question>
-    getQuestion(@PathVariable final UUID id,
-                @PathVariable final int questionNumber) {
+    @GetMapping("{id}/question")
+    public ResponseEntity<List<Question>>
+    getQuestions(@PathVariable final UUID id) {
         if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(gameService.getQuestion(questionNumber,
+        return ResponseEntity.ok(gameService.getQuestions(
                 gameService.generateSeed(id)));
     }
-
 }
