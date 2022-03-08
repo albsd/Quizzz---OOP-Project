@@ -43,6 +43,8 @@ public class GameControllerTest {
 
     private GameController ctrl;
 
+    private UUID uuid;
+
     @BeforeEach
     public void setup() {
         service = new GameService(new GameRepository());

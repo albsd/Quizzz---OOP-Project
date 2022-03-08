@@ -165,15 +165,15 @@ public class ServerUtils {
         return parseResponseToObject(request, Leaderboard.class);        
     }
 
-    public Question getQuestion(final int questionNumber, final String id) {
+    public List<Question> getQuestions(final String id) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/"
-                        + id + "/question" + "/" + questionNumber))
+                        + id + "/question"))
                 .header("accept", "application/json")
                 .GET()
                 .build();
 
-        return parseResponseToObject(request, Question.class);
+        return parseResponseToObject(request, List.class);
     }
 
     /**
@@ -196,9 +196,7 @@ public class ServerUtils {
             ObjectMapper mapper = new ObjectMapper();
             T obj = mapper.readValue(response.body(), type);
             return obj;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
