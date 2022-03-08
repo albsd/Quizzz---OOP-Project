@@ -84,9 +84,7 @@ class GameRepositoryTest {
         assertEquals(Arrays.asList(player3, player2, player1),
                 repo.getLeaderboard(game1.getId()).getRanking());
     }
-    //TODO: Debug why this test is failing.
-    // Might be because games is a static list.
-    // Test passes individually but not when all tests are run at once.
+
     @Test
     public void getQuestionForOneGame() {
         List<Question> questions = Arrays.asList(

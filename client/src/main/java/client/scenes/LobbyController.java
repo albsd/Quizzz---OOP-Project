@@ -7,9 +7,7 @@ import commons.Message;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -74,9 +72,10 @@ public class LobbyController {
     };
 
     public void returnMenu(final ActionEvent e) throws IOException {
-        Parent root = FXMLLoader.load(Main.class.getResource("Splash.fxml"));
+        var root = Main.FXML.load(
+                SplashController.class, "client", "scenes", "Splash.fxml");
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+        scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }

@@ -76,9 +76,8 @@ public class GameRepository {
         List<Player> players = game.getPlayers();
         Leaderboard leaderboard = new Leaderboard();
         List<Player> rank = players.stream().
-                sorted(Comparator.comparingInt(Player::getScore))
+                sorted(Comparator.comparingInt(Player::getScore).reversed())
                 .collect(Collectors.toList());
-        Collections.reverse(rank);
         leaderboard.setRanking(rank);
         return leaderboard;
     }
