@@ -1,9 +1,10 @@
 package commons;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ServerQuestionTimer {
+public class QuestionTimer {
     private final double maxTime = 20000;
     private final double oneSecond = 1000;
     private final double decrement = 25;    // 25ms
@@ -27,6 +28,8 @@ public class ServerQuestionTimer {
                     // This is where the server should
                     // send a message to the client QuestionTimers
                     // that the timer ended
+
+
 
                     cancel();
                 }
@@ -66,6 +69,7 @@ public class ServerQuestionTimer {
             final int period = 25;
             currentTask = serverTimerTask();
             timer.scheduleAtFixedRate(currentTask, delay, period);
+
         }
     }
 
@@ -104,6 +108,10 @@ public class ServerQuestionTimer {
 
         started = false;
         currentTime = maxTime;
+    }
+
+    public void stop() {
+        currentTime = 0;
     }
 
 }

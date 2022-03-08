@@ -8,7 +8,7 @@
 <AnchorPane prefHeight="145.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ProgressBarController">
    <children>
       <ProgressBar fx:id="bar" layoutX="4.0" layoutY="116.0" prefHeight="18.0" prefWidth="592.0" progress="0.0" />
-      <Button layoutX="195.0" layoutY="14.0" mnemonicParsing="false" onAction="#halve" text="Halve" />
+      <Button fx:id="halveButton" layoutX="195.0" layoutY="14.0" mnemonicParsing="false" onAction="#halve" text="Halve" />
       <Button layoutX="46.0" layoutY="14.0" mnemonicParsing="false" onAction="#start" prefHeight="25.0" prefWidth="46.0" text="Start" />
       <Label fx:id="label" layoutX="287.0" layoutY="88.0" text="20.0" />
       <Button layoutX="122.0" layoutY="14.0" mnemonicParsing="false" onAction="#reset" text="Reset" />

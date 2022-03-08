@@ -1,24 +1,29 @@
 package client.scenes;
 
-//import javafx.application.Platform;
+import client.utils.ServerUtils;
+import com.google.inject.Inject;
+
+import commons.GameUpdate;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-//import javafx.scene.control.Button;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
-//import java.util.Timer;
-//import java.util.TimerTask;
+import java.util.function.Consumer;
 
 public class ProgressBarController implements Initializable {
+
+    private final ServerUtils server;
+
     @FXML
     private ProgressBar bar = new ProgressBar(1);
 
@@ -34,7 +39,39 @@ public class ProgressBarController implements Initializable {
     @FXML
     private Label verifLabel;
 
-    private QuestionTimer questionTimer = new QuestionTimer();
+    @FXML
+    private Button halveButton;
+
+    private ClientQuestionTimer questionTimer = new ClientQuestionTimer();
+
+
+    @Inject
+    public ProgressBarController(final ServerUtils server) throws IOException {
+        this.server = server;
+        server.registerForMessages("/topic/game/update",
+                GameUpdate.class, updateConsumer);
+        halveButton.setOnAction(keyEvent -> {
+            //double tempTime = ClientQuestionTimer.getCurrentTime();
+            server.send("/app/halve",
+                    new GameUpdate(GameUpdate.Update.halveTimer));
+            halveButton.setDisable(true);
+            // ClientQuestionTimer.
+        });
+
+    }
+
+    private Consumer<GameUpdate> updateConsumer = update -> {
+        System.out.println("Halve message received!");
+        Platform.runLater(() -> {
+            if (update.getUpdate() == GameUpdate.Update.halveTimer) {
+                questionTimer.halve();
+            } else if (update.getUpdate() == GameUpdate.Update.stopTimer) {
+                reset();
+            } else if (update.getUpdate() == GameUpdate.Update.startTimer) {
+                start();
+            }
+        });
+    };
 
 
     public void initialize(final URL location, final ResourceBundle resources) {
@@ -42,7 +79,7 @@ public class ProgressBarController implements Initializable {
     }
 
     public void halve() {
-        questionTimer.halve();
+
     }
 
     public void reset() {

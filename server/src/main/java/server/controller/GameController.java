@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import commons.Game;
+import commons.GameUpdate;
 import commons.Player;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,22 @@ public class GameController {
         Game game = gameService.findById(id);
         if (game == null) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(game);
+    }
+
+    @MessageMapping("/halve") //
+    @SendTo("/topic/game/update")
+    public GameUpdate halveTimeWebsocket() {
+        return new GameUpdate(GameUpdate.Update.halveTimer);
+    }
+
+    @SendTo("/topic/game/update")
+    public GameUpdate startTimeWebsocket() {
+        return new GameUpdate(GameUpdate.Update.startTimer);
+    }
+
+    @SendTo("/topic/game/update")
+    public GameUpdate stopTimeWebsocket() {
+        return new GameUpdate(GameUpdate.Update.stopTimer);
     }
 
 }

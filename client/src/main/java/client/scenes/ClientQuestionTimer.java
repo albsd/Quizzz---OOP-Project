@@ -1,5 +1,6 @@
 package client.scenes;
 
+import commons.QuestionTimer;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class QuestionTimer {
+public class ClientQuestionTimer extends QuestionTimer {
     private final double maxTime = 20000;
     private final double oneSecond = 1000;
     private final double decrement = 25;    // 25ms
@@ -78,6 +79,10 @@ public class QuestionTimer {
             currentTask = clientTimerTask(label, bar, buttons);
             timer.scheduleAtFixedRate(currentTask, delay, period);
         }
+    }
+
+    public void setCurrentTime(final double time) {
+        currentTime = time;
     }
 
 
