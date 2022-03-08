@@ -149,6 +149,12 @@ public class LobbyController implements Initializable {
     public void start(final ActionEvent event) {
         // TODO: display the multiplayer fxml
         // server.startGame();
-    }
 
+        var root = Main.FXML.load(GameMultiplayerController.class, "client", "scenes", "GameMultiplayer.fxml");
+
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root.getValue());
+        stage.setScene(scene);
+        stage.show();
+    }
 }
