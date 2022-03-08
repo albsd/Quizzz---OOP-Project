@@ -25,7 +25,7 @@ public class GameMultiplayerController implements Initializable {
             timeButton, scoreButton, removeButton,
             cancelButton, confirmButton;
     @FXML
-    private Label question, questionNumber, points, popupText;
+    private Label question, questionNumber, points, popupText, timer1, timer2;
     @FXML
     private Pane popupMenu;
 
@@ -58,6 +58,8 @@ public class GameMultiplayerController implements Initializable {
         question.setFont(font1);
         questionNumber.setFont(font1);
         points.setFont(font1);
+        timer1.setFont(font1);
+        timer2.setFont(font1);
     }
 
     public void returnMenu(final ActionEvent e) throws IOException {
