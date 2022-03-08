@@ -84,7 +84,8 @@ public class LobbyController {
                 int time = m.getTime();
                 String content = m.getMessageContent();
                 //change. Scroll pane is not place to put messages
-                String chatLogs = chatText.getText() + "\n" + nick + " (" + time + ") - " + content;
+                String chatLogs = chatText.getText() + "\n" +
+                        nick + " (" + time + ") - " + content;
                 chatText.setText(chatLogs);
             }
         });
