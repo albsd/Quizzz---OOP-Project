@@ -18,6 +18,21 @@
     -fx-border-color: black;
 }
 
+.cancelButton {
+    -fx-background-color: #FE6F5B;
+}
+.cancelButton:hover {
+    -fx-background-color: #D83D28;
+}
+
+.confirmButton {
+    -fx-background-color: #E0FCCF;
+}
+
+.confirmButton:hover {
+    -fx-background-color: #7BD942;
+}
+
 .optionButton {
     -fx-background-color: #FFD029;
 }
@@ -28,4 +43,10 @@
 
 .scene {
     -fx-background-color: white;
+}
+
+.returnPopup {
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-border-width: 7px;
 }
