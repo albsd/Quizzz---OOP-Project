@@ -36,9 +36,6 @@ public class SplashController {
     @FXML
     private Label title;
 
-    @FXML
-    private Label exitLabel;
-
     private Stage stage;
 
     private Scene scene;
