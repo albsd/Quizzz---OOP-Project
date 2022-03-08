@@ -69,14 +69,14 @@
                             </ScrollPane>
                             <ScrollPane prefHeight="400.0" prefWidth="700.0" vvalue="1.0" GridPane.rowIndex="1">
                                 <content>
-                                    <Label fx:id="chatText" alignment="BOTTOM_LEFT" text="Hello - 21:34 - Hello&#10;Hello\n&#10;&#10;" wrapText="true">
+                                    <Label fx:id="chatText" alignment="BOTTOM_LEFT" text="Hello World" wrapText="true">
                                         <font>
                                             <Font size="24.0" />
                                         </font>
                                     </Label>
                                 </content>
                             </ScrollPane>
-                            <TextField fx:id="chatInput" prefHeight="25.0" prefWidth="169.0" promptText="Enter your message...." GridPane.rowIndex="2">
+                            <TextField fx:id="chatInput" prefHeight="25.0" prefWidth="169.0" onAction="#onEnter" promptText="Enter your message...." GridPane.rowIndex="2">
                                 <font>
                                     <Font size="24.0" />
                                 </font>

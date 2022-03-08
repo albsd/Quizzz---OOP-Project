@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.Main;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +23,7 @@ public class SplashController {
     private Stage stage;
     private Scene scene;
     private Parent root;
-    
+
 
     public void help(final ActionEvent e) throws IOException {
         // When we have the help.fxml and helpController class
@@ -67,14 +68,12 @@ public class SplashController {
     }
 
     public void lobby(final ActionEvent e) throws IOException {
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("Lobby.fxml"));
+        var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
         String user = nickField.getText();
-        root = loader.load();
-        LobbyController lobbyController = loader.getController();
-        lobbyController.sendNickname(user);
+//        LobbyController lobbyController = Main.FXML.load(LobbyController.class).getKey();
+//        lobbyController.sendNickname(user);
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+        scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }

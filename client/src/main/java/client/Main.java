@@ -16,8 +16,8 @@ import static com.google.inject.Guice.createInjector;
 
 public class Main extends Application {
 
-        private static final Injector INJECTOR = createInjector(new MyModule());
-        private static final MyFXML FXML = new MyFXML(INJECTOR);
+        public static final Injector INJECTOR = createInjector(new MyModule());
+        public static final MyFXML FXML = new MyFXML(INJECTOR);
 
     public static void main(final String[] args) {
         launch();
@@ -25,7 +25,6 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage stage) throws IOException {
-//        Parent root = FXMLLoader.load(Main.class.getResource("Splash.fxml"));
         var root  = FXML.load(SplashController.class,
                 "client", "scenes", "Splash.fxml");
         Scene scene = new Scene(root.getValue());
