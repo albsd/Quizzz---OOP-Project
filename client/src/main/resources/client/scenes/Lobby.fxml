@@ -27,11 +27,11 @@
                <Font name="System Bold" size="72.0" />
             </font>
          </Label>
-         <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#returnMenu" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" textAlignment="CENTER">
+         <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#returnToMenu" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" textAlignment="CENTER">
             <graphic>
                <ImageView pickOnBounds="true" preserveRatio="true">
                   <image>
-                     <Image url="@../../images/back.png" />
+                     <Image url="@/images/back.png" />
                   </image>
                </ImageView>
             </graphic></Button>
