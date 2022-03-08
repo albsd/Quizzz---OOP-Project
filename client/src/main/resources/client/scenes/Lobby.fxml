@@ -69,7 +69,7 @@
                             </ScrollPane>
                             <ScrollPane prefHeight="400.0" prefWidth="700.0" vvalue="1.0" GridPane.rowIndex="1">
                                 <content>
-                                    <Label fx:id="chatText" alignment="BOTTOM_LEFT" wrapText="true">
+                                    <Label fx:id="chatText" alignment="BOTTOM_LEFT" text="Hello - 21:34 - Hello&#10;Hello\n&#10;&#10;" wrapText="true">
                                         <font>
                                             <Font size="24.0" />
                                         </font>

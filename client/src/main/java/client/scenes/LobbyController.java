@@ -30,6 +30,9 @@ public class LobbyController {
     private ScrollPane chatArea;
 
     @FXML
+    private Label chatText;
+
+    @FXML
     private TextField chatInput;
 
     @FXML
@@ -81,10 +84,8 @@ public class LobbyController {
                 int time = m.getTime();
                 String content = m.getMessageContent();
                 //change. Scroll pane is not place to put messages
-                TextField text = new TextField();
-                text.setText(nick + " (" + time + ") - " + content);
-                chatArea.setContent(text);
-                chatArea.setPannable(true);
+                String chatLogs = chatText.getText() + "\n" + nick + " (" + time + ") - " + content;
+                chatText.setText(chatLogs);
             }
         });
     };
