@@ -4,13 +4,12 @@ import client.Main;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 public class SplashController {
     @FXML
@@ -22,18 +21,13 @@ public class SplashController {
 
     private Stage stage;
     private Scene scene;
-    private Parent root;
 
 
     public void help(final ActionEvent e) throws IOException {
-        // When we have the help.fxml and helpController class
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Help.fxml"));
-        root = loader.load();
-        HelpController helpController = loader.getController();
-
+        var root = Main.FXML.load(
+                HelpController.class, "client", "scenes", "Help.fxml");
         stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+        scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }
@@ -67,15 +61,21 @@ public class SplashController {
 //        stage.show();
     }
 
-    public void lobby(final ActionEvent e) throws IOException {
-        var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
+    public void lobby(final ActionEvent e) {
         String user = nickField.getText();
-//        LobbyController lobbyController = Main.FXML.load(LobbyController.class).getKey();
-//        lobbyController.sendNickname(user);
-        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        if (!checkNicknameLength(user)) {
+            warning.setText("Nickname should be min 3, max 8 characters");
+        } else {
+            warning.setText("Nickname set");
+            var root = Main.FXML.load(
+                    LobbyController.class, "client", "scenes", "Lobby.fxml");
+            LobbyController lobbyController = root.getKey();
+            lobbyController.sendNickname(user);
+            stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            scene = new Scene(root.getValue());
+            stage.setScene(scene);
+            stage.show();
+        }
     }
 
     public void leaderBoard(final ActionEvent e) {

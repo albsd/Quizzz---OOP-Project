@@ -14,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.springframework.web.util.HtmlUtils;
 
@@ -48,7 +47,7 @@ public class LobbyController {
     }
 
     @FXML
-    public void onEnter(ActionEvent e){
+    public void onEnter(final ActionEvent e) {
         String content = chatInput.getText();
         chatInput.setText("");
         final int demoTime = 10;
