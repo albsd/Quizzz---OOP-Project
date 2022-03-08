@@ -55,7 +55,9 @@ public class GameRepository {
                 .filter(g -> g.getId().equals(id))
                 .findFirst();
 
-        if (optional.isEmpty()) return null;
+        if (optional.isEmpty()) {
+            return null;
+        }
         return optional.get();
     }
 
@@ -63,6 +65,7 @@ public class GameRepository {
         games.add(game);
         return game.getId();
     }
+
     public void removeAllGames() {
         games = new HashSet<>();
     }

@@ -6,91 +6,91 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LobbyController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LobbyController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-    <AnchorPane prefHeight="682.0" prefWidth="1240.0">
-        <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="1240.0" text="LOBBY">
-                <font>
-                    <Font name="System Bold" size="72.0" />
-                </font>
-            </Label>
-            <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#returnMenu" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" textAlignment="CENTER">
-                <graphic>
-                    <ImageView pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../../images/back.png" />
-                        </image>
-                    </ImageView>
-                </graphic></Button>
-            <HBox alignment="TOP_CENTER" layoutY="120.0" prefHeight="500.0" prefWidth="1240.0">
-                <children>
-                    <GridPane>
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
-                            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
-                        </columnConstraints>
-                        <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="0.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                        </rowConstraints>
-                        <children>
-                            <Label prefHeight="30.0" prefWidth="187.0" text="Chat:" GridPane.halignment="LEFT">
-                                <font>
-                                    <Font name="System Bold" size="24.0" />
-                                </font>
-                            </Label>
-                            <Label fx:id="playerCount" prefHeight="35.0" prefWidth="375.0" text="Players (1):" GridPane.columnIndex="2">
-                                <font>
-                                    <Font name="System Bold" size="24.0" />
-                                </font>
-                            </Label>
-                            <ScrollPane hbarPolicy="NEVER" prefHeight="400.0" prefWidth="380.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                <content>
-                                    <TextFlow focusTraversable="true" prefWidth="360.0">
-                                        <children>
-                                            <Label fx:id="playersLeft" alignment="TOP_CENTER" prefHeight="520.0" prefWidth="180.0" text="" textAlignment="CENTER">
-                                                <font>
-                                                    <Font size="24.0" />
-                                                </font>
-                                            </Label>
-                                            <Label fx:id="playersRight" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="520.0" prefWidth="180.0" text="" textAlignment="CENTER">
-                                                <font>
-                                                    <Font size="24.0" />
-                                                </font>
-                                            </Label>
-                                        </children>
-                                    </TextFlow>
-                                </content>
-                            </ScrollPane>
-                            <ScrollPane prefHeight="400.0" prefWidth="700.0" vvalue="1.0" GridPane.rowIndex="1">
-                                <content>
-                                    <Label fx:id="chatText" alignment="BOTTOM_LEFT" text="Hello World" wrapText="true">
-                                        <font>
-                                            <Font size="24.0" />
-                                        </font>
-                                    </Label>
-                                </content>
-                            </ScrollPane>
-                            <TextField fx:id="chatInput" prefHeight="25.0" prefWidth="169.0" onAction="#onEnter" promptText="Enter your message...." GridPane.rowIndex="2">
-                                <font>
-                                    <Font size="24.0" />
-                                </font>
-                            </TextField>
-                            <Button mnemonicParsing="false" onAction="#start" prefWidth="380.0" text="Start game" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                <font>
-                                    <Font size="24.0" />
-                                </font>
-                            </Button>
-                        </children>
-                    </GridPane>
-                </children>
-            </HBox>
-        </children>
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
+      <children>
+         <Label alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="1240.0" text="LOBBY">
+            <font>
+               <Font name="System Bold" size="72.0" />
+            </font>
+         </Label>
+         <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#returnToMenu" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" textAlignment="CENTER">
+            <graphic>
+               <ImageView pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@/images/back.png" />
+                  </image>
+               </ImageView>
+            </graphic></Button>
+         <HBox alignment="TOP_CENTER" layoutY="120.0" prefHeight="500.0" prefWidth="1240.0">
+            <children>
+               <GridPane>
+                 <columnConstraints>
+                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
+                   <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
+                 </columnConstraints>
+                 <rowConstraints>
+                   <RowConstraints minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
+                   <RowConstraints minHeight="0.0" vgrow="SOMETIMES" />
+                   <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                 </rowConstraints>
+                  <children>
+                     <Label prefHeight="30.0" prefWidth="187.0" text="Chat:" GridPane.halignment="LEFT">
+                        <font>
+                           <Font name="System Bold" size="24.0" />
+                        </font>
+                     </Label>
+                     <Label fx:id="playerCount" prefHeight="35.0" prefWidth="375.0" text="Players (1):" GridPane.columnIndex="2">
+                        <font>
+                           <Font name="System Bold" size="24.0" />
+                        </font>
+                     </Label>
+                     <ScrollPane hbarPolicy="NEVER" prefHeight="400.0" prefWidth="380.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <content>
+                           <TextFlow focusTraversable="true" prefWidth="360.0">
+                              <children>
+                                 <Label fx:id="playersLeft" alignment="TOP_CENTER" prefHeight="520.0" prefWidth="180.0" text="" textAlignment="CENTER">
+                                    <font>
+                                       <Font size="24.0" />
+                                    </font>
+                                 </Label>
+                                 <Label fx:id="playersRight" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="520.0" prefWidth="180.0" text="" textAlignment="CENTER">
+                                    <font>
+                                       <Font size="24.0" />
+                                    </font>
+                                 </Label>
+                              </children>
+                           </TextFlow>
+                        </content>
+                     </ScrollPane>
+                     <ScrollPane prefHeight="400.0" prefWidth="700.0" vvalue="1.0" GridPane.rowIndex="1">
+                        <content>
+                           <Label fx:id="chatText" alignment="BOTTOM_LEFT" wrapText="true">
+                              <font>
+                                 <Font size="24.0" />
+                              </font>
+                           </Label>
+                        </content>
+                     </ScrollPane>
+                     <TextField fx:id="chatInput" prefHeight="25.0" prefWidth="169.0" promptText="Enter your message...." GridPane.rowIndex="2">
+                        <font>
+                           <Font size="24.0" />
+                        </font>
+                     </TextField>
+                     <Button mnemonicParsing="false" onAction="#start" prefWidth="380.0" text="Start game" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                        <font>
+                           <Font size="24.0" />
+                        </font>
+                     </Button>
+                  </children>
+               </GridPane>
+            </children>
+         </HBox>
+      </children>
     </AnchorPane>
     <!--    <ScrollPane prefHeight="200.0" prefWidth="200.0" />-->
 </VBox>

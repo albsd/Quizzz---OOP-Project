@@ -25,6 +25,7 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+@Controller
 public class ServerUtils {
 
     private final String kGameUrl;
@@ -119,22 +121,22 @@ public class ServerUtils {
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
-        try {
-            HttpResponse<String> response = client.send(request,
-                    HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() != ok) {
-                return null;
-            }
+        return parseResponseToObject(request, Player.class);
+    }
 
-            ObjectMapper mapper = new ObjectMapper();
-            Player player = mapper.readValue(response.body(), Player.class);
-            return player;
+    /**
+     * Calls the REST endpoint to leave the current active lobby.
+     *
+     * @param nick String of the user nickname
+     * @return Player that has left the game
+     */
+    public Player leaveGame(final String nick) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/leave/" + nick))
+                .DELETE()
+                .build();
 
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return parseResponseToObject(request, Player.class);
     }
 
     /**
@@ -148,22 +150,9 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-
-        try {
-            HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-
-            // parse JSON into objects
-            ObjectMapper mapper = new ObjectMapper();
-            Game game = mapper.readValue(response.body(), Game.class);
-
-            return game.getPlayers();
-
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+        Game game = parseResponseToObject(request, Game.class);
+        if (game == null) return null;
+        return game.getPlayers();
     }
 
     public Leaderboard getLeaderboard(final String id) {
@@ -172,22 +161,10 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-
-        try {
-            HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());
-            // parse JSON into objects
-            ObjectMapper mapper = new ObjectMapper();
-            Leaderboard leaderboard =
-                    mapper.readValue(response.body(), Leaderboard.class);
-
-            return leaderboard;
-
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+        
+        return parseResponseToObject(request, Leaderboard.class);        
     }
+
     public Question getQuestion(final int questionNumber, final String id) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/"
@@ -196,16 +173,29 @@ public class ServerUtils {
                 .GET()
                 .build();
 
+        return parseResponseToObject(request, Question.class);
+    }
+
+    /**
+     * Utility method to send and receive a Player object.
+     *
+     * @param <T>     Type the response shall get parsed to
+     * @param request Request to be sent
+     * @param type    Expected type of the response
+     * @return Parsed response as the given instance of class `type`
+     */
+    private <T> T parseResponseToObject(final HttpRequest request, final Class<T> type) {
         try {
-            HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());
-            // parse JSON into objects
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                return null;
+            }
+
             ObjectMapper mapper = new ObjectMapper();
-            Question question = mapper.readValue(
-                    response.body(), Question.class);
-
-            return question;
-
+            T obj = mapper.readValue(response.body(), type);
+            return obj;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
