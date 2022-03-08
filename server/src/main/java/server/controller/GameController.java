@@ -69,7 +69,7 @@ public class GameController {
     // path is /app/lobby/chat
     @MessageMapping("/lobby/chat")
     @SendTo("/topic/lobby/chat")
-    private static Message sendMessage(final Message msg) {
+    private Message sendMessage(final Message msg) {
         return msg;
     }
 
