@@ -21,14 +21,11 @@ import commons.Message;
 import commons.Player;
 import commons.Question;
 import commons.JoinMessage;
-import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-
-//import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +33,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
-
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import server.service.GameService;
@@ -75,12 +71,7 @@ public class GameController {
         return gameService.getCurrentGame();
     }
 
-    /**
-     * Fetches the game by its UUID.
-     *
-     * @param id The UUID of the game
-     * @return Game or an error, depending on whether the game exists
-     */
+
     @Deprecated
     @PostMapping("")
     public UUID create() {
@@ -100,6 +91,31 @@ public class GameController {
     @SendTo("/topic/lobby/chat")
     private Message sendMessage(final Message msg) {
         return msg;
+    }
+
+    /**
+     * Join the active game lobby as a Player with id "nick".
+     *
+     * @param nick User's nickname which identifies a given player in a game
+     * @return Player
+     */
+    // TODO: add sessionId to path so it can be used to construct the player
+    @PostMapping("/join/{nick}")
+    public ResponseEntity<Player> joinCurrentGame(final @PathVariable("nick") String nick) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game lobby = gameService.getCurrentGame();
+
+        Player p = new Player(nick);
+        boolean success = lobby.addPlayer(p);
+
+        final int errorCode = 403; // FORBIDDEN
+        if (!success) {
+            return ResponseEntity.status(errorCode).build();
+        }
+        return ResponseEntity.ok(p);
     }
 
     @PostMapping("{id}/{nick}")
@@ -122,6 +138,12 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
+    /**
+     * Fetches the game by its UUID.
+     *
+     * @param id The UUID of the game
+     * @return Game or an error, depending on whether the game exists
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Game> getById(final @PathVariable("id") UUID id) {
         Game game = gameService.findById(id);
@@ -148,31 +170,6 @@ public class GameController {
         }
         return ResponseEntity.ok(gameService.getQuestions(
                 gameService.generateSeed(id)));
-    }
-    
-    /**
-     * Join the active game lobby as a Player with id "nick".
-     *
-     * @param nick User's nickname which identifies a given player in a game
-     * @return Player
-     */
-    // TODO: add sessionId to path so it can be used to construct the player
-    @PostMapping("/join/{nick}")
-    public ResponseEntity<Player> joinCurrentGame(final @PathVariable("nick") String nick) {
-        if (nick == null || nick.isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Game lobby = gameService.getCurrentGame();
-
-        Player p = new Player(nick);
-        boolean success = lobby.addPlayer(p);
-
-        final int errorCode = 403; // FORBIDDEN
-        if (!success) {
-            return ResponseEntity.status(errorCode).build();
-        }
-        return ResponseEntity.ok(p);
     }
 
     /**

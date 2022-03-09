@@ -49,6 +49,7 @@ public class GameControllerTest {
     public void setup() {
         service = new GameService(new GameRepository());
         ctrl = new GameController(service);
+        //for tests sake, 1 game already created inside repo
         uuid = ctrl.create();
     }
 
@@ -101,7 +102,7 @@ public class GameControllerTest {
         var lobby = ctrl.getCurrentGame();
         var newLobby = ctrl.startCurrentGame();
 
-        assertEquals(ctrl.getAll().size(), 1);
+        assertEquals(ctrl.getAll().size(), 2);
         assertEquals(lobby.getPlayers().size(), 3);
         assertNotEquals(lobby, newLobby.getBody());
     }

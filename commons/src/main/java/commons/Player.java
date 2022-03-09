@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Player {
     @JsonProperty("nick")
-    private final String nick;
+    private String nick;
 
     @JsonProperty("time")
     private int time;

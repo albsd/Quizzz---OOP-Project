@@ -3,11 +3,8 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Message;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import commons.JoinMessage;
+import commons.Message;
 import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -16,23 +13,19 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.springframework.web.util.HtmlUtils;
 
-import java.io.IOException;
-import java.util.function.Consumer;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
-import java.util.Optional;
 
 public class LobbyController implements Initializable {
 
@@ -97,6 +90,7 @@ public class LobbyController implements Initializable {
         server.send("/app/lobby/chat",
                 new Message(getNickname(), demoTime,
                         HtmlUtils.htmlEscape(content)));
+        chatArea.setVvalue(1.0);
     }
 
     public void setMe(final Player me) {
@@ -159,8 +153,8 @@ public class LobbyController implements Initializable {
                 String content = m.getMessageContent();
                 //change. Scroll pane is not place to put messages
                 String chatLogs = chatText.getText()
-                        + "\n" + nick + " (" + time + ") - " + content;
-                chatText.setText(chatLogs);
+                        + nick + " (" + time + ") - " + content + "\n";
+                        chatText.setText(chatLogs);
             }
         });
     };

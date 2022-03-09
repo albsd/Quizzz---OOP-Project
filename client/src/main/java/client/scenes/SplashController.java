@@ -15,8 +15,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.inject.Inject;
 
 public class SplashController {
