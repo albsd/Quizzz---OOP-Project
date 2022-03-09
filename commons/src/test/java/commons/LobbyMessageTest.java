@@ -32,5 +32,9 @@ class LobbyMessageTest {
         assertEquals(nick1, message1.getNick());
         assertEquals(time1, message1.getTimestamp());
         assertEquals(content1, message1.getContent());
+
+        assertEquals(nick2, message2.getNick());
+        assertEquals(time2, message2.getTimestamp());
+        assertEquals(content2, message2.getContent());
     }
 }
