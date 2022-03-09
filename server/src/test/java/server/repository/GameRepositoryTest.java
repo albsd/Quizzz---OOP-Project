@@ -35,7 +35,7 @@ class GameRepositoryTest {
 
     @Test
     void getGames() {
-        assertTrue(Arrays.asList(new Game[] { game1, game2 })
+        assertTrue(Arrays.asList(new Game[] {game1, game2})
                 .containsAll(repo.getGames()));
         assertTrue(repo.getGames()
                 .containsAll(Arrays.asList(game1, game2)));
@@ -52,8 +52,8 @@ class GameRepositoryTest {
     void addGame() {
         Game game3 = new Game(UUID.randomUUID());
         assertEquals(game3.getId(), repo.addGame(game3));
-        assertTrue(Arrays.asList(new Game[] { game1, game2,
-                game3 }).containsAll(repo.getGames()));
+        assertTrue(Arrays.asList(new Game[] {game1, game2,
+                game3}).containsAll(repo.getGames()));
         repo.removeAllGames();
     }
 
@@ -86,11 +86,11 @@ class GameRepositoryTest {
     public void getQuestionForOneGame() {
         List<Question> questions = Arrays.asList(
                 new Question("this is q1", Paths.get("INVALID"),
-                        new String[] { "answer 1", "answer 2", "answer 2" }, 0),
+                        new String[] {"answer 1", "answer 2", "answer 2"}, 0),
                 new Question("this is q2", Paths.get("INVALID"),
-                        new String[] { "answer 1", "answer 2", "answer 2" }, 0),
+                        new String[] {"answer 1", "answer 2", "answer 2"}, 0),
                 new Question("this is q3", Paths.get("INVALID"),
-                        new String[] { "answer 1", "answer 2", "answer 2" }, 0));
+                        new String[] {"answer 1", "answer 2", "answer 2"}, 0));
         long r = repo.generateSeed(game1.getId());
         Collections.shuffle(questions,
                 new Random(r));

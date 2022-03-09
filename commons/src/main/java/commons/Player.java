@@ -59,9 +59,9 @@ public class Player {
 
     @Override
     public boolean equals(final Object other) {
-        if (other == null)
+        if (other == null) {
             return false;
-        if (other instanceof Player that) {
+        } else if (other instanceof Player that) {
             return nick.equals(that.nick)
                     && score == that.score
                     && time == that.time;

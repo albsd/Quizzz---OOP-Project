@@ -131,11 +131,11 @@ public class GameControllerTest {
         GameRepository repository = new GameRepository();
         List<Question> questions = Arrays.asList(
                 new Question("this is q1", Paths.get("INVALID"),
-                        new String[] { "answer 1", "answer 2", "answer 2" }, 0),
+                        new String[] {"answer 1", "answer 2", "answer 2" }, 0),
                 new Question("this is q2", Paths.get("INVALID"),
-                        new String[] { "answer 1", "answer 2", "answer 2" }, 0),
+                        new String[] {"answer 1", "answer 2", "answer 2" }, 0),
                 new Question("this is q3", Paths.get("INVALID"),
-                        new String[] { "answer 1", "answer 2", "answer 2" }, 0));
+                        new String[] {"answer 1", "answer 2", "answer 2" }, 0));
         Collections.shuffle(questions,
                 new Random(repository.generateSeed(game.getId())));
         List<Question> repoQuestions = ctrl.getQuestions(game.getId()).getBody();

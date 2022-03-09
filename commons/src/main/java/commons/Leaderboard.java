@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Leaderboard {
     @JsonProperty("ranking")
@@ -18,10 +19,15 @@ public class Leaderboard {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == null)
+    public int hashCode() {
+        return Objects.hash(ranking);
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (other == null) {
             return false;
-        if (other instanceof Leaderboard that) {
+        } else if (other instanceof Leaderboard that) {
             return ranking.containsAll(that.getRanking()) && that.getRanking().containsAll(ranking);
         }
         return false;
