@@ -51,11 +51,9 @@ public class ProgressBarController implements Initializable {
         server.registerForMessages("/topic/game/update",
                 GameUpdate.class, updateConsumer);
         halveButton.setOnAction(keyEvent -> {
-            //double tempTime = ClientQuestionTimer.getCurrentTime();
             server.send("/app/halve",
                     new GameUpdate(GameUpdate.Update.halveTimer));
             halveButton.setDisable(true);
-            // ClientQuestionTimer.
         });
 
     }
@@ -76,10 +74,6 @@ public class ProgressBarController implements Initializable {
 
     public void initialize(final URL location, final ResourceBundle resources) {
         start();
-    }
-
-    public void halve() {
-
     }
 
     public void reset() {
