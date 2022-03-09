@@ -24,7 +24,7 @@ class LobbyMessageTest {
         content1 = "Lets start the game!";
         content2 = "Waiting for a friend";
         message1 = new LobbyMessage(nick1, time1, content1);
-        message2 = new LobbyMessage(nick2, time2, content1);
+        message2 = new LobbyMessage(nick2, time2, content2);
     }
 
     @Test
