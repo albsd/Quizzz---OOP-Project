@@ -17,9 +17,10 @@ package client.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import commons.Player;
+import commons.PlayerUpdate;
 import commons.Game;
 import commons.Leaderboard;
-import commons.Player;
 import commons.Question;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -119,8 +120,11 @@ public class ServerUtils {
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<>() {
-        });
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player != null) {
+            send("/app/player_update", new PlayerUpdate(player, PlayerUpdate.Action.join));
+        }
+        return player;
     }
 
     /**
@@ -135,8 +139,11 @@ public class ServerUtils {
                 .DELETE()
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<>() {
-        });
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player != null) {
+            send("/app/player_update", new PlayerUpdate(player, PlayerUpdate.Action.leave));
+        }
+        return player;
     }
 
     /**
@@ -150,8 +157,7 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        Game game = parseResponseToObject(request, new TypeReference<>() {
-        });
+        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
         if (game == null) return null;
         return game.getPlayers();
     }
@@ -163,8 +169,7 @@ public class ServerUtils {
                 .GET()
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<>() {
-        });
+        return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
 
     public List<Question> getQuestions(final String id) {
@@ -175,8 +180,7 @@ public class ServerUtils {
                 .GET()
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<>() {
-        });
+        return parseResponseToObject(request, new TypeReference<List<Question>>() { });
     }
 
     /**

@@ -5,6 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.LobbyMessage;
 import commons.Player;
+import commons.PlayerUpdate;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -58,18 +59,42 @@ public class LobbyController implements Initializable {
     public LobbyController(final ServerUtils server) {
         this.server = server;
         this.players = new ArrayList<>();
-        server.registerForMessages("/topic/join", Player.class, joinConsumer);
-        server.registerForMessages("/topic/leave", Player.class, leaveConsumer);
-        server.registerForMessages("/topic/lobby/chat",
-                LobbyMessage.class, messageConsumer);
+
+        Consumer<PlayerUpdate> playerUpdateConsumer = update -> {
+            System.out.println("PlayerUpdate received");
+            if (update.getContent() == PlayerUpdate.Action.join) {
+                players.add(update.getPlayer());
+            } else {
+                players.remove(update.getPlayer());
+            }
+            updatePlayerList();
+        };
+        server.registerForMessages("/topic/player_update", PlayerUpdate.class, playerUpdateConsumer);
+
+        // change. Scroll pane is not place to put messages
+        Consumer<LobbyMessage> messageConsumer = m -> {
+            System.out.println("Message received");
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    String nick = m.getNick();
+                    int time = m.getTimestamp();
+                    String content = m.getContent();
+                    // change. Scroll pane is not place to put messages
+                    String chatLogs = chatText.getText()
+                            + nick + " (" + time + ") - " + content + "\n";
+                    chatText.setText(chatLogs);
+                }
+            });
+        };
+        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, messageConsumer);
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        this.players = new ArrayList<>();
-        players = server.getPlayers();
+        this.players = server.getPlayers();
         if (players == null) {
-            players = new ArrayList<Player>();
+            players = new ArrayList<>();
         }
         updatePlayerList();
     }
@@ -88,16 +113,6 @@ public class LobbyController implements Initializable {
     public void setMe(final Player me) {
         this.me = me;
     }
-
-    private final Consumer<Player> joinConsumer = player -> {
-        players.add(player);
-        updatePlayerList();
-    };
-
-    private final Consumer<Player> leaveConsumer = player -> {
-        players.remove(player);
-        updatePlayerList();
-    };
 
     private void updatePlayerList() {
         // GUI Updates must be run later
@@ -130,22 +145,6 @@ public class LobbyController implements Initializable {
         });
     }
 
-    private final Consumer<LobbyMessage> messageConsumer = m -> {
-        System.out.println("Message received");
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                String nick = m.getNick();
-                int time = m.getTimestamp();
-                String content = m.getContent();
-                // change. Scroll pane is not place to put messages
-                String chatLogs = chatText.getText()
-                        + nick + " (" + time + ") - " + content + "\n";
-                chatText.setText(chatLogs);
-            }
-        });
-    };
-
     @FXML
     protected void onReturnButtonClick(final ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
@@ -160,7 +159,6 @@ public class LobbyController implements Initializable {
 
     public void returnToMenu(final ActionEvent event) {
         server.leaveGame(me.getNick());
-        server.send("/app/leave", me);
 
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 

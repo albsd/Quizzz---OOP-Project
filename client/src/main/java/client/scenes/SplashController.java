@@ -99,8 +99,6 @@ public class SplashController {
         }
 
         ctrl.setMe(player);
-        server.send("/app/join", player);
-        warning.setText("Nickname set");
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root.getValue());

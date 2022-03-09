@@ -15,11 +15,12 @@
  */
 package server.controller;
 
-import commons.Game;
 import commons.LobbyMessage;
+import commons.PlayerUpdate;
+import commons.Player;
+import commons.Game;
 import commons.Leaderboard;
 import commons.Question;
-import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -125,6 +126,7 @@ public class GameController {
         if (!success) {
             return ResponseEntity.status(errorCode).build();
         }
+
         return ResponseEntity.ok(p);
     }
 
@@ -155,6 +157,7 @@ public class GameController {
         if (!success) {
             return ResponseEntity.status(errorCode).build();
         }
+
         return ResponseEntity.ok(p);
     }
 
@@ -175,29 +178,15 @@ public class GameController {
         System.out.println(event.getSessionId());
     }
 
-    /*
-     * A Websocket endpoint for sending updates about the current lobby status.
-     * Namely, updates the active players in the lobby for all clients.
-     *
-     * @param player The player object who has joined the most recently
-     * 
-     * @return The Player object created from the nick
-     */
-    @MessageMapping("/join") // /app/join
-    @SendTo("/topic/join")
-    public Player joinWebsocket(final Player player) {
-        return player;
-    }
-
-    @MessageMapping("/leave")
-    @SendTo("/topic/leave")
-    public Player leaveWebsocket(final Player player) {
-        return player;
+    @MessageMapping("/player_update") // /app/player_update
+    @SendTo("/topic/player_update")
+    private PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
+        return update;
     }
 
     @MessageMapping("/lobby/chat") // /app/lobby/chat
     @SendTo("/topic/lobby/chat")
-    private LobbyMessage sendMessage(final LobbyMessage msg) {
+    private LobbyMessage sendLobbyMessage(final LobbyMessage msg) {
         return msg;
     }
 

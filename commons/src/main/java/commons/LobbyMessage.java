@@ -5,22 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public class LobbyMessage {
+public class LobbyMessage extends Message<String> {
     @JsonProperty("nick")
     private String nick;
 
     @JsonProperty("timestamp")
     private int timestamp;
 
-    @JsonProperty("content")
-    private String content;
-
     @JsonCreator
     public LobbyMessage(final @JsonProperty("nick") String nick,
                         final @JsonProperty("timestamp") int timestamp,
                        final @JsonProperty("content") String content) {
+        super(content);
         this.nick = nick;
-        this.content = content;
         this.timestamp = timestamp;
     }
 
@@ -32,20 +29,17 @@ public class LobbyMessage {
         return timestamp;
     }
 
-    public String getContent() {
-        return content;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         LobbyMessage that = (LobbyMessage) o;
-        return timestamp == that.timestamp && Objects.equals(nick, that.nick) && Objects.equals(content, that.content);
+        return timestamp == that.timestamp && Objects.equals(nick, that.nick);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nick, content, timestamp);
+        return Objects.hash(super.hashCode(), nick, timestamp);
     }
 }
