@@ -9,11 +9,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,10 +34,6 @@ public class SplashController {
     @FXML
     private Label title;
 
-    private Stage stage;
-
-    private Scene scene;
-
     @Inject
     public SplashController(final ServerUtils server) {
         this.server = server;
@@ -48,8 +42,8 @@ public class SplashController {
     public void help(final ActionEvent event) {
         var root = Main.FXML.load(HelpController.class, "client", "scenes", "Help.fxml");
 
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }
@@ -100,28 +94,26 @@ public class SplashController {
 
         final Player player = server.joinGame(nick);
         if (player == null) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText("User with the given name is already in the game");
-            alert.showAndWait();
+            warning.setTextFill(red);
+            warning.setText("User with the given name is already in the game");
             return;
         }
 
         ctrl.setMe(player);
         server.send("/app/join", new JoinMessage(player, true));
+        warning.setText("Nickname set");
 
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
-
     }
 
     public void leaderBoard(final ActionEvent event) {
         var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
 
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }

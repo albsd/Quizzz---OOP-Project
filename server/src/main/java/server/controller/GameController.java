@@ -16,8 +16,11 @@
 package server.controller;
 
 import commons.Game;
-import commons.JoinMessage;
+import commons.Leaderboard;
+import commons.Message;
 import commons.Player;
+import commons.Question;
+import commons.JoinMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +29,10 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import server.service.GameService;
@@ -75,7 +77,6 @@ public class GameController {
      * @param id The UUID of the game
      * @return Game or an error, depending on whether the game exists
      */
-    @Deprecated
     @GetMapping("/{id}")
     public ResponseEntity<Game> getById(final @PathVariable("id") UUID id) {
         Game game = gameService.findById(id);
@@ -83,6 +84,24 @@ public class GameController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(game);
+    }
+
+    @GetMapping("{id}/leaderboard")
+    public ResponseEntity<Leaderboard> getLeaderboard(
+            @PathVariable final UUID id) {
+        if (gameService.findById(id) == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(gameService.getLeaderboard(id));
+    }
+
+    @GetMapping("{id}/question")
+    public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
+        if (gameService.findById(id) == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(gameService.getQuestions(
+                gameService.generateSeed(id)));
     }
 
     /**
@@ -156,7 +175,6 @@ public class GameController {
     private void handleSessionDisconnect(final SessionDisconnectEvent event) {
         System.out.println("Client disconnected");
         System.out.println(event.getSessionId());
-
     }
 
     /*
@@ -164,12 +182,19 @@ public class GameController {
      * Namely, updates the active players in the lobby for all clients.
      *
      * @param player The player object who has joined the most recently
+     * 
      * @return The Player object created from the nick
      */
     @MessageMapping("/join") // /app/join
     @SendTo("/topic/join")
     public JoinMessage joinWebsocket(final JoinMessage joinMessage) {
         return joinMessage;
+    }
+
+    @MessageMapping("/lobby/chat") // /app/lobby/chat
+    @SendTo("/topic/lobby/chat")
+    private Message sendMessage(final Message msg) {
+        return msg;
     }
 
     /**

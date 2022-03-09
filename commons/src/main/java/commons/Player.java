@@ -21,8 +21,8 @@ public class Player {
 
     @JsonCreator
     public Player(final @JsonProperty("nick") String nick,
-                  final @JsonProperty("time") int time,
-                  final @JsonProperty("score") int score) {
+            final @JsonProperty("time") int time,
+            final @JsonProperty("score") int score) {
         this.nick = nick;
         this.time = time;
         this.score = score;
@@ -59,8 +59,9 @@ public class Player {
 
     @Override
     public boolean equals(final Object other) {
-        if (other == null) return false;
-        if (other instanceof Player that) {
+        if (other == null) {
+            return false;
+        } else if (other instanceof Player that) {
             return nick.equals(that.nick)
                     && score == that.score
                     && time == that.time;

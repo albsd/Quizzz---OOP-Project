@@ -22,7 +22,7 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage stage) throws IOException {
-        var root = FXML.load(SplashController.class,
+        var root  = FXML.load(SplashController.class,
                 "client", "scenes", "Splash.fxml");
         Scene scene = new Scene(root.getValue());
         Image logo = new Image(Main.class

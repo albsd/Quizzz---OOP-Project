@@ -1,11 +1,14 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static java.nio.file.Files.readAllBytes;
 
@@ -25,18 +28,19 @@ public class Question {
     @JsonProperty("answer")
     private final int answer;
 
-    public Question(final String prompt,
-                    final Path imagePath,
-                    final String[] options,
-                    final int answer) {
+    @JsonCreator
+    public Question(final @JsonProperty("prompt") String prompt,
+            final @JsonProperty("imagePath") Path imagePath,
+            final @JsonProperty("options") String[] options,
+            final @JsonProperty("answer") int answer) {
         byte[] bytes;
         try {
             bytes = readAllBytes(imagePath);
         } catch (Exception e1) {
             try {
                 System.err.println("Could not load path '"
-                                + imagePath.toString()
-                                + "', loading default image instead.");
+                        + imagePath.toString()
+                        + "', loading default image instead.");
                 URI uri = getClass().getClassLoader()
                         .getResource("default.jpg").toURI();
                 bytes = readAllBytes(Path.of(uri));
@@ -67,5 +71,28 @@ public class Question {
 
     public int getAnswer() {
         return this.answer;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other instanceof Question that) {
+            return answer == that.answer
+                    && prompt.equals(that.prompt)
+                    && Arrays.equals(imageBytes, that.imageBytes)
+                    && Arrays.equals(options, that.options);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(prompt, answer);
+        final int hashInt = 31;
+        result = hashInt * result + Arrays.hashCode(imageBytes);
+        result = hashInt * result + Arrays.hashCode(options);
+        return result;
     }
 }
