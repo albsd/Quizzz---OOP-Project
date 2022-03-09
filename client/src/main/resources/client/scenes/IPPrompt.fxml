@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="640.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.IPPromptController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="620.0">
+        <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="620.0" text="Energy Quizzz" textAlignment="CENTER">
+                <font>
+                    <Font name="System Bold" size="48.0" />
+                </font>
+            </Label>
+         <VBox alignment="CENTER" spacing="20" fillWidth="false" layoutY="70.0" prefHeight="50.0" prefWidth="620.0">
+            <children>
+                <HBox>
+                    <children>
+                        <Label alignment="CENTER" prefHeight="41.0" prefWidth="260.0" textFill="#c00000" text="Host: ">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="hostField" alignment="CENTER" prefHeight="30.0" prefWidth="260.0" promptText="Input the IP address" text="localhost">
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </TextField>
+                    </children>
+                </HBox>
+                 <HBox>
+                     <children>
+                         <Label alignment="CENTER" prefHeight="41.0" prefWidth="260.0" textFill="#c00000" text="Port: ">
+                             <font>
+                                 <Font size="14.0" />
+                             </font>
+                         </Label>
+                           <TextField fx:id="portField" alignment="CENTER" prefHeight="30.0" prefWidth="260.0" promptText="Input the port" text="8080">
+                              <font>
+                                 <Font size="24.0" />
+                              </font>
+                           </TextField>
+                     </children>
+                 </HBox>
+               <Text fx:id="warning" textAlignment="CENTER">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Text>
+               <Button mnemonicParsing="false" onAction="#connect" prefHeight="50.0" prefWidth="210.0" text="Connect">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Button>
+            </children>
+         </VBox>
+        </children>
+    </AnchorPane>
+</VBox>
