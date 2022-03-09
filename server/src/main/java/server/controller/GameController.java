@@ -16,7 +16,6 @@
 package server.controller;
 
 import commons.Game;
-import commons.JoinMessage;
 import commons.LobbyMessage;
 import commons.Leaderboard;
 import commons.Question;
@@ -186,8 +185,14 @@ public class GameController {
      */
     @MessageMapping("/join") // /app/join
     @SendTo("/topic/join")
-    public JoinMessage joinWebsocket(final JoinMessage joinMessage) {
-        return joinMessage;
+    public Player joinWebsocket(final Player player) {
+        return player;
+    }
+
+    @MessageMapping("/leave")
+    @SendTo("/topic/leave")
+    public Player leaveWebsocket(final Player player) {
+        return player;
     }
 
     @MessageMapping("/lobby/chat") // /app/lobby/chat

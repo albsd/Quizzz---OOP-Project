@@ -3,7 +3,6 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.JoinMessage;
 import commons.LobbyMessage;
 import commons.Player;
 import javafx.application.Platform;
@@ -26,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class LobbyController implements Initializable {
 
@@ -44,8 +45,6 @@ public class LobbyController implements Initializable {
     @FXML
     private Label playersRight;
 
-    private boolean left = true;
-
     @FXML
     private Label playerCount;
 
@@ -59,7 +58,8 @@ public class LobbyController implements Initializable {
     public LobbyController(final ServerUtils server) {
         this.server = server;
         this.players = new ArrayList<>();
-        server.registerForMessages("/topic/join", JoinMessage.class, playerConsumer);
+        server.registerForMessages("/topic/join", Player.class, joinConsumer);
+        server.registerForMessages("/topic/leave", Player.class, leaveConsumer);
         server.registerForMessages("/topic/lobby/chat",
                 LobbyMessage.class, messageConsumer);
     }
@@ -67,12 +67,11 @@ public class LobbyController implements Initializable {
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         this.players = new ArrayList<>();
-        List<Player> lobbyPlayers = server.getPlayers();
-        if (lobbyPlayers != null) {
-            for (Player p : lobbyPlayers) {
-                playerConsumer.accept(new JoinMessage(p, true));
-            }
+        players = server.getPlayers();
+        if (players == null) {
+            players = new ArrayList<Player>();
         }
+        updatePlayerList();
     }
 
     @FXML
@@ -82,7 +81,7 @@ public class LobbyController implements Initializable {
         final int demoTime = 10;
         // escapes special characters in input
         server.send("/app/lobby/chat",
-                new LobbyMessage(me, demoTime, HtmlUtils.htmlEscape(content)));
+                new LobbyMessage(me.getNick(), demoTime, HtmlUtils.htmlEscape(content)));
         chatArea.setVvalue(1.0);
     }
 
@@ -90,14 +89,17 @@ public class LobbyController implements Initializable {
         this.me = me;
     }
 
-    private final Consumer<JoinMessage> playerConsumer = msg -> {
-        final Player wsPlayer = msg.getPlayer();
-        if (msg.isJoining()) {
-            players.add(wsPlayer);
-        } else {
-            players.remove(wsPlayer);
-        }
+    private final Consumer<Player> joinConsumer = player -> {
+        players.add(player);
+        updatePlayerList();
+    };
 
+    private final Consumer<Player> leaveConsumer = player -> {
+        players.remove(player);
+        updatePlayerList();
+    };
+
+    private void updatePlayerList() {
         // GUI Updates must be run later
         // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
         Platform.runLater(new Runnable() {
@@ -105,43 +107,35 @@ public class LobbyController implements Initializable {
             public void run() {
                 playerCount.setText("Number of players: " + players.size());
 
-                if (msg.isJoining()) {
-                    final Label column = left ? playersLeft : playersRight;
-                    left = !left;
-                    String colText = column.getText();
-                    String newText = colText + wsPlayer.getNick();
-                    if (wsPlayer.getNick().equals(me.getNick())) {
-                        newText += "(me)";
+                List<String> nicks = players.stream().map(Player::getNick).map(nick -> {
+                    if (nick.equals(me.getNick())) {
+                        return nick + " (me)";
                     }
-                    column.setText(newText + "\n\n");
+                    return nick;
+                }).toList();
 
-                } else {
-                    playersLeft.setText("");
-                    playersRight.setText("");
-                    left = true;
+                String leftText = IntStream.range(0, players.size())
+                        .filter(i -> i % 2 == 0)
+                        .mapToObj(nicks::get)
+                        .collect(Collectors.joining("\n\n"));
 
-                    for (Player p : players) {
-                        final Label column = left ? playersLeft : playersRight;
-                        left = !left;
-                        String colText = column.getText();
+                String rightText = IntStream.range(0, players.size())
+                        .filter(i -> i % 2 == 1)
+                        .mapToObj(nicks::get)
+                        .collect(Collectors.joining("\n\n"));
 
-                        String newText = colText + p.getNick();
-                        if (p.getNick().equals(me.getNick())) {
-                            newText += "(me)";
-                        }
-                        column.setText(newText + "\n\n");
-                    }
-                }
+                playersLeft.setText(leftText);
+                playersRight.setText(rightText);
             }
         });
-    };
+    }
 
-    private Consumer<LobbyMessage> messageConsumer = m -> {
+    private final Consumer<LobbyMessage> messageConsumer = m -> {
         System.out.println("Message received");
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                String nick = m.getPlayer().getNick();
+                String nick = m.getNick();
                 int time = m.getTimestamp();
                 String content = m.getContent();
                 // change. Scroll pane is not place to put messages
@@ -166,7 +160,7 @@ public class LobbyController implements Initializable {
 
     public void returnToMenu(final ActionEvent event) {
         server.leaveGame(me.getNick());
-        server.send("/app/join", new JoinMessage(me, false));
+        server.send("/app/leave", me);
 
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 
