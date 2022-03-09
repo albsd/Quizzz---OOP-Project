@@ -16,11 +16,11 @@
 package server.controller;
 
 import commons.Game;
-import commons.Leaderboard;
-import commons.Message;
-import commons.Player;
-import commons.Question;
 import commons.JoinMessage;
+import commons.LobbyMessage;
+import commons.Leaderboard;
+import commons.Question;
+import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -159,8 +159,7 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
-    // TODO: send generated session id to client so that it can send it back when
-    // joining lobby after nickname
+    // TODO: send generated session id to client so that it can send it back when joining lobby after nickname
     @EventListener
     @SendTo
     private void handleSessionConnected(final SessionConnectEvent event) {
@@ -193,7 +192,7 @@ public class GameController {
 
     @MessageMapping("/lobby/chat") // /app/lobby/chat
     @SendTo("/topic/lobby/chat")
-    private Message sendMessage(final Message msg) {
+    private LobbyMessage sendMessage(final LobbyMessage msg) {
         return msg;
     }
 

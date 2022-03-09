@@ -6,39 +6,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class Message {
-    @JsonProperty("nick")
-    private final String nick;
+    @JsonProperty("player")
+    private Player player;
 
-    @JsonProperty("time")
-    private final int time;
-
-    @JsonProperty("content")
-    private final String messageContent;
+    @JsonProperty("timestamp")
+    private int timestamp;
 
     @JsonCreator
-    public Message(final @JsonProperty("nick") String nick,
-                   final @JsonProperty("time") int time,
-                   final @JsonProperty("content") String messageContent) {
-        this.nick = nick;
-        this.time = time;
-        this.messageContent = messageContent;
+    public Message(final @JsonProperty("player") Player player,
+                   final @JsonProperty("timestamp") int timestamp) {
+        this.player = player;
+        this.timestamp = timestamp;
     }
 
-    public String getNick() {
-        return nick;
+    public Player getPlayer() {
+        return player;
     }
 
-    public int getTime() {
-        return time;
+    public void setPlayer(final Player player) {
+        this.player = player;
     }
 
-    public String getMessageContent() {
-        return messageContent;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nick, time, messageContent);
+    public int getTimestamp() {
+        return timestamp;
     }
 
     @Override
@@ -46,8 +36,15 @@ public class Message {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Message message = (Message) o;
-        return time == message.time
-                && nick.equals(message.nick)
-                && messageContent.equals(message.messageContent);
+        return Objects.equals(player, message.player) && Objects.equals(timestamp, message.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(player, timestamp);
+    }
+
+    public void setTimestamp(final int timestamp) {
+        this.timestamp = timestamp;
     }
 }

@@ -4,7 +4,7 @@ import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.JoinMessage;
-import commons.Message;
+import commons.LobbyMessage;
 import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -61,7 +61,7 @@ public class LobbyController implements Initializable {
         this.players = new ArrayList<>();
         server.registerForMessages("/topic/join", JoinMessage.class, playerConsumer);
         server.registerForMessages("/topic/lobby/chat",
-                Message.class, messageConsumer);
+                LobbyMessage.class, messageConsumer);
     }
 
     @Override
@@ -82,8 +82,7 @@ public class LobbyController implements Initializable {
         final int demoTime = 10;
         // escapes special characters in input
         server.send("/app/lobby/chat",
-                new Message(me.getNick(), demoTime,
-                        HtmlUtils.htmlEscape(content)));
+                new LobbyMessage(me, demoTime, HtmlUtils.htmlEscape(content)));
         chatArea.setVvalue(1.0);
     }
 
@@ -91,7 +90,7 @@ public class LobbyController implements Initializable {
         this.me = me;
     }
 
-    private Consumer<JoinMessage> playerConsumer = msg -> {
+    private final Consumer<JoinMessage> playerConsumer = msg -> {
         final Player wsPlayer = msg.getPlayer();
         if (msg.isJoining()) {
             players.add(wsPlayer);
@@ -137,14 +136,14 @@ public class LobbyController implements Initializable {
         });
     };
 
-    private Consumer<Message> messageConsumer = m -> {
+    private Consumer<LobbyMessage> messageConsumer = m -> {
         System.out.println("Message received");
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                String nick = m.getNick();
-                int time = m.getTime();
-                String content = m.getMessageContent();
+                String nick = m.getPlayer().getNick();
+                int time = m.getTimestamp();
+                String content = m.getContent();
                 // change. Scroll pane is not place to put messages
                 String chatLogs = chatText.getText()
                         + nick + " (" + time + ") - " + content + "\n";

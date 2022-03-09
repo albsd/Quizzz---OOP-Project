@@ -119,7 +119,7 @@ public class ServerUtils {
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<Player>() {
+        return parseResponseToObject(request, new TypeReference<>() {
         });
     }
 
@@ -135,7 +135,7 @@ public class ServerUtils {
                 .DELETE()
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<Player>() {
+        return parseResponseToObject(request, new TypeReference<>() {
         });
     }
 
@@ -150,7 +150,7 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        Game game = parseResponseToObject(request, new TypeReference<Game>() {
+        Game game = parseResponseToObject(request, new TypeReference<>() {
         });
         if (game == null) return null;
         return game.getPlayers();
@@ -163,7 +163,7 @@ public class ServerUtils {
                 .GET()
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<Leaderboard>() {
+        return parseResponseToObject(request, new TypeReference<>() {
         });
     }
 
@@ -175,7 +175,7 @@ public class ServerUtils {
                 .GET()
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<List<Question>>() {
+        return parseResponseToObject(request, new TypeReference<>() {
         });
     }
 
