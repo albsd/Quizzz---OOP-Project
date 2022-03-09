@@ -15,16 +15,11 @@ import java.util.Optional;
 public class LeaderboardController {
 
     @FXML
-    private Stage stage;
-    @FXML
-    private Scene scene;
-
-    @FXML
     protected void onConfirmButtonClick(final ActionEvent e) {
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 
-        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }
@@ -48,8 +43,8 @@ public class LeaderboardController {
     public void switchToLeaderboard(final ActionEvent e) {
         var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
 
-        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }

@@ -2,10 +2,8 @@ package client.scenes;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,6 +15,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import client.Main;
+
 public class GameMultiplayerController implements Initializable {
 
     @FXML
@@ -26,26 +26,14 @@ public class GameMultiplayerController implements Initializable {
             cancelButton, confirmButton;
     @FXML
     private Label question, questionNumber, points, popupText, timer1, timer2;
+
     @FXML
     private Pane popupMenu;
-
-
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
-
-    private final int font1Size = 24;
-    private final int font2Size = 30;
-    private final int font3Size = 72;
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         Font font1 = Font.loadFont(getClass().getResourceAsStream(
-                "/fonts/Righteous-Regular.ttf"), font1Size);
-        Font font2 = Font.loadFont(getClass().getResourceAsStream(
-                "/fonts/Righteous-Regular.ttf"), font2Size);
-        Font font3 = Font.loadFont(getClass().getResourceAsStream(
-                "/fonts/Righteous-Regular.ttf"), font3Size);
+                "/fonts/Righteous-Regular.ttf"), 24);
 
         option1.setFont(font1);
         option2.setFont(font1);
@@ -63,11 +51,10 @@ public class GameMultiplayerController implements Initializable {
     }
 
     public void returnMenu(final ActionEvent e) throws IOException {
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("Splash.fxml"));
-        root = loader.load();
-        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
+
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }
@@ -79,7 +66,6 @@ public class GameMultiplayerController implements Initializable {
     public void closePopup(final ActionEvent e) throws IOException {
         popupMenu.setVisible(false);
     }
-
 
     public void timePowerup(final ActionEvent e) {
 

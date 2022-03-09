@@ -30,11 +30,10 @@ import server.repository.GameRepository;
 import server.service.GameService;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 public class GameControllerTest {
@@ -43,14 +42,22 @@ public class GameControllerTest {
 
     private GameController ctrl;
 
-    private UUID uuid;
+    private Game lobby;
+
+    private Game game;
 
     @BeforeEach
     public void setup() {
         service = new GameService(new GameRepository());
         ctrl = new GameController(service);
-        //for tests sake, 1 game already created inside repo
-        uuid = ctrl.create();
+        // The current lobby is promoted to a game
+        // a new lobby is returned after promotion
+        game = ctrl.getCurrentGame();
+        ctrl.joinCurrentGame("johny");
+        ctrl.joinCurrentGame("niko");
+        ctrl.joinCurrentGame("babe");
+
+        lobby = ctrl.startCurrentGame().getBody();
     }
 
     @Test
@@ -99,47 +106,39 @@ public class GameControllerTest {
         ctrl.joinCurrentGame("niko");
         ctrl.joinCurrentGame("babe");
 
-        var lobby = ctrl.getCurrentGame();
         var newLobby = ctrl.startCurrentGame();
 
         assertEquals(ctrl.getAll().size(), 2);
         assertEquals(lobby.getPlayers().size(), 3);
         assertNotEquals(lobby, newLobby.getBody());
     }
-    @Test
-    public void leaderboardEmpty() {
-        assertEquals(service.
-                getLeaderboard(uuid).getRanking(),
-                new ArrayList<Player>());
-    }
+
     @Test
     public void leaderboardSorted() {
-        var player1 = ctrl.join(uuid, "player1");
-        var player2 = ctrl.join(uuid, "player2");
-        Game game = service.findById(uuid);
         List<Player> players = game.getPlayers();
-        final int four = 4;
-        final int two  = 2;
-        players.get(0).setScore(four);
-        players.get(1).setScore(two);
-        List<Player> expected = Arrays.asList(
-                player1.getBody(), player2.getBody());
-        assertEquals(ctrl.getLeaderboard(uuid).
-                getBody().getRanking(), expected);
+        for (int i = 0; i < players.size(); i++) {
+            players.get(0).setScore(4 * i + 2);
+        }
+
+        List<Player> expected = players.stream()
+                .sorted(Comparator.comparingInt(Player::getScore).reversed()).toList();
+
+        assertEquals(ctrl.getLeaderboard(game.getId()).getBody().getRanking(), expected);
     }
+
     @Test
     public void getQuestion() {
         GameRepository repository = new GameRepository();
         List<Question> questions = Arrays.asList(
                 new Question("this is q1", Paths.get("INVALID"),
-                new String[]{"answer 1", "answer 2", "answer 2"}, 0),
+                        new String[] { "answer 1", "answer 2", "answer 2" }, 0),
                 new Question("this is q2", Paths.get("INVALID"),
-                new String[]{"answer 1", "answer 2", "answer 2"}, 0),
+                        new String[] { "answer 1", "answer 2", "answer 2" }, 0),
                 new Question("this is q3", Paths.get("INVALID"),
-                new String[]{"answer 1", "answer 2", "answer 2"}, 0));
+                        new String[] { "answer 1", "answer 2", "answer 2" }, 0));
         Collections.shuffle(questions,
-                new Random(repository.generateSeed(uuid)));
-        List<Question> repoQuestions = ctrl.getQuestions(uuid).getBody();
+                new Random(repository.generateSeed(game.getId())));
+        List<Question> repoQuestions = ctrl.getQuestions(game.getId()).getBody();
         assertEquals(repoQuestions.get(0), questions.get(0));
         assertEquals(repoQuestions.get(1), questions.get(1));
         assertEquals(repoQuestions.get(2), questions.get(2));

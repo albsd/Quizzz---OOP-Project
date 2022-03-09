@@ -71,73 +71,6 @@ public class GameController {
         return gameService.getCurrentGame();
     }
 
-
-    @Deprecated
-    @PostMapping("")
-    public UUID create() {
-        UUID uuid = UUID.randomUUID();
-        Game game = new Game(uuid);
-        return gameService.addGame(game);
-    }
-
-    @MessageMapping("{id}/join")
-    @SendTo("/topic/game_join")
-    public Player joinWs(final @PathVariable("id") UUID id, final String nick) {
-        return join(id, nick).getBody();
-    }
-
-    // path is /app/lobby/chat
-    @MessageMapping("/lobby/chat")
-    @SendTo("/topic/lobby/chat")
-    private Message sendMessage(final Message msg) {
-        return msg;
-    }
-
-    /**
-     * Join the active game lobby as a Player with id "nick".
-     *
-     * @param nick User's nickname which identifies a given player in a game
-     * @return Player
-     */
-    // TODO: add sessionId to path so it can be used to construct the player
-    @PostMapping("/join/{nick}")
-    public ResponseEntity<Player> joinCurrentGame(final @PathVariable("nick") String nick) {
-        if (nick == null || nick.isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Game lobby = gameService.getCurrentGame();
-
-        Player p = new Player(nick);
-        boolean success = lobby.addPlayer(p);
-
-        final int errorCode = 403; // FORBIDDEN
-        if (!success) {
-            return ResponseEntity.status(errorCode).build();
-        }
-        return ResponseEntity.ok(p);
-    }
-
-    @PostMapping("{id}/{nick}")
-    public ResponseEntity<Player> join(
-            final @PathVariable("id") UUID id,
-            final @PathVariable("nick") String nick) {
-        if (nick == null || nick.isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-        Game game = gameService.findById(id);
-        if (game == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Player p = new Player(nick);
-        boolean success = game.addPlayer(p);
-
-        final int errorCode = 403;
-        if (!success) return ResponseEntity.status(errorCode).build();
-        return ResponseEntity.ok(p);
-    }
-
     /**
      * Fetches the game by its UUID.
      *
@@ -163,13 +96,37 @@ public class GameController {
     }
 
     @GetMapping("{id}/question")
-    public ResponseEntity<List<Question>>
-    getQuestions(@PathVariable final UUID id) {
+    public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
         if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(gameService.getQuestions(
                 gameService.generateSeed(id)));
+    }
+
+    /**
+     * Join the active game lobby as a Player with id "nick".
+     *
+     * @param nick User's nickname which identifies a given player in a game
+     * @return Player
+     */
+    // TODO: add sessionId to path so it can be used to construct the player
+    @PostMapping("/join/{nick}")
+    public ResponseEntity<Player> joinCurrentGame(final @PathVariable("nick") String nick) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game lobby = gameService.getCurrentGame();
+
+        Player p = new Player(nick);
+        boolean success = lobby.addPlayer(p);
+
+        final int errorCode = 403; // FORBIDDEN
+        if (!success) {
+            return ResponseEntity.status(errorCode).build();
+        }
+        return ResponseEntity.ok(p);
     }
 
     /**
@@ -218,7 +175,6 @@ public class GameController {
     private void handleSessionDisconnect(final SessionDisconnectEvent event) {
         System.out.println("Client disconnected");
         System.out.println(event.getSessionId());
-
     }
 
     /*
@@ -226,12 +182,19 @@ public class GameController {
      * Namely, updates the active players in the lobby for all clients.
      *
      * @param player The player object who has joined the most recently
+     * 
      * @return The Player object created from the nick
      */
     @MessageMapping("/join") // /app/join
     @SendTo("/topic/join")
     public JoinMessage joinWebsocket(final JoinMessage joinMessage) {
         return joinMessage;
+    }
+
+    @MessageMapping("/lobby/chat") // /app/lobby/chat
+    @SendTo("/topic/lobby/chat")
+    private Message sendMessage(final Message msg) {
+        return msg;
     }
 
     /**

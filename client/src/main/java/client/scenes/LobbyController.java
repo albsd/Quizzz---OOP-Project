@@ -35,8 +35,6 @@ public class LobbyController implements Initializable {
     @FXML
     private Label chatText;
 
-    private String nickname;
-
     @FXML
     private TextField chatInput;
 
@@ -50,10 +48,6 @@ public class LobbyController implements Initializable {
 
     @FXML
     private Label playerCount;
-
-    private Stage stage;
-
-    private Scene scene;
 
     private List<Player> players;
 
@@ -86,9 +80,9 @@ public class LobbyController implements Initializable {
         String content = chatInput.getText();
         chatInput.setText("");
         final int demoTime = 10;
-        //escapes special characters in input
+        // escapes special characters in input
         server.send("/app/lobby/chat",
-                new Message(getNickname(), demoTime,
+                new Message(me.getNick(), demoTime,
                         HtmlUtils.htmlEscape(content)));
         chatArea.setVvalue(1.0);
     }
@@ -151,10 +145,10 @@ public class LobbyController implements Initializable {
                 String nick = m.getNick();
                 int time = m.getTime();
                 String content = m.getMessageContent();
-                //change. Scroll pane is not place to put messages
+                // change. Scroll pane is not place to put messages
                 String chatLogs = chatText.getText()
                         + nick + " (" + time + ") - " + content + "\n";
-                        chatText.setText(chatLogs);
+                chatText.setText(chatLogs);
             }
         });
     };
@@ -177,27 +171,18 @@ public class LobbyController implements Initializable {
 
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }
 
-
-    public void setNickname(final String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-    
     public void start(final ActionEvent event) {
         // server.startGame();
         var root = Main.FXML.load(GameMultiplayerController.class, "client", "scenes", "GameMultiplayer.fxml");
 
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }

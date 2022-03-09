@@ -7,24 +7,22 @@ import java.util.Objects;
 
 public class Player {
     @JsonProperty("nick")
-    private String nick;
+    private final String nick;
 
     @JsonProperty("time")
     private int time;
 
     @JsonProperty("score")
     private int score;
-    private Player() {
 
-    }
-    public Player(@JsonProperty final String nick) {
+    public Player(final String nick) {
         this.nick = nick;
     }
 
     @JsonCreator
     public Player(final @JsonProperty("nick") String nick,
-                  final @JsonProperty("time") int time,
-                  final @JsonProperty("score") int score) {
+            final @JsonProperty("time") int time,
+            final @JsonProperty("score") int score) {
         this.nick = nick;
         this.time = time;
         this.score = score;
@@ -61,7 +59,8 @@ public class Player {
 
     @Override
     public boolean equals(final Object other) {
-        if (other == null) return false;
+        if (other == null)
+            return false;
         if (other instanceof Player that) {
             return nick.equals(that.nick)
                     && score == that.score

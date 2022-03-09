@@ -15,6 +15,7 @@
  */
 package client.utils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Game;
 import commons.Leaderboard;
@@ -46,14 +47,12 @@ public class ServerUtils {
 
     private final HttpClient client;
 
-    private static StompSession session =
-            connect("ws://localhost:8080/websocket");
+    private static StompSession session = connect("ws://localhost:8080/websocket");
 
     public ServerUtils() {
         this.kGameUrl = "http://localhost:8080/game";
         this.client = HttpClient.newHttpClient();
     }
-
 
     // Initial POST request to get gameId
     @Deprecated
@@ -87,8 +86,8 @@ public class ServerUtils {
     }
 
     public <T> void registerForMessages(final String dest,
-                                        final Class<T> type,
-                                        final Consumer<T> consumer) {
+            final Class<T> type,
+            final Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(final StompHeaders headers) {
@@ -98,7 +97,7 @@ public class ServerUtils {
             @SuppressWarnings("unchecked")
             @Override
             public void handleFrame(final StompHeaders headers,
-                                    final Object payload) {
+                    final Object payload) {
                 consumer.accept((T) payload);
             }
         });
@@ -115,13 +114,13 @@ public class ServerUtils {
      * @return Player that has joined the game
      */
     public Player joinGame(final String nick) {
-        final int ok = 200;
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/join/" + nick))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
-        return parseResponseToObject(request, Player.class);
+        return parseResponseToObject(request, new TypeReference<Player>() {
+        });
     }
 
     /**
@@ -136,7 +135,8 @@ public class ServerUtils {
                 .DELETE()
                 .build();
 
-        return parseResponseToObject(request, Player.class);
+        return parseResponseToObject(request, new TypeReference<Player>() {
+        });
     }
 
     /**
@@ -150,7 +150,8 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        Game game = parseResponseToObject(request, Game.class);
+        Game game = parseResponseToObject(request, new TypeReference<Game>() {
+        });
         if (game == null) return null;
         return game.getPlayers();
     }
@@ -161,8 +162,9 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        
-        return parseResponseToObject(request, Leaderboard.class);        
+
+        return parseResponseToObject(request, new TypeReference<Leaderboard>() {
+        });
     }
 
     public List<Question> getQuestions(final String id) {
@@ -173,7 +175,8 @@ public class ServerUtils {
                 .GET()
                 .build();
 
-        return parseResponseToObject(request, List.class);
+        return parseResponseToObject(request, new TypeReference<List<Question>>() {
+        });
     }
 
     /**
@@ -184,7 +187,7 @@ public class ServerUtils {
      * @param type    Expected type of the response
      * @return Parsed response as the given instance of class `type`
      */
-    private <T> T parseResponseToObject(final HttpRequest request, final Class<T> type) {
+    private <T> T parseResponseToObject(final HttpRequest request, final TypeReference<T> type) {
         try {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());

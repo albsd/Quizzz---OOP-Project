@@ -16,4 +16,14 @@ public class Leaderboard {
     public void setRanking(final List<Player> ranking) {
         this.ranking = ranking;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null)
+            return false;
+        if (other instanceof Leaderboard that) {
+            return ranking.containsAll(that.getRanking()) && that.getRanking().containsAll(ranking);
+        }
+        return false;
+    }
 }
