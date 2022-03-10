@@ -202,24 +202,21 @@ public class GameController {
         return new GameUpdate(GameUpdate.Type.halveTimer);
     }
 
-
     @SendTo("/topic/game/update")
     public GameUpdate startTimeWebsocket(final UUID id) {
-
         return new GameUpdate(GameUpdate.Type.startTimer);
     }
 
-    //when client timer is 0, it asks whether server time is 0
+    //when client timer is 0, requests question but don't load yet
     @GetMapping("{id}/question")
     public ResponseEntity<Question> getMockQuestion(
             @PathVariable final UUID id) {
-        /*QuestionTimer shortPollTimer = new QuestionTimer();
-        shortPollTimer.startShortPoll(gameService.getQuestionTimer());
-        startTimeWebsocket();*/
-
-        return ResponseEntity.ok(
-                gameService.getMockQuestion());
-
+        return ResponseEntity.ok(gameService.getMockQuestion());
     }
 
+    //occurs when the responsible server timer hits 0;
+    @SendTo("/topic/question/load")
+    public GameUpdate loadQuestion() {
+        return new GameUpdate(GameUpdate.Type.halveTimer);
+    }
 }
