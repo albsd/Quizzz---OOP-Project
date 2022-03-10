@@ -69,7 +69,7 @@ public class LobbyController implements Initializable {
             }
             updatePlayerList();
         };
-        server.registerForMessages("/topic/player_update", PlayerUpdate.class, playerUpdateConsumer);
+        server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, playerUpdateConsumer);
 
         // change. Scroll pane is not place to put messages
         Consumer<LobbyMessage> messageConsumer = m -> {

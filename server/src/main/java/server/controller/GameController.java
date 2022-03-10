@@ -178,8 +178,8 @@ public class GameController {
         System.out.println(event.getSessionId());
     }
 
-    @MessageMapping("/player_update") // /app/player_update
-    @SendTo("/topic/player_update")
+    @MessageMapping("/playerUpdate") // /app/player_update
+    @SendTo("/topic/playerUpdate")
     private PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
         return update;
     }

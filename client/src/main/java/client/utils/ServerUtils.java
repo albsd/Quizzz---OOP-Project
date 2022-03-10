@@ -122,7 +122,7 @@ public class ServerUtils {
 
         Player player = parseResponseToObject(request, new TypeReference<Player>() { });
         if (player != null) {
-            send("/app/player_update", new PlayerUpdate(player, PlayerUpdate.Action.join));
+            send("/app/playerUpdate", new PlayerUpdate(player, PlayerUpdate.Action.join));
         }
         return player;
     }
@@ -141,7 +141,7 @@ public class ServerUtils {
 
         Player player = parseResponseToObject(request, new TypeReference<Player>() { });
         if (player != null) {
-            send("/app/player_update", new PlayerUpdate(player, PlayerUpdate.Action.leave));
+            send("/app/playerUpdate", new PlayerUpdate(player, PlayerUpdate.Action.leave));
         }
         return player;
     }
