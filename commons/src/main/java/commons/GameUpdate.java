@@ -3,23 +3,24 @@ package commons;
 
 
 public class GameUpdate {
-    public enum Update {
+    public enum Type {
         halveTimer,
         stopTimer,
-        startTimer
+        startTimer,
+        none
     }
 
-    private Update update;
+    private Type update;
 
-    public GameUpdate(final Update update) {
+    public GameUpdate(final Type update) {
         this.update = update;
     }
 
-    public Update getUpdate() {
+    public Type getUpdate() {
         return update;
     }
 
-    public void setUpdate(final Update update) {
+    public void setUpdate(final Type update) {
         this.update = update;
     }
 }

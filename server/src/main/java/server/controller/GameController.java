@@ -15,13 +15,18 @@
  */
 package server.controller;
 
+import java.util.List;
+import java.util.UUID;
+
+
 import commons.Game;
-<<<<<<< HEAD
 import commons.JoinMessage;
-=======
+
 import commons.GameUpdate;
->>>>>>> cf305ed77fcd8b371c3ba3bd426cd0befcf417b3
 import commons.Player;
+import commons.Question;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -89,7 +94,6 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
-<<<<<<< HEAD
     /**
      * Join the active game lobby as a Player with id "nick".
      *
@@ -191,22 +195,31 @@ public class GameController {
         }
         return ResponseEntity.ok(gameService.newGame());
     }
-=======
-    @MessageMapping("/halve") //
+
+    @MessageMapping("/halve")
     @SendTo("/topic/game/update")
     public GameUpdate halveTimeWebsocket() {
-        return new GameUpdate(GameUpdate.Update.halveTimer);
+        return new GameUpdate(GameUpdate.Type.halveTimer);
     }
+
 
     @SendTo("/topic/game/update")
-    public GameUpdate startTimeWebsocket() {
-        return new GameUpdate(GameUpdate.Update.startTimer);
+    public GameUpdate startTimeWebsocket(final UUID id) {
+
+        return new GameUpdate(GameUpdate.Type.startTimer);
     }
 
-    @SendTo("/topic/game/update")
-    public GameUpdate stopTimeWebsocket() {
-        return new GameUpdate(GameUpdate.Update.stopTimer);
+    //when client timer is 0, it asks whether server time is 0
+    @GetMapping("{id}/question")
+    public ResponseEntity<Question> getMockQuestion(
+            @PathVariable final UUID id) {
+        /*QuestionTimer shortPollTimer = new QuestionTimer();
+        shortPollTimer.startShortPoll(gameService.getQuestionTimer());
+        startTimeWebsocket();*/
+
+        return ResponseEntity.ok(
+                gameService.getMockQuestion());
+
     }
 
->>>>>>> cf305ed77fcd8b371c3ba3bd426cd0befcf417b3
 }

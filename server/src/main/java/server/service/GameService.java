@@ -1,6 +1,8 @@
 package server.service;
 
 import commons.Game;
+import commons.Question;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.GameRepository;
@@ -46,4 +48,13 @@ public class GameService {
     public Game findById(final UUID id) {
         return repo.findById(id);
     }
+
+    public ServerQuestionTimer getServerQuestionTimer(final UUID id) {
+        return repo.findTimerById(id);
+    }
+
+    public Question getMockQuestion() {
+        return null;
+    }
+
 }
