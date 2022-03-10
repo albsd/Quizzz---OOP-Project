@@ -16,7 +16,11 @@
 package server.controller;
 
 import commons.Game;
+<<<<<<< HEAD
 import commons.JoinMessage;
+=======
+import commons.GameUpdate;
+>>>>>>> cf305ed77fcd8b371c3ba3bd426cd0befcf417b3
 import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -85,6 +89,7 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
+<<<<<<< HEAD
     /**
      * Join the active game lobby as a Player with id "nick".
      *
@@ -186,4 +191,22 @@ public class GameController {
         }
         return ResponseEntity.ok(gameService.newGame());
     }
+=======
+    @MessageMapping("/halve") //
+    @SendTo("/topic/game/update")
+    public GameUpdate halveTimeWebsocket() {
+        return new GameUpdate(GameUpdate.Update.halveTimer);
+    }
+
+    @SendTo("/topic/game/update")
+    public GameUpdate startTimeWebsocket() {
+        return new GameUpdate(GameUpdate.Update.startTimer);
+    }
+
+    @SendTo("/topic/game/update")
+    public GameUpdate stopTimeWebsocket() {
+        return new GameUpdate(GameUpdate.Update.stopTimer);
+    }
+
+>>>>>>> cf305ed77fcd8b371c3ba3bd426cd0befcf417b3
 }
