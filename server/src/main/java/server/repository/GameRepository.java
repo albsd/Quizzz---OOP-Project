@@ -16,9 +16,7 @@
 package server.repository;
 
 import commons.Game;
-import commons.Question;
 import org.springframework.stereotype.Repository;
-import server.service.ServerQuestionTimer;
 
 import java.util.*;
 
@@ -26,8 +24,6 @@ import java.util.*;
 public class GameRepository {
 
     private static Set<Game> games = new HashSet<>();
-
-    private static Set<ServerQuestionTimer> timers = new HashSet<>();
 
     public List<Game> getGames() {
         return games.stream().toList();
@@ -47,24 +43,6 @@ public class GameRepository {
     public UUID addGame(final Game game) {
         games.add(game);
         return game.getId();
-    }
-
-    public ServerQuestionTimer findTimerById(final UUID id) {
-        Optional<ServerQuestionTimer> optional = timers.stream()
-                .filter(t -> t.getId().equals(id))
-                .findFirst();
-
-        if (optional.isEmpty()) return null;
-        return optional.get();
-    }
-
-    public UUID addTimer(final ServerQuestionTimer timer) {
-        timers.add(timer);
-        return timer.getId();
-    }
-    public Question findQuestionById(final UUID id) {
-        //Todo: when questions are generated find by gameID
-        return null;
     }
 
     public void removeAllGames() {

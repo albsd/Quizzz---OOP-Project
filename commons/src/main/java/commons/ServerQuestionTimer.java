@@ -1,6 +1,8 @@
-package server.service;
+package commons;
 
 import commons.QuestionTimer;
+import org.springframework.beans.factory.annotation.Autowired;
+import server.controller.GameController;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,9 +39,13 @@ public class ServerQuestionTimer extends QuestionTimer {
                 currentTime -= decrement;
                 if (currentTime <= 0) {
                     System.out.println("Time's over!");
-
                     stopServerTimer();
                     cancel();
+
+
+                    gameController.startTimeAndLoadQuestion(id);
+
+
                 }
             }
         };
