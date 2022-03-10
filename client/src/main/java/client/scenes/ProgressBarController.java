@@ -1,9 +1,9 @@
 package client.scenes;
 
 //import javafx.application.Platform;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-//import javafx.scene.control.Button;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
