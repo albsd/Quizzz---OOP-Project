@@ -6,9 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class LobbyMessage extends Message<String> {
-    @JsonProperty("nick")
-    private String nick;
-
     @JsonProperty("timestamp")
     private int timestamp;
 
@@ -16,13 +13,8 @@ public class LobbyMessage extends Message<String> {
     public LobbyMessage(final @JsonProperty("nick") String nick,
                         final @JsonProperty("timestamp") int timestamp,
                        final @JsonProperty("content") String content) {
-        super(content);
-        this.nick = nick;
+        super(nick, content);
         this.timestamp = timestamp;
-    }
-
-    public String getNick() {
-        return nick;
     }
 
     public int getTimestamp() {
@@ -35,11 +27,11 @@ public class LobbyMessage extends Message<String> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         LobbyMessage that = (LobbyMessage) o;
-        return timestamp == that.timestamp && Objects.equals(nick, that.nick);
+        return timestamp == that.timestamp;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), nick, timestamp);
+        return Objects.hash(super.hashCode(), timestamp);
     }
 }

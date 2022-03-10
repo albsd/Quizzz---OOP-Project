@@ -6,13 +6,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public abstract class Message<T> {
+    @JsonProperty("nick")
+    private String nick;
 
     @JsonProperty("content")
     private T content;
 
     @JsonCreator
-    public Message(final @JsonProperty("content") T content) {
+    public Message(final @JsonProperty("nick") String nick,
+                   final @JsonProperty("content") T content) {
+        this.nick = nick;
         this.content = content;
+    }
+
+    public String getNick() {
+        return nick;
     }
 
     public T getContent() {

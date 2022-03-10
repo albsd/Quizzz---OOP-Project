@@ -49,7 +49,7 @@ public class LobbyController implements Initializable {
     @FXML
     private Label playerCount;
 
-    private List<Player> players;
+    private List<String> players;
 
     private final ServerUtils server;
 
@@ -62,10 +62,10 @@ public class LobbyController implements Initializable {
 
         Consumer<PlayerUpdate> playerUpdateConsumer = update -> {
             System.out.println("PlayerUpdate received");
-            if (update.getContent() == PlayerUpdate.Action.join) {
-                players.add(update.getPlayer());
+            if (update.getContent() == PlayerUpdate.Type.join) {
+                players.add(update.getNick());
             } else {
-                players.remove(update.getPlayer());
+                players.remove(update.getNick());
             }
             updatePlayerList();
         };
@@ -92,7 +92,7 @@ public class LobbyController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        this.players = server.getPlayers();
+        this.players = server.getPlayers().stream().map(Player::getNick).toList();
         if (players == null) {
             players = new ArrayList<>();
         }
@@ -122,7 +122,7 @@ public class LobbyController implements Initializable {
             public void run() {
                 playerCount.setText("Number of players: " + players.size());
 
-                List<String> nicks = players.stream().map(Player::getNick).map(nick -> {
+                List<String> nicks = players.stream().map(nick -> {
                     if (nick.equals(me.getNick())) {
                         return nick + " (me)";
                     }

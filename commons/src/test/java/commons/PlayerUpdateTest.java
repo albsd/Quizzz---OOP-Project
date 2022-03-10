@@ -7,30 +7,30 @@ package commons;
 
 class PlayerUpdateTest {
 
-    private Player p1;
-    private Player p2;
-    private PlayerUpdate.Action action1;
-    private PlayerUpdate.Action action2;
+    private String nick1;
+    private String nick2;
+    private PlayerUpdate.Type type1;
+    private PlayerUpdate.Type type2;
     private PlayerUpdate update1;
     private PlayerUpdate update2;
 
 
     @BeforeEach
     void setup() {
-        p1 = new Player("Adam");
-        p2 = new Player("Kevin");
-        action1 = PlayerUpdate.Action.join;
-        action2 = PlayerUpdate.Action.leave;
-        update1 = new PlayerUpdate(p1, action1);
-        update2 = new PlayerUpdate(p2, action2);
+        nick1 = "Adam";
+        nick2 = "Kevin";
+        type1 = PlayerUpdate.Type.join;
+        type2 = PlayerUpdate.Type.leave;
+        update1 = new PlayerUpdate(nick1, type1);
+        update2 = new PlayerUpdate(nick2, type2);
     }
 
     @Test
     void testGetters() {
-        assertEquals(p1, update1.getPlayer());
-        assertEquals(action1, update1.getContent());
+        assertEquals(nick1, update1.getNick());
+        assertEquals(type1, update1.getContent());
 
-        assertEquals(p2, update2.getPlayer());
-        assertEquals(action2, update2.getContent());
+        assertEquals(nick2, update2.getNick());
+        assertEquals(type2, update2.getContent());
     }
 }
