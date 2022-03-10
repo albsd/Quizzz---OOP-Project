@@ -39,9 +39,9 @@ public class QuestionTimer {
     public void startGameTimer() {
         reset();
         if (started) {
-            System.out.println("Server timer already started! Reset first.");
+            System.out.println("Game timer already started! Reset first.");
         } else {
-            System.out.println("Server timer started.");
+            System.out.println("Game timer started.");
             started = true;
             over = false;
             final int delay = 0;

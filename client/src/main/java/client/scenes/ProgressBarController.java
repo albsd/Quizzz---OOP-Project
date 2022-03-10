@@ -90,8 +90,6 @@ public class ProgressBarController implements Initializable {
                         b.setDisable(true);
                     }
 
-                    // WEBSOCKET GOES HERE -> REQUEST SET OF QUESTIONS
-
                     cancel();
                 } else {
                     Platform.runLater(() -> {
