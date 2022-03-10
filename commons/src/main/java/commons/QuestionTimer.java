@@ -113,4 +113,39 @@ public class QuestionTimer {
         currentTime = 0;
     }
 
+    public void setCurrentTime(final double currentTime) {
+        this.currentTime = currentTime;
+    }
+
+    public void setTimer(final Timer timer) {
+        this.timer = timer;
+    }
+
+    public void setCurrentTask(final TimerTask currentTask) {
+        this.currentTask = currentTask;
+    }
+
+    public double getDecrement() {
+        return decrement;
+    }
+
+    public TimerTask getCurrentTask() {
+        return currentTask;
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(final boolean started) {
+        this.started = started;
+    }
+
+    public boolean isOver() {
+        return over;
+    }
+
+    public void setOver(final boolean over) {
+        this.over = over;
+    }
 }
