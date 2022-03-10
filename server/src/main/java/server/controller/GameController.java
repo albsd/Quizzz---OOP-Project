@@ -18,13 +18,13 @@ package server.controller;
 import java.util.List;
 import java.util.UUID;
 
+
 import commons.Game;
 import commons.GameUpdate;
 import commons.Player;
+import commons.Question;
 
-import commons.QuestionTimer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -99,18 +99,25 @@ public class GameController {
         return new GameUpdate(GameUpdate.Update.halveTimer);
     }
 
+
     @SendTo("/topic/game/update")
-    @EventListener
-    public GameUpdate startTimeWebsocket(final QuestionTimer questionTimer) {
-        questionTimer.startServerTimer();
+    public GameUpdate startTimeWebsocket(final UUID id) {
+
         return new GameUpdate(GameUpdate.Update.startTimer);
     }
 
-    @SendTo("/topic/game/update")
-    @EventListener
-    public GameUpdate stopTimeWebsocket(final QuestionTimer questionTimer) {
-        questionTimer.stopServerTimer();
-        return new GameUpdate(GameUpdate.Update.stopTimer);
+    //when client timer is 0, it asks whether server time is 0
+    @GetMapping("{id}/question")
+    public ResponseEntity<Question> getMockQuestion(
+            @PathVariable final UUID id) {
+        /*QuestionTimer shortPollTimer = new QuestionTimer();
+        shortPollTimer.startShortPoll(gameService.getQuestionTimer());
+        startTimeWebsocket();*/
+
+
+        return ResponseEntity.ok(
+                gameService.getMockQuestion());
+
     }
 
 }

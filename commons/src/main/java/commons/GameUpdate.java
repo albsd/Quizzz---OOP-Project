@@ -6,7 +6,8 @@ public class GameUpdate {
     public enum Update {
         halveTimer,
         stopTimer,
-        startTimer
+        startTimer,
+        none
     }
 
     private Update update;

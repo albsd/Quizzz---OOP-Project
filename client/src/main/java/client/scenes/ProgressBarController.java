@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
@@ -57,9 +58,6 @@ public class ProgressBarController implements Initializable {
         Platform.runLater(() -> {
             if (update.getUpdate() == GameUpdate.Update.halveTimer) {
                 questionTimer.halve();
-                // Solution for the half thing:
-                // Save score or double on button click
-                // (separate method linked to button)
             } else if (update.getUpdate() == GameUpdate.Update.stopTimer) {
                 reset();
             } else if (update.getUpdate() == GameUpdate.Update.startTimer) {
@@ -68,9 +66,13 @@ public class ProgressBarController implements Initializable {
         });
     };
 
+    public void initialize(final URL location, final ResourceBundle resources) {
+        start();
+    }
+
     private TimerTask clientTimerTask(final QuestionTimer questionTimer,
-            final Label label, final ProgressBar bar,
-            final List<Button> buttons) {
+                                      final Label label, final ProgressBar bar,
+                                      final List<Button> buttons) {
         return new TimerTask() {
             @Override
             public void run() {
@@ -85,14 +87,21 @@ public class ProgressBarController implements Initializable {
                     for (Button b : buttons) {
                         b.setDisable(true);
                     }
+
+                    // WEBSOCKET GOES HERE -> REQUEST SET OF QUESTIONS
+
                     cancel();
                 } else {
                     Platform.runLater(() -> {
                         label.setText(
-                            String.format("%.2f", questionTimer.getCurrentTime()
-                                    / questionTimer.getOneSecond()));
+                                String.format("%.2f",
+                                        questionTimer.getCurrentTime()
+                                                / questionTimer.getOneSecond())
+                        );
+
                         bar.setProgress(questionTimer.getCurrentTime()
-                                    / questionTimer.getMaxTime());
+                                / questionTimer.getMaxTime()
+                        );
                     });
                 }
             }
@@ -123,10 +132,6 @@ public class ProgressBarController implements Initializable {
         }
     }
 
-    public void initialize(final URL location, final ResourceBundle resources) {
-        start();
-    }
-
     public void reset() {
         questionTimer.reset();
         Platform.runLater(() ->
@@ -151,6 +156,11 @@ public class ProgressBarController implements Initializable {
     public void onHalveButtonClick() {
         server.send("/app/halve",
                 new GameUpdate(GameUpdate.Update.halveTimer));
+
+        // Solution to ensure that the client's timer is not halved.
+        // (if he was the one that clicked on the button)
+        questionTimer.setCurrentTime(questionTimer.getCurrentTime() * 2);
+
         halveButton.setDisable(true);
     }
 

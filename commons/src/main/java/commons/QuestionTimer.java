@@ -15,54 +15,16 @@ public class QuestionTimer {
     private Timer timer = new Timer();
     private TimerTask currentTask;
 
-    private TimerTask serverTimerTask() {
-        return new TimerTask() {
-            @Override
-            public void run() {
-                currentTime -= decrement;
-                if (currentTime <= 0) {
-                    System.out.println("Time's over!");
-                    stopServerTimer();
-                    cancel();
-                }
-            }
-        };
 
-    }
 
     public double getCurrentTime() {
         return currentTime;
-    }
-
-    public double getOneSecond() {
-        return oneSecond;
     }
 
     public double getMaxTime() {
         return maxTime;
     }
 
-    public boolean getOver() {
-        return over;
-    }
-
-    public void startServerTimer() {
-        if (started) {
-            System.out.println("Server timer already started! Reset first.");
-        } else {
-            // This is where the server sends the message
-            // to all client QuestionTimers to start
-
-            System.out.println("Server timer started.");
-            started = true;
-            over = false;
-            final int delay = 0;
-            final int period = 25;
-            currentTask = serverTimerTask();
-            timer.scheduleAtFixedRate(currentTask, delay, period);
-
-        }
-    }
 
     public Timer getTimer() {
         return timer;
@@ -75,26 +37,27 @@ public class QuestionTimer {
     public void halve() {
         if (started) {
             if (over) {
-                System.out.println("Server timer already finished!");
+                System.out.println("Timer already finished!");
             } else {
                 System.out.println("Time halved.");
                 currentTime /= 2;
             }
         } else {
-            System.out.println("Server timer not started yet!");
+            System.out.println("Timer not started yet!");
         }
     }
 
     public void reset() {
         over = false;
-        System.out.println("Reset server timer.");
+        System.out.println("Reset timer.");
         currentTask.cancel();
-
         started = false;
         currentTime = maxTime;
     }
 
     public void stop() {
+        over = true;
+        currentTask.cancel();
         currentTime = 0;
     }
 
@@ -134,8 +97,7 @@ public class QuestionTimer {
         this.over = over;
     }
 
-    public void stopServerTimer() {
-        this.currentTime = 0;
-        this.over = true;
+    public double getOneSecond() {
+        return oneSecond;
     }
 }
