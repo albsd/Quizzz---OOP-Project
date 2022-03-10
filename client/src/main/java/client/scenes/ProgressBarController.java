@@ -39,7 +39,7 @@ public class ProgressBarController implements Initializable {
     private Button option2;
 
     @FXML
-    private Label verifLabel;
+    private Label verifyLabel;
 
     @FXML
     private Button halveButton;
@@ -150,7 +150,7 @@ public class ProgressBarController implements Initializable {
 
     public void onOptionClick() {
         Instant time = Instant.now();
-        verifLabel.setText("Option chosen at " + time);
+        verifyLabel.setText("Option chosen at " + time);
     }
 
     public void onHalveButtonClick() {

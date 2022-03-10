@@ -14,6 +14,6 @@
       <Button layoutX="122.0" layoutY="14.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
       <Button fx:id="option1" layoutX="360.0" layoutY="14.0" mnemonicParsing="false" onAction="#onOptionClick" text="Option 1" />
       <Button fx:id="option2" layoutX="458.0" layoutY="14.0" mnemonicParsing="false" onAction="#onOptionClick" text="Option 2" />
-      <Label fx:id="verifLabel" layoutX="392.0" layoutY="88.0" text="Choose an option!" />
+      <Label fx:id="verifyLabel" layoutX="392.0" layoutY="88.0" text="Choose an option!" />
    </children>
 </AnchorPane>
