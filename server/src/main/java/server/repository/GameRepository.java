@@ -16,6 +16,7 @@
 package server.repository;
 
 import commons.Game;
+import commons.Question;
 import org.springframework.stereotype.Repository;
 import server.service.ServerQuestionTimer;
 
@@ -60,6 +61,10 @@ public class GameRepository {
     public UUID addTimer(final ServerQuestionTimer timer) {
         timers.add(timer);
         return timer.getId();
+    }
+    public Question findQuestionById(final UUID id) {
+        //Todo: when questions are generated find by gameID
+        return null;
     }
 
     public void removeAllGames() {

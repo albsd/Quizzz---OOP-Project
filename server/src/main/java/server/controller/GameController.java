@@ -33,6 +33,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,6 +53,9 @@ import java.util.UUID;
 public class GameController {
 
     private final GameService gameService;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
 
     @Autowired
     public GameController(final GameService gameService) {
@@ -208,15 +212,18 @@ public class GameController {
     }
 
     //when client timer is 0, requests question but don't load yet
+    //finds relevant question for specific game using id
     @GetMapping("{id}/question")
-    public ResponseEntity<Question> getMockQuestion(
+    public ResponseEntity<Question> sendQuestion(
             @PathVariable final UUID id) {
-        return ResponseEntity.ok(gameService.getMockQuestion());
+        return ResponseEntity.ok(gameService.getMockQuestion(id));
     }
 
     //occurs when the responsible server timer hits 0;
-    @SendTo("/topic/question/load")
-    public GameUpdate loadQuestion() {
-        return new GameUpdate(GameUpdate.Type.halveTimer);
+    //requires specific ID to send
+    @SendTo("/topic/question/{id}}")
+    public GameUpdate loadQuestion(final UUID id) {
+        return simpMessagingTemplate.convertAndSendToUser(sha.getUser().getName(), "/topic/question", questoin
+        return;
     }
 }

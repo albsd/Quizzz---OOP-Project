@@ -14,15 +14,12 @@ public class ServerQuestionTimer extends QuestionTimer {
     private boolean started = false;
     private boolean over = false;
 
-
-
     private UUID id;
 
     private Timer timer = new Timer();
     private TimerTask currentTask;
 
     public ServerQuestionTimer() {
-
     }
 
     public ServerQuestionTimer(final UUID id) {
@@ -41,9 +38,6 @@ public class ServerQuestionTimer extends QuestionTimer {
                 if (currentTime <= 0) {
                     System.out.println("Time's over!");
                     stopServerTimer();
-
-
-
                     cancel();
                 }
             }
