@@ -22,14 +22,7 @@ public class QuestionTimer {
                 currentTime -= decrement;
                 if (currentTime <= 0) {
                     System.out.println("Time's over!");
-                    currentTime = 0;
-
-                    // This is where the server should
-                    // send a message to the client QuestionTimers
-                    // that the timer ended
-
-
-
+                    stopServerTimer();
                     cancel();
                 }
             }
@@ -57,7 +50,6 @@ public class QuestionTimer {
         if (started) {
             System.out.println("Server timer already started! Reset first.");
         } else {
-
             // This is where the server sends the message
             // to all client QuestionTimers to start
 
@@ -85,10 +77,6 @@ public class QuestionTimer {
             if (over) {
                 System.out.println("Server timer already finished!");
             } else {
-
-                // This is where the server sends the message
-                // to all client QuestionTimers to halve
-
                 System.out.println("Time halved.");
                 currentTime /= 2;
             }
@@ -101,9 +89,6 @@ public class QuestionTimer {
         over = false;
         System.out.println("Reset server timer.");
         currentTask.cancel();
-
-        // This is where the server sends the message
-        // to all QuestionTimers to reset
 
         started = false;
         currentTime = maxTime;
@@ -147,5 +132,10 @@ public class QuestionTimer {
 
     public void setOver(final boolean over) {
         this.over = over;
+    }
+
+    public void stopServerTimer() {
+        this.currentTime = 0;
+        this.over = true;
     }
 }

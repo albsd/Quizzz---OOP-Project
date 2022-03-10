@@ -50,12 +50,6 @@ public class ProgressBarController implements Initializable {
         this.server = server;
         server.registerForMessages("/topic/game/update",
                 GameUpdate.class, updateConsumer);
-        halveButton.setOnAction(keyEvent -> {
-            server.send("/app/halve",
-                    new GameUpdate(GameUpdate.Update.halveTimer));
-            halveButton.setDisable(true);
-        });
-
     }
 
     private Consumer<GameUpdate> updateConsumer = update -> {
@@ -93,18 +87,18 @@ public class ProgressBarController implements Initializable {
                     }
                     cancel();
                 } else {
-                    Platform.runLater(() -> label.setText(
+                    Platform.runLater(() -> {
+                        label.setText(
                             String.format("%.2f", questionTimer.getCurrentTime()
-                                    / questionTimer.getOneSecond())));
-                    Platform.runLater(() ->
-                            bar.setProgress(questionTimer.getCurrentTime()
-                                    / questionTimer.getMaxTime()));
+                                    / questionTimer.getOneSecond()));
+                        bar.setProgress(questionTimer.getCurrentTime()
+                                    / questionTimer.getMaxTime());
+                    });
                 }
             }
         };
     }
 
-    @SuppressWarnings("checkstyle:MagicNumber")
     public void startClientTimer(final QuestionTimer questionTimer,
                                  final Label label,
                                  final ProgressBar bar,
@@ -125,7 +119,7 @@ public class ProgressBarController implements Initializable {
             questionTimer.setCurrentTask(clientTimerTask(
                     questionTimer, label, bar, buttons));
             questionTimer.getTimer().scheduleAtFixedRate(
-                    questionTimer.getCurrentTask(), 0, 25);
+                    questionTimer.getCurrentTask(), delay, period);
         }
     }
 
@@ -138,9 +132,8 @@ public class ProgressBarController implements Initializable {
         Platform.runLater(() ->
                 label.setText(String.valueOf(questionTimer.getCurrentTime()
                         / questionTimer.getOneSecond())));
-        Platform.runLater(() ->
                 bar.setProgress(questionTimer.getCurrentTime()
-                        / questionTimer.getMaxTime()));
+                        / questionTimer.getMaxTime());
     }
 
     public void start() {
@@ -153,6 +146,12 @@ public class ProgressBarController implements Initializable {
     public void onOptionClick() {
         Instant time = Instant.now();
         verifLabel.setText("Option chosen at " + time);
+    }
+
+    public void onHalveButtonClick() {
+        server.send("/app/halve",
+                new GameUpdate(GameUpdate.Update.halveTimer));
+        halveButton.setDisable(true);
     }
 
 }

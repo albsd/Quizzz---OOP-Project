@@ -22,7 +22,9 @@ import commons.Game;
 import commons.GameUpdate;
 import commons.Player;
 
+import commons.QuestionTimer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -91,19 +93,23 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
-    @MessageMapping("/halve") //
+    @MessageMapping("/halve")
     @SendTo("/topic/game/update")
     public GameUpdate halveTimeWebsocket() {
         return new GameUpdate(GameUpdate.Update.halveTimer);
     }
 
     @SendTo("/topic/game/update")
-    public GameUpdate startTimeWebsocket() {
+    @EventListener
+    public GameUpdate startTimeWebsocket(final QuestionTimer questionTimer) {
+        questionTimer.startServerTimer();
         return new GameUpdate(GameUpdate.Update.startTimer);
     }
 
     @SendTo("/topic/game/update")
-    public GameUpdate stopTimeWebsocket() {
+    @EventListener
+    public GameUpdate stopTimeWebsocket(final QuestionTimer questionTimer) {
+        questionTimer.stopServerTimer();
         return new GameUpdate(GameUpdate.Update.stopTimer);
     }
 
