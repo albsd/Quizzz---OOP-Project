@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static java.nio.file.Files.readAllBytes;
-
+//TODO: Make this class abstract?
 @Entity
 public class Question {
 
@@ -22,13 +22,10 @@ public class Question {
     @JsonProperty("imageBytes")
     private final byte[] imageBytes;
 
-    @JsonProperty("answer")
-    private final int answer;
 
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
-            final @JsonProperty("imagePath") Path imagePath,
-            final @JsonProperty("answer") int answer) {
+            final @JsonProperty("imagePath") Path imagePath) {
         byte[] bytes;
         try {
             bytes = readAllBytes(imagePath);
@@ -49,7 +46,6 @@ public class Question {
 
         this.prompt = prompt;
         this.imageBytes = bytes;
-        this.answer = answer;
     }
 
     public String getPrompt() {
@@ -60,9 +56,6 @@ public class Question {
         return this.imageBytes;
     }
 
-    public int getAnswer() {
-        return this.answer;
-    }
 
     @Override
     public boolean equals(final Object other) {
@@ -70,8 +63,7 @@ public class Question {
             return false;
         }
         if (other instanceof Question that) {
-            return answer == that.answer
-                    && prompt.equals(that.prompt)
+            return  prompt.equals(that.prompt)
                     && Arrays.equals(imageBytes, that.imageBytes);
         }
         return false;
@@ -79,7 +71,7 @@ public class Question {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(prompt, answer);
+        int result = Objects.hash(prompt);
         final int hashInt = 31;
         result = hashInt * result + Arrays.hashCode(imageBytes);
         return result;

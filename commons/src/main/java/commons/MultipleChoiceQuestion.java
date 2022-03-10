@@ -7,22 +7,23 @@ import java.nio.file.Path;
 public class MultipleChoiceQuestion extends Question{
     //0 is top answer, 1 is middle answer, 2 is bottom answer (maybe this could be improved through use of enums)
     @JsonProperty("answer")
-    private int answer;
+    private int correctAnswerBox;
 
     @JsonProperty("options")
     private String[] options;
 
     public MultipleChoiceQuestion(String prompt, Path imagePath, String[] options, int answer) {
-        super(prompt, imagePath, answer);
+        super(prompt, imagePath);
+        this.correctAnswerBox = answer;
         this.options = options;
     }
 
     public int getAnswer() {
-        return answer;
+        return correctAnswerBox;
     }
 
     public void setAnswer(int answer) {
-        this.answer = answer;
+        this.correctAnswerBox = answer;
     }
 
     public String[] getOptions() {
