@@ -2,19 +2,59 @@ package commons;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 public class QuestionTimer {
     private final double maxTime = 20000;
     private final double oneSecond = 1000;
     private final double decrement = 25;    // 25ms
-
     private double currentTime = maxTime;
     private boolean started = false;
     private boolean over = false;
-
     private Timer timer = new Timer();
     private TimerTask currentTask;
+    private UUID id;
 
+    public QuestionTimer() {
+
+    }
+    public QuestionTimer(final UUID id) {
+        this.id = id;
+    }
+
+    private TimerTask gameTimerTask() {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                currentTime -= decrement;
+                if (currentTime <= 0) {
+                    System.out.println("Time's over!");
+                    stopGameTimer();
+                    cancel();
+                }
+            }
+        };
+    }
+
+    public void startGameTimer() {
+        reset();
+        if (started) {
+            System.out.println("Server timer already started! Reset first.");
+        } else {
+            System.out.println("Server timer started.");
+            started = true;
+            over = false;
+            final int delay = 0;
+            final int period = 25;
+            currentTask = gameTimerTask();
+            timer.scheduleAtFixedRate(currentTask, delay, period);
+        }
+    }
+
+    public void stopGameTimer() {
+        this.currentTime = 0;
+        this.over = true;
+    }
 
 
     public double getCurrentTime() {
@@ -25,6 +65,9 @@ public class QuestionTimer {
         return maxTime;
     }
 
+    public UUID getId() {
+        return id;
+    }
 
     public Timer getTimer() {
         return timer;

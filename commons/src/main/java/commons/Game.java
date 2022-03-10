@@ -13,6 +13,7 @@ enum GameState { waiting, playing }
 public class Game {
     private final int questionLimit = 20;
     private final int questionTime = 20000;
+    private final QuestionTimer gameTimer;
 
     @JsonProperty("id")
     private UUID id;
@@ -37,6 +38,7 @@ public class Game {
         // this.questions = QuestionService.generateQuestions()
         this.currentQuestion = 0;
         this.gameState = GameState.waiting;
+        this.gameTimer = new QuestionTimer(id);
     }
 
     @JsonCreator
@@ -45,6 +47,7 @@ public class Game {
                 final @JsonProperty("questions") Question[] questions,
                 final @JsonProperty("currentQuestion") int currentQuestion,
                 final @JsonProperty("gameState") GameState gameState) {
+        this.gameTimer = new QuestionTimer(id);
         this.id = id;
         this.players = players;
         this.questions = questions;
@@ -64,8 +67,14 @@ public class Game {
         return this.gameState;
     }
 
+    //Todo: invoke this method when the client-timer is 0 in a set interval
+    //return question only when game timer is 0
     public Question getCurrentQuestion() {
-        return this.questions[this.currentQuestion];
+        if (gameTimer.isOver()){
+            gameTimer.startGameTimer();
+            return this.questions[this.currentQuestion];
+        }
+        return null;
     }
 
     @JsonIgnore

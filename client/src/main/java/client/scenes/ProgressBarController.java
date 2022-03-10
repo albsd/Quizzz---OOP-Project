@@ -1,16 +1,13 @@
 package client.scenes;
 
-<<<<<<< HEAD
 //import javafx.application.Platform;
 
-=======
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
 import commons.GameUpdate;
 
 import commons.QuestionTimer;
->>>>>>> cf305ed77fcd8b371c3ba3bd426cd0befcf417b3
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
