@@ -56,11 +56,11 @@ public class ProgressBarController implements Initializable {
     private Consumer<GameUpdate> updateConsumer = update -> {
         System.out.println("Halve message received!");
         Platform.runLater(() -> {
-            if (update.getUpdate() == GameUpdate.Update.halveTimer) {
+            if (update.getUpdate() == GameUpdate.Type.halveTimer) {
                 questionTimer.halve();
-            } else if (update.getUpdate() == GameUpdate.Update.stopTimer) {
+            } else if (update.getUpdate() == GameUpdate.Type.stopTimer) {
                 reset();
-            } else if (update.getUpdate() == GameUpdate.Update.startTimer) {
+            } else if (update.getUpdate() == GameUpdate.Type.startTimer) {
                 start();
             }
         });
@@ -155,7 +155,7 @@ public class ProgressBarController implements Initializable {
 
     public void onHalveButtonClick() {
         server.send("/app/halve",
-                new GameUpdate(GameUpdate.Update.halveTimer));
+                new GameUpdate(GameUpdate.Type.halveTimer));
 
         // Solution to ensure that the client's timer is not halved.
         // (if he was the one that clicked on the button)

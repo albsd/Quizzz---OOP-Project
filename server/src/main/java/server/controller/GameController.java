@@ -96,14 +96,14 @@ public class GameController {
     @MessageMapping("/halve")
     @SendTo("/topic/game/update")
     public GameUpdate halveTimeWebsocket() {
-        return new GameUpdate(GameUpdate.Update.halveTimer);
+        return new GameUpdate(GameUpdate.Type.halveTimer);
     }
 
 
     @SendTo("/topic/game/update")
     public GameUpdate startTimeWebsocket(final UUID id) {
 
-        return new GameUpdate(GameUpdate.Update.startTimer);
+        return new GameUpdate(GameUpdate.Type.startTimer);
     }
 
     //when client timer is 0, it asks whether server time is 0
