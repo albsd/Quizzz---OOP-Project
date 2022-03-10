@@ -5,49 +5,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public class Message {
+public abstract class Message<T> {
     @JsonProperty("nick")
-    private final String nick;
-
-    @JsonProperty("time")
-    private final int time;
+    private String nick;
 
     @JsonProperty("content")
-    private final String messageContent;
+    private T content;
 
     @JsonCreator
     public Message(final @JsonProperty("nick") String nick,
-                   final @JsonProperty("time") int time,
-                   final @JsonProperty("content") String messageContent) {
+                   final @JsonProperty("content") T content) {
         this.nick = nick;
-        this.time = time;
-        this.messageContent = messageContent;
+        this.content = content;
     }
 
     public String getNick() {
         return nick;
     }
 
-    public int getTime() {
-        return time;
-    }
-
-    public String getMessageContent() {
-        return messageContent;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nick, time, messageContent);
+    public T getContent() {
+        return content;
     }
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Message message = (Message) o;
-        return time == message.time
-                && nick.equals(message.nick)
-                && messageContent.equals(message.messageContent);
+        Message<?> message = (Message<?>) o;
+        return Objects.equals(content, message.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content);
     }
 }

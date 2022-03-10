@@ -15,12 +15,12 @@
  */
 package server.controller;
 
+import commons.LobbyMessage;
+import commons.PlayerUpdate;
+import commons.Player;
 import commons.Game;
 import commons.Leaderboard;
-import commons.Message;
-import commons.Player;
 import commons.Question;
-import commons.JoinMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -126,6 +126,7 @@ public class GameController {
         if (!success) {
             return ResponseEntity.status(errorCode).build();
         }
+
         return ResponseEntity.ok(p);
     }
 
@@ -156,11 +157,11 @@ public class GameController {
         if (!success) {
             return ResponseEntity.status(errorCode).build();
         }
+
         return ResponseEntity.ok(p);
     }
 
-    // TODO: send generated session id to client so that it can send it back when
-    // joining lobby after nickname
+    // TODO: send generated session id to client so that it can send it back when joining lobby after nickname
     @EventListener
     @SendTo
     private void handleSessionConnected(final SessionConnectEvent event) {
@@ -177,23 +178,15 @@ public class GameController {
         System.out.println(event.getSessionId());
     }
 
-    /*
-     * A Websocket endpoint for sending updates about the current lobby status.
-     * Namely, updates the active players in the lobby for all clients.
-     *
-     * @param player The player object who has joined the most recently
-     * 
-     * @return The Player object created from the nick
-     */
-    @MessageMapping("/join") // /app/join
-    @SendTo("/topic/join")
-    public JoinMessage joinWebsocket(final JoinMessage joinMessage) {
-        return joinMessage;
+    @MessageMapping("/playerUpdate") // /app/player_update
+    @SendTo("/topic/playerUpdate")
+    private PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
+        return update;
     }
 
     @MessageMapping("/lobby/chat") // /app/lobby/chat
     @SendTo("/topic/lobby/chat")
-    private Message sendMessage(final Message msg) {
+    private LobbyMessage sendLobbyMessage(final LobbyMessage msg) {
         return msg;
     }
 
