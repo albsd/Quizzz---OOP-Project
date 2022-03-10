@@ -22,16 +22,12 @@ public class Question {
     @JsonProperty("imageBytes")
     private final byte[] imageBytes;
 
-    @JsonProperty("options")
-    private final String[] options;
-
     @JsonProperty("answer")
     private final int answer;
 
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
             final @JsonProperty("imagePath") Path imagePath,
-            final @JsonProperty("options") String[] options,
             final @JsonProperty("answer") int answer) {
         byte[] bytes;
         try {
@@ -53,7 +49,6 @@ public class Question {
 
         this.prompt = prompt;
         this.imageBytes = bytes;
-        this.options = options;
         this.answer = answer;
     }
 
@@ -63,10 +58,6 @@ public class Question {
 
     public byte[] getImageBytes() {
         return this.imageBytes;
-    }
-
-    public String[] getOptions() {
-        return this.options;
     }
 
     public int getAnswer() {
@@ -81,8 +72,7 @@ public class Question {
         if (other instanceof Question that) {
             return answer == that.answer
                     && prompt.equals(that.prompt)
-                    && Arrays.equals(imageBytes, that.imageBytes)
-                    && Arrays.equals(options, that.options);
+                    && Arrays.equals(imageBytes, that.imageBytes);
         }
         return false;
     }
@@ -92,7 +82,6 @@ public class Question {
         int result = Objects.hash(prompt, answer);
         final int hashInt = 31;
         result = hashInt * result + Arrays.hashCode(imageBytes);
-        result = hashInt * result + Arrays.hashCode(options);
         return result;
     }
 }
