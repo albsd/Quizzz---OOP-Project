@@ -16,6 +16,23 @@ public class Activty {
         this.imagePath = imagePath;
     }
     
+    public MultipleChoiceQuestion getNumberMultipleChoiceQuestion() {
+        String prompt = "How much energy does " + title + " take in watt hours?";
+        String [] choices = generateChoices(energyConsumption);
+        int correctAnswerIndex = (int) Math.random() * (choices.length);
+        choices[correctAnswerIndex] = Integer.toString(energyConsumption);
+        return new MultipleChoiceQuestion(prompt, imagePath, choices, correctAnswerIndex);
+    }
+
+    public String[] generateChoices(int energyConsumption) {
+        String [] choices = new String[3];
+        int max_val = energyConsumption * 10;
+        int min_val = energyConsumption / 10;
+        for(int i = 0; i < choices.length; i++){
+            choices[i] = Double.toString(Math.random() * ( max_val - min_val ));
+        }
+        return choices;
+    }
 
     @Override
     public boolean equals(Object o) {
