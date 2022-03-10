@@ -37,6 +37,7 @@ public class ServerQuestionTimer extends QuestionTimer {
                 currentTime -= decrement;
                 if (currentTime <= 0) {
                     System.out.println("Time's over!");
+
                     stopServerTimer();
                     cancel();
                 }

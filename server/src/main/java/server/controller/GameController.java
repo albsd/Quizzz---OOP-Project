@@ -206,10 +206,11 @@ public class GameController {
         return new GameUpdate(GameUpdate.Type.halveTimer);
     }
 
-    @SendTo("/topic/game/update")
-    public GameUpdate startTimeWebsocket(final UUID id) {
-        return new GameUpdate(GameUpdate.Type.startTimer);
-    }
+
+//    @SendTo("/topic/game/update")
+//    public GameUpdate startTimeWebsocket(final UUID id) {
+//        return new GameUpdate(GameUpdate.Type.startTimer);
+//    }
 
     //when client timer is 0, requests question but don't load yet
     //finds relevant question for specific game using id
@@ -221,9 +222,12 @@ public class GameController {
 
     //occurs when the responsible server timer hits 0;
     //requires specific ID to send
-    @SendTo("/topic/question/{id}}")
-    public GameUpdate loadQuestion(final UUID id) {
-        return simpMessagingTemplate.convertAndSendToUser(sha.getUser().getName(), "/topic/question", questoin
-        return;
+    @SendTo("/topic/game/update/{id}}")
+    public void startTimeAndLoadQuestion(SimpMessageHeaderAccessor sha,
+                                   final UUID id) {
+        simpMessagingTemplate.convertAndSendToUser(
+                sha.getUser().getName(),
+                "/topic/question",
+                new GameUpdate(GameUpdate.Type.startTimer));
     }
 }
