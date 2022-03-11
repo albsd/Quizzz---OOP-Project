@@ -20,6 +20,12 @@ public class QuestionTimer {
         this.timer = new Timer();
     }
 
+    public QuestionTimer(final UUID id, final TimerTask task) {
+        this.id = id;
+        this.timer = new Timer();
+        this.currentTask = task;
+    }
+
     public double getCurrentTime() {
         return currentTime;
     }
@@ -42,10 +48,6 @@ public class QuestionTimer {
 
     public double getDecrement() {
         return decrement;
-    }
-
-    public TimerTask getCurrentTask() {
-        return currentTask;
     }
 
     public double getOneSecond() {
@@ -115,15 +117,11 @@ public class QuestionTimer {
     public void reset() {
         over = false;
         System.out.println("Reset timer.");
-        currentTask.cancel();
+        if (currentTask != null) {
+            currentTask.cancel();
+        }
         started = false;
         currentTime = maxTime;
-    }
-
-    public void stop() {
-        over = true;
-        currentTask.cancel();
-        currentTime = 0;
     }
 
     private TimerTask gameTimerTask() {
