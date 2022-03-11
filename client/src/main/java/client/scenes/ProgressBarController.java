@@ -4,9 +4,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-
 import commons.GameUpdate;
-
 import commons.QuestionTimer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -20,8 +18,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
 import java.util.TimerTask;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ProgressBarController implements Initializable {
@@ -46,10 +44,10 @@ public class ProgressBarController implements Initializable {
     @FXML
     private Button halveButton;
 
-    private QuestionTimer questionTimer = new QuestionTimer();
-
+    private QuestionTimer questionTimer;
     @Inject
     public ProgressBarController(final ServerUtils server) {
+        this.questionTimer = new QuestionTimer(UUID.randomUUID());
         this.server = server;
         server.registerForMessages("/topic/game/update",
                 GameUpdate.class, updateConsumer);

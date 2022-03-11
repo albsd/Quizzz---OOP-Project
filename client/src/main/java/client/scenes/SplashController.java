@@ -51,8 +51,8 @@ public class SplashController {
     public void help(final ActionEvent event) {
         var root = Main.FXML.load(HelpController.class, "client", "scenes", "Help.fxml");
 
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }
