@@ -3,21 +3,22 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class LobbyMessage extends Message<String> {
     @JsonProperty("timestamp")
-    private int timestamp;
+    private final LocalTime timestamp;
 
     @JsonCreator
     public LobbyMessage(final @JsonProperty("nick") String nick,
-                        final @JsonProperty("timestamp") int timestamp,
+                        final @JsonProperty("timestamp") LocalTime timestamp,
                        final @JsonProperty("content") String content) {
         super(nick, content);
         this.timestamp = timestamp;
     }
 
-    public int getTimestamp() {
+    public LocalTime getTimestamp() {
         return timestamp;
     }
 
