@@ -53,9 +53,6 @@ import java.util.UUID;
 public class GameController {
 
     private final GameService gameService;
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
-
 
     @Autowired
     public GameController(final GameService gameService) {
@@ -97,6 +94,7 @@ public class GameController {
         }
         return ResponseEntity.ok(game);
     }
+
 
     /**
      * Join the active game lobby as a Player with id "nick".
@@ -154,7 +152,6 @@ public class GameController {
     }
 
     // TODO: send generated session id to client so that it can send it back when
-    // joining lobby after nickname
     @EventListener
     @SendTo
     private void handleSessionConnected(final SessionConnectEvent event) {
@@ -172,18 +169,7 @@ public class GameController {
 
     }
 
-    /*
-     * A Websocket endpoint for sending updates about the current lobby status.
-     * Namely, updates the active players in the lobby for all clients.
-     *
-     * @param player The player object who has joined the most recently
-     * @return The Player object created from the nick
-     */
-    @MessageMapping("/join") // /app/join
-    @SendTo("/topic/join")
-    public JoinMessage joinWebsocket(final JoinMessage joinMessage) {
-        return joinMessage;
-    }
+
 
     /**
      * Starts the current game.

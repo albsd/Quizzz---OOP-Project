@@ -13,7 +13,7 @@ enum GameState { waiting, playing }
 public class Game {
     private final int questionLimit = 20;
     private final int questionTime = 20000;
-    private final QuestionTimer gameTimer;
+    private QuestionTimer gameTimer;
 
     @JsonProperty("id")
     private UUID id;
@@ -47,7 +47,6 @@ public class Game {
                 final @JsonProperty("questions") Question[] questions,
                 final @JsonProperty("currentQuestion") int currentQuestion,
                 final @JsonProperty("gameState") GameState gameState) {
-        this.gameTimer = new QuestionTimer(id);
         this.id = id;
         this.players = players;
         this.questions = questions;
@@ -65,6 +64,10 @@ public class Game {
 
     public GameState getGameState() {
         return this.gameState;
+    }
+
+    public QuestionTimer getGameTimer() {
+        return gameTimer;
     }
 
     //Todo: invoke this method when the client-timer is 0 in a set interval
@@ -98,6 +101,7 @@ public class Game {
         players.remove(p);
         return true;
     }
+
     public Player getPlayerByNick(final String nick) {
         for (Player p : players) {
             if (p.getNick().equals(nick)) {

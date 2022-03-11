@@ -28,12 +28,6 @@ import java.util.Optional;
 public class LobbyController implements Initializable {
 
     @FXML
-    private Label chatText;
-
-    @FXML
-    private TextField chatInput;
-
-    @FXML
     private Label playersLeft;
 
     @FXML
@@ -43,10 +37,6 @@ public class LobbyController implements Initializable {
 
     @FXML
     private Label playerCount;
-
-    private Stage stage;
-
-    private Scene scene;
 
     private List<Player> players;
 
@@ -84,8 +74,6 @@ public class LobbyController implements Initializable {
             players.remove(wsPlayer);
         }
 
-        // GUI Updates must be run later
-        // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -140,8 +128,8 @@ public class LobbyController implements Initializable {
 
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }

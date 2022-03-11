@@ -11,6 +11,7 @@ public class ProgressBarDemo extends Application {
     public static void main(final String[] args) {
         launch();
     }
+
     @Override
     public void start(final Stage stage) throws IOException {
         FXMLLoader fxmlLoader =

@@ -51,8 +51,8 @@ public class SplashController {
     public void help(final ActionEvent event) {
         var root = Main.FXML.load(HelpController.class, "client", "scenes", "Help.fxml");
 
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root.getValue());
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }
@@ -93,7 +93,8 @@ public class SplashController {
      * @param event
      */
     public void lobby(final ActionEvent event) {
-        var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
+        var root = Main.FXML.load(
+                LobbyController.class, "client", "scenes", "Lobby.fxml");
         var ctrl = root.getKey();
 
         String nick = nickField.getText();
@@ -121,7 +122,8 @@ public class SplashController {
     }
 
     public void leaderBoard(final ActionEvent event) {
-        var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
+        var root = Main.FXML.load(
+                LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
 
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root.getValue());

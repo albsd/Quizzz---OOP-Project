@@ -1,7 +1,5 @@
 package commons;
 
-
-
 public class GameUpdate {
     public enum Type {
         halveTimer,
