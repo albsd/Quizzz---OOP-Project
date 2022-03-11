@@ -11,8 +11,8 @@ class LobbyMessageTest {
 
     private String nick1;
     private String nick2;
-    private LocalTime time1;
-    private LocalTime time2;
+    private String time1;
+    private String time2;
     private String content1;
     private String content2;
     private LobbyMessage message1;
@@ -25,8 +25,8 @@ class LobbyMessageTest {
         nick2 = "Kevin";
         content1 = "Lets start the game!";
         content2 = "Waiting for a friend";
-        time1 = LocalTime.MIDNIGHT;
-        time2 = LocalTime.NOON;
+        time1 = LocalTime.MIDNIGHT.toString();
+        time2 = LocalTime.NOON.toString();
         message1 = new LobbyMessage(nick1, time1, content1);
         message2 = new LobbyMessage(nick2, time2, content2);
     }

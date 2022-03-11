@@ -48,10 +48,10 @@ public class ServerUtils {
 
     private final HttpClient client;
 
-    private static StompSession session = connect("ws://localhost:8080/websocket");
+    private static StompSession session = connect("ws://localhost:8081/websocket");
 
     public ServerUtils() {
-        this.kGameUrl = "http://localhost:8080/game";
+        this.kGameUrl = "http://localhost:8081/game";
         this.client = HttpClient.newHttpClient();
     }
 
