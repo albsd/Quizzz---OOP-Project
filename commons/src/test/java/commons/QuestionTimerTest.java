@@ -150,7 +150,7 @@ class QuestionTimerTest {
         UUID id = new UUID(0, 1);
         QuestionTimer questionTimer = new QuestionTimer(id);
         questionTimer.startGameTimer();
-        if(questionTimer.getTask() != null){
+        if (questionTimer.getTask() != null) {
             questionTimer.getTask().cancel();
         }
     }
