@@ -99,6 +99,7 @@ public class QuestionTimer {
         this.currentTime = 0;
         this.over = true;
     }
+
     public void halve() {
         if (started) {
             if (over) {

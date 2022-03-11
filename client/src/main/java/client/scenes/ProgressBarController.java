@@ -56,12 +56,11 @@ public class ProgressBarController implements Initializable {
     private Consumer<GameUpdate> updateConsumer = update -> {
         System.out.println("Halve message received!");
         Platform.runLater(() -> {
-            if (update.getUpdate() == GameUpdate.Type.halveTimer) {
-                questionTimer.halve();
-            } else if (update.getUpdate() == GameUpdate.Type.stopTimer) {
-                reset();
-            } else if (update.getUpdate() == GameUpdate.Type.startTimer) {
-                start();
+            GameUpdate.Type updateType = update.getUpdate();
+            switch (updateType) {
+                case halveTimer -> questionTimer.halve();
+                case stopTimer -> reset();
+                case startTimer -> start();
             }
         });
     };
