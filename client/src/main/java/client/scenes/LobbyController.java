@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -21,6 +22,8 @@ import javafx.stage.Stage;
 import org.springframework.web.util.HtmlUtils;
 
 import java.net.URL;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,11 +58,13 @@ public class LobbyController implements Initializable {
 
     private Player me;
 
+    private final DateTimeFormatter timeFormat;
+
     @Inject
     public LobbyController(final ServerUtils server) {
         this.server = server;
         this.players = new ArrayList<>();
-
+        this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
         Consumer<PlayerUpdate> playerUpdateConsumer = update -> {
             System.out.println("PlayerUpdate received");
             if (update.getContent() == PlayerUpdate.Type.join) {
@@ -71,16 +76,15 @@ public class LobbyController implements Initializable {
         };
         server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, playerUpdateConsumer);
 
-        // change. Scroll pane is not place to put messages
         Consumer<LobbyMessage> messageConsumer = m -> {
             System.out.println("Message received");
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
                     String nick = m.getNick();
-                    int time = m.getTimestamp();
+                    //remove nanosecond when displaying time in chat
+                    String time = m.getTimestamp().format(timeFormat);
                     String content = m.getContent();
-                    // change. Scroll pane is not place to put messages
                     String chatLogs = chatText.getText()
                             + nick + " (" + time + ") - " + content + "\n";
                     chatText.setText(chatLogs);
@@ -103,10 +107,10 @@ public class LobbyController implements Initializable {
     public void onEnter(final ActionEvent e) {
         String content = chatInput.getText();
         chatInput.setText("");
-        final int demoTime = 10;
+        final LocalTime time = LocalTime.now();
         // escapes special characters in input
         server.send("/app/lobby/chat",
-                new LobbyMessage(me.getNick(), demoTime, HtmlUtils.htmlEscape(content)));
+                new LobbyMessage(me.getNick(), time, HtmlUtils.htmlEscape(content)));
         chatArea.setVvalue(1.0);
     }
 
