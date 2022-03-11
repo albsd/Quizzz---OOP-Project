@@ -60,7 +60,8 @@ public class ProgressBarController implements Initializable {
             switch (updateType) {
                 case halveTimer -> questionTimer.halve();
                 case stopTimer -> reset();
-                case startTimer -> start();
+                //startTimer
+                default -> start();
             }
         });
     };
