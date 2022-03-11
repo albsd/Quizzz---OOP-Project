@@ -15,12 +15,7 @@
  */
 package server.controller;
 
-import commons.Game;
-import commons.Leaderboard;
-import commons.Message;
-import commons.Player;
-import commons.Question;
-import commons.JoinMessage;
+import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import server.ActivityService;
 import server.service.GameService;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,9 +44,12 @@ public class GameController {
 
     private final GameService gameService;
 
+    private final ActivityService activityService;
+
     @Autowired
-    public GameController(final GameService gameService) {
+    public GameController(final GameService gameService, final ActivityService activityService) {
         this.gameService = gameService;
+        this.activityService = activityService;
     }
 
     /**
@@ -210,5 +211,20 @@ public class GameController {
             return ResponseEntity.status(405).build(); // NOT_ALLOWED
         }
         return ResponseEntity.ok(gameService.newGame());
+    }
+
+    //add activity
+    @PostMapping("/addAct")
+    public void addActivity() {
+        Path path = Paths.get("/INVALID");
+        Activity activity = new Activity("blah", 10, "youtube", path);
+        activityService.addActivity(activity);
+        Activity activity2 = new Activity("activity2", 102, "youtube", path);
+        activityService.addActivity(activity2);
+    }
+    //get all activities
+    @GetMapping("/getAct")
+    public ResponseEntity<List<Activity>> getAllActivities() {
+        return ResponseEntity.ok(activityService.getAllActivities());
     }
 }

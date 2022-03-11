@@ -1,14 +1,24 @@
 package commons;
 
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Random;
 
+@Entity
 public class Activity {
+    @Id
     private String title;
     private int energyConsumption;
     private String source;
+    @Convert(converter = PathConverter.class)
     private Path imagePath;
 
+    public Activity() {
+
+    }
     public Activity(String title, int energyConsumption, String source, Path imagePath) {
         this.title = title;
         this.energyConsumption = energyConsumption;
@@ -32,10 +42,9 @@ public class Activity {
 
     public String[] generateChoices(int energyConsumption) {
         String [] choices = new String[3];
-        int max_val = energyConsumption * 10;
-        int min_val = energyConsumption / 10;
         for(int i = 0; i < choices.length; i++){
-            choices[i] = Double.toString(Math.random() * ( max_val - min_val ));
+            Random r = new Random();
+            choices[i] = Integer.toString((int) (energyConsumption + energyConsumption/2 * r.nextGaussian()));
         }
         return choices;
     }
