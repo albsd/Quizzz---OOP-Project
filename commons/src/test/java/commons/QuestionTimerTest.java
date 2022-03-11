@@ -6,7 +6,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class QuestionTimerTest {
     @Test
@@ -148,6 +150,9 @@ class QuestionTimerTest {
         UUID id = new UUID(0, 1);
         QuestionTimer questionTimer = new QuestionTimer(id);
         questionTimer.startGameTimer();
+        if(questionTimer.getTask() != null){
+            questionTimer.getTask().cancel();
+        }
     }
 
     @Test
@@ -182,10 +187,5 @@ class QuestionTimerTest {
         questionTimer.reset();
 
         assertEquals(20000, questionTimer.getCurrentTime());
-    }
-
-    @Test
-    void stop() {
-
     }
 }
