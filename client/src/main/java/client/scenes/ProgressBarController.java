@@ -126,7 +126,7 @@ public class ProgressBarController implements Initializable {
             questionTimer.setCurrentTask(clientTimerTask(
                     questionTimer, label, bar, buttons));
             questionTimer.getTimer().scheduleAtFixedRate(
-                    questionTimer.getCurrentTask(), delay, period);
+                    questionTimer.getTask(), delay, period);
         }
     }
 
