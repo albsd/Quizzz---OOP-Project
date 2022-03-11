@@ -128,7 +128,7 @@ public class GameMultiplayerController implements Initializable {
             Leaderboard leaderboard = server.getLeaderboard(currentGame.getId().toString());
             var root = Main.FXML.load(
                     LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
-
+            root.getKey().loadPlayers(leaderboard);
             stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             scene = new Scene(root.getValue());
         }
