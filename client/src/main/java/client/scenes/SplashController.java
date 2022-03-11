@@ -93,8 +93,7 @@ public class SplashController {
      * @param event
      */
     public void lobby(final ActionEvent event) {
-        var root = Main.FXML.load(
-                LobbyController.class, "client", "scenes", "Lobby.fxml");
+        var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
         var ctrl = root.getKey();
 
         String nick = nickField.getText();
