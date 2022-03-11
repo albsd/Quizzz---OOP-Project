@@ -2,8 +2,12 @@ package client.scenes;
 
 import client.Main;
 import client.utils.ServerUtils;
+import commons.Game;
+import commons.LobbyMessage;
+import commons.Player;
+import commons.PlayerUpdate;
+
 import com.google.inject.Inject;
-import commons.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,11 +22,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.springframework.web.util.HtmlUtils;
-
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -56,8 +62,6 @@ public class LobbyController implements Initializable {
     private final DateTimeFormatter timeFormat;
 
     private Game lobby;
-
-    private List<Question> questions;
 
     @Inject
     public LobbyController(final ServerUtils server) {
@@ -175,7 +179,7 @@ public class LobbyController implements Initializable {
         var root = Main.FXML.load(GameMultiplayerController.class, "client", "scenes", "GameMultiplayer.fxml");
         var ctrl = root.getKey();
         ctrl.setMe(me);
-        ctrl.setQuestions(questions);
+        ctrl.setGame(lobby);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root.getValue());
         stage.setScene(scene);

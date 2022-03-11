@@ -80,6 +80,14 @@ public class Game {
         }
         timer.startGameTimer();
     }
+    
+    public Question[] getQuestions() {
+        return this.questions;
+    }
+
+    public Question getCurrentQuestion() {
+        return this.questions[this.currentQuestion];
+    }
 
     @JsonIgnore
     public boolean isPlayable() {
