@@ -8,17 +8,17 @@ import java.util.Objects;
 
 public class LobbyMessage extends Message<String> {
     @JsonProperty("timestamp")
-    private final LocalTime timestamp;
+    private final String timestamp;
 
     @JsonCreator
     public LobbyMessage(final @JsonProperty("nick") String nick,
-                        final @JsonProperty("timestamp") LocalTime timestamp,
+                        final @JsonProperty("timestamp") String timestamp,
                        final @JsonProperty("content") String content) {
         super(nick, content);
         this.timestamp = timestamp;
     }
 
-    public LocalTime getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
@@ -28,7 +28,7 @@ public class LobbyMessage extends Message<String> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         LobbyMessage that = (LobbyMessage) o;
-        return timestamp == that.timestamp;
+        return timestamp.equals(that.timestamp);
     }
 
     @Override

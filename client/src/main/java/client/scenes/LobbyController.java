@@ -82,8 +82,7 @@ public class LobbyController implements Initializable {
                 @Override
                 public void run() {
                     String nick = m.getNick();
-                    //remove nanosecond when displaying time in chat
-                    String time = m.getTimestamp().format(timeFormat);
+                    String time = m.getTimestamp();
                     String content = m.getContent();
                     String chatLogs = chatText.getText()
                             + nick + " (" + time + ") - " + content + "\n";
@@ -108,7 +107,8 @@ public class LobbyController implements Initializable {
         final LocalTime time = LocalTime.now();
         // escapes special characters in input
         server.send("/app/lobby/chat",
-                new LobbyMessage(me.getNick(), time, HtmlUtils.htmlEscape(content)));
+                //remove nanosecond when displaying time and convert to string
+                new LobbyMessage(me.getNick(), time.format(timeFormat), HtmlUtils.htmlEscape(content)));
         chatArea.setVvalue(1.0);
     }
 
