@@ -18,7 +18,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import org.springframework.web.util.HtmlUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -99,12 +98,13 @@ public class LobbyController implements Initializable {
 
     @FXML
     public void onEnter(final ActionEvent e) {
-        String content = chatInput.getText();
+        // escape XML and special characters in input
+        String content = chatInput.getText().replaceAll("[\s\t\"\'><&]", "");
+
+        final LobbyMessage message = new LobbyMessage(me.getNick(), 10, content);
+        server.send("/app/lobby/chat", message);
+
         chatInput.setText("");
-        final int demoTime = 10;
-        // escapes special characters in input
-        server.send("/app/lobby/chat",
-                new LobbyMessage(me.getNick(), demoTime, HtmlUtils.htmlEscape(content)));
         chatArea.setVvalue(1.0);
     }
 

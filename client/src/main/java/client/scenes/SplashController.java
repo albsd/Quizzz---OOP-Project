@@ -68,7 +68,7 @@ public class SplashController {
     }
 
     public void singleGame(final ActionEvent event) {
-        String user = nickField.getText();
+        String user = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
         if (!validateNicknameLength(user)) {
             return;
         }
@@ -83,10 +83,7 @@ public class SplashController {
      * @param event
      */
     public void lobby(final ActionEvent event) {
-        var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
-        var ctrl = root.getKey();
-
-        String nick = nickField.getText();
+        String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
         if (!validateNicknameLength(nick)) {
             return;
         }
@@ -98,6 +95,8 @@ public class SplashController {
             return;
         }
 
+        var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
+        var ctrl = root.getKey();
         ctrl.setMe(player);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
