@@ -147,6 +147,21 @@ public class ServerUtils {
     }
 
     /**
+     * Calls the REST endpoint to get current lobby(game)
+     *
+     * @return Current game object in lobby
+     */
+    public Game getGame() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/current"))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+
+        return parseResponseToObject(request, new TypeReference<Game>() { });
+    }
+
+    /**
      * Calls the REST endpoint to get list of all players in the lobby.
      *
      * @return List of players in a lobby

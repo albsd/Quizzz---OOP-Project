@@ -3,6 +3,7 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Game;
 import commons.LobbyMessage;
 import commons.Player;
 import commons.PlayerUpdate;
@@ -24,10 +25,7 @@ import org.springframework.web.util.HtmlUtils;
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -60,6 +58,8 @@ public class LobbyController implements Initializable {
 
     private final DateTimeFormatter timeFormat;
 
+    private Game lobby;
+
     @Inject
     public LobbyController(final ServerUtils server) {
         this.server = server;
@@ -91,6 +91,10 @@ public class LobbyController implements Initializable {
             });
         };
         server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, messageConsumer);
+
+        //request for this lobby game object to set in gamemulticontroller
+        server.send("/app/game", null);
+        this.lobby = server.getGame();
     }
 
     @Override
@@ -175,7 +179,9 @@ public class LobbyController implements Initializable {
     public void start(final ActionEvent event) {
         // server.startGame();
         var root = Main.FXML.load(GameMultiplayerController.class, "client", "scenes", "GameMultiplayer.fxml");
-
+        var ctrl = root.getKey();
+        ctrl.setMe(me);
+        ctrl.setGame(lobby);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
