@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameMultiplayerController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameMultiplayerController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -68,17 +68,17 @@
                <Font size="24.0" />
             </font>
          </Label>
-         <Button fx:id="option1" layoutX="510.0" layoutY="182.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="311.0" styleClass="optionButton" text="200 Watts / hour" textFill="#a07400">
+         <Button fx:id="option1" layoutX="510.0" layoutY="182.0" mnemonicParsing="false" onAction="#checkMulChoiceAnswer" prefHeight="53.0" prefWidth="311.0" styleClass="optionButton" text="200 Watts / hour" textFill="#a07400">
             <font>
                <Font size="24.0" />
             </font>
          </Button>
-         <Button fx:id="option2" layoutX="510.0" layoutY="310.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="311.0" styleClass="optionButton" text="100 Watts / hour" textFill="#a07400">
+         <Button fx:id="option2" layoutX="510.0" layoutY="310.0" mnemonicParsing="false" onAction="#checkMulChoiceAnswer" prefHeight="53.0" prefWidth="311.0" styleClass="optionButton" text="100 Watts / hour" textFill="#a07400">
             <font>
                <Font size="24.0" />
             </font>
          </Button>
-         <Button fx:id="option3" layoutX="510.0" layoutY="431.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="311.0" styleClass="optionButton" text="50 Watts / hour" textFill="#a07400">
+         <Button fx:id="option3" layoutX="510.0" layoutY="431.0" mnemonicParsing="false" onAction="#checkMulChoiceAnswer" prefHeight="53.0" prefWidth="311.0" styleClass="optionButton" text="50 Watts / hour" textFill="#a07400">
             <font>
                <Font size="24.0" />
             </font>
