@@ -7,18 +7,18 @@ import java.util.Objects;
 
 public class FreeResponseQuestion extends Question{
     @JsonProperty("answer")
-    private int answer;
+    private long answer;
 
-    public FreeResponseQuestion(String prompt, Path imagePath, int answer) {
-        super(prompt, imagePath);
+    public FreeResponseQuestion(String prompt, byte[] imageBytes, long answer) {
+        super(prompt, imageBytes);
         this.answer = answer;
     }
 
-    public int getAnswer() {
+    public long getAnswer() {
         return answer;
     }
 
-    public void setAnswer(int answer) {
+    public void setAnswer(long answer) {
         this.answer = answer;
     }
 

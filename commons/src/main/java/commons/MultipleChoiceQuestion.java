@@ -12,8 +12,8 @@ public class MultipleChoiceQuestion extends Question{
     @JsonProperty("options")
     private String[] options;
 
-    public MultipleChoiceQuestion(String prompt, Path imagePath, String[] options, int answer) {
-        super(prompt, imagePath);
+    public MultipleChoiceQuestion(String prompt, byte[] imageBytes, String[] options, int answer) {
+        super(prompt, imageBytes);
         this.correctAnswerBox = answer;
         this.options = options;
     }

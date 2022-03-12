@@ -25,27 +25,10 @@ public class Question {
 
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
-            final @JsonProperty("imagePath") Path imagePath) {
-        byte[] bytes;
-        try {
-            bytes = readAllBytes(imagePath);
-        } catch (Exception e1) {
-            try {
-                System.err.println("Could not load path '"
-                        + imagePath.toString()
-                        + "', loading default image instead.");
-                URI uri = getClass().getClassLoader()
-                        .getResource("default.jpg").toURI();
-                bytes = readAllBytes(Path.of(uri));
-            } catch (Exception e2) {
-                System.err.println(
-                        "Could not load default image, using no image instead");
-                bytes = new byte[0];
-            }
-        }
+            final @JsonProperty("imageBytes") byte[] imageBytes) {
 
         this.prompt = prompt;
-        this.imageBytes = bytes;
+        this.imageBytes = imageBytes;
     }
 
     public String getPrompt() {

@@ -34,6 +34,8 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import server.ActivityService;
 import server.service.GameService;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -216,15 +218,6 @@ public class GameController {
         return ResponseEntity.ok(gameService.newGame());
     }
 
-    //add activity
-    @PostMapping("/addAct")
-    public void addActivity() {
-        Path path = Paths.get("/INVALID");
-        Activity activity = new Activity("blah", 10, "youtube", path);
-        activityService.addActivity(activity);
-        Activity activity2 = new Activity("activity2", 102, "youtube", path);
-        activityService.addActivity(activity2);
-    }
     //get all activities
     @GetMapping("/getAct")
     public ResponseEntity<List<Activity>> getAllActivities() {
@@ -236,18 +229,45 @@ public class GameController {
     public void addAllActivities() throws IOException {
         //parse json into activity
         List<File> f = getFiles(".json", new File("C:\\Users\\LohithSai\\Desktop\\activity-bank\\activities"));
-        FileWriter myWriter = new FileWriter("ActivityJsons.txt");
         ObjectMapper mapper = new ObjectMapper();
         for(int i = 0; i<f.size(); i++) {
-            System.out.println(readFile(f.get(i)));
-            myWriter.write(readFile(f.get(i)));
             Activity a = mapper.readValue(readFile(f.get(i)), Activity.class);
             System.out.println(a.getTitle());
+            if (a.getSource().length() > 255) {
+                a.setSource(a.getSource().substring(0,255));
+            }
+            String str = f.get(i).getName();
+            System.out.println(str);
+            File file = find("C:\\Users\\LohithSai\\Desktop\\activity-bank\\activities", str.substring(0, str.lastIndexOf('.')) + ".png");
+            if(file == null) {
+                System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+                file = find("C:\\Users\\LohithSai\\Desktop\\activity-bank\\activities", str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+            }
+            if (file == null) {
+                System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpg");
+                file = find("C:\\Users\\LohithSai\\Desktop\\activity-bank\\activities", str.substring(0, str.lastIndexOf('.')) + ".jpg");
+            }
+            System.out.println(file);
+            BufferedImage bImage = ImageIO.read(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+            byte[] data = bos.toByteArray();
+            a.setImageBytes(data);
             activityService.addActivity(a);
         }
-        myWriter.close();
     }
 
+    public static File find(String path, String fName) {
+        File f = new File(path);
+        if (fName.equalsIgnoreCase(f.getName())) return f;
+        if (f.isDirectory()) {
+            for (String aChild : f.list()) {
+                File ff = find(path + File.separator + aChild, fName);
+                if (ff != null) return ff;
+            }
+        }
+        return null;
+    }
 
     public static String readFile(File fileToRead) {
         String content = "";
