@@ -107,8 +107,7 @@ public class SplashController {
     }
 
     public void leaderBoard(final ActionEvent event) {
-        var root = Main.FXML.load(
-                LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
+        var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root.getValue());

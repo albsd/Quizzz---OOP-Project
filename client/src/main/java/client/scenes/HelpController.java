@@ -9,8 +9,7 @@ import javafx.stage.Stage;
 public class HelpController {
 
     public void splash(final ActionEvent e) {
-        var root = Main.FXML.load(
-                SplashController.class, "client", "scenes", "Splash.fxml");
+        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         Scene scene = new Scene(root.getValue());
