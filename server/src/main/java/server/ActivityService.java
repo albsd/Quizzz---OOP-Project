@@ -1,11 +1,13 @@
 package server;
 
 import commons.Activity;
+import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class ActivityService {
@@ -21,4 +23,6 @@ public class ActivityService {
     public void addActivity(final Activity activity) {
         activityRepository.save(activity);
     }
+
+
 }

@@ -1,31 +1,26 @@
 package server;
 
-import commons.Question;
+import commons.Activity;
+
 
 import java.util.List;
 
 public class FakeDatabase {
-    private List<Question> fakeQuestions;
+    private List<Activity> fakeActivities;
 
     public FakeDatabase() {
-//        Path invalidPath = Paths.get("INVALID");
-//        Question q1 = new Question("this is q1", invalidPath,
-//                new String[]{"answer 1", "answer 2", "answer 2"}, 0);
-//        Question q2 = new Question("this is q2",
-//                invalidPath,
-//                new String[]{"answer 1", "answer 2", "answer 2"}, 0);
-//        Question q3 = new Question("this is q3",
-//                invalidPath,
-//                new String[]{"answer 1", "answer 2", "answer 2"}, 0);
-//        this.fakeQuestions = Arrays.asList(q1, q2, q3);
+        byte[] imgBytes = new byte[0];
+        fakeActivities.add(new Activity("activity1", 51, "source1"));
+        fakeActivities.add(new Activity("activity2", 51, "source2"));
+        fakeActivities.add(new Activity("activity3", 51, "source3"));
     }
 
-    public List<Question> getFakeQuestions() {
-        return fakeQuestions;
+    public List<Activity> getFakeActivities() {
+        return fakeActivities;
     }
 
-    public void setFakeQuestions(final List<Question> fakeQuestions) {
-        this.fakeQuestions = fakeQuestions;
+    public void setFakeActivities(final List<Activity> fakeActivities) {
+        this.fakeActivities = fakeActivities;
     }
 
 }
