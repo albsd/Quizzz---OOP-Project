@@ -13,6 +13,8 @@ enum GameState { waiting, playing }
 public class Game {
     private final int questionLimit = 20;
     private final int questionTime = 20000;
+
+    @JsonIgnore
     private QuestionTimer timer;
 
     @JsonProperty("id")

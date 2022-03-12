@@ -11,9 +11,9 @@ public class QuestionTimer {
     private double currentTime = maxTime;
     private boolean started = false;
     private boolean over = false;
+    private final UUID id;
     private Timer timer;
     private TimerTask currentTask;
-    private final UUID id;
 
     public QuestionTimer(final UUID id) {
         this.id = id;

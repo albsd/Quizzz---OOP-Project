@@ -49,7 +49,6 @@ public class LobbyController implements Initializable {
     @FXML
     private Label playerCount;
 
-    // private List<Player> players;
     private List<String> players;
 
     private final ServerUtils server;

@@ -21,6 +21,7 @@ import commons.Player;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Question;
+import commons.GameUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
