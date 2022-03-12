@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.Main;
 import client.utils.ServerUtils;
-import commons.JoinMessage;
 import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -100,8 +99,6 @@ public class SplashController {
         }
 
         ctrl.setMe(player);
-        server.send("/app/join", new JoinMessage(player, true));
-        warning.setText("Nickname set");
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root.getValue());

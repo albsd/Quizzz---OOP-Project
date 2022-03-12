@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class MessageTest {
+class LobbyMessageTest {
 
     private String nick1;
     private String nick2;
@@ -13,8 +13,8 @@ class MessageTest {
     private final int time2 = 24;
     private String content1;
     private String content2;
-    private Message message1;
-    private Message message2;
+    private LobbyMessage message1;
+    private LobbyMessage message2;
 
 
     @BeforeEach
@@ -23,14 +23,18 @@ class MessageTest {
         nick2 = "Kevin";
         content1 = "Lets start the game!";
         content2 = "Waiting for a friend";
-        message1 = new Message(nick1, time1, content1);
-        message2 = new Message(nick1, time1, content1);
+        message1 = new LobbyMessage(nick1, time1, content1);
+        message2 = new LobbyMessage(nick2, time2, content2);
     }
 
     @Test
     void testGetters() {
         assertEquals(nick1, message1.getNick());
-        assertEquals(time1, message1.getTime());
-        assertEquals(content1, message1.getMessageContent());
+        assertEquals(time1, message1.getTimestamp());
+        assertEquals(content1, message1.getContent());
+
+        assertEquals(nick2, message2.getNick());
+        assertEquals(time2, message2.getTimestamp());
+        assertEquals(content2, message2.getContent());
     }
 }
