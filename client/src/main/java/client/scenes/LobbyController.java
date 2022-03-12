@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -59,20 +58,16 @@ public class LobbyController implements Initializable {
         this.server = server;
         this.players = new ArrayList<>();
 
-        Consumer<PlayerUpdate> playerUpdateConsumer = update -> {
-            System.out.println("PlayerUpdate received");
+        server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, update -> {
             if (update.getContent() == PlayerUpdate.Type.join) {
                 players.add(update.getNick());
             } else {
                 players.remove(update.getNick());
             }
             updatePlayerList();
-        };
-        server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, playerUpdateConsumer);
+        });
 
-        // change. Scroll pane is not place to put messages
-        Consumer<LobbyMessage> messageConsumer = m -> {
-            System.out.println("Message received");
+        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, m -> {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -85,8 +80,7 @@ public class LobbyController implements Initializable {
                     chatText.setText(chatLogs);
                 }
             });
-        };
-        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, messageConsumer);
+        });
     }
 
     @Override

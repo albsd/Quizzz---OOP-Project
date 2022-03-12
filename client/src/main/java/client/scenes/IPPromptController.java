@@ -52,7 +52,7 @@ public class IPPromptController implements Initializable {
 
     @FXML
     public void connect(final ActionEvent event) {
-        String host = hostField.getText().replaceAll("[\"\'><&]", ""); // XML escape chars
+        String host = hostField.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         String port = portField.getText();
 
         String error = server.isRunning(host, port);
