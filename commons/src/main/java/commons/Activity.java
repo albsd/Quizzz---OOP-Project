@@ -57,6 +57,38 @@ public class Activity {
         return energyConsumption == activity.energyConsumption && Objects.equals(title, activity.title) && Objects.equals(source, activity.source) && Objects.equals(imagePath, activity.imagePath);
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getEnergyConsumption() {
+        return energyConsumption;
+    }
+
+    public void setEnergyConsumption(int energyConsumption) {
+        this.energyConsumption = energyConsumption;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public Path getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(Path imagePath) {
+        this.imagePath = imagePath;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(title, energyConsumption, source, imagePath);

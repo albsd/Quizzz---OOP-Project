@@ -15,6 +15,7 @@
  */
 package server.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -33,8 +34,10 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import server.ActivityService;
 import server.service.GameService;
 
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -226,5 +229,61 @@ public class GameController {
     @GetMapping("/getAct")
     public ResponseEntity<List<Activity>> getAllActivities() {
         return ResponseEntity.ok(activityService.getAllActivities());
+    }
+
+    //add all activities
+    @PostMapping("/addAllAct")
+    public void addAllActivities() throws IOException {
+        //parse json into activity
+        List<File> f = getFiles(".json", new File("C:\\Users\\LohithSai\\Desktop\\activity-bank\\activities"));
+        FileWriter myWriter = new FileWriter("ActivityJsons.txt");
+        ObjectMapper mapper = new ObjectMapper();
+        for(int i = 0; i<f.size(); i++) {
+            System.out.println(readFile(f.get(i)));
+            myWriter.write(readFile(f.get(i)));
+            Activity a = mapper.readValue(readFile(f.get(i)), Activity.class);
+            System.out.println(a.getTitle());
+            activityService.addActivity(a);
+        }
+        myWriter.close();
+    }
+
+
+    public static String readFile(File fileToRead) {
+        String content = "";
+        try(FileReader fileStream = new FileReader( fileToRead );
+            BufferedReader bufferedReader = new BufferedReader( fileStream ) ) {
+            String line = null;
+
+            while( (line = bufferedReader.readLine()) != null ) {
+                content += line;
+            }
+
+        } catch ( FileNotFoundException ex ) {
+            //exception Handling
+        } catch ( IOException ex ) {
+            //exception Handling
+        }
+        return content;
+    }
+
+    public static List<File> getFiles(String extension, final File folder)
+    {
+
+        extension = extension.toUpperCase();
+
+        final List<File> files = new ArrayList<File>();
+        for (final File file : folder.listFiles())
+        {
+
+            if (file.isDirectory())
+                files.addAll(getFiles(extension, file));
+            else if (file.getName().toUpperCase().endsWith(extension))
+                files.add(file);
+
+        }
+
+        return files;
+
     }
 }
