@@ -1,12 +1,13 @@
-package commons;
+    package commons;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 public class MultipleChoiceQuestion extends Question {
-    //0 is top answer, 1 is middle answer, 2 is bottom answer (maybe this could be improved through use of enums)
+    //TODO: correctAnswer is convoluted, maybe use an enum here
+    //0 -> top, 1 -> middle, 2-> bottom
     @JsonProperty("answer")
-    private int correctAnswerBox;
+    private int correctAnswer;
 
     @JsonProperty("options")
     private String[] options;
@@ -14,16 +15,16 @@ public class MultipleChoiceQuestion extends Question {
     public MultipleChoiceQuestion(final String prompt, final byte[] imageBytes,
                                   final String[] options, final int answer) {
         super(prompt, imageBytes);
-        this.correctAnswerBox = answer;
+        this.correctAnswer = answer;
         this.options = options;
     }
 
     public int getAnswer() {
-        return correctAnswerBox;
+        return correctAnswer;
     }
 
     public void setAnswer(final int answer) {
-        this.correctAnswerBox = answer;
+        this.correctAnswer = answer;
     }
 
     public String[] getOptions() {

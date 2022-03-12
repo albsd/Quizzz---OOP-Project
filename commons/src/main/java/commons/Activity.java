@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -19,6 +20,7 @@ public class Activity {
     private String source;
 
     private byte[] imageBytes;
+    private final int numberOfQuestions = 3;
 
     public Activity() {
 
@@ -39,13 +41,30 @@ public class Activity {
         return new MultipleChoiceQuestion(prompt, imageBytes, choices, correctAnswerIndex);
     }
 
+    public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(final List<Activity> answerOptions) {
+        //TODO:We need to decide what image (if any) to display on this type of question
+        byte[] imgBytes = new byte[1];
+        String prompt = "Which of the following activities take the most energy";
+        String[] options  = new String[numberOfQuestions];
+        int counter = 0;
+        int maxIndex = 0;
+        for (Activity a:answerOptions) {
+            if (a.getEnergyConsumption() > answerOptions.get(maxIndex).getEnergyConsumption()) {
+                maxIndex = counter;
+            }
+            options[counter] = a.getTitle();
+            counter++;
+        }
+        return new MultipleChoiceQuestion(prompt, imgBytes, options, maxIndex);
+    }
+
     public FreeResponseQuestion getFreeResponseQuestion() {
         String prompt = "How much energy does " + title + " take in watt hours?";
         return new FreeResponseQuestion(prompt, imageBytes, energyConsumption);
     }
 
     public String[] generateChoices(final long energyConsumption) {
-        String[] choices = new String[3];
+        String[] choices = new String[numberOfQuestions];
         for (int i = 0; i < choices.length; i++) {
             Random r = new Random();
             choices[i] = Integer.toString((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()));
