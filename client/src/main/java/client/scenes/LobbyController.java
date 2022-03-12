@@ -61,11 +61,15 @@ public class LobbyController implements Initializable {
         this.players = new ArrayList<>();
 
         Consumer<PlayerUpdate> playerUpdateConsumer = update -> {
-            System.out.println("PlayerUpdate received");
-            if (update.getContent() == PlayerUpdate.Type.join) {
-                players.add(update.getNick());
-            } else {
-                players.remove(update.getNick());
+            try {
+                System.out.println("PlayerUpdate received");
+                if (update.getContent() == PlayerUpdate.Type.join) {
+                    players.add(update.getNick());
+                } else {
+                    players.remove(update.getNick());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             updatePlayerList();
         };
@@ -92,10 +96,8 @@ public class LobbyController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        this.players = server.getPlayers().stream().map(Player::getNick).toList();
-        if (players == null) {
-            players = new ArrayList<>();
-        }
+        // We DON'T use the shorthand .toList() here, because that returns an immutable list and causes player updates to get ignored silently
+        this.players = server.getPlayers().stream().map(Player::getNick).collect(Collectors.toList());
         updatePlayerList();
     }
 
