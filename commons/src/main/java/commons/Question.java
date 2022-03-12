@@ -5,12 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.net.URI;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static java.nio.file.Files.readAllBytes;
 //TODO: Make this class abstract?
 @Entity
 public class Question {

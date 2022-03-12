@@ -19,9 +19,9 @@ public class QuestionTest {
     void setup() throws URISyntaxException {
         URL resource = getClass().getClassLoader().getResource("test.jpg");
         Path path = Path.of(resource.toURI());
-        q1 = new MultipleChoiceQuestion("test_prompt", path,
+        q1 = new MultipleChoiceQuestion("test_prompt", new byte[1],
                 new String[]{"Option1", "Option2", "Option3"}, 2);
-        q2 = new MultipleChoiceQuestion("other_prompt", Path.of("."),
+        q2 = new MultipleChoiceQuestion("other_prompt", new byte[1],
                 new String[]{"20", "50", "100"}, 0);
     }
 

@@ -18,7 +18,7 @@ public class ActivityService {
         return activities;
     }
 
-    public void addActivity(Activity activity) {
+    public void addActivity(final Activity activity) {
         activityRepository.save(activity);
     }
 }

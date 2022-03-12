@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import commons.Game;
 import commons.Player;
-import commons.Question;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,12 +30,9 @@ import server.ActivityService;
 import server.repository.GameRepository;
 import server.service.GameService;
 
-import java.nio.file.Paths;
-import java.util.Arrays;
+
 import java.util.List;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Random;
 
 public class GameControllerTest {
 

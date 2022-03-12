@@ -9,12 +9,12 @@ import javax.persistence.Converter;
 public class PathConverter implements AttributeConverter<Path, String> {
 
     @Override
-    public String convertToDatabaseColumn(Path attribute) {
+    public String convertToDatabaseColumn(final Path attribute) {
         return attribute == null ? null : attribute.toString();
     }
 
     @Override
-    public Path convertToEntityAttribute(String dbData) {
+    public Path convertToEntityAttribute(final String dbData) {
         return dbData == null ? null : Paths.get(dbData);
     }
 
