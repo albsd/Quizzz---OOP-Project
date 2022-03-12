@@ -24,5 +24,26 @@ public class ActivityService {
         activityRepository.save(activity);
     }
 
+    public List<Question> getQuestionList() {
+        List<Activity> allActivities = this.getAllActivities();
+        List<Activity> activityList = new ArrayList<>();
+        int max = 0, min = allActivities.size();
+        for (int i = 0; i < 20; i++) {
+            int activityNumber = (int) ((Math.random() * (max - min)) + min);
+            activityList.add(allActivities.get(activityNumber));
+        }
+    }
 
+    public Question turnActivityIntoQuestion(final Activity activity, final int questionType) {
+        //question type of 0 means number multiple choice
+        if (questionType == 0) {
+            return activity.getNumberMultipleChoiceQuestion();
+        }
+        else if (questionType == 1) {
+            return activity.getActivityMultipleChoiceQuestion();
+        }
+        else {
+            return activity.getFreeResponseQuestion();
+        }
+    }
 }
