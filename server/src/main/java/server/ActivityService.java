@@ -27,10 +27,15 @@ public class ActivityService {
     public List<Question> getQuestionList() {
         List<Activity> allActivities = this.getAllActivities();
         List<Activity> activityList = new ArrayList<>();
+        List<Question> questionList = new ArrayList<>();
         int max = 0, min = allActivities.size();
         for (int i = 0; i < 20; i++) {
             int activityNumber = (int) ((Math.random() * (max - min)) + min);
             activityList.add(allActivities.get(activityNumber));
+        }
+        for (int i = 0; i < 20; i++) {
+            int questionType = (int) ((Math.random() * (2)));
+            Question question = this.turnActivityIntoQuestion(activityList.get(i), questionType);
         }
     }
 
@@ -38,11 +43,9 @@ public class ActivityService {
         //question type of 0 means number multiple choice
         if (questionType == 0) {
             return activity.getNumberMultipleChoiceQuestion();
-        }
-        else if (questionType == 1) {
+        } else if (questionType == 1) {
             return activity.getActivityMultipleChoiceQuestion();
-        }
-        else {
+        } else {
             return activity.getFreeResponseQuestion();
         }
     }
