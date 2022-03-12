@@ -39,8 +39,8 @@ public class Question {
         } catch (Exception e1) {
             try {
                 System.err.println("Could not load path '"
-                                + imagePath.toString()
-                                + "', loading default image instead.");
+                        + imagePath.toString()
+                        + "', loading default image instead.");
                 URI uri = getClass().getClassLoader()
                         .getResource("default.jpg").toURI();
                 bytes = readAllBytes(Path.of(uri));
@@ -72,6 +72,7 @@ public class Question {
     public int getAnswer() {
         return this.answer;
     }
+    
     @Override
     public boolean equals(final Object other) {
         if (other == null) {

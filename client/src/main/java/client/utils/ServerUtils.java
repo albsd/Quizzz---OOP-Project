@@ -15,9 +15,13 @@
  */
 package client.utils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import commons.Game;
 import commons.Player;
+import commons.PlayerUpdate;
+import commons.Game;
+import commons.Leaderboard;
+import commons.Question;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -40,13 +44,31 @@ import java.util.function.Consumer;
 @Controller
 public class ServerUtils {
 
-    private static StompSession session = connect("ws://localhost:8080/websocket");
     private final String kGameUrl;
+
     private final HttpClient client;
+
+    private static StompSession session = connect("ws://localhost:8080/websocket");
 
     public ServerUtils() {
         this.kGameUrl = "http://localhost:8080/game";
         this.client = HttpClient.newHttpClient();
+    }
+
+    // Initial POST request to get gameId
+    @Deprecated
+    public String createGame() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        HttpResponse<String> response = client.send(request,
+                HttpResponse.BodyHandlers.ofString());
+        String gameId = response.body().replaceAll("^\"|\"$", "");
+
+        System.out.println(gameId);
+        return gameId;
     }
 
     private static StompSession connect(final String url) {
@@ -65,8 +87,8 @@ public class ServerUtils {
     }
 
     public <T> void registerForMessages(final String dest,
-                                        final Class<T> type,
-                                        final Consumer<T> consumer) {
+            final Class<T> type,
+            final Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(final StompHeaders headers) {
@@ -76,7 +98,7 @@ public class ServerUtils {
             @SuppressWarnings("unchecked")
             @Override
             public void handleFrame(final StompHeaders headers,
-                                    final Object payload) {
+                    final Object payload) {
                 consumer.accept((T) payload);
             }
         });
@@ -93,13 +115,16 @@ public class ServerUtils {
      * @return Player that has joined the game
      */
     public Player joinGame(final String nick) {
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/join/" + nick))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
-        return parseResponseToObject(request, Player.class);
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player != null) {
+            send("/app/playerUpdate", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.join));
+        }
+        return player;
     }
 
     /**
@@ -109,13 +134,16 @@ public class ServerUtils {
      * @return Player that has left the game
      */
     public Player leaveGame(final String nick) {
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/leave/" + nick))
                 .DELETE()
                 .build();
 
-        return parseResponseToObject(request, Player.class);
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player != null) {
+            send("/app/playerUpdate", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
+        }
+        return player;
     }
 
     /**
@@ -129,10 +157,30 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-
-        Game game = parseResponseToObject(request, Game.class);
+        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
         if (game == null) return null;
         return game.getPlayers();
+    }
+
+    public Leaderboard getLeaderboard(final String id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/" + id + "/leaderboard"))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+
+        return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
+    }
+
+    public List<Question> getQuestions(final String id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/"
+                        + id + "/question"))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+
+        return parseResponseToObject(request, new TypeReference<List<Question>>() { });
     }
 
     /**
@@ -143,7 +191,7 @@ public class ServerUtils {
      * @param type    Expected type of the response
      * @return Parsed response as the given instance of class `type`
      */
-    private <T> T parseResponseToObject(final HttpRequest request, final Class<T> type) {
+    private <T> T parseResponseToObject(final HttpRequest request, final TypeReference<T> type) {
         try {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
@@ -155,12 +203,9 @@ public class ServerUtils {
             ObjectMapper mapper = new ObjectMapper();
             T obj = mapper.readValue(response.body(), type);
             return obj;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
     }
-
 }

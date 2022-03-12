@@ -43,7 +43,7 @@ public class LeaderboardController {
     public void switchToLeaderboard(final ActionEvent e) {
         var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
 
-        Stage  stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();

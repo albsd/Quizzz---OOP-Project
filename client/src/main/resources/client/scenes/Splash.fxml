@@ -1,54 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SplashController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.SplashController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-    <AnchorPane prefHeight="682.0" prefWidth="1240.0">
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
         <children>
-            <Button fx:id="helpButton" layoutX="7.0" layoutY="5.0" mnemonicParsing="false" onAction="#help" prefHeight="47.0" prefWidth="82.0" text="Help">
-            <font>
-               <Font name="System Bold" size="18.0" />
-            </font></Button>
-            <Button fx:id="exitButton" layoutX="1192.0" layoutY="9.0" mnemonicParsing="false" onAction="#exitApp" prefHeight="39.0" prefWidth="38.0" text="X" />
-            <Button fx:id="singleplayerButton" layoutX="110.0" layoutY="527.0" mnemonicParsing="false" onAction="#singleGame" prefHeight="97.0" prefWidth="207.0" text="Singleplayer">
-            <font>
-               <Font size="24.0" />
-            </font></Button>
-            <Button fx:id="multiplayerButton" layoutX="941.0" layoutY="526.0" mnemonicParsing="false" onAction="#lobby" prefHeight="98.0" prefWidth="209.0" text="Multiplayer">
-            <font>
-               <Font size="24.0" />
-            </font></Button>
-            <Button fx:id="leaderBoardButton" layoutX="525.0" layoutY="527.0" mnemonicParsing="false" onAction="#leaderBoard" prefHeight="98.0" prefWidth="208.0" text="Leaderboard">
-            <font>
-               <Font size="24.0" />
-            </font></Button>
-
-            <Label fx:id="exitLabel" alignment="CENTER" layoutX="1158.0" layoutY="55.0" prefHeight="39.0" prefWidth="105.0" text="Exit game">
-            <font>
-               <Font size="18.0" />
-            </font></Label>
-            <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" layoutX="214.0" layoutY="71.0" prefHeight="185.0" prefWidth="831.0" text="Energy Quizzz" textAlignment="CENTER">
+            <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" prefHeight="100.0" prefWidth="1240.0" text="Energy Quizzz" textAlignment="CENTER">
                 <font>
                     <Font name="System Bold" size="96.0" />
                 </font>
             </Label>
-            <TextField fx:id="nickField" alignment="CENTER" layoutX="372.0" layoutY="334.0" prefHeight="86.0" prefWidth="518.0" promptText="Input nickname">
+         <HBox alignment="CENTER" layoutY="450.0" prefHeight="100.0" prefWidth="1240.0" spacing="100.0">
+            <children>
+                  <Button fx:id="singleplayerButton" mnemonicParsing="false" onAction="#singleGame" prefHeight="97.0" prefWidth="207.0" text="Singleplayer">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Button>
+                  <Button fx:id="leaderBoardButton" mnemonicParsing="false" onAction="#leaderBoard" prefHeight="98.0" prefWidth="208.0" text="Leaderboard">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Button>
+                  <Button fx:id="multiplayerButton" mnemonicParsing="false" onAction="#lobby" prefHeight="98.0" prefWidth="209.0" text="Multiplayer">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Button>
+            </children>
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+         </HBox>
+         <VBox alignment="CENTER" fillWidth="false" layoutY="300.0" prefHeight="100.0" prefWidth="1240.0">
+            <children>
+                <TextField fx:id="nickField" alignment="CENTER" prefHeight="60.0" prefWidth="518.0" promptText="Input nickname">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+                </TextField>
+               <Label fx:id="warning" alignment="CENTER" prefHeight="41.0" prefWidth="519.0" textFill="#c00000">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Label>
+            </children>
+         </VBox>
+            <Button fx:id="helpButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#help" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
             <font>
-               <Font size="36.0" />
-            </font></TextField>
-         <Label fx:id="warning" alignment="CENTER" layoutX="372.0" layoutY="442.0" prefHeight="41.0" prefWidth="519.0" textFill="#c00000">
-            <font>
-               <Font size="14.0" />
-            </font></Label>
+               <Font name="System Bold" size="18.0" />
+            </font>
+            <graphic>
+               <ImageView pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@/images/help.png" />
+                  </image>
+               </ImageView>
+            </graphic></Button>
+            <Button fx:id="exitButton" alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" layoutX="1160.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#exitApp" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <graphic>
+               <ImageView pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@/images/close.png" />
+                  </image>
+               </ImageView>
+            </graphic></Button>
         </children>
     </AnchorPane>
 <!--    <ScrollPane prefHeight="200.0" prefWidth="200.0" />-->

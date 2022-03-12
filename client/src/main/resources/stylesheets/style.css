@@ -1,8 +1,52 @@
+.button {
+    -fx-border-color: transparent;
+}
+
 .returnMenuButton{
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
 }
 
 .returnMenuButton:hover{
     -fx-border-color: black;
+}
+
+.iconButton {
+    -fx-background-color: white;
+}
+
+.iconButton:hover{
+    -fx-border-color: black;
+}
+
+.cancelButton {
+    -fx-background-color: #FE6F5B;
+}
+.cancelButton:hover {
+    -fx-background-color: #D83D28;
+}
+
+.confirmButton {
+    -fx-background-color: #E0FCCF;
+}
+
+.confirmButton:hover {
+    -fx-background-color: #7BD942;
+}
+
+.optionButton {
+    -fx-background-color: #FFD029;
+}
+
+.optionButton:hover{
+    -fx-background-color: #E7BE2D;
+}
+
+.scene {
+    -fx-background-color: white;
+}
+
+.returnPopup {
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-border-width: 7px;
 }

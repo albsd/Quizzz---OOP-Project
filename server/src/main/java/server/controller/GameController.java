@@ -15,9 +15,11 @@
  */
 package server.controller;
 
-import commons.Game;
-import commons.GameUpdate;
+import commons.LobbyMessage;
+import commons.PlayerUpdate;
 import commons.Player;
+import commons.Game;
+import commons.Leaderboard;
 import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -75,7 +77,6 @@ public class GameController {
      * @param id The UUID of the game
      * @return Game or an error, depending on whether the game exists
      */
-    @Deprecated
     @GetMapping("/{id}")
     public ResponseEntity<Game> getById(final @PathVariable("id") UUID id) {
         Game game = gameService.findById(id);
@@ -85,6 +86,23 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
+    @GetMapping("{id}/leaderboard")
+    public ResponseEntity<Leaderboard> getLeaderboard(
+            @PathVariable final UUID id) {
+        if (gameService.findById(id) == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(gameService.getLeaderboard(id));
+    }
+
+    @GetMapping("{id}/question")
+    public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
+        if (gameService.findById(id) == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(gameService.getQuestions(
+                gameService.generateSeed(id)));
+    }
 
     /**
      * Join the active game lobby as a Player with id "nick".
@@ -108,6 +126,7 @@ public class GameController {
         if (!success) {
             return ResponseEntity.status(errorCode).build();
         }
+
         return ResponseEntity.ok(p);
     }
 
@@ -138,10 +157,11 @@ public class GameController {
         if (!success) {
             return ResponseEntity.status(errorCode).build();
         }
+
         return ResponseEntity.ok(p);
     }
 
-    // TODO: send generated session id to client so that it can send it back when
+    // TODO: send generated session id to client so that it can send it back when joining lobby after nickname
     @EventListener
     @SendTo
     private void handleSessionConnected(final SessionConnectEvent event) {
@@ -156,10 +176,19 @@ public class GameController {
     private void handleSessionDisconnect(final SessionDisconnectEvent event) {
         System.out.println("Client disconnected");
         System.out.println(event.getSessionId());
-
     }
 
+    @MessageMapping("/playerUpdate") // /app/player_update
+    @SendTo("/topic/playerUpdate")
+    private PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
+        return update;
+    }
 
+    @MessageMapping("/lobby/chat") // /app/lobby/chat
+    @SendTo("/topic/lobby/chat")
+    private LobbyMessage sendLobbyMessage(final LobbyMessage msg) {
+        return msg;
+    }
 
     /**
      * Starts the current game.
@@ -180,13 +209,5 @@ public class GameController {
     @SendTo("/topic/game/update")
     public GameUpdate halveTimeWebsocket() {
         return new GameUpdate(GameUpdate.Type.halveTimer);
-    }
-
-    //when client timer is 0, requests question but don't load yet
-    //finds relevant question for specific game using id
-    @GetMapping("{id}/question")
-    public ResponseEntity<List<Question>> sendQuestions(
-            @PathVariable final UUID id) {
-        return ResponseEntity.ok(gameService.getMockQuestion(id));
     }
 }
