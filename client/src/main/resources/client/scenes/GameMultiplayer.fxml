@@ -51,7 +51,7 @@
                                     <graphic>
                                        <ImageView pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                             <Image url="@../../images/time.png" />
+                                             <Image url="@/images/time.png" />
                                           </image>
                                        </ImageView>
                                     </graphic>
@@ -60,7 +60,7 @@
                                     <graphic>
                                        <ImageView pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                             <Image url="@../../images/score.png" />
+                                             <Image url="@/images/score.png" />
                                           </image>
                                        </ImageView>
                                     </graphic>
@@ -69,7 +69,7 @@
                                     <graphic>
                                        <ImageView pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                             <Image url="@../../images/remove.png" />
+                                             <Image url="@/images/remove.png" />
                                           </image>
                                        </ImageView>
                                     </graphic>
@@ -118,7 +118,7 @@
                                     <graphic>
                                        <ImageView pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                             <Image url="@../../images/face-frown.png" />
+                                             <Image url="@/images/face-frown.png" />
                                           </image>
                                        </ImageView>
                                     </graphic>
@@ -130,7 +130,7 @@
                                     <graphic>
                                        <ImageView pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                             <Image url="@../../images/face-sad.png" />
+                                             <Image url="@/images/face-sad.png" />
                                           </image>
                                        </ImageView>
                                     </graphic>
@@ -142,7 +142,7 @@
                                     <graphic>
                                        <ImageView pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                             <Image url="@../../images/face-smile.png" />
+                                             <Image url="@/images/face-smile.png" />
                                           </image>
                                        </ImageView>
                                     </graphic>
@@ -154,7 +154,7 @@
                                     <graphic>
                                        <ImageView pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                             <Image url="@../../images/face-surprise.png" />
+                                             <Image url="@/images/face-surprise.png" />
                                           </image>
                                        </ImageView>
                                     </graphic>
@@ -207,7 +207,7 @@
                 <graphic>
                     <ImageView pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@../../images/back.png" />
+                            <Image url="@/images/back.png" />
                         </image>
                     </ImageView>
                 </graphic></Button>
