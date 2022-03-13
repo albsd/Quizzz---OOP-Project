@@ -40,7 +40,6 @@ public class GameMultiplayerController implements Initializable {
 
     @FXML
     private Button option1, option2, option3,
-            emoji1, emoji2, emoji3, emoji4,
             timeButton, scoreButton, removeButton,
             cancelButton, confirmButton;
     @FXML
@@ -108,6 +107,7 @@ public class GameMultiplayerController implements Initializable {
         this.me = me;
     }
 
+    @FXML
     public void returnMenu(final ActionEvent e) {
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 
@@ -117,43 +117,52 @@ public class GameMultiplayerController implements Initializable {
         stage.show();
     }
 
+    @FXML
     public void openPopup(final ActionEvent e) {
         popupMenu.setVisible(true);
     }
 
+    @FXML
     public void closePopup(final ActionEvent e) {
         popupMenu.setVisible(false);
     }
 
+    @FXML
     public void timePowerup(final ActionEvent e) {
 
     }
 
+    @FXML
     public void scorePowerup(final ActionEvent e) {
 
     }
 
+    @FXML
     public void removePowerup(final ActionEvent e) {
 
     }
 
-    public void emote1() {
+    @FXML
+    public void frown() {
         sendEmote(Emote.frown);
     }
 
-    public void emote2() {
+    @FXML
+    public void cry() {
         sendEmote(Emote.cry);
     }
 
-    public void emote3() {
+    @FXML
+    public void smile() {
         sendEmote(Emote.smile);
     }
 
-    public void emote4() {
+    @FXML
+    public void surprised() {
         sendEmote(Emote.surprised);
     }
 
-    void sendEmote(final Emote emote) {
+    private void sendEmote(final Emote emote) {
         server.send("/app/game/chat", new EmoteMessage(me.getNick(), emote));
     }
 }
