@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
+import commons.Activity;
 import commons.Game;
 import commons.Player;
 
@@ -46,8 +47,9 @@ public class GameControllerTest {
 
     @BeforeEach
     public void setup() {
-        service = new GameService(new GameRepository());
-        ctrl = new GameController(service, new ActivityService());
+        ActivityService as = new ActivityService();
+        service =  new GameService(new GameRepository(), as);
+        ctrl = new GameController(service, as);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
         game = ctrl.getCurrentGame();

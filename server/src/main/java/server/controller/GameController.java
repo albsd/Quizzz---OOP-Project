@@ -105,6 +105,8 @@ public class GameController {
         if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
         }
+        System.out.println(gameService.getQuestions(id).get(0).getImageBytes());
+        System.out.println(gameService.getQuestions(id).get(1).getImageBytes());
         return ResponseEntity.ok(gameService.getQuestions(id));
     }
 

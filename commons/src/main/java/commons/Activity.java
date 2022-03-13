@@ -1,5 +1,6 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
@@ -19,13 +20,15 @@ public class Activity {
     @JsonProperty("source")
     private String source;
 //TODO: make this a json property?
+    @JsonProperty
     private byte[] imageBytes;
 
     public Activity() {
 
     }
     //TODO: add @JsonCreator
-    public Activity(final String title, final long energyConsumption, final String source) {
+    @JsonCreator
+    public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption, @JsonProperty final String source) {
         this.title = title;
         this.energyConsumption = energyConsumption;
         this.source = source;
