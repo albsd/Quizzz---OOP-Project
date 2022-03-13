@@ -30,6 +30,7 @@ import client.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
+import javax.swing.*;
 
 public class GameMultiplayerController implements Initializable {
 
@@ -143,22 +144,22 @@ public class GameMultiplayerController implements Initializable {
     }
 
     @FXML
-    public void frown() {
+    public void frown(final ActionEvent e) {
         sendEmote(Emote.frown);
     }
 
     @FXML
-    public void cry() {
+    public void cry(final ActionEvent e) {
         sendEmote(Emote.cry);
     }
 
     @FXML
-    public void smile() {
+    public void smile(final ActionEvent e) {
         sendEmote(Emote.smile);
     }
 
     @FXML
-    public void surprised() {
+    public void surprised(final ActionEvent e) {
         sendEmote(Emote.surprised);
     }
 
