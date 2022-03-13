@@ -34,7 +34,7 @@ public class ActivityService {
             activityList.add(allActivities.get(activityNumber));
         }
         for (int i = 0; i < 20; i++) {
-            int questionType = (int) ((Math.random() * (2)));
+            int questionType = (int) ((Math.random() * (3)));
             Question question = this.turnActivityIntoQuestion(activityList.get(i),
                     questionType, this.generateOptions(allActivities, 3));
             questionList.add(question);
@@ -45,6 +45,7 @@ public class ActivityService {
     public Question turnActivityIntoQuestion(final Activity activity, final int questionType,
                                              final List<Activity> options) {
         //question type of 0 means number multiple choice
+        System.out.println(questionType);
         if (questionType == 0) {
             return activity.getNumberMultipleChoiceQuestion();
         } else if (questionType == 1) {
