@@ -61,15 +61,11 @@ public class LobbyController implements Initializable {
         this.players = new ArrayList<>();
 
         Consumer<PlayerUpdate> playerUpdateConsumer = update -> {
-            try {
-                System.out.println("PlayerUpdate received");
-                if (update.getContent() == PlayerUpdate.Type.join) {
-                    players.add(update.getNick());
-                } else {
-                    players.remove(update.getNick());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            System.out.println("PlayerUpdate received");
+            if (update.getContent() == PlayerUpdate.Type.join) {
+                players.add(update.getNick());
+            } else {
+                players.remove(update.getNick());
             }
             updatePlayerList();
         };
