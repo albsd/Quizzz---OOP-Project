@@ -19,6 +19,8 @@ import client.Main;
 
 public class GameMultiplayerController implements Initializable {
 
+    // TODO: inject the ProgressBar.fxml into this scene
+
     @FXML
     private Button option1, option2, option3,
             emoji1, emoji2, emoji3, emoji4,

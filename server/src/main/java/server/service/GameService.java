@@ -42,7 +42,7 @@ public class GameService {
     /**
      * Creates a new game as an active lobby.
      * The previous lobby is propagated to the game that has just started.
-     * 
+     *
      * @return Game that has been created
      */
     public Game newGame() {
