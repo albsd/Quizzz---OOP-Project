@@ -30,10 +30,12 @@ public class Activity {
     }
     //TODO: add @JsonCreator
     @JsonCreator
-    public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption, @JsonProperty final String source) {
+    public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption,
+                    @JsonProperty final String source, @JsonProperty final byte[] imageBytes) {
         this.title = title;
         this.energyConsumption = energyConsumption;
         this.source = source;
+        this.imageBytes = imageBytes;
     }
 
     //TODO: Implement the getActivityMultipleChoiceQuestion() where the options are other activities in another class

@@ -12,9 +12,9 @@ public class FakeDatabase {
     public FakeDatabase() {
         byte[] imgBytes = new byte[1];
         this.fakeActivities = new ArrayList<>();
-        fakeActivities.add(new Activity("activity1", 51, "source1"));
-        fakeActivities.add(new Activity("activity2", 51, "source2"));
-        fakeActivities.add(new Activity("activity3", 51, "source3"));
+        fakeActivities.add(new Activity("activity1", 51, "source1", new byte[1]));
+        fakeActivities.add(new Activity("activity2", 51, "source2", new byte[1]));
+        fakeActivities.add(new Activity("activity3", 51, "source3", new byte[1]));
     }
 
     public List<Activity> getFakeActivities() {
