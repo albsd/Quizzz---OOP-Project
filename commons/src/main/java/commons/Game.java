@@ -14,6 +14,9 @@ public class Game {
     private final int questionLimit = 20;
     private final int questionTime = 20000;
 
+    @JsonIgnore
+    private QuestionTimer timer;
+
     @JsonProperty("id")
     private UUID id;
 
@@ -37,6 +40,7 @@ public class Game {
         // this.questions = QuestionService.generateQuestions()
         this.currentQuestion = 0;
         this.gameState = GameState.waiting;
+        this.timer = new QuestionTimer(id);
     }
 
     @JsonCreator
@@ -64,8 +68,17 @@ public class Game {
         return this.gameState;
     }
 
-    public Question getCurrentQuestion() {
-        return this.questions[this.currentQuestion];
+    public QuestionTimer getTimer() {
+        return timer;
+    }
+
+    @JsonIgnore
+    //Todo: invoke this method when the client-timer is 0 in a set interval
+    public void startTimer() {
+        if (timer.isOver()) {
+            timer.reset();
+        }
+        timer.startGameTimer();
     }
 
     @JsonIgnore
@@ -88,6 +101,7 @@ public class Game {
         players.remove(p);
         return true;
     }
+
     public Player getPlayerByNick(final String nick) {
         for (Player p : players) {
             if (p.getNick().equals(nick)) {
@@ -108,7 +122,7 @@ public class Game {
                 // Show intermediary leaderboard
 
                 // Sleep 5 seconds
-                //}
+                //
                 // Show new question
 
                 // Reset time for all players

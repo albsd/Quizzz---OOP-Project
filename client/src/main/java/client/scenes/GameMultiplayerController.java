@@ -38,6 +38,8 @@ public class GameMultiplayerController implements Initializable {
 
     private Player me;
 
+    // TODO: inject the ProgressBar.fxml into this scene
+
     @FXML
     private Button option1, option2, option3,
             timeButton, scoreButton, removeButton,

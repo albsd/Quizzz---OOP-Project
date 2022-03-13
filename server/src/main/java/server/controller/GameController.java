@@ -22,18 +22,19 @@ import commons.Question;
 import commons.Leaderboard;
 import commons.EmoteMessage;
 import commons.LobbyMessage;
+import commons.GameUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import server.service.GameService;
@@ -210,5 +211,11 @@ public class GameController {
             return ResponseEntity.status(405).build(); // NOT_ALLOWED
         }
         return ResponseEntity.ok(gameService.newGame());
+    }
+
+    @MessageMapping("/halve")
+    @SendTo("/topic/game/update")
+    public GameUpdate halveTimeWebsocket() {
+        return GameUpdate.halveTimer;
     }
 }
