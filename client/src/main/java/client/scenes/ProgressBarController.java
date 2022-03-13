@@ -60,8 +60,9 @@ public class ProgressBarController implements Initializable {
             switch (updateType) {
                 case halveTimer -> questionTimer.halve();
                 case stopTimer -> reset();
-                //startTimer
-                default -> start();
+                case startTimer -> start();
+
+                default -> { }
             }
         });
     };
@@ -84,6 +85,7 @@ public class ProgressBarController implements Initializable {
                     System.out.println("Time's over!");
                     Platform.runLater(() -> label.setText("Time's over!"));
                     questionTimer.setCurrentTime(0);
+
                     for (Button b : buttons) {
                         b.setDisable(true);
                     }

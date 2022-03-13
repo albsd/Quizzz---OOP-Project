@@ -124,7 +124,7 @@ public class Game {
                 // Show intermediary leaderboard
 
                 // Sleep 5 seconds
-                //}
+                //
                 // Show new question
 
                 // Reset time for all players

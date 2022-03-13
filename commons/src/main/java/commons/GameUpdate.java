@@ -5,7 +5,6 @@ public class GameUpdate {
         halveTimer,
         stopTimer,
         startTimer,
-        none
     }
 
     private Type update;
