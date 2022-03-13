@@ -105,8 +105,7 @@ public class GameController {
         if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(gameService.getQuestions(
-                gameService.generateSeed(id)));
+        return ResponseEntity.ok(gameService.getQuestions(id));
     }
 
     /**

@@ -5,6 +5,7 @@ import commons.Leaderboard;
 import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import server.ActivityRepository;
 import server.ActivityService;
 import server.repository.GameRepository;
 
@@ -21,10 +22,12 @@ public class GameService {
 
     private static HashMap<UUID, List<Question>> questionsPerGame = new HashMap<>();
 
+    private ActivityService activityService;
     @Autowired
-    public GameService(final GameRepository repo) {
+    public GameService(final GameRepository repo, final ActivityService activityService) {
         this.repo = repo;
         this.lobby = new Game(UUID.randomUUID());
+        this.activityService = activityService;
     }
 
     public UUID addGame(final Game game) {
@@ -65,20 +68,15 @@ public class GameService {
         return repo.getLeaderboard(id);
     }
 
-    //TODO:remove this method
-    public List<Question> getQuestions(final long seed) {
-        return repo.getQuestions(seed);
-    }
+
 
     public List<Question> getQuestions(final UUID id) {
         if (questionsPerGame.containsKey(id)) {
             return questionsPerGame.get(id);
         } else {
-            questionsPerGame.put(id, new ActivityService().getQuestionList());
+            questionsPerGame.put(id, activityService.getQuestionList());
             return questionsPerGame.get(id);
         }
     }
-    public long generateSeed(final UUID id) {
-        return repo.generateSeed(id);
-    }
+
 }

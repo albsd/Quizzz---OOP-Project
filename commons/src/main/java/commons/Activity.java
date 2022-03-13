@@ -20,7 +20,6 @@ public class Activity {
     private String source;
 
     private byte[] imageBytes;
-    private final int numberOfQuestions = 3;
 
     public Activity() {
 
@@ -45,7 +44,7 @@ public class Activity {
         //TODO:We need to decide what image (if any) to display on this type of question
         byte[] imgBytes = new byte[1];
         String prompt = "Which of the following activities take the most energy";
-        String[] options  = new String[numberOfQuestions];
+        String[] options  = new String[3];
         int counter = 0;
         int maxIndex = 0;
         for (Activity a:answerOptions) {
@@ -64,7 +63,7 @@ public class Activity {
     }
 
     public String[] generateChoices(final long energyConsumption) {
-        String[] choices = new String[numberOfQuestions];
+        String[] choices = new String[3];
         for (int i = 0; i < choices.length; i++) {
             Random r = new Random();
             choices[i] = Integer.toString((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()));
