@@ -92,8 +92,7 @@ public class LobbyController implements Initializable {
 
     @FXML
     public void onEnter(final ActionEvent e) {
-        // escape XML and special characters in input
-        String content = chatInput.getText().replaceAll("[\s\t\"\'><&]", "");
+        String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
 
         final LobbyMessage message = new LobbyMessage(me.getNick(), 10, content);
         server.send("/app/lobby/chat", message);
@@ -138,7 +137,7 @@ public class LobbyController implements Initializable {
     }
 
     @FXML
-    protected void onReturnButtonClick(final ActionEvent event) {
+    public void onReturnButtonClick(final ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation Screen");
         alert.setHeaderText("Confirmation needed!");
@@ -149,6 +148,7 @@ public class LobbyController implements Initializable {
         }
     }
 
+    @FXML
     public void returnToMenu(final ActionEvent event) {
         server.leaveGame(me.getNick());
 
@@ -160,6 +160,7 @@ public class LobbyController implements Initializable {
         stage.show();
     }
 
+    @FXML
     public void start(final ActionEvent event) {
         // server.startGame();
         var root = Main.FXML.load(GameMultiplayerController.class, "client", "scenes", "GameMultiplayer.fxml");

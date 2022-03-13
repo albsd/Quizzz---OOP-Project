@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import commons.GameUpdate;
 import commons.QuestionTimer;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -45,6 +46,7 @@ public class ProgressBarController implements Initializable {
     private Button halveButton;
 
     private QuestionTimer questionTimer;
+
     @Inject
     public ProgressBarController(final ServerUtils server) {
         this.questionTimer = new QuestionTimer(UUID.randomUUID());
@@ -61,18 +63,20 @@ public class ProgressBarController implements Initializable {
                 case stopTimer -> reset();
                 case startTimer -> start();
 
-                default -> { }
+                default -> {
+                }
             }
         });
     };
 
+    @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         start();
     }
 
     private TimerTask clientTimerTask(final QuestionTimer questionTimer,
-                                      final Label label, final ProgressBar bar,
-                                      final List<Button> buttons) {
+            final Label label, final ProgressBar bar,
+            final List<Button> buttons) {
         return new TimerTask() {
             @Override
             public void run() {
@@ -95,12 +99,10 @@ public class ProgressBarController implements Initializable {
                         label.setText(
                                 String.format("%.2f",
                                         questionTimer.getCurrentTime()
-                                                / questionTimer.getOneSecond())
-                        );
+                                                / questionTimer.getOneSecond()));
 
                         bar.setProgress(questionTimer.getCurrentTime()
-                                / questionTimer.getMaxTime()
-                        );
+                                / questionTimer.getMaxTime());
                     });
                 }
             }
@@ -108,9 +110,9 @@ public class ProgressBarController implements Initializable {
     }
 
     public void startClientTimer(final QuestionTimer questionTimer,
-                                 final Label label,
-                                 final ProgressBar bar,
-                                 final List<Button> buttons) {
+            final Label label,
+            final ProgressBar bar,
+            final List<Button> buttons) {
         if (questionTimer.isStarted()) {
             System.out.println("Timer already started! Reset first.");
         } else {
@@ -130,15 +132,16 @@ public class ProgressBarController implements Initializable {
         }
     }
 
+    @FXML
     public void reset() {
         questionTimer.reset();
-        Platform.runLater(() ->
-                label.setText(String.valueOf(questionTimer.getCurrentTime()
-                        / questionTimer.getOneSecond())));
-                bar.setProgress(questionTimer.getCurrentTime()
-                        / questionTimer.getMaxTime());
+        Platform.runLater(() -> label.setText(String.valueOf(questionTimer.getCurrentTime()
+                / questionTimer.getOneSecond())));
+        bar.setProgress(questionTimer.getCurrentTime()
+                / questionTimer.getMaxTime());
     }
 
+    @FXML
     public void start() {
         List<Button> buttons = new ArrayList<>();
         buttons.add(option1);
@@ -146,12 +149,14 @@ public class ProgressBarController implements Initializable {
         startClientTimer(questionTimer, label, bar, buttons);
     }
 
-    public void onOptionClick() {
+    @FXML
+    public void onOptionClick(final ActionEvent e) {
         Instant time = Instant.now();
         verifyLabel.setText("Option chosen at " + time);
     }
 
-    public void onHalveButtonClick() {
+    @FXML
+    public void onHalveButtonClick(final ActionEvent e) {
         server.send("/app/halve",
                 GameUpdate.halveTimer);
 

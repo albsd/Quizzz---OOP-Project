@@ -36,6 +36,7 @@ public class SplashController {
         this.server = server;
     }
 
+    @FXML
     public void help(final ActionEvent event) {
         var root = Main.FXML.load(HelpController.class, "client", "scenes", "Help.fxml");
 
@@ -45,11 +46,12 @@ public class SplashController {
         stage.show();
     }
 
+    @FXML
     public void exitApp(final ActionEvent event) {
         Platform.exit();
     }
 
-    public boolean validateNicknameLength(final String user) {
+    private boolean validateNicknameLength(final String user) {
         final int maxChrLimit = 8;
         final int minChrLimit = 3;
         int len = user.length();
@@ -65,9 +67,10 @@ public class SplashController {
         return true;
     }
 
+    @FXML
     public void singleGame(final ActionEvent event) {
-        String user = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
-        if (!validateNicknameLength(user)) {
+        String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
+        if (!validateNicknameLength(nick)) {
             return;
         }
         // TODO: load the fxml and display it
@@ -80,6 +83,7 @@ public class SplashController {
      * 
      * @param event
      */
+    @FXML
     public void lobby(final ActionEvent event) {
         String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
         if (!validateNicknameLength(nick)) {
@@ -103,6 +107,7 @@ public class SplashController {
         stage.show();
     }
 
+    @FXML
     public void leaderBoard(final ActionEvent event) {
         var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
 
