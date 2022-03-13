@@ -74,7 +74,7 @@ public class Game {
 
     //Todo: invoke this method when the client-timer is 0 in a set interval
     //resets and starts timer again and return question only when game timer is 0
-    public Question getCurrentQuestion() {
+    public Question getCurrentQuestionAndStart() {
         if (timer.isOver()) {
             timer.reset();
             timer.startGameTimer();

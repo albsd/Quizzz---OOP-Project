@@ -56,8 +56,7 @@ public class ProgressBarController implements Initializable {
     private Consumer<GameUpdate> updateConsumer = update -> {
         System.out.println("Halve message received!");
         Platform.runLater(() -> {
-            GameUpdate.Type updateType = update.getUpdate();
-            switch (updateType) {
+            switch (update) {
                 case halveTimer -> questionTimer.halve();
                 case stopTimer -> reset();
                 case startTimer -> start();
@@ -119,8 +118,7 @@ public class ProgressBarController implements Initializable {
             questionTimer.setStarted(true);
             questionTimer.setOver(false);
 
-            final int delay = 0;
-            final int period = 25;
+            final int period = questionTimer.getDecrement();
             for (Button b : buttons) {
                 b.setDisable(false);
             }
@@ -128,7 +126,7 @@ public class ProgressBarController implements Initializable {
             questionTimer.setCurrentTask(clientTimerTask(
                     questionTimer, label, bar, buttons));
             questionTimer.getTimer().scheduleAtFixedRate(
-                    questionTimer.getTask(), delay, period);
+                    questionTimer.getTask(), 0, period);
         }
     }
 
@@ -155,7 +153,7 @@ public class ProgressBarController implements Initializable {
 
     public void onHalveButtonClick() {
         server.send("/app/halve",
-                new GameUpdate(GameUpdate.Type.halveTimer));
+                GameUpdate.halveTimer);
 
         // Solution to ensure that the client's timer is not halved.
         // (if he was the one that clicked on the button)

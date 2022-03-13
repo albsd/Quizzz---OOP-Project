@@ -209,6 +209,6 @@ public class GameController {
     @MessageMapping("/halve")
     @SendTo("/topic/game/update")
     public GameUpdate halveTimeWebsocket() {
-        return new GameUpdate(GameUpdate.Type.halveTimer);
+        return GameUpdate.halveTimer;
     }
 }

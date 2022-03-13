@@ -7,7 +7,7 @@ import java.util.UUID;
 public class QuestionTimer {
     private final double maxTime = 20000;
     private final double oneSecond = 1000;
-    private final double decrement = 25;    // 25ms
+    private final int decrement = 25;    // 25ms
     private double currentTime = maxTime;
     private boolean started = false;
     private boolean over = false;
@@ -46,7 +46,7 @@ public class QuestionTimer {
         return currentTask;
     }
 
-    public double getDecrement() {
+    public int getDecrement() {
         return decrement;
     }
 
@@ -88,9 +88,8 @@ public class QuestionTimer {
         started = true;
         over = false;
         final int delay = 0;
-        final int period = 25;
         currentTask = gameTimerTask();
-        timer.scheduleAtFixedRate(currentTask, delay, period);
+        timer.scheduleAtFixedRate(currentTask, delay, decrement);
     }
 
     public void stopGameTimer() {
@@ -134,4 +133,6 @@ public class QuestionTimer {
             }
         };
     }
+
+
 }
