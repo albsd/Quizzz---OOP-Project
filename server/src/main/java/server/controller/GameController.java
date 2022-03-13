@@ -16,12 +16,7 @@
 package server.controller;
 
 
-import commons.Game;
-import commons.Leaderboard;
-import commons.Player;
-import commons.Question;
-import commons.JoinMessage;
-import commons.Message;
+import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -105,8 +100,7 @@ public class GameController {
         if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
         }
-        System.out.println(gameService.getQuestions(id).get(0).getImageBytes());
-        System.out.println(gameService.getQuestions(id).get(1).getImageBytes());
+
         return ResponseEntity.ok(gameService.getQuestions(id));
     }
 

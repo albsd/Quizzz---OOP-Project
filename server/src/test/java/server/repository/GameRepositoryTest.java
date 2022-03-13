@@ -81,22 +81,4 @@ class GameRepositoryTest {
                 repo.getLeaderboard(game1.getId()).getRanking());
     }
 
-//    @Test
-//    public void getQuestionForOneGame() {
-//        List<Question> questions = Arrays.asList(
-//                new Question("this is q1", Paths.get("INVALID"),
-//                        new String[] {"answer 1", "answer 2", "answer 2"}, 0),
-//                new Question("this is q2", Paths.get("INVALID"),
-//                        new String[] {"answer 1", "answer 2", "answer 2"}, 0),
-//                new Question("this is q3", Paths.get("INVALID"),
-//                        new String[] {"answer 1", "answer 2", "answer 2"}, 0));
-//        long r = repo.generateSeed(game1.getId());
-//        Collections.shuffle(questions,
-//                new Random(r));
-//
-//        List<Question> repoQuestions = repo.getQuestions(r);
-//        assertEquals(repoQuestions.get(0), questions.get(0));
-//        assertEquals(repoQuestions.get(1), questions.get(1));
-//        assertEquals(repoQuestions.get(2), questions.get(2));
-//    }
 }
