@@ -12,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
 
@@ -21,7 +20,6 @@ public class SplashController {
     public final Color red = new Color(0.8, 0, 0, 1);
     public final Color green = new Color(0, 0.6, 0, 1);
 
-    @Autowired
     private final ServerUtils server;
 
     @FXML

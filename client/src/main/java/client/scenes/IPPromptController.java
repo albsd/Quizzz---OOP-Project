@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 import com.google.inject.Inject;
 
 import javafx.scene.text.Text;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import client.Main;
 import client.utils.ServerUtils;
@@ -24,7 +23,6 @@ import javafx.util.converter.IntegerStringConverter;
 
 public class IPPromptController implements Initializable {
 
-    @Autowired
     private final ServerUtils server;
 
     @FXML
