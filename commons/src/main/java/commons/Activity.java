@@ -18,13 +18,13 @@ public class Activity {
     private long energyConsumption;
     @JsonProperty("source")
     private String source;
-
+//TODO: make this a json property?
     private byte[] imageBytes;
 
     public Activity() {
 
     }
-    //TODO: add imagePath through setter after initialization
+    //TODO: add @JsonCreator
     public Activity(final String title, final long energyConsumption, final String source) {
         this.title = title;
         this.energyConsumption = energyConsumption;
