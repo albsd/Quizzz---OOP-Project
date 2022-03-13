@@ -30,7 +30,6 @@ import client.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
-import javax.swing.*;
 
 public class GameMultiplayerController implements Initializable {
 
