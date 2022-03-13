@@ -5,8 +5,6 @@ import commons.Leaderboard;
 import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.ActivityRepository;
-import server.ActivityService;
 import server.repository.GameRepository;
 
 import java.util.HashMap;

@@ -20,14 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
-import commons.Activity;
 import commons.Game;
 import commons.Player;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import server.ActivityService;
+import server.service.ActivityService;
 import server.repository.GameRepository;
 import server.service.GameService;
 

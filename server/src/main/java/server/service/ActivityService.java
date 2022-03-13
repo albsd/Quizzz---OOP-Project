@@ -1,9 +1,10 @@
-package server;
+package server.service;
 
 import commons.Activity;
 import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import server.repository.ActivityRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
