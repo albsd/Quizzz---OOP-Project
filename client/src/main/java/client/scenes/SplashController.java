@@ -64,11 +64,19 @@ public class SplashController {
 
     @FXML
     public void singleGame(final ActionEvent event) {
+
         String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
+
         if (!validateNicknameLength(nick)) {
             return;
         }
-        // TODO: load the fxml and display it
+
+        final Player player = new Player(nick);
+        var root = fxml.showGame();
+        var ctrl = root.getKey();
+
+        ctrl.setMe(player);
+        ctrl.setSingle();
     }
 
     /**

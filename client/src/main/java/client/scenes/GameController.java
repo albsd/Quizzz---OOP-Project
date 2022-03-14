@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -26,7 +27,7 @@ import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
-public class GameMultiplayerController implements Initializable {
+public class GameController implements Initializable {
 
     private final ServerUtils server;
 
@@ -50,10 +51,13 @@ public class GameMultiplayerController implements Initializable {
     private ScrollPane emoteScroll;
 
     @FXML
-    private VBox emoteChat;
+    private VBox emoteChat, leftBox, optionBox;
+
+    @FXML
+    private HBox mainHorizontalBox;
 
     @Inject
-    public GameMultiplayerController(final ServerUtils server, final FXMLController fxml) {
+    public GameController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
         this.fxml = fxml;
     }
@@ -105,6 +109,15 @@ public class GameMultiplayerController implements Initializable {
 
     public void setMe(final Player me) {
         this.me = me;
+    }
+
+    public void setSingle() {
+        leftBox.getChildren().remove(1);
+        mainHorizontalBox.getChildren().remove(3, 5);
+        optionBox.setAlignment(Pos.CENTER);
+        optionBox.setPrefWidth(600);
+        optionBox.setPadding(Insets.EMPTY);
+        optionBox.setSpacing(55);
     }
 
     @FXML

@@ -1,6 +1,6 @@
 package client;
 
-import client.scenes.GameMultiplayerController;
+import client.scenes.GameController;
 import client.scenes.HelpController;
 import client.scenes.IPPromptController;
 import client.scenes.LeaderboardController;
@@ -75,8 +75,8 @@ public class FXMLController {
         return displayScene(LobbyController.class);
     }
 
-    public Pair<GameMultiplayerController, Parent> showMultiplayer() {
-        return displayScene(GameMultiplayerController.class);
+    public Pair<GameController, Parent> showGame() {
+        return displayScene(GameController.class);
     }
 
 }

@@ -15,7 +15,7 @@
 //  */
 package client;
 
-import client.scenes.GameMultiplayerController;
+import client.scenes.GameController;
 import client.scenes.HelpController;
 import client.scenes.IPPromptController;
 import client.scenes.LeaderboardController;
@@ -37,6 +37,6 @@ public class MyModule implements Module {
         binder.bind(LobbyController.class).in(Scopes.SINGLETON);
         binder.bind(LeaderboardController.class).in(Scopes.SINGLETON);
         binder.bind(HelpController.class).in(Scopes.SINGLETON);
-        binder.bind(GameMultiplayerController.class).in(Scopes.SINGLETON);
+        binder.bind(GameController.class).in(Scopes.SINGLETON);
     }
 }
