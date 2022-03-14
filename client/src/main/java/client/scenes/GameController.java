@@ -1,9 +1,9 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.Player;
 import commons.Emote;
 import commons.EmoteMessage;
-import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -102,7 +102,8 @@ public class GameController implements Initializable {
 
             emoteChat.getChildren().add(message);
 
-            // layout is needed to make sure the scroll pane is updated before scrolling to the bottom
+            // layout is needed to make sure the scroll pane is updated before scrolling to
+            // the bottom
             emoteScroll.layout();
             emoteScroll.setVvalue(1);
         });

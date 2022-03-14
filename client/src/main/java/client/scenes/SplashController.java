@@ -12,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
 
@@ -21,7 +20,6 @@ public class SplashController {
     public final Color red = new Color(0.8, 0, 0, 1);
     public final Color green = new Color(0, 0.6, 0, 1);
 
-    @Autowired
     private final ServerUtils server;
 
     @FXML
@@ -38,6 +36,7 @@ public class SplashController {
         this.server = server;
     }
 
+    @FXML
     public void help(final ActionEvent event) {
         var root = Main.FXML.load(HelpController.class, "client", "scenes", "Help.fxml");
 
@@ -47,11 +46,12 @@ public class SplashController {
         stage.show();
     }
 
+    @FXML
     public void exitApp(final ActionEvent event) {
         Platform.exit();
     }
 
-    public boolean validateNicknameLength(final String user) {
+    private boolean validateNicknameLength(final String user) {
         final int maxChrLimit = 8;
         final int minChrLimit = 3;
         int len = user.length();
@@ -67,12 +67,14 @@ public class SplashController {
         return true;
     }
 
+    @FXML
     public void singleGame(final ActionEvent event) {
         var root = Main.FXML.load(GameController.class,
                 "client", "scenes", "Game.fxml");
         var ctrl = root.getKey();
 
-        String nick = nickField.getText();
+        String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
+
         if (!validateNicknameLength(nick)) {
             return;
         }
@@ -95,11 +97,9 @@ public class SplashController {
      * 
      * @param event
      */
+    @FXML
     public void lobby(final ActionEvent event) {
-        var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
-        var ctrl = root.getKey();
-
-        String nick = nickField.getText();
+        String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
         if (!validateNicknameLength(nick)) {
             return;
         }
@@ -111,6 +111,8 @@ public class SplashController {
             return;
         }
 
+        var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
+        var ctrl = root.getKey();
         ctrl.setMe(player);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -119,6 +121,7 @@ public class SplashController {
         stage.show();
     }
 
+    @FXML
     public void leaderBoard(final ActionEvent event) {
         var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
 

@@ -216,5 +216,4 @@
          </Label>
         </children>
     </AnchorPane>
-    <!--    <ScrollPane prefHeight="200.0" prefWidth="200.0" />-->
 </VBox>
