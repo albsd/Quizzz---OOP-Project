@@ -2,8 +2,10 @@ package client.scenes;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -79,15 +81,20 @@ public class GameMultiplayerController implements Initializable {
 
     }
     //Just to test i made any option directly jump to next question. This must be removed in the future
-    public void nextQuestion(final ActionEvent e) {
+    public void nextQuestion(final ActionEvent e) throws IOException {
         int prevQuNum = Integer.parseInt(questionNumber.getText().replace("#", ""));
         System.out.println(prevQuNum);
         questionNumber.setText("#" + (prevQuNum + 1));
         if ((prevQuNum) % 10 == 0) {
-            var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
+            //var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Leaderboard.fxml"));
+            Parent root = loader.load();
+            LeaderboardController leaderboardController = loader.getController();
+            leaderboardController.setQuestionNumber(prevQuNum);
+
 
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root.getValue());
+            Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         }
