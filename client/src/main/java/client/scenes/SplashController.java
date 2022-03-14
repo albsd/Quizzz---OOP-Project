@@ -69,11 +69,25 @@ public class SplashController {
 
     @FXML
     public void singleGame(final ActionEvent event) {
+        var root = Main.FXML.load(GameController.class,
+                "client", "scenes", "Game.fxml");
+        var ctrl = root.getKey();
+
         String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
+
         if (!validateNicknameLength(nick)) {
             return;
         }
-        // TODO: load the fxml and display it
+
+        final Player player = new Player(nick);
+
+        ctrl.setMe(player);
+        ctrl.setSingle();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
+        stage.setScene(scene);
+        stage.show();
     }
 
     /**
