@@ -15,14 +15,7 @@
  */
 package server.controller;
 
-import commons.Game;
-import commons.Player;
-import commons.PlayerUpdate;
-import commons.Question;
-import commons.Leaderboard;
-import commons.EmoteMessage;
-import commons.LobbyMessage;
-import commons.GameUpdate;
+import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -225,13 +218,9 @@ public class GameController {
      *
      * @return The game which has been started
      */
-    @PostMapping("/game/points")
-    public ResponseEntity<Game> startCurrentGame() {
-        Game lobby = gameService.getCurrentGame();
-        if (!lobby.isPlayable()) {
-            return ResponseEntity.status(405).build(); // NOT_ALLOWED
-        }
-        return ResponseEntity.ok(gameService.newGame());
+    @PostMapping("/game/scores")
+    public void updatePlayerPoints(final ScoreMessage scoreMessage) {
+        gameService.updatePlayerScore(scoreMessage);
     }
 
 

@@ -3,6 +3,7 @@ package server.service;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Question;
+import commons.ScoreMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.GameRepository;
@@ -68,7 +69,7 @@ public class GameService {
         return repo.generateSeed(id);
     }
 
-    public void setPlayerPoints(){
-        r
+    public void updatePlayerScore(final ScoreMessage scoreMessage){
+        repo.updatePlayerScore(scoreMessage);
     }
 }

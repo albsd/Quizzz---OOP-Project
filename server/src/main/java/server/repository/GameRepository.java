@@ -15,10 +15,7 @@
  */
 package server.repository;
 
-import commons.Game;
-import commons.Leaderboard;
-import commons.Player;
-import commons.Question;
+import commons.*;
 import org.springframework.stereotype.Repository;
 import server.FakeDatabase;
 
@@ -98,5 +95,11 @@ public class GameRepository {
             seed = seed + (long) ch;
         }
         return seed;
+    }
+
+    public void updatePlayerScore(final ScoreMessage scoreMessage){
+        Game game = findById(scoreMessage.getId());
+        Player player = game.getPlayerByNick(scoreMessage.getNick());
+        player.setScore(scoreMessage.getContent());
     }
 }

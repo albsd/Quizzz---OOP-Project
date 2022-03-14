@@ -130,7 +130,7 @@ public class GameMultiplayerController implements Initializable {
         }else {
             System.out.println("Wrong answer. No points");
         }
-        sendPoints();
+        sendScores();
     }
     //this is for open questions
     public void checkOpenAnswer(final ActionEvent e) {
@@ -139,7 +139,7 @@ public class GameMultiplayerController implements Initializable {
         String optionStr = ((Button)e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
         calculateOpenPoints(correctAnswer, option);
-        sendPoints();
+        sendScores();
     }
 
     private void calculateMulChoicePoints() {
@@ -225,8 +225,7 @@ public class GameMultiplayerController implements Initializable {
     }
 
     //Send it after every question
-    private void sendPoints() {
-        Message<Player> player = new Message(currentGame.getId().toString(), me);
-        server.send("/app/game/points", new Message<Player>(currentGame.getId()), me);
+    private void sendScores() {
+        server.send("/app/game/scores",  new ScoreMessage(me.getNick(), me.getScore(), currentGame.getId()));
     }
 }
