@@ -115,7 +115,7 @@ public class GameMultiplayerController implements Initializable {
         currentGame.start();
         questionNumber.setText("#1");
         question.setText(currentGame.getCurrentQuestion().getPrompt());
-        currentGame.getTimer().startGameTimer();
+        currentGame.getTimer().startGameTimer(ca);
     }
 
     @FXML

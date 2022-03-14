@@ -3,6 +3,7 @@ package commons;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 public class QuestionTimer {
     private final double maxTime = 20000;
@@ -82,13 +83,13 @@ public class QuestionTimer {
         return over;
     }
 
-    public void startGameTimer() {
+    public void startGameTimer(Callable<Question> callback) {
         reset();
         System.out.println("Game timer started.");
         started = true;
         over = false;
         final int delay = 0;
-        currentTask = gameTimerTask();
+        currentTask = gameTimerTask(callback);
         timer.scheduleAtFixedRate(currentTask, delay, decrement);
     }
 
@@ -120,7 +121,7 @@ public class QuestionTimer {
         currentTime = maxTime;
     }
 
-    private TimerTask gameTimerTask() {
+    private TimerTask gameTimerTask(Callable<Question> callback) {
         return new TimerTask() {
             @Override
             public void run() {
@@ -129,6 +130,11 @@ public class QuestionTimer {
                     System.out.println("Time's over!");
                     //callback
                     //set 5 second delay
+                    try {
+                        callback.call();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     stopGameTimer();
                     cancel();
                 }
