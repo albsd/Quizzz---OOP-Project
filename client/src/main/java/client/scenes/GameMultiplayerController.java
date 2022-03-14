@@ -78,4 +78,18 @@ public class GameMultiplayerController implements Initializable {
     public void removePowerup(final ActionEvent e) {
 
     }
+    //Just to test i made any option directly jump to next question. This must be removed in the future
+    public void nextQuestion(final ActionEvent e) {
+        int prevQuNum = Integer.parseInt(questionNumber.getText().replace("#", ""));
+        System.out.println(prevQuNum);
+        questionNumber.setText("#" + (prevQuNum + 1));
+        if ((prevQuNum) % 10 == 0) {
+            var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
+
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root.getValue());
+            stage.setScene(scene);
+            stage.show();
+        }
+    }
 }

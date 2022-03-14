@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import java.util.Optional;
 
 public class LeaderboardController {
+    private int questionNumber = 0;
 
     @FXML
     protected void onConfirmButtonClick(final ActionEvent e) {
@@ -47,5 +48,10 @@ public class LeaderboardController {
         Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void setQuestionNumber(final int questionNumber) {
+        this.questionNumber = questionNumber;
+        System.out.println(questionNumber);
     }
 }
