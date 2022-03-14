@@ -82,8 +82,8 @@ class QuestionTimerTest {
     void setCurrentTime() {
         UUID id = new UUID(0, 1);
         QuestionTimer questionTimer = new QuestionTimer(id);
-        questionTimer.setCurrentTime(20.5);
-        assertEquals(20.5, questionTimer.getCurrentTime());
+        questionTimer.setCurrentTime(20);
+        assertEquals(20, questionTimer.getCurrentTime());
     }
 
     @Test
@@ -149,7 +149,7 @@ class QuestionTimerTest {
     void startGameTimer() {
         UUID id = new UUID(0, 1);
         QuestionTimer questionTimer = new QuestionTimer(id);
-        questionTimer.startGameTimer();
+        questionTimer.startGameTimer(() -> { });
         if (questionTimer.getTask() != null) {
             questionTimer.getTask().cancel();
         }
@@ -159,7 +159,7 @@ class QuestionTimerTest {
     void stopGameTimer() {
         UUID id = new UUID(0, 1);
         QuestionTimer questionTimer = new QuestionTimer(id);
-        questionTimer.startGameTimer();
+        questionTimer.startGameTimer(() -> { });
         questionTimer.stopGameTimer();
     }
 

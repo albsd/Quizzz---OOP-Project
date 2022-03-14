@@ -16,13 +16,14 @@
 package server.controller;
 
 import commons.Game;
+import commons.EmoteMessage;
+import commons.GameUpdate;
+import commons.Leaderboard;
 import commons.Player;
 import commons.PlayerUpdate;
-import commons.Question;
-import commons.Leaderboard;
-import commons.EmoteMessage;
 import commons.LobbyMessage;
-import commons.GameUpdate;
+import commons.ScoreMessage;
+import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -240,4 +241,12 @@ public class GameController {
         return ResponseEntity.ok(gameService.newGame());
     }
 
+    /**
+     * Updates the players score on server-side every question.
+     * @param scoreMessage contains player name, score, and game id
+     */
+    @PostMapping("/game/scores")
+    public void updatePlayerPoints(final ScoreMessage scoreMessage) {
+        gameService.updatePlayerScore(scoreMessage);
+    }
 }

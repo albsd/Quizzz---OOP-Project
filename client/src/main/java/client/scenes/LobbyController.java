@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.FXMLController;
 import client.utils.ServerUtils;
-
+import commons.Game;
 import commons.LobbyMessage;
 import commons.Player;
 import commons.PlayerUpdate;
@@ -17,14 +17,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ButtonType;
 
 import java.net.URL;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.inject.Inject;
+
+import org.springframework.web.util.HtmlUtils;
 
 public class LobbyController implements Initializable {
 
@@ -54,11 +58,16 @@ public class LobbyController implements Initializable {
 
     private Player me;
 
+    private final DateTimeFormatter timeFormat;
+
+    private Game lobby;
+
     @Inject
     public LobbyController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
         this.fxml = fxml;
         this.players = new ArrayList<>();
+        this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
 
         server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, update -> {
             if (update.getContent() == PlayerUpdate.Type.join) {
@@ -74,9 +83,8 @@ public class LobbyController implements Initializable {
                 @Override
                 public void run() {
                     String nick = m.getNick();
-                    int time = m.getTimestamp();
+                    String time = m.getTimestamp();
                     String content = m.getContent();
-                    // change. Scroll pane is not place to put messages
                     String chatLogs = chatText.getText()
                             + nick + " (" + time + ") - " + content + "\n";
                     chatText.setText(chatLogs);
@@ -97,11 +105,12 @@ public class LobbyController implements Initializable {
     @FXML
     public void onEnter(final ActionEvent e) {
         String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
-
-        final LobbyMessage message = new LobbyMessage(me.getNick(), 10, content);
-        server.send("/app/lobby/chat", message);
-
         chatInput.setText("");
+        final LocalTime time = LocalTime.now();
+        // escapes special characters in input
+        server.send("/app/lobby/chat",
+                //remove nanosecond when displaying time and convert to string
+                new LobbyMessage(me.getNick(), time.format(timeFormat), HtmlUtils.htmlEscape(content)));
         chatArea.setVvalue(1.0);
     }
 
@@ -165,5 +174,6 @@ public class LobbyController implements Initializable {
         var root = fxml.showGame();
         var ctrl = root.getKey();
         ctrl.setMe(me);
+        ctrl.setGame(lobby);
     }
 }
