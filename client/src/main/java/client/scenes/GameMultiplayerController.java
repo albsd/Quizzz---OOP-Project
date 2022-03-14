@@ -153,22 +153,9 @@ public class GameMultiplayerController implements Initializable {
 
     private void calculateOpenPoints(final int answer, final int option) {
         int bonusScore = (me.getTime() / 1000) * 2;
-        int base;
         int offPercentage = (int) Math.round(((double) Math.abs((option - answer)) / answer) * 100);
         int accuracyPercentage = 100 - offPercentage;
-        if (accuracyPercentage == 100) {
-            base = 100;
-        } else if (90 <= accuracyPercentage && accuracyPercentage < 99) {
-            base = 90;
-        } else if (80 <= accuracyPercentage && accuracyPercentage < 89) {
-            base = 80;
-        } else if (70 <= accuracyPercentage && accuracyPercentage < 79) {
-            base = 70;
-        } else if (60 <= accuracyPercentage && accuracyPercentage < 69) {
-            base = 60;
-        } else if (50 <= accuracyPercentage && accuracyPercentage < 59) {
-            base = 50;
-        } else base = 0;
+        int base = (accuracyPercentage % 10) * 10;
         me.setScore(base + bonusScore);
     }
 
