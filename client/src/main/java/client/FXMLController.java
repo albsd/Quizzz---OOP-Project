@@ -16,18 +16,18 @@ public class FXMLController {
 
     private Stage primaryStage;
 
-    private MyFXML FXML;
+    private MyFXML myFXML;
 
     /**
      * Store the primaryStage of the application and MyFXML reference for
-     * loading the fxml files with the associated controller
+     * loading the fxml files with the associated controller.
      * 
-     * @param primaryStage
-     * @param myFXML
+     * @param primaryStage PrimaryStage of the application
+     * @param myFXML       Custom FXML loader
      */
     public void initialize(final Stage primaryStage, final MyFXML myFXML) {
         this.primaryStage = primaryStage;
-        this.FXML = myFXML;
+        this.myFXML = myFXML;
 
         Image logo = new Image(Main.class.getResourceAsStream("/images/icon.png"));
         primaryStage.getIcons().add(logo);
@@ -39,8 +39,8 @@ public class FXMLController {
 
     /**
      * Displays the scene of the primaryStage.
-     * Assume that each scene's controller class is named <scene_name>Controller
-     * Therefore we can parse the name of the class to location of the fxml's file
+     * Assume that each scene's controller class is named <scene_name>Controller.
+     * Therefore we can parse the name of the class to location of the fxml's file.
      * 
      * @param <T>  Generic type for the controller's class
      * @param type Type of the controller for which to set the scene
@@ -48,7 +48,7 @@ public class FXMLController {
      */
     private <T> Pair<T, Parent> displayScene(final Class<T> type) {
         String file = type.getSimpleName().replace("Controller", ".fxml");
-        var root = FXML.load(type, "client", "scenes", file);
+        var root = myFXML.load(type, "client", "scenes", file);
         Scene scene = new Scene(root.getValue());
         primaryStage.setScene(scene);
         primaryStage.show();
