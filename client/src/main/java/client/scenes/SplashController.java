@@ -68,8 +68,8 @@ public class SplashController {
     }
 
     public void singleGame(final ActionEvent event) {
-        var root = Main.FXML.load(GameMultiplayerController.class,
-                "client", "scenes", "GameMultiplayer.fxml");
+        var root = Main.FXML.load(GameController.class,
+                "client", "scenes", "Game.fxml");
         var ctrl = root.getKey();
 
         String nick = nickField.getText();
@@ -77,12 +77,7 @@ public class SplashController {
             return;
         }
 
-        final Player player = server.joinGame(nick);
-        if (player == null) {
-            warning.setTextFill(red);
-            warning.setText("User with the given name is already in the game");
-            return;
-        }
+        final Player player = new Player(nick);
 
         ctrl.setMe(player);
         ctrl.setSingle();

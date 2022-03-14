@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
 
-public class GameMultiplayerController implements Initializable {
+public class GameController implements Initializable {
 
     @Autowired
     private final ServerUtils server;
@@ -61,7 +61,7 @@ public class GameMultiplayerController implements Initializable {
     private HBox mainHorizontalBox;
 
     @Inject
-    public GameMultiplayerController(final ServerUtils server) {
+    public GameController(final ServerUtils server) {
         this.server = server;
     }
 
