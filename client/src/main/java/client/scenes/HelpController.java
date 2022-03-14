@@ -1,19 +1,22 @@
 package client.scenes;
 
-import client.Main;
+import javax.inject.Inject;
+
+import client.FXMLController;
 import javafx.event.ActionEvent;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.fxml.FXML;
 
 public class HelpController {
 
-    public void splash(final ActionEvent e) {
-        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
+    private final FXMLController fxml;
 
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+    @Inject
+    public HelpController(final FXMLController fxml) {
+        this.fxml = fxml;
+    }
+
+    @FXML
+    public void splash(final ActionEvent e) {
+        fxml.showSplash();
     }
 }

@@ -164,7 +164,8 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
-    // TODO: send generated session id to client so that it can send it back when joining lobby after nickname
+    // TODO: send generated session id to client so that it can send it back when
+    // joining lobby after nickname
     @EventListener
     @SendTo
     private void handleSessionConnected(final SessionConnectEvent event) {
@@ -181,16 +182,42 @@ public class GameController {
         System.out.println(event.getSessionId());
     }
 
+    /**
+     * A Websocket endpoint for sending updates about the lobby player' status.
+     * Namely, updates the active players in the lobby for all clients.
+     *
+     * @param update The object containing a player who has joined/left
+     * 
+     * @return The PlayerUpdate object
+     */
     @MessageMapping("/playerUpdate") // /app/player_update
     @SendTo("/topic/playerUpdate")
     private PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
         return update;
     }
 
+    /**
+     * A Websocket endpoint for sending chat messages in the lobby.
+     *
+     * @param message The message to be sent to all the players in the lobby
+     * 
+     * @return The LobbyMessage object
+     */
     @MessageMapping("/lobby/chat") // /app/lobby/chat
     @SendTo("/topic/lobby/chat")
-    private LobbyMessage sendLobbyMessage(final LobbyMessage msg) {
-        return msg;
+    private LobbyMessage sendLobbyMessage(final LobbyMessage message) {
+        return message;
+    }
+
+    /**
+     * A Websocket endpoint for halving the time for other users.
+     *
+     * @return The GameUpdate.halveTimer enum property
+     */
+    @MessageMapping("/halve")
+    @SendTo("/topic/game/update")
+    public GameUpdate halveTimeWebsocket() {
+        return GameUpdate.halveTimer;
     }
 
     @MessageMapping("/game/chat") // /app/game/chat
@@ -203,7 +230,7 @@ public class GameController {
      * Starts the current game.
      * Do not allow starting a game with less than 2 players.
      *
-     * @return The game which has been started
+     * @return The new game that is an active lobby now
      */
     @PostMapping("/start")
     public ResponseEntity<Game> startCurrentGame() {
@@ -212,12 +239,6 @@ public class GameController {
             return ResponseEntity.status(405).build(); // NOT_ALLOWED
         }
         return ResponseEntity.ok(gameService.newGame());
-    }
-
-    @MessageMapping("/halve")
-    @SendTo("/topic/game/update")
-    public GameUpdate halveTimeWebsocket() {
-        return GameUpdate.halveTimer;
     }
 
     /**

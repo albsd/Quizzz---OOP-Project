@@ -44,15 +44,36 @@ import java.util.function.Consumer;
 @Controller
 public class ServerUtils {
 
-    private final String kGameUrl;
-
     private final HttpClient client;
 
-    private static StompSession session = connect("ws://localhost:8080/websocket");
+    private String kGameUrl;
+
+    private StompSession session;
 
     public ServerUtils() {
-        this.kGameUrl = "http://localhost:8080/game";
         this.client = HttpClient.newHttpClient();
+    }
+
+    public String isRunning(final String host, final String port) {
+        try {
+            final URI uri = URI.create("http://" + host + ":" + port);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .GET()
+                    .build();
+
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+            // if the above code does not throw -> we can set the urls
+            this.kGameUrl = uri + "/game";
+            this.session = connect("ws://" + host + ":" + port + "/websocket");
+            return null;
+        } catch (IllegalArgumentException e) {
+            return "Host is invalid.\n"
+                    + "Supported are IPv4 ('192.168.xxx.xxx') or ('localhost')";
+        } catch (Exception e) {
+            return "The server on the given address is not running.\n"
+                    + "Make sure the server is running first. To get more help refer to README.md";
+        }
     }
 
     // Initial POST request to get gameId
@@ -215,9 +236,7 @@ public class ServerUtils {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() != 200) {
-                return null;
-            }
+            if (response.statusCode() != 200) return null;
 
             ObjectMapper mapper = new ObjectMapper();
             T obj = mapper.readValue(response.body(), type);

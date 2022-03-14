@@ -65,6 +65,7 @@ public class GameService {
     public List<Question> getQuestions(final long seed) {
         return repo.getQuestions(seed);
     }
+
     public long generateSeed(final UUID id) {
         return repo.generateSeed(id);
     }

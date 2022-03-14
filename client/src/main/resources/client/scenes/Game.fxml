@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameMultiplayerController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -27,16 +27,16 @@
                      <Insets left="50.0" />
                   </padding>
                </Label>
-               <HBox prefHeight="400.0" prefWidth="1240.0">
+               <HBox fx:id="mainHorizontalBox" prefHeight="400.0" prefWidth="1240.0">
                   <children>
-                     <VBox alignment="BOTTOM_CENTER" prefHeight="400.0">
+                     <VBox fx:id="leftBox" alignment="CENTER" prefHeight="400.0">
                         <children>
                            <ImageView fx:id="questionImage" fitHeight="315.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                               <image>
                                  <Image url="@/images/placeholderQuestion.png" />
                               </image>
                            </ImageView>
-                           <HBox prefHeight="85.0" prefWidth="311.0">
+                           <HBox fx:id="powerupBox" prefHeight="85.0" prefWidth="311.0">
                               <children>
                                  <Button fx:id="timeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#timePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
                                     <graphic>
@@ -70,7 +70,7 @@
                         </children>
                      </VBox>
                      <Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
-                     <VBox prefHeight="400.0" prefWidth="300.0" spacing="45.0">
+                     <VBox fx:id="optionBox" prefHeight="400.0" prefWidth="300.0" spacing="45.0">
                         <children>
                            <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceAnswer" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="200 Watts / hour" textFill="#a07400" VBox.vgrow="ALWAYS">
                               <font>
@@ -91,9 +91,12 @@
                         <padding>
                            <Insets top="25.0" />
                         </padding>
+                        <HBox.margin>
+                           <Insets />
+                        </HBox.margin>
                      </VBox>
                      <Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
-                     <VBox prefHeight="400.0" prefWidth="350.0">
+                     <VBox fx:id="chatBox" prefHeight="400.0" prefWidth="350.0">
                         <children>
                            <ScrollPane fx:id="emoteScroll" fitToWidth="true" hbarPolicy="NEVER" prefHeight="315.0" prefWidth="350.0" style="-fx-background: white;" VBox.vgrow="ALWAYS">
                               <content>
@@ -175,7 +178,7 @@
                            <Font size="24.0" />
                         </font>
                      </Button>
-                     <Button fx:id="confirmButton" layoutX="448.0" layoutY="114.0" mnemonicParsing="false" onAction="#returnMenu" prefHeight="27.0" prefWidth="356.0" styleClass="confirmButton" text="Confirm" textFill="#009a19">
+                     <Button fx:id="confirmButton" layoutX="448.0" layoutY="114.0" mnemonicParsing="false" onAction="#returnToMenu" prefHeight="27.0" prefWidth="356.0" styleClass="confirmButton" text="Confirm" textFill="#009a19">
                         <font>
                            <Font size="24.0" />
                         </font>
@@ -213,5 +216,4 @@
          </Label>
         </children>
     </AnchorPane>
-    <!--    <ScrollPane prefHeight="200.0" prefWidth="200.0" />-->
 </VBox>

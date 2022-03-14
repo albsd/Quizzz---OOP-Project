@@ -1,8 +1,7 @@
 package client.scenes;
 
-import client.Main;
+import client.FXMLController;
 import client.utils.ServerUtils;
-import com.google.inject.Inject;
 import commons.Game;
 import commons.LobbyMessage;
 import commons.Player;
@@ -11,16 +10,11 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
-import org.springframework.web.util.HtmlUtils;
 
 import java.net.URL;
 import java.time.LocalTime;
@@ -29,9 +23,12 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import javax.inject.Inject;
+
+import org.springframework.web.util.HtmlUtils;
 
 public class LobbyController implements Initializable {
 
@@ -57,6 +54,8 @@ public class LobbyController implements Initializable {
 
     private final ServerUtils server;
 
+    private final FXMLController fxml;
+
     private Player me;
 
     private final DateTimeFormatter timeFormat;
@@ -64,24 +63,22 @@ public class LobbyController implements Initializable {
     private Game lobby;
 
     @Inject
-    public LobbyController(final ServerUtils server) {
+    public LobbyController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
+        this.fxml = fxml;
         this.players = new ArrayList<>();
         this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
-        this.lobby = server.getGame();
-        Consumer<PlayerUpdate> playerUpdateConsumer = update -> {
-            System.out.println("PlayerUpdate received");
+
+        server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, update -> {
             if (update.getContent() == PlayerUpdate.Type.join) {
                 players.add(update.getNick());
             } else {
                 players.remove(update.getNick());
             }
             updatePlayerList();
-        };
-        server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, playerUpdateConsumer);
+        });
 
-        Consumer<LobbyMessage> messageConsumer = m -> {
-            System.out.println("Message received");
+        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, m -> {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -93,20 +90,21 @@ public class LobbyController implements Initializable {
                     chatText.setText(chatLogs);
                 }
             });
-        };
-        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, messageConsumer);
+        });
+
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        // We DON'T use the shorthand .toList() here, because that returns an immutable list and causes player updates to get ignored silently
+        // We DON'T use the shorthand .toList() here, because that returns an immutable
+        // list and causes player updates to get ignored silently
         this.players = server.getPlayers().stream().map(Player::getNick).collect(Collectors.toList());
         updatePlayerList();
     }
 
     @FXML
     public void onEnter(final ActionEvent e) {
-        String content = chatInput.getText();
+        String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         chatInput.setText("");
         final LocalTime time = LocalTime.now();
         // escapes special characters in input
@@ -152,7 +150,7 @@ public class LobbyController implements Initializable {
     }
 
     @FXML
-    protected void onReturnButtonClick(final ActionEvent event) {
+    public void onReturnButtonClick(final ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation Screen");
         alert.setHeaderText("Confirmation needed!");
@@ -163,27 +161,19 @@ public class LobbyController implements Initializable {
         }
     }
 
+    @FXML
     public void returnToMenu(final ActionEvent event) {
         server.leaveGame(me.getNick());
 
-        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        fxml.showSplash();
     }
 
+    @FXML
     public void start(final ActionEvent event) {
         // server.startGame();
-        var root = Main.FXML.load(GameMultiplayerController.class, "client", "scenes", "GameMultiplayer.fxml");
+        var root = fxml.showGame();
         var ctrl = root.getKey();
         ctrl.setMe(me);
         ctrl.setGame(lobby);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
-        stage.close();
     }
 }
