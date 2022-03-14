@@ -74,11 +74,11 @@ public class Game {
 
     @JsonIgnore
     //Todo: invoke this method when the client-timer is 0 in a set interval
-    public void startTimer() {
+    public void startTimer(Runnable callback) {
         if (timer.isOver()) {
             timer.reset();
         }
-        timer.startGameTimer();
+        timer.startGameTimer(callback);
     }
 
     public Question[] getQuestions() {

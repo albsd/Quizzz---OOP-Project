@@ -83,7 +83,7 @@ public class QuestionTimer {
         return over;
     }
 
-    public void startGameTimer(Callable<Question> callback) {
+    public void startGameTimer(Runnable callback) {
         reset();
         System.out.println("Game timer started.");
         started = true;
@@ -121,7 +121,7 @@ public class QuestionTimer {
         currentTime = maxTime;
     }
 
-    private TimerTask gameTimerTask(Callable<Question> callback) {
+    private TimerTask gameTimerTask(Runnable callback) {
         return new TimerTask() {
             @Override
             public void run() {
@@ -131,7 +131,7 @@ public class QuestionTimer {
                     //callback
                     //set 5 second delay
                     try {
-                        callback.call();
+                        callback.run();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

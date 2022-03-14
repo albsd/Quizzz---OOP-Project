@@ -115,7 +115,10 @@ public class GameMultiplayerController implements Initializable {
         currentGame.start();
         questionNumber.setText("#1");
         question.setText(currentGame.getCurrentQuestion().getPrompt());
-        currentGame.getTimer().startGameTimer(ca);
+        currentGame.startTimer(()->{
+            //calback
+            setNextQuestion();
+        });
     }
 
     @FXML
@@ -179,6 +182,9 @@ public class GameMultiplayerController implements Initializable {
         currentGame.nextQuestion(); //increments question by one
         question.setText(currentGame.getCurrentQuestion().getPrompt());
         questionNumber.setText( "#" +  1 + currentGame.getQuestionNumber());
+        currentGame.startTimer(()->{
+            setNextQuestion();
+        });
     }
 
     public void openPopup(final ActionEvent e) throws IOException {
