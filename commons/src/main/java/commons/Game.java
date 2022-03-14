@@ -80,7 +80,7 @@ public class Game {
         }
         timer.startGameTimer();
     }
-    
+
     public Question[] getQuestions() {
         return this.questions;
     }
