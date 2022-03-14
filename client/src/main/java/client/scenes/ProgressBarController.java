@@ -162,7 +162,7 @@ public class ProgressBarController implements Initializable {
         halveButton.setDisable(true);
     }
 
-    public int getClientTime(){
+    public int getClientTime() {
         return questionTimer.getCurrentTime();
     }
 }
