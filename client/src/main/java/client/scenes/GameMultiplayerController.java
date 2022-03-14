@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.FXMLController;
 import client.utils.ServerUtils;
 import commons.Player;
 import commons.Emote;
@@ -9,8 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -20,21 +19,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-import client.Main;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.inject.Inject;
 
 public class GameMultiplayerController implements Initializable {
 
-    @Autowired
     private final ServerUtils server;
+
+    private final FXMLController fxml;
 
     private Player me;
 
@@ -57,8 +53,9 @@ public class GameMultiplayerController implements Initializable {
     private VBox emoteChat;
 
     @Inject
-    public GameMultiplayerController(final ServerUtils server) {
+    public GameMultiplayerController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
+        this.fxml = fxml;
     }
 
     @Override
@@ -111,13 +108,8 @@ public class GameMultiplayerController implements Initializable {
     }
 
     @FXML
-    public void returnMenu(final ActionEvent e) {
-        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
-
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+    public void returnToMenu(final ActionEvent e) {
+        fxml.showSplash();
     }
 
     @FXML

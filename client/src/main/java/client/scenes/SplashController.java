@@ -1,26 +1,18 @@
 package client.scenes;
 
-import client.Main;
+import client.FXMLController;
 import client.utils.ServerUtils;
 import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 import javax.inject.Inject;
 
 public class SplashController {
-
-    public final Color red = new Color(0.8, 0, 0, 1);
-    public final Color green = new Color(0, 0.6, 0, 1);
-
-    private final ServerUtils server;
 
     @FXML
     private TextField nickField;
@@ -31,19 +23,22 @@ public class SplashController {
     @FXML
     private Label title;
 
+    public final Color red = new Color(0.8, 0, 0, 1);
+    public final Color green = new Color(0, 0.6, 0, 1);
+
+    private final ServerUtils server;
+
+    private final FXMLController fxml;
+
     @Inject
-    public SplashController(final ServerUtils server) {
+    public SplashController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
+        this.fxml = fxml;
     }
 
     @FXML
     public void help(final ActionEvent event) {
-        var root = Main.FXML.load(HelpController.class, "client", "scenes", "Help.fxml");
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        fxml.showHelp();
     }
 
     @FXML
@@ -97,23 +92,13 @@ public class SplashController {
             return;
         }
 
-        var root = Main.FXML.load(LobbyController.class, "client", "scenes", "Lobby.fxml");
+        var root = fxml.showLobby();
         var ctrl = root.getKey();
         ctrl.setMe(player);
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
     }
 
     @FXML
     public void leaderBoard(final ActionEvent event) {
-        var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        fxml.showLeaderboard();
     }
 }
