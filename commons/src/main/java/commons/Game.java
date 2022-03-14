@@ -109,15 +109,11 @@ public class Game {
         }
         return null;
     }
-
-    public void nextQuestion() {
-        this.currentQuestion++;
-    }
-
     //if not ignored, game in serverUtil from getplayers is null
     @JsonIgnore
-    public int getQuestionNumber() {
-        return this.currentQuestion;
+    public int nextQuestion() {
+        this.currentQuestion++;
+        return currentQuestion;
     }
     
     public Question getCurrentQuestion() {

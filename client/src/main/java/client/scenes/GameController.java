@@ -155,7 +155,14 @@ public class GameController implements Initializable {
     public void checkOpenAnswer(final ActionEvent e) {
         int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
         String optionStr = ((Button) e.getSource()).getText();
-        int option = Integer.parseInt(optionStr);
+        int option;
+        try {
+            option = Integer.parseInt(optionStr);
+        } catch (NumberFormatException exception) {
+            System.out.println("invalid input");
+            //set for 0 accuracy
+            option = correctAnswer * -200;
+        }
         sendScores(me.getNick(), progressBar.getClientTime(),
                 "open", correctAnswer, option, currentGame.getId());
     }
@@ -170,8 +177,8 @@ public class GameController implements Initializable {
 
     @FXML
     public void setNextQuestion() {
-        currentGame.nextQuestion(); //increments question by one
-        questionNumber.setText("#" +  1 + currentGame.getQuestionNumber());
+        //increment and return next question
+        questionNumber.setText("#" + (1 + currentGame.nextQuestion()));
         question.setText(currentGame.getCurrentQuestion().getPrompt());
         //start client timer
         progressBar.start();
