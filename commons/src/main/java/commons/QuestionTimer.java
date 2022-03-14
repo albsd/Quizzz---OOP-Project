@@ -127,6 +127,8 @@ public class QuestionTimer {
                 currentTime -= decrement;
                 if (currentTime <= 0) {
                     System.out.println("Time's over!");
+                    //callback
+                    //set 5 second delay
                     stopGameTimer();
                     cancel();
                 }

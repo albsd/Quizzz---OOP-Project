@@ -127,6 +127,10 @@ public class Game {
         this.currentQuestion++;
     }
 
+    public int getQuestionNumber(){
+        return this.currentQuestion;
+    }
+
     public void start() {
         this.gameState = GameState.playing;
         while (currentQuestion < questionLimit) {

@@ -113,6 +113,9 @@ public class GameMultiplayerController implements Initializable {
         server.registerForMessages("/topic/game/chat", EmoteMessage.class, emoteConsumer);
 
         currentGame.start();
+        questionNumber.setText("#1");
+        question.setText(currentGame.getCurrentQuestion().getPrompt());
+        currentGame.getTimer().startGameTimer();
     }
 
     @FXML
@@ -172,8 +175,10 @@ public class GameMultiplayerController implements Initializable {
     }
 
     @FXML
-    public void getNextQuestion() {
+    public void setNextQuestion() {
+        currentGame.nextQuestion(); //increments question by one
         question.setText(currentGame.getCurrentQuestion().getPrompt());
+        questionNumber.setText( "#" +  1 + currentGame.getQuestionNumber());
     }
 
     public void openPopup(final ActionEvent e) throws IOException {
