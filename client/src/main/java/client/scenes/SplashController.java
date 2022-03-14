@@ -68,11 +68,29 @@ public class SplashController {
     }
 
     public void singleGame(final ActionEvent event) {
-        String user = nickField.getText();
-        if (!validateNicknameLength(user)) {
+        var root = Main.FXML.load(GameMultiplayerController.class,
+                "client", "scenes", "GameMultiplayer.fxml");
+        var ctrl = root.getKey();
+
+        String nick = nickField.getText();
+        if (!validateNicknameLength(nick)) {
             return;
         }
-        // TODO: load the fxml and display it
+
+        final Player player = server.joinGame(nick);
+        if (player == null) {
+            warning.setTextFill(red);
+            warning.setText("User with the given name is already in the game");
+            return;
+        }
+
+        ctrl.setMe(player);
+        ctrl.setSingle();
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root.getValue());
+        stage.setScene(scene);
+        stage.show();
     }
 
     /**
