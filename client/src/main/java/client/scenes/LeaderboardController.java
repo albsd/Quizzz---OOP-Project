@@ -11,6 +11,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
+import java.util.List;
 import java.util.Optional;
 
 public class LeaderboardController {
