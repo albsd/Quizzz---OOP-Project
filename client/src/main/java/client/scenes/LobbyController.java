@@ -18,14 +18,12 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import org.springframework.web.util.HtmlUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -60,20 +58,16 @@ public class LobbyController implements Initializable {
         this.server = server;
         this.players = new ArrayList<>();
 
-        Consumer<PlayerUpdate> playerUpdateConsumer = update -> {
-            System.out.println("PlayerUpdate received");
+        server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, update -> {
             if (update.getContent() == PlayerUpdate.Type.join) {
                 players.add(update.getNick());
             } else {
                 players.remove(update.getNick());
             }
             updatePlayerList();
-        };
-        server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, playerUpdateConsumer);
+        });
 
-        // change. Scroll pane is not place to put messages
-        Consumer<LobbyMessage> messageConsumer = m -> {
-            System.out.println("Message received");
+        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, m -> {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -86,8 +80,7 @@ public class LobbyController implements Initializable {
                     chatText.setText(chatLogs);
                 }
             });
-        };
-        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, messageConsumer);
+        });
     }
 
     @Override
@@ -99,12 +92,12 @@ public class LobbyController implements Initializable {
 
     @FXML
     public void onEnter(final ActionEvent e) {
-        String content = chatInput.getText();
+        String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
+
+        final LobbyMessage message = new LobbyMessage(me.getNick(), 10, content);
+        server.send("/app/lobby/chat", message);
+
         chatInput.setText("");
-        final int demoTime = 10;
-        // escapes special characters in input
-        server.send("/app/lobby/chat",
-                new LobbyMessage(me.getNick(), demoTime, HtmlUtils.htmlEscape(content)));
         chatArea.setVvalue(1.0);
     }
 
@@ -144,7 +137,7 @@ public class LobbyController implements Initializable {
     }
 
     @FXML
-    protected void onReturnButtonClick(final ActionEvent event) {
+    public void onReturnButtonClick(final ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation Screen");
         alert.setHeaderText("Confirmation needed!");
@@ -155,6 +148,7 @@ public class LobbyController implements Initializable {
         }
     }
 
+    @FXML
     public void returnToMenu(final ActionEvent event) {
         server.leaveGame(me.getNick());
 
@@ -166,6 +160,7 @@ public class LobbyController implements Initializable {
         stage.show();
     }
 
+    @FXML
     public void start(final ActionEvent event) {
         // server.startGame();
         var root = Main.FXML.load(GameMultiplayerController.class, "client", "scenes", "GameMultiplayer.fxml");

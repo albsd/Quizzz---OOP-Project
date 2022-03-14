@@ -2,12 +2,14 @@ package client.scenes;
 
 import client.Main;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class HelpController {
 
+    @FXML
     public void splash(final ActionEvent e) {
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 

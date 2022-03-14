@@ -29,8 +29,7 @@ public class LeaderboardController {
         Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation Screen");
         alert.setHeaderText("Confirmation needed!");
-        alert.setContentText(
-                "You are about to leave to the main screen. Are you sure?");
+        alert.setContentText("You are about to leave to the main screen. Are you sure?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.YES) {
             onConfirmButtonClick(e);
