@@ -48,8 +48,8 @@ public class ProgressBarController implements Initializable {
     public ProgressBarController(final ServerUtils server) {
         this.questionTimer = new QuestionTimer();
         this.server = server;
-        server.registerForMessages("/topic/game/update",
-                GameUpdate.class, updateConsumer);
+        // TODO: get the game id
+        server.registerForMessages("/topic/game/{id}/update", GameUpdate.class, updateConsumer);
     }
 
     private Consumer<GameUpdate> updateConsumer = update -> {
@@ -127,8 +127,8 @@ public class ProgressBarController implements Initializable {
 
     @FXML
     public void onHalveButtonClick(final ActionEvent e) {
-        server.send("/app/halve",
-                GameUpdate.halveTimer);
+        // TODO: get the game id
+        server.send("/app/game/{id}/halve", GameUpdate.halveTimer);
 
         // Solution to ensure that the client's timer is not halved.
         // (if he was the one that clicked on the button)

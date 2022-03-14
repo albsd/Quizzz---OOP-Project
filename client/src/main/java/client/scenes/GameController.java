@@ -27,27 +27,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
 public class GameController implements Initializable {
 
-    private final ServerUtils server;
-
-    private final FXMLController fxml;
-
-    private Player me;
-
-    private final ProgressBarController progressBar;
-
-    // TODO: inject the ProgressBar.fxml into this scene
-
     @FXML
     private Button option1, option2, option3,
             timeButton, scoreButton, removeButton,
             cancelButton, confirmButton;
-    @FXML
+            @FXML
     private Label question, questionNumber, points, popupText, timer1, timer2;
 
     @FXML
@@ -64,22 +53,33 @@ public class GameController implements Initializable {
 
     @FXML
     private HBox mainHorizontalBox;
+    
+    private final ServerUtils server;
 
+    private final FXMLController fxml;
+
+    private final ProgressBarController progressBar;
+
+    private final Font font;
+
+    private Player me;
+
+    private String chatPath;
+    
     private Game currentGame;
 
     @Inject
     public GameController(final ServerUtils server,
                           final FXMLController fxml,
                           final ProgressBarController progressBar) {
-        this.server = server;
+                              this.server = server;
         this.fxml = fxml;
         this.progressBar = progressBar;
+        this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        Font font = Font.loadFont(getClass().getResourceAsStream(
-                "/fonts/Righteous-Regular.ttf"), 24);
         option1.setFont(font);
         option2.setFont(font);
         option3.setFont(font);
@@ -93,8 +93,12 @@ public class GameController implements Initializable {
         points.setFont(font);
         timer1.setFont(font);
         timer2.setFont(font);
+    }
 
-        Consumer<EmoteMessage> emoteConsumer = msg -> Platform.runLater(() -> {
+    public void setGame(final Player me, final Game game) {
+        this.me = me;
+        this.chatPath = "/game/" + game.getId() + "/chat";
+        server.registerForMessages("/topic" + chatPath, EmoteMessage.class, msg -> Platform.runLater(() -> {
             Label nickname = new Label(msg.getNick());
             nickname.setFont(font);
             String emotePath = switch (msg.getContent()) {
@@ -112,16 +116,15 @@ public class GameController implements Initializable {
 
             emoteChat.getChildren().add(message);
 
-            // layout is needed to make sure the scroll pane is updated before scrolling to
-            // the bottom
+            // update scrollpane's layout before scrolling to the bottom
             emoteScroll.layout();
             emoteScroll.setVvalue(1);
-        });
-        server.registerForMessages("/topic/game/chat", EmoteMessage.class, emoteConsumer);
+        }));
 
     }
 
-    public void setSingle() {
+    public void setSinglePlayer(final Player me) {
+        this.me = me;
         leftBox.getChildren().remove(1);
         mainHorizontalBox.getChildren().remove(3, 5);
         optionBox.setAlignment(Pos.CENTER);
@@ -248,7 +251,7 @@ public class GameController implements Initializable {
     }
 
     private void sendEmote(final Emote emote) {
-        server.send("/app/game/chat", new EmoteMessage(me.getNick(), emote));
+        server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
     }
 
     private void sendScores(final String nick, final int time, final String type,

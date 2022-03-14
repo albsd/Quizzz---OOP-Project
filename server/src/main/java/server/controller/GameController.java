@@ -180,8 +180,8 @@ public class GameController {
      * 
      * @return The PlayerUpdate object
      */
-    @MessageMapping("/playerUpdate") // /app/player_update
-    @SendTo("/topic/playerUpdate")
+    @MessageMapping("/lobby/player") // /app/lobby/player
+    @SendTo("/topic/lobby/player")
     private PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
         return update;
     }
@@ -199,24 +199,7 @@ public class GameController {
         return message;
     }
 
-    /**
-     * A Websocket endpoint for halving the time for other users.
-     *
-     * @return The GameUpdate.halveTimer enum property
-     */
-    @MessageMapping("/halve")
-    @SendTo("/topic/game/update")
-    public GameUpdate halveTimeWebsocket() {
-        return GameUpdate.halveTimer;
-    }
-
-    @MessageMapping("/game/chat") // /app/game/chat
-    @SendTo("/topic/game/chat")
-    private EmoteMessage sendEmoteMessage(final EmoteMessage msg) {
-        return msg;
-    }
-
-    /**
+     /**
      * Starts the current game.
      * Do not allow starting a game with less than 2 players.
      *
@@ -225,7 +208,8 @@ public class GameController {
     @PostMapping("/start")
     public ResponseEntity<Game> startCurrentGame() {
         Game lobby = gameService.getCurrentGame();
-        return ResponseEntity.ok(gameService.newGame());
+        gameService.newGame();
+        return ResponseEntity.ok(lobby);
     }
 
     /**
@@ -236,4 +220,44 @@ public class GameController {
     public void updatePlayerPoints(final ScoreMessage scoreMessage) {
         gameService.updatePlayerScore(scoreMessage);
     }
+    
+    /** 
+    * A Websocket endpoint for starting the lobby.
+    *
+    * @param Game The message to be sent to all the players in the lobby
+    * 
+    * @return The LobbyMessage object
+    */
+   @MessageMapping("/lobby/start") // /app/lobby/start
+   @SendTo("/topic/lobby/start")
+   private Game sendLobbyStart(final Game lobby) {
+       return lobby;
+   }
+
+    /**
+     * Send an emote message to the game with the given id
+     * 
+     * @param message EmoteMessage to be sent
+     * @return        The same message object
+     */
+    @MessageMapping("/game/{id}/chat") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/chat
+    @SendTo("/topic/game/{id}/chat")
+    private EmoteMessage sendEmoteMessage(final EmoteMessage message) {
+        return message;
+    }
+
+    
+    /**
+     * A Websocket endpoint for halving the time for other users.
+     *
+     * @return The GameUpdate.halveTimer enum property
+     */
+    @MessageMapping("/game/{id}/halve") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/halve
+    @SendTo("/topic/game/{id}/update")
+    public GameUpdate halveTimeWebsocket() {
+        return GameUpdate.halveTimer;
+    }
+
+   
+
 }

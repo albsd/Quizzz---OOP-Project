@@ -118,8 +118,7 @@ public class ServerUtils {
 
             @SuppressWarnings("unchecked")
             @Override
-            public void handleFrame(final StompHeaders headers,
-                    final Object payload) {
+            public void handleFrame(final StompHeaders headers, final Object payload) {
                 try {
                     consumer.accept((T) payload);
                 } catch (Exception e) {
@@ -147,7 +146,7 @@ public class ServerUtils {
 
         Player player = parseResponseToObject(request, new TypeReference<Player>() { });
         if (player != null) {
-            send("/app/playerUpdate", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.join));
+            send("/app/lobby/player", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.join));
         }
         return player;
     }
@@ -166,18 +165,9 @@ public class ServerUtils {
 
         Player player = parseResponseToObject(request, new TypeReference<Player>() { });
         if (player != null) {
-            send("/app/playerUpdate", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
+            send("/app/lobby/player", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
         }
         return player;
-    }
-
-    public Game startGame() {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/start"))
-                .POST(HttpRequest.BodyPublishers.ofString(""))
-                .build();
-
-        return parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
     /**
@@ -191,6 +181,7 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
+
         Game game = parseResponseToObject(request, new TypeReference<Game>() { });
         if (game == null) return null;
         return game.getPlayers();
@@ -215,6 +206,25 @@ public class ServerUtils {
                 .build();
 
         return parseResponseToObject(request, new TypeReference<List<Question>>() { });
+    }
+
+    /**
+     * Calls the REST endpoint to start the current lobby.
+     *
+     * @return The game that has just started
+     */
+    public Game startGame() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/start"))
+                .header("accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
+        if (game != null) {
+            send("/app/lobby/start", game);
+        }
+        return game;
     }
 
     /**

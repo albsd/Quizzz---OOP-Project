@@ -75,8 +75,7 @@ public class SplashController {
         var root = fxml.showGame();
         var ctrl = root.getKey();
 
-        ctrl.setMe(player);
-        ctrl.setSingle();
+        ctrl.setSinglePlayer(player);
     }
 
     /**

@@ -67,7 +67,7 @@ public class LobbyController implements Initializable {
         this.players = new ArrayList<>();
         this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
 
-        server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, update -> {
+        server.registerForMessages("/topic/lobby/player", PlayerUpdate.class, update -> {
             if (update.getContent() == PlayerUpdate.Type.join) {
                 players.add(update.getNick());
             } else {
@@ -76,17 +76,19 @@ public class LobbyController implements Initializable {
             updatePlayerList();
         });
 
-        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, m -> {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    String nick = m.getNick();
-                    String time = m.getTimestamp();
-                    String content = m.getContent();
-                    String chatLogs = chatText.getText()
-                            + nick + " (" + time + ") - " + content + "\n";
+        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, message -> {
+            Platform.runLater(() -> {
+                String nick = message.getNick();
+                    String time = message.getTimestamp();
+                    String content = message.getContent();
+                    String chatLogs = chatText.getText() + nick + " (" + time + ") - " + content + "\n";
                     chatText.setText(chatLogs);
-                }
+            });
+        });
+
+        server.registerForMessages("/topic/lobby/start", Game.class, game -> {
+            Platform.runLater(() -> {
+                
             });
         });
 
@@ -96,7 +98,10 @@ public class LobbyController implements Initializable {
     public void initialize(final URL location, final ResourceBundle resources) {
         // We DON'T use the shorthand .toList() here, because that returns an immutable
         // list and causes player updates to get ignored silently
-        this.players = server.getPlayers().stream().map(Player::getNick).collect(Collectors.toList());
+        this.players = server.getPlayers()
+                        .stream()
+                        .map(Player::getNick)
+                        .collect(Collectors.toList());
         updatePlayerList();
     }
 
@@ -119,31 +124,28 @@ public class LobbyController implements Initializable {
     private void updatePlayerList() {
         // GUI Updates must be run later
         // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                playerCount.setText("Number of players: " + players.size());
+        Platform.runLater(() -> {
+            playerCount.setText("Number of players: " + players.size());
 
-                List<String> nicks = players.stream().map(nick -> {
-                    if (nick.equals(me.getNick())) {
-                        return nick + " (me)";
-                    }
-                    return nick;
-                }).toList();
+            List<String> nicks = players.stream().map(nick -> {
+                if (nick.equals(me.getNick())) {
+                    return nick + " (me)";
+                }
+                return nick;
+            }).toList();
 
-                String leftText = IntStream.range(0, players.size())
-                        .filter(i -> i % 2 == 0)
-                        .mapToObj(nicks::get)
-                        .collect(Collectors.joining("\n\n"));
+            String leftText = IntStream.range(0, players.size())
+                    .filter(i -> i % 2 == 0)
+                    .mapToObj(nicks::get)
+                    .collect(Collectors.joining("\n\n"));
 
-                String rightText = IntStream.range(0, players.size())
-                        .filter(i -> i % 2 == 1)
-                        .mapToObj(nicks::get)
-                        .collect(Collectors.joining("\n\n"));
+            String rightText = IntStream.range(0, players.size())
+                    .filter(i -> i % 2 == 1)
+                    .mapToObj(nicks::get)
+                    .collect(Collectors.joining("\n\n"));
 
-                playersLeft.setText(leftText);
-                playersRight.setText(rightText);
-            }
+            playersLeft.setText(leftText);
+            playersRight.setText(rightText);
         });
     }
 
@@ -169,10 +171,17 @@ public class LobbyController implements Initializable {
     @FXML
     public void start(final ActionEvent event) {
         Game game = server.startGame();
+        if (game == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.OK);
+            alert.setTitle("Confirmation Screen");
+            alert.setHeaderText("Confirmation needed!");
+            alert.setContentText("If you want to play alone, choose SinglePlayer?");
+            alert.showAndWait();
+            return;
+        }
+
         var root = fxml.showGame();
         var ctrl = root.getKey();
-        ctrl.setMe(me);
-        System.out.println("lobbyGame = " + game);
-        ctrl.setGame(game);
+        ctrl.setGame(me, game);
     }
 }
