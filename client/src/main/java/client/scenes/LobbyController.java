@@ -1,8 +1,8 @@
 package client.scenes;
 
-import client.Main;
+import client.FXMLController;
 import client.utils.ServerUtils;
-import com.google.inject.Inject;
+
 import commons.LobbyMessage;
 import commons.Player;
 import commons.PlayerUpdate;
@@ -10,14 +10,11 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,6 +23,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import javax.inject.Inject;
 
 public class LobbyController implements Initializable {
 
@@ -51,11 +50,14 @@ public class LobbyController implements Initializable {
 
     private final ServerUtils server;
 
+    private final FXMLController fxml;
+
     private Player me;
 
     @Inject
-    public LobbyController(final ServerUtils server) {
+    public LobbyController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
+        this.fxml = fxml;
         this.players = new ArrayList<>();
 
         server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, update -> {
@@ -81,11 +83,13 @@ public class LobbyController implements Initializable {
                 }
             });
         });
+
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        // We DON'T use the shorthand .toList() here, because that returns an immutable list and causes player updates to get ignored silently
+        // We DON'T use the shorthand .toList() here, because that returns an immutable
+        // list and causes player updates to get ignored silently
         this.players = server.getPlayers().stream().map(Player::getNick).collect(Collectors.toList());
         updatePlayerList();
     }
@@ -152,23 +156,14 @@ public class LobbyController implements Initializable {
     public void returnToMenu(final ActionEvent event) {
         server.leaveGame(me.getNick());
 
-        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        fxml.showSplash();
     }
 
     @FXML
     public void start(final ActionEvent event) {
         // server.startGame();
-        var root = Main.FXML.load(GameController.class, "client", "scenes", "Game.fxml");
-        root.getKey().setMe(me);
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        var root = fxml.showGame();
+        var ctrl = root.getKey();
+        ctrl.setMe(me);
     }
 }

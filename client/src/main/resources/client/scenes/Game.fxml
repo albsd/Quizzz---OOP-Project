@@ -178,7 +178,7 @@
                            <Font size="24.0" />
                         </font>
                      </Button>
-                     <Button fx:id="confirmButton" layoutX="448.0" layoutY="114.0" mnemonicParsing="false" onAction="#returnMenu" prefHeight="27.0" prefWidth="356.0" styleClass="confirmButton" text="Confirm" textFill="#009a19">
+                     <Button fx:id="confirmButton" layoutX="448.0" layoutY="114.0" mnemonicParsing="false" onAction="#returnToMenu" prefHeight="27.0" prefWidth="356.0" styleClass="confirmButton" text="Confirm" textFill="#009a19">
                         <font>
                            <Font size="24.0" />
                         </font>

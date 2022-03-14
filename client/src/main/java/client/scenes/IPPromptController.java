@@ -7,23 +7,21 @@ import java.util.regex.Pattern;
 import com.google.inject.Inject;
 
 import javafx.scene.text.Text;
-
-import client.Main;
+import client.FXMLController;
 import client.utils.ServerUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
 public class IPPromptController implements Initializable {
 
     private final ServerUtils server;
+
+    private final FXMLController fxml;
 
     @FXML
     private TextField hostField;
@@ -35,8 +33,9 @@ public class IPPromptController implements Initializable {
     private Text warning;
 
     @Inject
-    public IPPromptController(final ServerUtils server) {
+    public IPPromptController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
+        this.fxml = fxml;
     }
 
     @Override
@@ -63,11 +62,7 @@ public class IPPromptController implements Initializable {
         warning.setFill(new Color(0, 0.6, 0, 1));
         warning.setText("Connected to http://" + host + ":" + port);
 
-        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        fxml.showSplash();
     }
 
 }

@@ -1,27 +1,29 @@
 package client.scenes;
 
-import client.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
 
 import java.util.Optional;
 
+import javax.inject.Inject;
+
+import client.FXMLController;
+
 public class LeaderboardController {
+
+    private final FXMLController fxml;
+
+    @Inject
+    public LeaderboardController(final FXMLController fxml) {
+        this.fxml = fxml;
+    }
 
     @FXML
     protected void onConfirmButtonClick(final ActionEvent e) {
-        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
-
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        fxml.showSplash();
     }
 
     @FXML
@@ -40,11 +42,6 @@ public class LeaderboardController {
 
     @FXML
     public void switchToLeaderboard(final ActionEvent e) {
-        var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
-
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        fxml.showLeaderboard();
     }
 }

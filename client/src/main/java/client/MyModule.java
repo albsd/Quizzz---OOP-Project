@@ -15,6 +15,7 @@
 //  */
 package client;
 
+import client.scenes.GameController;
 import client.scenes.HelpController;
 import client.scenes.IPPromptController;
 import client.scenes.LeaderboardController;
@@ -30,10 +31,12 @@ public class MyModule implements Module {
     @Override
     public void configure(final Binder binder) {
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
+        binder.bind(FXMLController.class).in(Scopes.SINGLETON);
         binder.bind(IPPromptController.class).in(Scopes.SINGLETON);
         binder.bind(SplashController.class).in(Scopes.SINGLETON);
         binder.bind(LobbyController.class).in(Scopes.SINGLETON);
         binder.bind(LeaderboardController.class).in(Scopes.SINGLETON);
         binder.bind(HelpController.class).in(Scopes.SINGLETON);
+        binder.bind(GameController.class).in(Scopes.SINGLETON);
     }
 }

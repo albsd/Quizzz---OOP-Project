@@ -25,8 +25,6 @@ import java.util.function.Consumer;
 
 public class ProgressBarController implements Initializable {
 
-    private ServerUtils server;
-
     @FXML
     private ProgressBar bar = new ProgressBar(1);
 
@@ -44,6 +42,8 @@ public class ProgressBarController implements Initializable {
 
     @FXML
     private Button halveButton;
+
+    private ServerUtils server;
 
     private QuestionTimer questionTimer;
 
