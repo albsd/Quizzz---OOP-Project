@@ -218,4 +218,21 @@ public class GameController {
     public GameUpdate halveTimeWebsocket() {
         return GameUpdate.halveTimer;
     }
+
+    /**
+     * Starts the current game.
+     * Do not allow starting a game with less than 2 players.
+     *
+     * @return The game which has been started
+     */
+    @PostMapping("/game/points")
+    public ResponseEntity<Game> startCurrentGame() {
+        Game lobby = gameService.getCurrentGame();
+        if (!lobby.isPlayable()) {
+            return ResponseEntity.status(405).build(); // NOT_ALLOWED
+        }
+        return ResponseEntity.ok(gameService.newGame());
+    }
+
+
 }

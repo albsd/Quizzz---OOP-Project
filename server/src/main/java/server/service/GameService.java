@@ -67,4 +67,8 @@ public class GameService {
     public long generateSeed(final UUID id) {
         return repo.generateSeed(id);
     }
+
+    public void setPlayerPoints(){
+        r
+    }
 }

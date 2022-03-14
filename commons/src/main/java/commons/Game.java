@@ -110,6 +110,10 @@ public class Game {
         return true;
     }
 
+    public int getQuestionTime(){
+        return questionTime;
+    }
+
     public Player getPlayerByNick(final String nick) {
         for (Player p : players) {
             if (p.getNick().equals(nick)) {

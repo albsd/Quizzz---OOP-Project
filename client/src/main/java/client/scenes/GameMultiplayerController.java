@@ -1,11 +1,8 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
-import commons.Emote;
-import commons.EmoteMessage;
-import commons.Player;
+import commons.*;
 import javafx.application.Platform;
-import commons.Game;
 import com.google.inject.Inject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -106,6 +103,8 @@ public class GameMultiplayerController implements Initializable {
             emoteScroll.setVvalue(1);
         });
         server.registerForMessages("/topic/game/chat", EmoteMessage.class, emoteConsumer);
+
+        currentGame.start();
     }
 
     @FXML
@@ -118,25 +117,30 @@ public class GameMultiplayerController implements Initializable {
         stage.show();
     }
 
-//    //this is for multiple choice questions
-//    public void checkMulChoiceAnswer(final ActionEvent e) {
-//        int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
-//        String optionStr = ((Button)e.getSource()).getText();
-//        int option = Integer.parseInt(optionStr);
-//        if (option == correctAnswer) {
-//            calculateMulChoicePoints();
-//            System.out.println("Correct answer!");
-//        }else {
-//            System.out.println("Wrong answer. No points");
-//        }
-//    }
-//    //this is for open questions
-//    public void checkOpenAnswer(final ActionEvent e) {
-//        int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
-//        String optionStr = ((Button)e.getSource()).getText();
-//        int option = Integer.parseInt(optionStr);
-//        calculateOpenPoints(correctAnswer, option);
-//    }
+    //this is for multiple choice
+    //once you click set player's timer
+    public void checkMulChoiceAnswer(final ActionEvent e) {
+        me.setTime(currentGame.getQuestionTime());
+        int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
+        String optionStr = ((Button)e.getSource()).getText();
+        int option = Integer.parseInt(optionStr);
+        if (option == correctAnswer) {
+            calculateMulChoicePoints();
+            System.out.println("Correct answer!");
+        }else {
+            System.out.println("Wrong answer. No points");
+        }
+        sendPoints();
+    }
+    //this is for open questions
+    public void checkOpenAnswer(final ActionEvent e) {
+        me.setTime(currentGame.getQuestionTime());
+        int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
+        String optionStr = ((Button)e.getSource()).getText();
+        int option = Integer.parseInt(optionStr);
+        calculateOpenPoints(correctAnswer, option);
+        sendPoints();
+    }
 
     private void calculateMulChoicePoints() {
         int base = 50;
@@ -158,20 +162,6 @@ public class GameMultiplayerController implements Initializable {
         else base = 0;
         me.setScore(base + bonusScore);
     }
-//    //Still have to send score to server
-//    //Send it after every question
-//    //request for leaderboard every 5 questions
-//    public void getLeaderboard(ActionEvent e) {
-//        int questionNum = Integer.parseInt(questionNumber.getText());
-//        if (questionNum % 5 == 0) {
-//            Leaderboard leaderboard = server.getLeaderboard(currentGame.getId().toString());
-//            var root = Main.FXML.load(
-//                    LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
-//            root.getKey().loadPlayers(leaderboard);
-//            stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-//            scene = new Scene(root.getValue());
-//        }
-//    }
 
     public void setMe(Player me){
         this.me = me;
@@ -179,6 +169,11 @@ public class GameMultiplayerController implements Initializable {
 
     public void setGame(Game game) {
         this.currentGame = game;
+    }
+
+    @FXML
+    public void getNextQuestion(){
+        question.setText(currentGame.getCurrentQuestion().getPrompt());
     }
 
     public void openPopup(final ActionEvent e) throws IOException {
@@ -227,5 +222,11 @@ public class GameMultiplayerController implements Initializable {
 
     private void sendEmote(final Emote emote) {
         server.send("/app/game/chat", new EmoteMessage(me.getNick(), emote));
+    }
+
+    //Send it after every question
+    private void sendPoints() {
+        Message<Player> player = new Message(currentGame.getId().toString(), me);
+        server.send("/app/game/points", new Message<Player>(currentGame.getId()), me);
     }
 }
