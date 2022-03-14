@@ -13,7 +13,6 @@ import javafx.scene.Scene;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
@@ -73,7 +72,7 @@ public class LeaderboardController {
 //        System.out.println(Arrays.toString(leaderboard.getRanking().toArray()));
         //I am using a "dummy leaderboard object to test displaying the leaderboard"
         Leaderboard leaderboard = new Leaderboard();
-        Player player1 = new Player("Shaq", 0,0);
+        Player player1 = new Player("Shaq", 0, 0);
         Player player2 = new Player("Lolo", 0, 0);
         Player player3 = new Player("Lohithsai Yadala Chanchu", 0, 2);
 
