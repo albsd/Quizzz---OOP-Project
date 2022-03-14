@@ -10,10 +10,16 @@ class ScoreMessageTest {
 
     private String nick1;
     private String nick2;
-    private int score1;
-    private int score2;
+    private int time1;
+    private int time2;
     private UUID id1;
     private UUID id2;
+    private String type1;
+    private String type2;
+    private int answer1;
+    private int answer2;
+    private int option1;
+    private int option2;
     private ScoreMessage message1;
     private ScoreMessage message2;
 
@@ -21,22 +27,34 @@ class ScoreMessageTest {
     void setup() {
         nick1 = "Adam";
         nick2 = "Kevin";
-        score1 = 300;
-        score2 = 240;
+        time1 = 20000;
+        time2 = 10000;
         id1 = UUID.randomUUID();
         id2 = UUID.randomUUID();
-        message1 = new ScoreMessage(nick1, score1, id1);
-        message2 = new ScoreMessage(nick2, score2, id2);
+        type1 = "multiple";
+        type2 = "open";
+        answer1 = 150;
+        answer2 = 3000;
+        option1 = 400;
+        option2 = 2700;
+        message1 = new ScoreMessage(nick1, time1, type1, answer1, option1, id1);
+        message2 = new ScoreMessage(nick2, time2, type2, answer2, option2, id2);
     }
 
     @Test
     void testGetters() {
         assertEquals(nick1, message1.getNick());
-        assertEquals(score1, message1.getContent());
+        assertEquals(time1, message1.getContent());
+        assertEquals(id1, message1.getId());
+        assertEquals(answer1, message1.getAnswer());
+        assertEquals(option1, message1.getOption());
         assertEquals(id1, message1.getId());
 
         assertEquals(nick2, message2.getNick());
-        assertEquals(score2, message2.getContent());
+        assertEquals(time2, message2.getContent());
+        assertEquals(id2, message2.getId());
+        assertEquals(answer2, message2.getAnswer());
+        assertEquals(option2, message2.getOption());
         assertEquals(id2, message2.getId());
     }
 }

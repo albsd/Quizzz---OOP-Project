@@ -72,4 +72,5 @@ public class GameService {
     public void updatePlayerScore(final ScoreMessage scoreMessage) {
         repo.updatePlayerScore(scoreMessage);
     }
+
 }

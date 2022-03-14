@@ -113,11 +113,12 @@ public class Game {
     public void nextQuestion() {
         this.currentQuestion++;
     }
-
+    //if not ignored, game in serverUtil from getplayers is null
+    @JsonIgnore
     public int getQuestionNumber() {
         return this.currentQuestion;
     }
-
+    @JsonIgnore
     public void start(final Runnable callback) {
         this.gameState = GameState.playing;
         startTimer(callback);

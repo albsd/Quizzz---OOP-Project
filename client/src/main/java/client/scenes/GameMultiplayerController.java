@@ -29,6 +29,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class GameMultiplayerController implements Initializable {
@@ -134,12 +135,11 @@ public class GameMultiplayerController implements Initializable {
         String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
         if (option == correctAnswer) {
-            calculateMulChoicePoints();
             System.out.println("Correct answer!");
+            sendScores(me.getNick(), me.getTime(), "multiple", correctAnswer, option, currentGame.getId());
         } else {
             System.out.println("Wrong answer. No points");
         }
-        sendScores();
     }
     //this is for open questions
     public void checkOpenAnswer(final ActionEvent e) {
@@ -147,29 +147,7 @@ public class GameMultiplayerController implements Initializable {
         int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
         String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
-        calculateOpenPoints(correctAnswer, option);
-        sendScores();
-    }
-
-    private void calculateMulChoicePoints() {
-        int base = 50;
-        int bonusScore = calculateBonusPoints(me.getTime());
-        me.setScore(base + bonusScore);
-    }
-
-    private void calculateOpenPoints(final int answer, final int option) {
-        int bonusScore = calculateBonusPoints(me.getTime());
-        int offPercentage = (int) Math.round(((double) Math.abs((option - answer)) / answer) * 100);
-        int accuracyPercentage = 100 - offPercentage;
-        if (accuracyPercentage < 0) {
-            accuracyPercentage = 0;
-        }
-        int base = (accuracyPercentage / 10) * 10;
-        me.setScore(base + bonusScore);
-    }
-
-    private int calculateBonusPoints(final int time) {
-        return (time / 1000) * 2;
+        sendScores(me.getNick(), me.getTime(), "open", correctAnswer, option, currentGame.getId());
     }
 
     public void setMe(final Player me) {
@@ -239,8 +217,8 @@ public class GameMultiplayerController implements Initializable {
         server.send("/app/game/chat", new EmoteMessage(me.getNick(), emote));
     }
 
-    //Send it after every question
-    private void sendScores() {
-        server.send("/app/game/scores",  new ScoreMessage(me.getNick(), me.getScore(), currentGame.getId()));
+    private void sendScores(final String nick, final int time, final String type,
+                            final int answer, final int option, final UUID id) {
+        server.send("/app/game/scores",  new ScoreMessage(nick, time, type, answer, option, id));
     }
 }
