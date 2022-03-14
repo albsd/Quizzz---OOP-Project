@@ -5,6 +5,7 @@ import commons.Emote;
 import commons.EmoteMessage;
 import commons.Player;
 import javafx.application.Platform;
+import commons.Game;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -30,13 +32,10 @@ import client.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
-
 public class GameMultiplayerController implements Initializable {
 
     @Autowired
     private final ServerUtils server;
-
-    private Player me;
 
     // TODO: inject the ProgressBar.fxml into this scene
 
@@ -52,6 +51,11 @@ public class GameMultiplayerController implements Initializable {
 
     @FXML
     private ScrollPane emoteScroll;
+    //find way to connect a game object and player object so that
+    //we can calculate score of game timer and assign to player
+    //later score must be sent to server to display leaderboard
+    private Player me;
+    private Game currentGame;
 
     @FXML
     private VBox emoteChat;
@@ -105,10 +109,6 @@ public class GameMultiplayerController implements Initializable {
         server.registerForMessages("/topic/game/chat", EmoteMessage.class, emoteConsumer);
     }
 
-    public void setMe(final Player me) {
-        this.me = me;
-    }
-
     @FXML
     public void returnMenu(final ActionEvent e) {
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
@@ -119,8 +119,34 @@ public class GameMultiplayerController implements Initializable {
         stage.show();
     }
 
-    @FXML
-    public void openPopup(final ActionEvent e) {
+    //this is for multiple choice questions
+    public void checkAnswer(final ActionEvent e) {
+        int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
+        String optionStr = ((Button)e.getSource()).getText();
+        int option = Integer.parseInt(optionStr);
+        if (option == correctAnswer) {
+            calculateMulChoicePoints();
+            System.out.println("Correct answer!");
+        }else {
+            System.out.println("Wrong answer. No points");
+        }
+    }
+
+    private void calculateMulChoicePoints(){
+        int base = 50;
+        int bonusScore = (me.getTime() / 1000) * 2;
+        me.setScore(base + bonusScore);
+    }
+
+    public void setMe(Player me){
+        this.me = me;
+    }
+
+    public void setGame(Game game) {
+        this.currentGame = game;
+    }
+
+    public void openPopup(final ActionEvent e) throws IOException {
         popupMenu.setVisible(true);
     }
 
