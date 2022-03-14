@@ -65,7 +65,9 @@ public class GameController implements Initializable {
     private Game currentGame;
 
     @Inject
-    public GameController(final ServerUtils server, final FXMLController fxml, final ProgressBarController progressBar) {
+    public GameController(final ServerUtils server,
+                          final FXMLController fxml,
+                          final ProgressBarController progressBar) {
         this.server = server;
         this.fxml = fxml;
         this.progressBar = progressBar;
