@@ -23,7 +23,6 @@ import static org.springframework.http.HttpStatus.OK;
 import commons.Game;
 import commons.Player;
 
-import commons.Question;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

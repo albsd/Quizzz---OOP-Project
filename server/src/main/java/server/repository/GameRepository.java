@@ -15,7 +15,10 @@
  */
 package server.repository;
 
-import commons.*;
+
+import commons.Game;
+import commons.Leaderboard;
+import commons.Player;
 import org.springframework.stereotype.Repository;
 import server.FakeDatabase;
 
@@ -27,9 +30,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Collections;
-import java.util.Random;
-
 @Repository
 public class GameRepository {
 

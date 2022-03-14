@@ -3,8 +3,6 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.tuple.Pair;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Arrays;
@@ -43,7 +41,8 @@ public class Activity {
         String prompt = "How much energy does " + title + " take in watt hours?";
         String[] choices = generateChoices(energyConsumption);
 
-        return new MultipleChoiceQuestion(prompt, imageBytes, choices, ArrayUtils.indexOf(choices, Long.toString(energyConsumption)));
+        return new MultipleChoiceQuestion(prompt, imageBytes, choices,
+                ArrayUtils.indexOf(choices, Long.toString(energyConsumption)));
     }
 
     public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(final List<Activity> answerOptions) {
@@ -52,7 +51,8 @@ public class Activity {
         String prompt = "Which of the following activities take the most energy";
         String[] options  = (String[]) this.generateActivityOptions(answerOptions)[0];
 
-        return new MultipleChoiceQuestion(prompt, imgBytes, options, (int) this.generateActivityOptions(answerOptions)[1]);
+        return new MultipleChoiceQuestion(prompt, imgBytes, options,
+                (int) this.generateActivityOptions(answerOptions)[1]);
     }
 
     public Object[] generateActivityOptions(final List<Activity> answerOptions) {
