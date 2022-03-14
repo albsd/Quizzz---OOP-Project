@@ -2,12 +2,8 @@ package client.scenes;
 
 import client.Main;
 import client.utils.ServerUtils;
-import commons.Game;
-import commons.LobbyMessage;
-import commons.Player;
-import commons.PlayerUpdate;
-
 import com.google.inject.Inject;
+import commons.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,13 +18,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.springframework.web.util.HtmlUtils;
+
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
