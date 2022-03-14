@@ -73,7 +73,6 @@ public class GameMultiplayerController implements Initializable {
     public void initialize(final URL location, final ResourceBundle resources) {
         Font font = Font.loadFont(getClass().getResourceAsStream(
                 "/fonts/Righteous-Regular.ttf"), 24);
-
         option1.setFont(font);
         option2.setFont(font);
         option3.setFont(font);
@@ -115,10 +114,7 @@ public class GameMultiplayerController implements Initializable {
         currentGame.start();
         questionNumber.setText("#1");
         question.setText(currentGame.getCurrentQuestion().getPrompt());
-        currentGame.startTimer(()->{
-            //calback
-            setNextQuestion();
-        });
+        currentGame.startTimer(this::setNextQuestion);
     }
 
     @FXML
@@ -182,9 +178,7 @@ public class GameMultiplayerController implements Initializable {
         currentGame.nextQuestion(); //increments question by one
         question.setText(currentGame.getCurrentQuestion().getPrompt());
         questionNumber.setText( "#" +  1 + currentGame.getQuestionNumber());
-        currentGame.startTimer(()->{
-            setNextQuestion();
-        });
+        currentGame.startTimer(this::setNextQuestion);
     }
 
     public void openPopup(final ActionEvent e) throws IOException {

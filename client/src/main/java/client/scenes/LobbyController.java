@@ -5,7 +5,6 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Game;
 import commons.LobbyMessage;
-import commons.Game;
 import commons.Player;
 import commons.PlayerUpdate;
 import javafx.application.Platform;

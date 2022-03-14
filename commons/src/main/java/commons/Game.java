@@ -68,10 +68,6 @@ public class Game {
         return this.gameState;
     }
 
-    public QuestionTimer getTimer() {
-        return timer;
-    }
-
     @JsonIgnore
     //Todo: invoke this method when the client-timer is 0 in a set interval
     public void startTimer(Runnable callback) {
@@ -79,10 +75,6 @@ public class Game {
             timer.reset();
         }
         timer.startGameTimer(callback);
-    }
-
-    public Question[] getQuestions() {
-        return this.questions;
     }
 
     public Question getCurrentQuestion() {

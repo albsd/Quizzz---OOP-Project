@@ -3,7 +3,6 @@ package commons;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 
 public class QuestionTimer {
     private final double maxTime = 20000;
@@ -133,7 +132,7 @@ public class QuestionTimer {
                     try {
                         callback.run();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                    e.printStackTrace();
                     }
                     stopGameTimer();
                     cancel();
@@ -141,6 +140,5 @@ public class QuestionTimer {
             }
         };
     }
-
 
 }
