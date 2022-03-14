@@ -3,7 +3,6 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class ScoreMessage extends Message<Integer> {

@@ -106,7 +106,7 @@ public class GameRepository {
         Game game = findById(sm.getId());
         Player player = game.getPlayerByNick(sm.getNick());
         int score;
-        if (sm.getType().equals("multiple")){
+        if (sm.getType().equals("multiple")) {
             score = calculateMulChoicePoints(sm.getContent());
         } else {
             score = calculateOpenPoints(sm.getAnswer(), sm.getOption(), sm.getContent());
