@@ -138,7 +138,7 @@ public class GameMultiplayerController implements Initializable {
         calculateOpenPoints(correctAnswer, option);
     }
 
-    private void calculateMulChoicePoints(){
+    private void calculateMulChoicePoints() {
         int base = 50;
         int bonusScore = (me.getTime() / 1000) * 2;
         me.setScore(base + bonusScore);
@@ -158,14 +158,15 @@ public class GameMultiplayerController implements Initializable {
         else base = 0;
         me.setScore(base + bonusScore);
     }
-
+    //Still have to send score to server
+    //Send it after every question
     //request for leaderboard every 5 questions
     public void getLeaderboard(ActionEvent e) {
         int questionNum = Integer.parseInt(questionNumber.getText());
         if (questionNum % 5 == 0) {
             var root = Main.FXML.load(
                     LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
-            root.getKey().loadPlayers(leaderboard);
+            // root.getKey().loadPlayers(leaderboard);
             stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             scene = new Scene(root.getValue());
         }

@@ -3,10 +3,7 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Game;
-import commons.LobbyMessage;
-import commons.Player;
-import commons.PlayerUpdate;
+import commons.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -59,6 +56,8 @@ public class LobbyController implements Initializable {
     private final DateTimeFormatter timeFormat;
 
     private Game lobby;
+
+    private List<Question> questions;
 
     @Inject
     public LobbyController(final ServerUtils server) {
@@ -176,7 +175,7 @@ public class LobbyController implements Initializable {
         var root = Main.FXML.load(GameMultiplayerController.class, "client", "scenes", "GameMultiplayer.fxml");
         var ctrl = root.getKey();
         ctrl.setMe(me);
-        ctrl.setGame(lobby);
+        ctrl.setQuestions(questions);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
