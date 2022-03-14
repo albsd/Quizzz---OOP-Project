@@ -65,6 +65,7 @@ public class LobbyController implements Initializable {
         this.server = server;
         this.players = new ArrayList<>();
         this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
+        this.lobby = server.getGame();
         Consumer<PlayerUpdate> playerUpdateConsumer = update -> {
             System.out.println("PlayerUpdate received");
             if (update.getContent() == PlayerUpdate.Type.join) {
@@ -91,10 +92,6 @@ public class LobbyController implements Initializable {
             });
         };
         server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, messageConsumer);
-
-        //request for this lobby game object to set in gamemulticontroller
-        server.send("/app/game", null);
-        this.lobby = server.getGame();
     }
 
     @Override

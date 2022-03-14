@@ -14,6 +14,8 @@ import java.util.Optional;
 
 public class LeaderboardController {
 
+
+
     @FXML
     protected void onConfirmButtonClick(final ActionEvent e) {
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
