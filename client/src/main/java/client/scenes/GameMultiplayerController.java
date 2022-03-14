@@ -130,24 +130,24 @@ public class GameMultiplayerController implements Initializable {
 
     //this is for multiple choice. Also sets player's time
     public void checkMulChoiceAnswer(final ActionEvent e) {
-        me.setTime(progressBar.getClientTime());
         int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
         String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
         if (option == correctAnswer) {
             System.out.println("Correct answer!");
-            sendScores(me.getNick(), me.getTime(), "multiple", correctAnswer, option, currentGame.getId());
+            sendScores(me.getNick(), progressBar.getClientTime(), "multiple",
+                    correctAnswer, option, currentGame.getId());
         } else {
             System.out.println("Wrong answer. No points");
         }
     }
     //this is for open questions
     public void checkOpenAnswer(final ActionEvent e) {
-        me.setTime(progressBar.getClientTime());
         int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
         String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
-        sendScores(me.getNick(), me.getTime(), "open", correctAnswer, option, currentGame.getId());
+        sendScores(me.getNick(), progressBar.getClientTime(),
+                "open", correctAnswer, option, currentGame.getId());
     }
 
     public void setMe(final Player me) {
