@@ -67,8 +67,8 @@ public class GameController {
      * @return The current active game which accepts new players
      */
     @GetMapping("/current")
-    public Game getCurrentGame() {
-        return gameService.getCurrentGame();
+    public ResponseEntity<Game> getCurrentGame() {
+        return ResponseEntity.ok(gameService.getCurrentGame());
     }
 
     /**

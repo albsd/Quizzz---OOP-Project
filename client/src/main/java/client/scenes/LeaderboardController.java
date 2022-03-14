@@ -12,8 +12,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
 import java.util.Optional;
-import java.util.UUID;
 
 public class LeaderboardController {
     private int questionNumber = 0;
@@ -61,5 +61,6 @@ public class LeaderboardController {
 
     public void displayLeaderboard(final String id) {
         Leaderboard leaderboard = server.getLeaderboard(id);
+        System.out.println(Arrays.toString(leaderboard.getRanking().toArray()));
     }
 }

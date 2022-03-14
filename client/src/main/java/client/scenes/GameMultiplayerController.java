@@ -35,6 +35,8 @@ public class GameMultiplayerController implements Initializable {
     @FXML
     private Pane popupMenu;
 
+    private String gameId;
+
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         Font font1 = Font.loadFont(getClass().getResourceAsStream(
@@ -83,10 +85,14 @@ public class GameMultiplayerController implements Initializable {
     public void removePowerup(final ActionEvent e) {
 
     }
+
+    public void setGameId(final String id) {
+        this.gameId = id;
+        System.out.println(gameId);
+    }
     //Just to test i made any option directly jump to next question.
     public void nextQuestion(final ActionEvent e) throws IOException, InterruptedException {
         //need to get gameID from lobbyController (/current endpoint)
-        String FAKEID = "";
         int prevQuNum = Integer.parseInt(questionNumber.getText().replace("#", ""));
         System.out.println(prevQuNum);
         questionNumber.setText("#" + (prevQuNum + 1));
@@ -94,7 +100,7 @@ public class GameMultiplayerController implements Initializable {
             var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
             LeaderboardController leaderboardController = root.getKey();
             leaderboardController.setQuestionNumber(prevQuNum);
-            leaderboardController.displayLeaderboard(FAKEID);
+            leaderboardController.displayLeaderboard(this.gameId);
 
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             Stage stage1 = new Stage();
@@ -104,7 +110,7 @@ public class GameMultiplayerController implements Initializable {
             PauseTransition delay = new PauseTransition(Duration.seconds(3));
             delay.setOnFinished(event -> stage1.close());
             delay.play();
-            
+
         }
     }
 }
