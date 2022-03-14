@@ -107,7 +107,7 @@ public class GameMultiplayerController implements Initializable {
             Scene scene = new Scene(root.getValue());
             stage1.setScene(scene);
             stage1.show();
-            PauseTransition delay = new PauseTransition(Duration.seconds(3));
+            PauseTransition delay = new PauseTransition(Duration.seconds(10));
             delay.setOnFinished(event -> stage1.close());
             delay.play();
 
