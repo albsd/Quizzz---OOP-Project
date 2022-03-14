@@ -15,7 +15,12 @@
  */
 package server.repository;
 
-import commons.*;
+
+import commons.Game;
+import commons.Leaderboard;
+import commons.Player;
+import commons.Question;
+import commons.ScoreMessage;
 import org.springframework.stereotype.Repository;
 import server.FakeDatabase;
 

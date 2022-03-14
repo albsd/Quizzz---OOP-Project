@@ -10,7 +10,7 @@ public class Player {
     private final String nick;
 
     @JsonProperty("time")
-    private int time;
+    private double time;
 
     @JsonProperty("score")
     private int score;
@@ -21,7 +21,7 @@ public class Player {
 
     @JsonCreator
     public Player(final @JsonProperty("nick") String nick,
-            final @JsonProperty("time") int time,
+            final @JsonProperty("time") double time,
             final @JsonProperty("score") int score) {
         this.nick = nick;
         this.time = time;
@@ -32,7 +32,7 @@ public class Player {
         return this.nick;
     }
 
-    public int getTime() {
+    public double getTime() {
         return this.time;
     }
 
@@ -40,7 +40,7 @@ public class Player {
         return this.score;
     }
 
-    public void setTime(final int ms) {
+    public void setTime(final double ms) {
         this.time = ms;
     }
 

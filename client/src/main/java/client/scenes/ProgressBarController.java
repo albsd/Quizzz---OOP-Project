@@ -98,7 +98,7 @@ public class ProgressBarController implements Initializable {
                                                 / questionTimer.getOneSecond())
                         );
 
-                        bar.setProgress(questionTimer.getCurrentTime()
+                        bar.setProgress((double) questionTimer.getCurrentTime()
                                 / questionTimer.getMaxTime()
                         );
                     });
@@ -135,7 +135,7 @@ public class ProgressBarController implements Initializable {
         Platform.runLater(() ->
                 label.setText(String.valueOf(questionTimer.getCurrentTime()
                         / questionTimer.getOneSecond())));
-                bar.setProgress(questionTimer.getCurrentTime()
+                bar.setProgress((double) questionTimer.getCurrentTime()
                         / questionTimer.getMaxTime());
     }
 
@@ -162,4 +162,7 @@ public class ProgressBarController implements Initializable {
         halveButton.setDisable(true);
     }
 
+    public int getClientTime(){
+        return questionTimer.getCurrentTime();
+    }
 }

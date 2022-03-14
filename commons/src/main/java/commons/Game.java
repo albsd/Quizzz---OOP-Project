@@ -12,7 +12,6 @@ enum GameState { waiting, playing }
 
 public class Game {
     private final int questionLimit = 20;
-    private final int questionTime = 20000;
 
     @JsonIgnore
     private QuestionTimer timer;
@@ -70,7 +69,7 @@ public class Game {
 
     @JsonIgnore
     //Todo: invoke this method when the client-timer is 0 in a set interval
-    public void startTimer(Runnable callback) {
+    public void startTimer(final Runnable callback) {
         if (timer.isOver()) {
             timer.reset();
         }
@@ -102,10 +101,6 @@ public class Game {
         return true;
     }
 
-    public int getQuestionTime() {
-        return questionTime;
-    }
-
     public Player getPlayerByNick(final String nick) {
         for (Player p : players) {
             if (p.getNick().equals(nick)) {
@@ -119,33 +114,12 @@ public class Game {
         this.currentQuestion++;
     }
 
-    public int getQuestionNumber(){
+    public int getQuestionNumber() {
         return this.currentQuestion;
     }
 
-    public void start() {
+    public void start(final Runnable callback) {
         this.gameState = GameState.playing;
-        while (currentQuestion < questionLimit) {
-            if (currentQuestion == questionLimit / 2) {
-                // Show intermediary leaderboard
-
-                // Sleep 5 seconds
-                //
-                // Show new question
-
-                // Reset time for all players
-                for (Player p : this.players) {
-                    p.setTime(questionTime);
-                }
-                // Start timer for all players
-
-                // Wait until all timers reach 0
-
-                // Show answers
-
-                // Sleep 5 seconds
-            }
-        }
+        startTimer(callback);
     }
-
 }

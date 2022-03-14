@@ -1,13 +1,14 @@
 package client.scenes;
 
+import client.Main;
 import client.utils.ServerUtils;
+import com.google.inject.Inject;
 import commons.ScoreMessage;
 import commons.Emote;
 import commons.EmoteMessage;
 import commons.Game;
 import commons.Player;
 import javafx.application.Platform;
-import com.google.inject.Inject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,7 +16,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -28,13 +28,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalTime;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
-
-import client.Main;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.util.HtmlUtils;
 
 public class GameMultiplayerController implements Initializable {
 
@@ -61,12 +56,15 @@ public class GameMultiplayerController implements Initializable {
 
     private final ServerUtils server;
 
+    private final ProgressBarController progressBar;
+
     private Player me;
     private Game currentGame;
 
     @Inject
-    public GameMultiplayerController(final ServerUtils server) {
+    public GameMultiplayerController(final ServerUtils server, final ProgressBarController progressBar) {
         this.server = server;
+        this.progressBar = progressBar;
     }
 
     @Override
@@ -111,10 +109,12 @@ public class GameMultiplayerController implements Initializable {
         });
         server.registerForMessages("/topic/game/chat", EmoteMessage.class, emoteConsumer);
 
-        currentGame.start();
         questionNumber.setText("#1");
         question.setText(currentGame.getCurrentQuestion().getPrompt());
-        currentGame.startTimer(this::setNextQuestion);
+        //start client timer
+        progressBar.start();
+        //start game timer and set gamestate to playing
+        currentGame.start(this::setNextQuestion);
     }
 
     @FXML
@@ -129,7 +129,7 @@ public class GameMultiplayerController implements Initializable {
 
     //this is for multiple choice. Also sets player's time
     public void checkMulChoiceAnswer(final ActionEvent e) {
-        me.setTime(currentGame.getQuestionTime());
+        me.setTime(progressBar.getClientTime());
         int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
         String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
@@ -143,7 +143,7 @@ public class GameMultiplayerController implements Initializable {
     }
     //this is for open questions
     public void checkOpenAnswer(final ActionEvent e) {
-        me.setTime(currentGame.getQuestionTime());
+        me.setTime(progressBar.getClientTime());
         int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
         String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
@@ -153,16 +153,23 @@ public class GameMultiplayerController implements Initializable {
 
     private void calculateMulChoicePoints() {
         int base = 50;
-        int bonusScore = (me.getTime() / 1000) * 2;
+        int bonusScore = calculateBonusPoints(me.getTime());
         me.setScore(base + bonusScore);
     }
 
     private void calculateOpenPoints(final int answer, final int option) {
-        int bonusScore = (me.getTime() / 1000) * 2;
+        int bonusScore = calculateBonusPoints(me.getTime());
         int offPercentage = (int) Math.round(((double) Math.abs((option - answer)) / answer) * 100);
         int accuracyPercentage = 100 - offPercentage;
-        int base = (accuracyPercentage % 10) * 10;
+        if (accuracyPercentage < 0) {
+            accuracyPercentage = 0;
+        }
+        int base = (accuracyPercentage / 10) * 10;
         me.setScore(base + bonusScore);
+    }
+
+    private int calculateBonusPoints(final int time) {
+        return (time / 1000) * 2;
     }
 
     public void setMe(final Player me) {
@@ -176,9 +183,12 @@ public class GameMultiplayerController implements Initializable {
     @FXML
     public void setNextQuestion() {
         currentGame.nextQuestion(); //increments question by one
+        questionNumber.setText("#" +  1 + currentGame.getQuestionNumber());
         question.setText(currentGame.getCurrentQuestion().getPrompt());
-        questionNumber.setText( "#" +  1 + currentGame.getQuestionNumber());
-        currentGame.startTimer(this::setNextQuestion);
+        //start client timer
+        progressBar.start();
+        //start game timer
+        currentGame.start(this::setNextQuestion);
     }
 
     public void openPopup(final ActionEvent e) throws IOException {

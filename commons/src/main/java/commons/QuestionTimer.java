@@ -5,10 +5,10 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 public class QuestionTimer {
-    private final double maxTime = 20000;
-    private final double oneSecond = 1000;
+    private final int maxTime = 20000;
+    private final int oneSecond = 1000;
     private final int decrement = 25;    // 25ms
-    private double currentTime = maxTime;
+    private int currentTime = maxTime;
     private boolean started = false;
     private boolean over = false;
     private final UUID id;
@@ -26,7 +26,7 @@ public class QuestionTimer {
         this.currentTask = task;
     }
 
-    public double getCurrentTime() {
+    public int getCurrentTime() {
         return currentTime;
     }
 
@@ -54,7 +54,7 @@ public class QuestionTimer {
         return oneSecond;
     }
 
-    public void setCurrentTime(final double currentTime) {
+    public void setCurrentTime(final int currentTime) {
         this.currentTime = currentTime;
     }
 
@@ -82,7 +82,7 @@ public class QuestionTimer {
         return over;
     }
 
-    public void startGameTimer(Runnable callback) {
+    public void startGameTimer(final Runnable callback) {
         reset();
         System.out.println("Game timer started.");
         started = true;
@@ -120,7 +120,7 @@ public class QuestionTimer {
         currentTime = maxTime;
     }
 
-    private TimerTask gameTimerTask(Runnable callback) {
+    private TimerTask gameTimerTask(final Runnable callback) {
         return new TimerTask() {
             @Override
             public void run() {

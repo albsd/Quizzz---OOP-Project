@@ -1,24 +1,17 @@
 package client.scenes;
 
 import client.Main;
-import commons.Leaderboard;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
-import java.util.List;
 import java.util.Optional;
 
 public class LeaderboardController {
-
-    private ListView playerRank;
-
-    private Leaderboard leaderboard;
 
     @FXML
     public void switchToLeaderboard(final ActionEvent e) {
