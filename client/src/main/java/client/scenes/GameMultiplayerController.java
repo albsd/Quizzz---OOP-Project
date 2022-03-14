@@ -1,5 +1,6 @@
 package client.scenes;
 
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,8 +17,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 import client.Main;
+import javafx.util.Duration;
 
 public class GameMultiplayerController implements Initializable {
 
@@ -80,23 +83,28 @@ public class GameMultiplayerController implements Initializable {
     public void removePowerup(final ActionEvent e) {
 
     }
-    //Just to test i made any option directly jump to next question. This must be removed in the future
-    public void nextQuestion(final ActionEvent e) throws IOException {
+    //Just to test i made any option directly jump to next question.
+    public void nextQuestion(final ActionEvent e) throws IOException, InterruptedException {
+        //need to get gameID from lobbyController (/current endpoint)
+        String FAKEID = "";
         int prevQuNum = Integer.parseInt(questionNumber.getText().replace("#", ""));
         System.out.println(prevQuNum);
         questionNumber.setText("#" + (prevQuNum + 1));
         if ((prevQuNum) % 10 == 0) {
-            //var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Leaderboard.fxml"));
-            Parent root = loader.load();
-            LeaderboardController leaderboardController = loader.getController();
+            var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
+            LeaderboardController leaderboardController = root.getKey();
             leaderboardController.setQuestionNumber(prevQuNum);
-
+            leaderboardController.displayLeaderboard(FAKEID);
 
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            Stage stage1 = new Stage();
+            Scene scene = new Scene(root.getValue());
+            stage1.setScene(scene);
+            stage1.show();
+            PauseTransition delay = new PauseTransition(Duration.seconds(3));
+            delay.setOnFinished(event -> stage1.close());
+            delay.play();
+            
         }
     }
 }

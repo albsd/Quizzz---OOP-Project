@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.Main;
+import client.utils.ServerUtils;
+import commons.Leaderboard;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -11,9 +13,11 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class LeaderboardController {
     private int questionNumber = 0;
+    private ServerUtils server = new ServerUtils();
 
     @FXML
     protected void onConfirmButtonClick(final ActionEvent e) {
@@ -53,5 +57,9 @@ public class LeaderboardController {
     public void setQuestionNumber(final int questionNumber) {
         this.questionNumber = questionNumber;
         System.out.println(questionNumber);
+    }
+
+    public void displayLeaderboard(final String id) {
+        Leaderboard leaderboard = server.getLeaderboard(id);
     }
 }
