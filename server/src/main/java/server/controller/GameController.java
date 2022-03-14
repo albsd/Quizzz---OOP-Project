@@ -15,12 +15,13 @@
  */
 package server.controller;
 
-import commons.LobbyMessage;
-import commons.PlayerUpdate;
-import commons.Player;
 import commons.Game;
-import commons.Leaderboard;
+import commons.Player;
+import commons.PlayerUpdate;
 import commons.Question;
+import commons.Leaderboard;
+import commons.EmoteMessage;
+import commons.LobbyMessage;
 import commons.GameUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -188,6 +189,12 @@ public class GameController {
     @MessageMapping("/lobby/chat") // /app/lobby/chat
     @SendTo("/topic/lobby/chat")
     private LobbyMessage sendLobbyMessage(final LobbyMessage msg) {
+        return msg;
+    }
+
+    @MessageMapping("/game/chat") // /app/game/chat
+    @SendTo("/topic/game/chat")
+    private EmoteMessage sendEmoteMessage(final EmoteMessage msg) {
         return msg;
     }
 

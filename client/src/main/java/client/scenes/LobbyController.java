@@ -92,10 +92,8 @@ public class LobbyController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        this.players = server.getPlayers().stream().map(Player::getNick).toList();
-        if (players == null) {
-            players = new ArrayList<>();
-        }
+        // We DON'T use the shorthand .toList() here, because that returns an immutable list and causes player updates to get ignored silently
+        this.players = server.getPlayers().stream().map(Player::getNick).collect(Collectors.toList());
         updatePlayerList();
     }
 
@@ -171,6 +169,7 @@ public class LobbyController implements Initializable {
     public void start(final ActionEvent event) {
         // server.startGame();
         var root = Main.FXML.load(GameMultiplayerController.class, "client", "scenes", "GameMultiplayer.fxml");
+        root.getKey().setMe(me);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root.getValue());

@@ -99,7 +99,11 @@ public class ServerUtils {
             @Override
             public void handleFrame(final StompHeaders headers,
                     final Object payload) {
-                consumer.accept((T) payload);
+                try {
+                    consumer.accept((T) payload);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
