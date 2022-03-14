@@ -213,15 +213,11 @@ public class GameController {
     }
 
     /**
-     * Starts the current game.
-     * Do not allow starting a game with less than 2 players.
-     *
-     * @return The game which has been started
+     * Updates the players score on server-side every question
+     * @param scoreMessage contains player name, score, and game id
      */
     @PostMapping("/game/scores")
     public void updatePlayerPoints(final ScoreMessage scoreMessage) {
         gameService.updatePlayerScore(scoreMessage);
     }
-
-
 }

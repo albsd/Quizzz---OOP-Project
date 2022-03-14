@@ -2,18 +2,15 @@ package client.scenes;
 
 import client.Main;
 import commons.Leaderboard;
-import commons.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
-import java.util.List;
 import java.util.Optional;
 
 public class LeaderboardController {
@@ -21,17 +18,6 @@ public class LeaderboardController {
     private ListView playerRank;
 
     private Leaderboard leaderboard;
-
-    public void loadPlayers(Leaderboard leaderboard){
-        this.leaderboard = leaderboard;
-        List<Player> players = leaderboard.getRanking();
-        Player user;
-        for(int i = 0;i<players.size();i++){
-            user = players.get(i);
-            String rank = i+1 + ". " + user.getNick() + " - " + user.getScore();
-            playerRank.getItems().add(rank);
-        }
-    }
 
     @FXML
     public void switchToLeaderboard(final ActionEvent e) {

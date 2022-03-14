@@ -110,7 +110,7 @@ public class Game {
         return true;
     }
 
-    public int getQuestionTime(){
+    public int getQuestionTime() {
         return questionTime;
     }
 

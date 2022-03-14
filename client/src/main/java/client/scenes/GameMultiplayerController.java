@@ -1,7 +1,11 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
-import commons.*;
+import commons.ScoreMessage;
+import commons.Emote;
+import commons.EmoteMessage;
+import commons.Game;
+import commons.Player;
 import javafx.application.Platform;
 import com.google.inject.Inject;
 import javafx.event.ActionEvent;
@@ -111,23 +115,22 @@ public class GameMultiplayerController implements Initializable {
     public void returnMenu(final ActionEvent e) {
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
 
-        stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+        stage = (Stage) ((Node) e.getSource()) .getScene().getWindow();
         scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
     }
 
-    //this is for multiple choice
-    //once you click set player's timer
+    //this is for multiple choice. Also sets player's time
     public void checkMulChoiceAnswer(final ActionEvent e) {
         me.setTime(currentGame.getQuestionTime());
         int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
-        String optionStr = ((Button)e.getSource()).getText();
+        String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
         if (option == correctAnswer) {
             calculateMulChoicePoints();
             System.out.println("Correct answer!");
-        }else {
+        } else {
             System.out.println("Wrong answer. No points");
         }
         sendScores();
@@ -136,7 +139,7 @@ public class GameMultiplayerController implements Initializable {
     public void checkOpenAnswer(final ActionEvent e) {
         me.setTime(currentGame.getQuestionTime());
         int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
-        String optionStr = ((Button)e.getSource()).getText();
+        String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
         calculateOpenPoints(correctAnswer, option);
         sendScores();
@@ -148,31 +151,37 @@ public class GameMultiplayerController implements Initializable {
         me.setScore(base + bonusScore);
     }
 
-    private void calculateOpenPoints(int answer, int option) {
+    private void calculateOpenPoints(final int answer, final int option) {
         int bonusScore = (me.getTime() / 1000) * 2;
         int base;
-        int offPercentage = (int)Math.round(((double)Math.abs((option - answer)) / answer) * 100);
+        int offPercentage = (int) Math.round(((double) Math.abs((option - answer)) / answer) * 100);
         int accuracyPercentage = 100 - offPercentage;
-        if(accuracyPercentage==100) base = 100;
-        else if(90<=accuracyPercentage && accuracyPercentage< 99) base=90;
-        else if(80<=accuracyPercentage && accuracyPercentage< 89) base=80;
-        else if(70<=accuracyPercentage && accuracyPercentage< 79) base=70;
-        else if(60<=accuracyPercentage && accuracyPercentage< 69) base=60;
-        else if(50<=accuracyPercentage && accuracyPercentage< 59) base=50;
-        else base = 0;
+        if (accuracyPercentage == 100) {
+            base = 100;
+        } else if (90 <= accuracyPercentage && accuracyPercentage < 99) {
+            base = 90;
+        } else if (80 <= accuracyPercentage && accuracyPercentage < 89) {
+            base = 80;
+        } else if (70 <= accuracyPercentage && accuracyPercentage < 79) {
+            base = 70;
+        } else if (60 <= accuracyPercentage && accuracyPercentage < 69) {
+            base = 60;
+        } else if (50 <= accuracyPercentage && accuracyPercentage < 59) {
+            base = 50;
+        } else base = 0;
         me.setScore(base + bonusScore);
     }
 
-    public void setMe(Player me){
+    public void setMe(final Player me) {
         this.me = me;
     }
 
-    public void setGame(Game game) {
+    public void setGame(final Game game) {
         this.currentGame = game;
     }
 
     @FXML
-    public void getNextQuestion(){
+    public void getNextQuestion() {
         question.setText(currentGame.getCurrentQuestion().getPrompt());
     }
 

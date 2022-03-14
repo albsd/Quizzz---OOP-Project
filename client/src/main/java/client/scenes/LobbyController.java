@@ -3,7 +3,10 @@ package client.scenes;
 import client.Main;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.*;
+import commons.LobbyMessage;
+import commons.Game;
+import commons.Player;
+import commons.PlayerUpdate;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +25,10 @@ import org.springframework.web.util.HtmlUtils;
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -178,5 +184,6 @@ public class LobbyController implements Initializable {
         Scene scene = new Scene(root.getValue());
         stage.setScene(scene);
         stage.show();
+        stage.close();
     }
 }

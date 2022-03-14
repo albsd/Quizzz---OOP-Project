@@ -97,7 +97,7 @@ public class GameRepository {
         return seed;
     }
 
-    public void updatePlayerScore(final ScoreMessage scoreMessage){
+    public void updatePlayerScore(final ScoreMessage scoreMessage) {
         Game game = findById(scoreMessage.getId());
         Player player = game.getPlayerByNick(scoreMessage.getNick());
         player.setScore(scoreMessage.getContent());

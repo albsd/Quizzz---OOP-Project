@@ -69,7 +69,7 @@ public class GameService {
         return repo.generateSeed(id);
     }
 
-    public void updatePlayerScore(final ScoreMessage scoreMessage){
+    public void updatePlayerScore(final ScoreMessage scoreMessage) {
         repo.updatePlayerScore(scoreMessage);
     }
 }

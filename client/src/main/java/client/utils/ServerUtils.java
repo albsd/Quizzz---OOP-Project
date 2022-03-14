@@ -151,7 +151,7 @@ public class ServerUtils {
     }
 
     /**
-     * Calls the REST endpoint to get current lobby(game)
+     * Calls the REST endpoint to get current lobby(game).
      *
      * @return Current game object in lobby
      */
