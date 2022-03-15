@@ -49,15 +49,14 @@ public class Activity {
         //TODO:We need to decide what image (if any) to display on this type of question
         byte[] imgBytes = new byte[1];
         String prompt = "Which of the following activities take the most energy";
-        String[] options  = (String[]) this.sortActivityOptions(answerOptions)[0];
+        String[] options = this.getMultipleActivitiesOptions(answerOptions);
 
         return new MultipleChoiceQuestion(prompt, imgBytes, options,
-                (int) this.sortActivityOptions(answerOptions)[1]);
+                 this.getMultipleActivitiesAnswerIndex(answerOptions));
     }
 
-    public Object[] sortActivityOptions(final List<Activity> answerOptions) {
-
-        String[] options = answerOptions.stream().map(Activity::getTitle).toArray(String[]::new);
+    public int getMultipleActivitiesAnswerIndex(final List<Activity> answerOptions) {
+        
         long max = 0;
         int maxIndex = 0;
         for (int i = 0; i < answerOptions.size(); i++) {
@@ -67,10 +66,21 @@ public class Activity {
                 maxIndex = i;
             }
         }
-        Object[] ret = new Object[2];
-        ret[0] = options;
-        ret[1] = maxIndex;
-        return ret;
+        return maxIndex;
+
+    }
+
+    public String[] getMultipleActivitiesOptions(final List<Activity> answerOptions) {
+
+        String[] options = answerOptions.stream().map(Activity::getTitle).toArray(String[]::new);
+        long max = 0;
+        for (int i = 0; i < answerOptions.size(); i++) {
+            long energy = answerOptions.get(i).getEnergyConsumption();
+            if (energy > max) {
+                max = energy;
+            }
+        }
+        return options;
 
     }
 
