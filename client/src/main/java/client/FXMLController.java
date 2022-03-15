@@ -92,7 +92,6 @@ public class FXMLController {
         stage1.show();
         PauseTransition delay = new PauseTransition(Duration.seconds(5));
         delay.setOnFinished(event -> stage1.close());
-        delay.play();
         return root;
     }
 }
