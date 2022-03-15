@@ -37,7 +37,7 @@ public class LeaderboardController {
     private FXMLController fxml;
 
     @Inject
-    public LeaderboardController(final FXMLController fxml, ServerUtils server) {
+    public LeaderboardController(final FXMLController fxml, final ServerUtils server) {
         this.fxml = fxml;
         this.server = server;
     }
