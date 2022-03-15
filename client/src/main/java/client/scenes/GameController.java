@@ -160,7 +160,7 @@ public class GameController implements Initializable {
             option = correctAnswer * -200;
         }
         sendScores(me.getNick(), progressBar.getClientTime(),
-                "open", (int) correctAnswer, (int) option, currentGame.getId());
+                "open", correctAnswer, option, currentGame.getId());
     }
 
     public void setMe(final Player me) {
@@ -231,7 +231,7 @@ public class GameController implements Initializable {
     }
 
     private void sendScores(final String nick, final int time, final String type,
-                            final int answer, final int option, final UUID id) {
+                            final long answer, final long option, final UUID id) {
         server.send("/app/game/scores",  new ScoreMessage(nick, time, type, answer, option, id));
     }
 }
