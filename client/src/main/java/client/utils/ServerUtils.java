@@ -171,6 +171,15 @@ public class ServerUtils {
         return player;
     }
 
+    public Game startGame() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/start"))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        return parseResponseToObject(request, new TypeReference<Game>() { });
+    }
+
     /**
      * Calls the REST endpoint to get current lobby(game).
      *

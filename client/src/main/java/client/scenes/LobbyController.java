@@ -170,10 +170,11 @@ public class LobbyController implements Initializable {
 
     @FXML
     public void start(final ActionEvent event) {
-        // server.startGame();
+        Game game = server.startGame();
         var root = fxml.showGame();
         var ctrl = root.getKey();
         ctrl.setMe(me);
-        ctrl.setGame(lobby);
+        System.out.println("lobbyGame = " + game);
+        ctrl.setGame(game);
     }
 }
