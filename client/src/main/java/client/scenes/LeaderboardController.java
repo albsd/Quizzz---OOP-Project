@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.Main;
 import client.utils.ServerUtils;
+import com.google.inject.Inject;
 import commons.Leaderboard;
 import commons.Player;
 import javafx.collections.FXCollections;
@@ -23,9 +24,15 @@ import java.util.Optional;
 
 public class LeaderboardController {
     private int questionNumber = 0;
-    private ServerUtils server = new ServerUtils();
+    private final ServerUtils server;
     @FXML
     private ListView playerRanking;
+
+    @Inject
+    public LeaderboardController(final ServerUtils server) {
+        this.server = server;
+    }
+
     @FXML
     protected void onConfirmButtonClick(final ActionEvent e) {
         var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
