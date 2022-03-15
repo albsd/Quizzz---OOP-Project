@@ -133,7 +133,7 @@ public class ServerUtils {
 
         Player player = parseResponseToObject(request, new TypeReference<Player>() { });
         if (player != null) {
-            send("/app/lobby/player", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.join));
+            send("/app/update/player", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.join));
         }
         return player;
     }
@@ -152,7 +152,7 @@ public class ServerUtils {
 
         Player player = parseResponseToObject(request, new TypeReference<Player>() { });
         if (player != null) {
-            send("/app/lobby/player", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
+            send("/app/update/player", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
         }
         return player;
     }
@@ -186,8 +186,7 @@ public class ServerUtils {
 
     public List<Question> getQuestions(final String id) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/"
-                        + id + "/question"))
+                .uri(URI.create(kGameUrl + "/" + id + "/question"))
                 .header("accept", "application/json")
                 .GET()
                 .build();

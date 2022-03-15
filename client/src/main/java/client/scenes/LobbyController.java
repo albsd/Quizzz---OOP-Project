@@ -77,7 +77,7 @@ public class LobbyController implements Initializable {
 
         updatePlayerList();
 
-        server.registerForMessages("/topic/lobby/player", PlayerUpdate.class, update -> {
+        server.registerForMessages("/topic/update/player", PlayerUpdate.class, update -> {
             if (update.getContent() == PlayerUpdate.Type.join) {
                 players.add(update.getNick());
             } else {

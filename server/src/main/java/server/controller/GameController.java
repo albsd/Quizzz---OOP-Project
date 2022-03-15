@@ -170,15 +170,15 @@ public class GameController {
     }
 
     /**
-     * A Websocket endpoint for sending updates about the lobby player' status.
-     * Namely, updates the active players in the lobby for all clients.
+     * A Websocket endpoint for sending updates about the game's player' status.
+     * Namely, updates the active players in the game for all clients.
      *
      * @param update The object containing a player who has joined/left
      * 
      * @return The PlayerUpdate object
      */
-    @MessageMapping("/lobby/player") // /app/lobby/player
-    @SendTo("/topic/lobby/player")
+    @MessageMapping("/update/player") // /app/update/player
+    @SendTo("/topic/update/player")
     private PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
         return update;
     }
