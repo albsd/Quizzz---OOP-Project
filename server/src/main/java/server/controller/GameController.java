@@ -16,23 +16,26 @@
 package server.controller;
 
 import commons.Game;
+import commons.EmoteMessage;
+import commons.GameUpdate;
 import commons.Leaderboard;
-import commons.Message;
 import commons.Player;
+import commons.PlayerUpdate;
+import commons.LobbyMessage;
+import commons.ScoreMessage;
 import commons.Question;
-import commons.JoinMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import server.service.GameService;
@@ -126,6 +129,7 @@ public class GameController {
         if (!success) {
             return ResponseEntity.status(errorCode).build();
         }
+
         return ResponseEntity.ok(p);
     }
 
@@ -156,6 +160,7 @@ public class GameController {
         if (!success) {
             return ResponseEntity.status(errorCode).build();
         }
+
         return ResponseEntity.ok(p);
     }
 
@@ -177,23 +182,47 @@ public class GameController {
         System.out.println(event.getSessionId());
     }
 
-    /*
-     * A Websocket endpoint for sending updates about the current lobby status.
+    /**
+     * A Websocket endpoint for sending updates about the lobby player' status.
      * Namely, updates the active players in the lobby for all clients.
      *
-     * @param player The player object who has joined the most recently
+     * @param update The object containing a player who has joined/left
      * 
-     * @return The Player object created from the nick
+     * @return The PlayerUpdate object
      */
-    @MessageMapping("/join") // /app/join
-    @SendTo("/topic/join")
-    public JoinMessage joinWebsocket(final JoinMessage joinMessage) {
-        return joinMessage;
+    @MessageMapping("/playerUpdate") // /app/player_update
+    @SendTo("/topic/playerUpdate")
+    private PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
+        return update;
     }
 
+    /**
+     * A Websocket endpoint for sending chat messages in the lobby.
+     *
+     * @param message The message to be sent to all the players in the lobby
+     * 
+     * @return The LobbyMessage object
+     */
     @MessageMapping("/lobby/chat") // /app/lobby/chat
     @SendTo("/topic/lobby/chat")
-    private Message sendMessage(final Message msg) {
+    private LobbyMessage sendLobbyMessage(final LobbyMessage message) {
+        return message;
+    }
+
+    /**
+     * A Websocket endpoint for halving the time for other users.
+     *
+     * @return The GameUpdate.halveTimer enum property
+     */
+    @MessageMapping("/halve")
+    @SendTo("/topic/game/update")
+    public GameUpdate halveTimeWebsocket() {
+        return GameUpdate.halveTimer;
+    }
+
+    @MessageMapping("/game/chat") // /app/game/chat
+    @SendTo("/topic/game/chat")
+    private EmoteMessage sendEmoteMessage(final EmoteMessage msg) {
         return msg;
     }
 
@@ -201,7 +230,7 @@ public class GameController {
      * Starts the current game.
      * Do not allow starting a game with less than 2 players.
      *
-     * @return The game which has been started
+     * @return The new game that is an active lobby now
      */
     @PostMapping("/start")
     public ResponseEntity<Game> startCurrentGame() {
@@ -210,5 +239,14 @@ public class GameController {
             return ResponseEntity.status(405).build(); // NOT_ALLOWED
         }
         return ResponseEntity.ok(gameService.newGame());
+    }
+
+    /**
+     * Updates the players score on server-side every question.
+     * @param scoreMessage contains player name, score, and game id
+     */
+    @PostMapping("/game/scores")
+    public void updatePlayerPoints(final ScoreMessage scoreMessage) {
+        gameService.updatePlayerScore(scoreMessage);
     }
 }

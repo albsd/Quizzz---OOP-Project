@@ -9,9 +9,6 @@ public class Player {
     @JsonProperty("nick")
     private final String nick;
 
-    @JsonProperty("time")
-    private int time;
-
     @JsonProperty("score")
     private int score;
 
@@ -21,10 +18,8 @@ public class Player {
 
     @JsonCreator
     public Player(final @JsonProperty("nick") String nick,
-            final @JsonProperty("time") int time,
             final @JsonProperty("score") int score) {
         this.nick = nick;
-        this.time = time;
         this.score = score;
     }
 
@@ -32,16 +27,8 @@ public class Player {
         return this.nick;
     }
 
-    public int getTime() {
-        return this.time;
-    }
-
     public int getScore() {
         return this.score;
-    }
-
-    public void setTime(final int ms) {
-        this.time = ms;
     }
 
     public void setScore(final int amount) {
@@ -54,7 +41,7 @@ public class Player {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nick, time, score);
+        return Objects.hash(nick, score);
     }
 
     @Override
@@ -63,8 +50,7 @@ public class Player {
             return false;
         } else if (other instanceof Player that) {
             return nick.equals(that.nick)
-                    && score == that.score
-                    && time == that.time;
+                    && score == that.score;
         }
         return false;
     }

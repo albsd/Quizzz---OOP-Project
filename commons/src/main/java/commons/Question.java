@@ -30,9 +30,9 @@ public class Question {
 
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
-            final @JsonProperty("imagePath") Path imagePath,
-            final @JsonProperty("options") String[] options,
-            final @JsonProperty("answer") int answer) {
+                    final @JsonProperty("imagePath") Path imagePath,
+                    final @JsonProperty("options") String[] options,
+                    final @JsonProperty("answer") int answer) {
         byte[] bytes;
         try {
             bytes = readAllBytes(imagePath);
@@ -72,7 +72,7 @@ public class Question {
     public int getAnswer() {
         return this.answer;
     }
-
+    
     @Override
     public boolean equals(final Object other) {
         if (other == null) {
