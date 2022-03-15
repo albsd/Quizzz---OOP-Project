@@ -37,7 +37,7 @@ public class Game {
         this.questions = new Question[questionLimit];
         // Generating questions is not implemented yet:
         // this.questions = QuestionService.generateQuestions()
-        this.currentQuestion = 9;
+        this.currentQuestion = 0;
         this.gameState = GameState.waiting;
     }
 
