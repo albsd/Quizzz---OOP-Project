@@ -1,13 +1,18 @@
 package commons;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class LobbyMessage extends Message<String> {
     @JsonProperty("timestamp")
     private final String timestamp;
+
+    @JsonIgnore
+    private final DateTimeFormatter timeFormat;
 
     @JsonCreator
     public LobbyMessage(final @JsonProperty("nick") String nick,
@@ -15,10 +20,16 @@ public class LobbyMessage extends Message<String> {
                        final @JsonProperty("content") String content) {
         super(nick, content);
         this.timestamp = timestamp;
+        this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
     }
 
     public String getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return  super.getNick() + " (" + timestamp + ") - " + super.getContent() + "\n";
     }
 
     @Override

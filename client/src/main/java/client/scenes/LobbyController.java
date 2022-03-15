@@ -28,8 +28,6 @@ import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 
-import org.springframework.web.util.HtmlUtils;
-
 public class LobbyController implements Initializable {
 
     @FXML
@@ -67,6 +65,18 @@ public class LobbyController implements Initializable {
         this.players = new ArrayList<>();
         this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
 
+    }
+
+    @Override
+    public void initialize(final URL location, final ResourceBundle resources) {
+        // We DON'T use the shorthand .toList() here, because that returns an immutable
+        // list and causes player updates to get ignored silently
+        this.players = server.getPlayers().stream()
+                .map(Player::getNick)
+                .collect(Collectors.toList());
+
+        updatePlayerList();
+
         server.registerForMessages("/topic/lobby/player", PlayerUpdate.class, update -> {
             if (update.getContent() == PlayerUpdate.Type.join) {
                 players.add(update.getNick());
@@ -78,42 +88,29 @@ public class LobbyController implements Initializable {
 
         server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, message -> {
             Platform.runLater(() -> {
-                String nick = message.getNick();
-                    String time = message.getTimestamp();
-                    String content = message.getContent();
-                    String chatLogs = chatText.getText() + nick + " (" + time + ") - " + content + "\n";
-                    chatText.setText(chatLogs);
+                String chatBox = chatText.getText() + message.toString();
+                chatText.setText(chatBox);
             });
         });
 
         server.registerForMessages("/topic/lobby/start", Game.class, game -> {
             Platform.runLater(() -> {
-                
+                var root = fxml.showGame();
+                var ctrl = root.getKey();
+                ctrl.setGame(me, game);
             });
         });
-
-    }
-
-    @Override
-    public void initialize(final URL location, final ResourceBundle resources) {
-        // We DON'T use the shorthand .toList() here, because that returns an immutable
-        // list and causes player updates to get ignored silently
-        this.players = server.getPlayers()
-                        .stream()
-                        .map(Player::getNick)
-                        .collect(Collectors.toList());
-        updatePlayerList();
     }
 
     @FXML
     public void onEnter(final ActionEvent e) {
         String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         chatInput.setText("");
+
         final LocalTime time = LocalTime.now();
-        // escapes special characters in input
-        server.send("/app/lobby/chat",
-                //remove nanosecond when displaying time and convert to string
-                new LobbyMessage(me.getNick(), time.format(timeFormat), HtmlUtils.htmlEscape(content)));
+        final LobbyMessage message = new LobbyMessage(me.getNick(), time.format(timeFormat), content);
+        
+        server.send("/app/lobby/chat", message);
         chatArea.setVvalue(1.0);
     }
 
@@ -180,8 +177,6 @@ public class LobbyController implements Initializable {
             return;
         }
 
-        var root = fxml.showGame();
-        var ctrl = root.getKey();
-        ctrl.setGame(me, game);
+        fxml.showGame();
     }
 }
