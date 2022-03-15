@@ -3,7 +3,12 @@ package client.scenes;
 //import javafx.application.Platform;
 
 import client.utils.ServerUtils;
+import client.utils.WebSocketSubscription;
+
 import com.google.inject.Inject;
+
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
+
 import commons.GameUpdate;
 import commons.QuestionTimer;
 import javafx.application.Platform;
@@ -18,9 +23,8 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.ResourceBundle;
 import java.util.TimerTask;
-import java.util.function.Consumer;
 
-public class ProgressBarController implements Initializable {
+public class ProgressBarController implements Initializable, WebSocketSubscription {
 
     @FXML
     private ProgressBar bar = new ProgressBar(1);
@@ -42,33 +46,40 @@ public class ProgressBarController implements Initializable {
 
     private ServerUtils server;
 
+    private String gameId;
+
     private QuestionTimer questionTimer;
 
     @Inject
     public ProgressBarController(final ServerUtils server) {
         this.questionTimer = new QuestionTimer();
         this.server = server;
-        // TODO: get the game id
-        server.registerForMessages("/topic/game/{id}/update", GameUpdate.class, updateConsumer);
     }
-
-    private Consumer<GameUpdate> updateConsumer = update -> {
-        System.out.println("Halve message received!");
-        Platform.runLater(() -> {
-            switch (update) {
-                case halveTimer -> questionTimer.halve();
-                case stopTimer -> reset();
-                case startTimer -> start();
-
-                default -> {
-                }
-            }
-        });
-    };
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         start();
+    }
+
+    @Override
+    public Subscription[] registerForMessages() {
+        Subscription[] subscriptions = new Subscription[1];
+        subscriptions[0] = server.registerForMessages("/topic/game/" + gameId + "/update", GameUpdate.class, update -> {
+            System.out.println("Halve message received!");
+            Platform.runLater(() -> {
+                switch (update) {
+                    case halveTimer -> questionTimer.halve();
+                    case stopTimer -> reset();
+                    case startTimer -> start();
+                    default -> { }
+                }
+            });
+        });
+        return subscriptions;
+    }
+
+    public void setGameId(final String id) {
+        this.gameId = id;
     }
 
     private TimerTask clientTimerTask(final QuestionTimer questionTimer) {
@@ -107,11 +118,10 @@ public class ProgressBarController implements Initializable {
     @FXML
     public void reset() {
         questionTimer.reset();
-        Platform.runLater(() ->
-                label.setText(String.valueOf(questionTimer.getCurrentTime()
-                        / questionTimer.getOneSecond())));
-                bar.setProgress((double) questionTimer.getCurrentTime()
-                        / questionTimer.getMaxTime());
+        Platform.runLater(() -> label.setText(String.valueOf(questionTimer.getCurrentTime()
+                / questionTimer.getOneSecond())));
+        bar.setProgress((double) questionTimer.getCurrentTime()
+                / questionTimer.getMaxTime());
     }
 
     @FXML
@@ -127,13 +137,10 @@ public class ProgressBarController implements Initializable {
 
     @FXML
     public void onHalveButtonClick(final ActionEvent e) {
-        // TODO: get the game id
-        server.send("/app/game/{id}/halve", GameUpdate.halveTimer);
+        server.send("/app/game/" + gameId + "/halve", GameUpdate.halveTimer);
 
-        // Solution to ensure that the client's timer is not halved.
-        // (if he was the one that clicked on the button)
+        // Solution to ensure that the initiator's timer is not halved
         questionTimer.setCurrentTime(questionTimer.getCurrentTime() * 2);
-
         halveButton.setDisable(true);
     }
 

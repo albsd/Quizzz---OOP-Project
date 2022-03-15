@@ -105,9 +105,10 @@ public class FXMLController {
         return displayScene(HelpController.class);
     }
 
-    public Pair<LobbyController, Parent> showLobby() {
+    public Pair<LobbyController, Parent> showLobby(final Player me) {
         var root = displayScene(LobbyController.class);
-        var ctrl = root.getKey();    
+        var ctrl = root.getKey(); 
+        ctrl.setMe(me);
         subscribe(LobbyController.class, ctrl.registerForMessages());
         return root;
     }

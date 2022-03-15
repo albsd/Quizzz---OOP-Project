@@ -64,9 +64,7 @@ public class SplashController {
 
     @FXML
     public void singleGame(final ActionEvent event) {
-
         String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
-
         if (!validateNicknameLength(nick)) {
             return;
         }
@@ -89,16 +87,13 @@ public class SplashController {
             return;
         }
 
-        final Player player = server.joinGame(nick);
-        if (player == null) {
+        final Player me = server.joinGame(nick);
+        if (me == null) {
             warning.setTextFill(red);
             warning.setText("User with the given name is already in the game");
             return;
         }
-
-        var root = fxml.showLobby();
-        var ctrl = root.getKey();
-        ctrl.setMe(player);
+        fxml.showLobby(me);
     }
 
     @FXML

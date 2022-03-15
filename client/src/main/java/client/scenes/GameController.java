@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.FXMLController;
 import client.utils.ServerUtils;
+import client.utils.WebSocketSubscription;
 import commons.Player;
 import commons.ScoreMessage;
 import commons.Emote;
@@ -31,7 +32,7 @@ import javax.inject.Inject;
 
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
-public class GameController implements Initializable {
+public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private Button option1, option2, option3,
@@ -96,6 +97,7 @@ public class GameController implements Initializable {
         timer2.setFont(font);
     }
 
+    @Override
     public Subscription[] registerForMessages() {
         Subscription[] subscriptions = new Subscription[1];
         subscriptions[0] = server.registerForMessages("/topic" + chatPath, EmoteMessage.class, message -> {

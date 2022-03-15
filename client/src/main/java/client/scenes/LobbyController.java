@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.FXMLController;
 import client.utils.ServerUtils;
+import client.utils.WebSocketSubscription;
 import commons.Game;
 import commons.LobbyMessage;
 import commons.Player;
@@ -30,7 +31,7 @@ import javax.inject.Inject;
 
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
-public class LobbyController implements Initializable {
+public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     private ScrollPane chatArea;
@@ -50,15 +51,15 @@ public class LobbyController implements Initializable {
     @FXML
     private Label playerCount;
 
-    private List<String> players;
-
     private final ServerUtils server;
-
+    
     private final FXMLController fxml;
 
-    private Player me;
-
     private final DateTimeFormatter timeFormat;
+    
+    private Player me;
+    
+    private List<String> players;
 
     @Inject
     public LobbyController(final ServerUtils server, final FXMLController fxml) {
@@ -66,7 +67,6 @@ public class LobbyController implements Initializable {
         this.fxml = fxml;
         this.players = new ArrayList<>();
         this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
-
     }
 
     @Override
@@ -80,6 +80,7 @@ public class LobbyController implements Initializable {
         updatePlayerList();
     }
 
+    @Override
     public Subscription[] registerForMessages() {
         Subscription[] subscriptions = new Subscription[3];
         subscriptions[0] = server.registerForMessages("/topic/update/player", PlayerUpdate.class, update -> {
@@ -165,22 +166,12 @@ public class LobbyController implements Initializable {
     @FXML
     public void returnToMenu(final ActionEvent event) {
         server.leaveGame(me.getNick());
-
         fxml.showSplash();
     }
 
     @FXML
     public void start(final ActionEvent event) {
         Game game = server.startGame();
-        if (game == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.OK);
-            alert.setTitle("Confirmation Screen");
-            alert.setHeaderText("Confirmation needed!");
-            alert.setContentText("If you want to play alone, choose SinglePlayer?");
-            alert.showAndWait();
-            return;
-        }
-
         fxml.showMultiPlayer(me, game);
     }
 }

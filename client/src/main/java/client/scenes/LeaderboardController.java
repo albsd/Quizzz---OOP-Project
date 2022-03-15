@@ -9,37 +9,28 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-
 import javafx.scene.control.ListView;
 
-
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import javax.inject.Inject;
-
-
 import java.util.UUID;
 
+import javax.inject.Inject;
 
 import client.FXMLController;
 
 public class LeaderboardController {
-    
+
     @FXML
-    private ListView playerRanking;
+    private ListView<String> playerRanking;
+
+    private final ServerUtils server;
 
     private final FXMLController fxml;
-    
-    private int questionNumber = 0;
-    
-    private ServerUtils server;
 
     @Inject
-    public LeaderboardController(final FXMLController fxml, final ServerUtils server) {
+    public LeaderboardController(final ServerUtils server, final FXMLController fxml) {
         this.fxml = fxml;
         this.server = server;
     }
@@ -69,34 +60,23 @@ public class LeaderboardController {
     }
 
     public void displayLeaderboard(final UUID id) {
-        //TODO:Uncomment this when game initialization functionality has been implemented
-//        Leaderboard leaderboard = server.getLeaderboard(id);
-//        System.out.println(Arrays.toString(leaderboard.getRanking().toArray()));
-        //I am using a "dummy leaderboard object to test displaying the leaderboard"
-        Leaderboard leaderboard = new Leaderboard();
-        Player player1 = new Player("Shaq", 0);
-        Player player2 = new Player("Lolo", 0);
-        Player player3 = new Player("Lohithsai Yadala Chanchu", 2);
-
-        leaderboard.setRanking(Arrays.asList(player1, player2, player3));
-
+        Leaderboard leaderboard = server.getLeaderboard(id.toString());
         List<String> names = new ArrayList<>();
-        for (Player player:leaderboard.getRanking()) {
-            //playerRanking.getItems().add(this.calculateBuffer(player.getNick(), player.getScore()));
-            names.add(this.calculateBuffer(player.getNick(), player.getScore()));
+        for (Player player : leaderboard.getRanking()) {
+            names.add(calculateBuffer(player.getNick(), player.getScore()));
         }
         ObservableList<String> items = FXCollections.observableArrayList(names);
         playerRanking.setItems(items);
     }
 
-    //TODO:Make scores align. This should make it align but listView is weird so maybe we can change leaderboard fxml in another issue?
-    public String calculateBuffer(final String nick, final int score) {
+    // TODO: Make scores align. This should make it align but listView is weird so
+    // maybe we can change leaderboard fxml in another issue?
+    private String calculateBuffer(final String nick, final int score) {
         String buffer = "";
         int scorePosition = 80;
         for (int i = 0; i < scorePosition - nick.length(); i++) {
             buffer += " ";
         }
-        System.out.println(nick + buffer + score);
         return nick + buffer + score;
     }
 }
