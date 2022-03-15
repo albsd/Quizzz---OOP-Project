@@ -28,12 +28,15 @@ import java.util.UUID;
 import client.FXMLController;
 
 public class LeaderboardController {
-    private int questionNumber = 0;
-    private ServerUtils server;
+    
     @FXML
     private ListView playerRanking;
 
     private final FXMLController fxml;
+    
+    private int questionNumber = 0;
+    
+    private ServerUtils server;
 
     @Inject
     public LeaderboardController(final FXMLController fxml, final ServerUtils server) {
@@ -84,9 +87,8 @@ public class LeaderboardController {
         }
         ObservableList<String> items = FXCollections.observableArrayList(names);
         playerRanking.setItems(items);
-        
-
     }
+
     //TODO:Make scores align. This should make it align but listView is weird so maybe we can change leaderboard fxml in another issue?
     public String calculateBuffer(final String nick, final int score) {
         String buffer = "";

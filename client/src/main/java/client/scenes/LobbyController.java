@@ -28,6 +28,8 @@ import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
+
 public class LobbyController implements Initializable {
 
     @FXML
@@ -76,8 +78,11 @@ public class LobbyController implements Initializable {
                 .collect(Collectors.toList());
 
         updatePlayerList();
+    }
 
-        server.registerForMessages("/topic/lobby/player", PlayerUpdate.class, update -> {
+    public Subscription[] registerForMessages() {
+        Subscription[] subscriptions = new Subscription[3];
+        subscriptions[0] = server.registerForMessages("/topic/update/player", PlayerUpdate.class, update -> {
             if (update.getContent() == PlayerUpdate.Type.join) {
                 players.add(update.getNick());
             } else {
@@ -86,18 +91,19 @@ public class LobbyController implements Initializable {
             updatePlayerList();
         });
 
-        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, message -> {
+        subscriptions[1] = server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, message -> {
             Platform.runLater(() -> {
                 String chatBox = chatText.getText() + message.toString();
                 chatText.setText(chatBox);
             });
         });
 
-        server.registerForMessages("/topic/lobby/start", Game.class, game -> {
-            Platform.runLater(() -> {
-                fxml.showMultiPlayer(me, game);
+        subscriptions[2] = server.registerForMessages("/topic/lobby/start", Game.class, game -> {
+            Platform.runLater(() -> { 
+                fxml.showMultiPlayer(me, game); 
             });
         });
+        return subscriptions;
     }
 
     @FXML
