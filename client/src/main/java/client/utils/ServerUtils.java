@@ -257,15 +257,4 @@ public class ServerUtils {
         if (game == null) return null;
         return game.getId().toString();
     }
-    public Game startCurrentGame() {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/start"))
-                .header("accept", "application/json")
-                .GET()
-                .build();
-        Game game = parseResponseToObject(request, new TypeReference<Game>() {
-        });
-        if (game == null) return null;
-        return game;
-    }
 }
