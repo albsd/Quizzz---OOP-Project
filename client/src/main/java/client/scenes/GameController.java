@@ -129,13 +129,14 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     public void setGame(final Player me, final Game game) {
         this.me = me;
-        this.game = game;
+        this.game.initialiseTimer();
+    
         this.chatPath = "/game/" + game.getId() + "/chat";
        
-        questionNumber.setText("#1");
-        question.setText(game.getCurrentQuestion().getPrompt());
+        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
+        // question.setText(game.getCurrentQuestion().getPrompt());
         // start client timer
-        progressBar.start();
+        // progressBar.start();
         game.start(this::setNextQuestion);
     }
 
@@ -185,18 +186,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     public void setMe(final Player me) {
         this.me = me;
-    }
-
-    public void setGame(final Game game) {
-        System.out.println("Game " + game);
-        this.game = game;
-        this.game.initialiseTimer();
-
-        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
-        //question.setText(game.getCurrentQuestion().getPrompt());
-        //start client timer
-        //progressBar.start();
-        game.start(this::setNextQuestion);
     }
 
     @FXML

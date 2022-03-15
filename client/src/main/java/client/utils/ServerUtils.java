@@ -254,15 +254,4 @@ public class ServerUtils {
         }
         return null;
     }
-    public String getCurrentGameId() {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/current"))
-                .header("accept", "application/json")
-                .GET()
-                .build();
-        Game game = parseResponseToObject(request, new TypeReference<Game>() {
-        });
-        if (game == null) return null;
-        return game.getId().toString();
-    }
 }

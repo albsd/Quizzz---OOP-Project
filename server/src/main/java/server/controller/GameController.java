@@ -66,6 +66,16 @@ public class GameController {
     }
 
     /**
+     * Fetches the active game lobby.
+     *
+     * @return The current active game which accepts new players
+     */
+    @GetMapping("/current")
+    public Game getCurrentGame() {
+        return gameService.getCurrentGame();
+    }
+
+    /**
      * Fetches the game by its UUID.
      *
      * @param id The UUID of the game
