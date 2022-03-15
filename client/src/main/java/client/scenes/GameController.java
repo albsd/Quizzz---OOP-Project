@@ -179,19 +179,6 @@ public class GameController implements Initializable {
         int prevQuNum = Integer.parseInt(questionNumber.getText().replace("#", ""));
         //logic to show leaderboard
         if ((prevQuNum) % 10 == 0) {
-//            var root = Main.FXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
-//            LeaderboardController leaderboardController = root.getKey();
-//            leaderboardController.setQuestionNumber(prevQuNum);
-//            leaderboardController.displayLeaderboard(this.currentGame.getId().toString());
-//
-//            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-//            Stage stage1 = new Stage();
-//            Scene scene = new Scene(root.getValue());
-//            stage1.setScene(scene);
-//            stage1.show();
-//            PauseTransition delay = new PauseTransition(Duration.seconds(10));
-//            delay.setOnFinished(event -> stage1.close());
-//            delay.play();
             var root = fxml.displayLeaderboardMomentarily(LeaderboardController.class);
             LeaderboardController leaderboardController = root.getKey();
             leaderboardController.setQuestionNumber(prevQuNum);

@@ -171,7 +171,6 @@ public class LobbyController implements Initializable {
     @FXML
     public void start(final ActionEvent event) {
         // server.startGame();
-
         var root = fxml.showGame();
         var ctrl = root.getKey();
         ctrl.setMe(me);
