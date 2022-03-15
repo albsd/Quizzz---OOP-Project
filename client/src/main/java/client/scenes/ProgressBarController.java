@@ -16,11 +16,8 @@ import javafx.scene.control.ProgressBar;
 
 import java.net.URL;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TimerTask;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ProgressBarController implements Initializable {
@@ -49,7 +46,7 @@ public class ProgressBarController implements Initializable {
 
     @Inject
     public ProgressBarController(final ServerUtils server) {
-        this.questionTimer = new QuestionTimer(UUID.randomUUID());
+        this.questionTimer = new QuestionTimer();
         this.server = server;
         server.registerForMessages("/topic/game/update",
                 GameUpdate.class, updateConsumer);
@@ -74,46 +71,23 @@ public class ProgressBarController implements Initializable {
         start();
     }
 
-    private TimerTask clientTimerTask(final QuestionTimer questionTimer,
-            final Label label, final ProgressBar bar,
-            final List<Button> buttons) {
+    private TimerTask clientTimerTask(final QuestionTimer questionTimer) {
         return new TimerTask() {
             @Override
             public void run() {
                 questionTimer.setCurrentTime(
-                        questionTimer.getCurrentTime()
-                                - questionTimer.getDecrement());
+                        questionTimer.getCurrentTime() - questionTimer.getDecrement());
                 if (questionTimer.getCurrentTime() <= 0) {
                     questionTimer.setOver(true);
                     System.out.println("Time's over!");
-                    Platform.runLater(() -> label.setText("Time's over!"));
                     questionTimer.setCurrentTime(0);
-
-                    for (Button b : buttons) {
-                        b.setDisable(true);
-                    }
-
                     cancel();
-                } else {
-                    Platform.runLater(() -> {
-                        label.setText(
-                                String.format("%.2f",
-                                        questionTimer.getCurrentTime()
-                                                / questionTimer.getOneSecond()));
-
-                        bar.setProgress((double) questionTimer.getCurrentTime()
-                                / questionTimer.getMaxTime()
-                        );
-                    });
                 }
             }
         };
     }
 
-    public void startClientTimer(final QuestionTimer questionTimer,
-            final Label label,
-            final ProgressBar bar,
-            final List<Button> buttons) {
+    public void startClientTimer(final QuestionTimer questionTimer) {
         if (questionTimer.isStarted()) {
             System.out.println("Timer already started! Reset first.");
         } else {
@@ -122,12 +96,9 @@ public class ProgressBarController implements Initializable {
             questionTimer.setOver(false);
 
             final int period = questionTimer.getDecrement();
-            for (Button b : buttons) {
-                b.setDisable(false);
-            }
 
             questionTimer.setCurrentTask(clientTimerTask(
-                    questionTimer, label, bar, buttons));
+                    questionTimer));
             questionTimer.getTimer().scheduleAtFixedRate(
                     questionTimer.getTask(), 0, period);
         }
@@ -145,10 +116,7 @@ public class ProgressBarController implements Initializable {
 
     @FXML
     public void start() {
-        List<Button> buttons = new ArrayList<>();
-        buttons.add(option1);
-        buttons.add(option2);
-        startClientTimer(questionTimer, label, bar, buttons);
+        startClientTimer(questionTimer);
     }
 
     @FXML

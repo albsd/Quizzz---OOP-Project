@@ -37,9 +37,8 @@ public class Game {
         this.questions = new Question[questionLimit];
         // Generating questions is not implemented yet:
         // this.questions = QuestionService.generateQuestions()
-        this.currentQuestion = 0;
+        this.currentQuestion = 9;
         this.gameState = GameState.waiting;
-        this.timer = new QuestionTimer(id);
     }
 
     @JsonCreator
@@ -71,18 +70,14 @@ public class Game {
         return timer;
     }
 
-    @JsonIgnore
-    //Todo: invoke this method when the client-timer is 0 in a set interval
-    public void startTimer(final Runnable callback) {
-        if (timer.isOver()) {
-            timer.reset();
-        }
-        timer.startGameTimer(callback);
+    // Since the QuestionTimer cannot be serialised over HTTP, we can call this method in the client to create a new timer.
+    public void initialiseTimer() {
+        this.timer = new QuestionTimer();
     }
 
     @JsonIgnore
     public boolean isPlayable() {
-        return players.size() >= 2;
+        return players.size() >= 1;
     }
 
     public boolean addPlayer(final Player p) {
@@ -111,11 +106,16 @@ public class Game {
     }
     //if not ignored, game in serverUtil from getplayers is null
     @JsonIgnore
-    public int nextQuestion() {
+    public void nextQuestion() {
         this.currentQuestion++;
+    }
+
+    @JsonIgnore
+    public int getCurrentQuestionIndex() {
         return currentQuestion;
     }
-    
+
+    @JsonIgnore
     public Question getCurrentQuestion() {
         return this.questions[currentQuestion];
     }
@@ -123,6 +123,6 @@ public class Game {
     @JsonIgnore
     public void start(final Runnable callback) {
         this.gameState = GameState.playing;
-        startTimer(callback);
+        timer.startGameTimer(callback);
     }
 }

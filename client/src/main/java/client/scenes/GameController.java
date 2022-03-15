@@ -15,6 +15,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -49,6 +50,9 @@ public class GameController implements Initializable {
             cancelButton, confirmButton;
     @FXML
     private Label question, questionNumber, points, popupText, timer1, timer2;
+
+    @FXML
+    private ProgressBar timer;
 
     @FXML
     private Pane popupMenu;
@@ -166,23 +170,36 @@ public class GameController implements Initializable {
     }
 
     public void setGame(final Game game) {
+        System.out.println("Game " + game);
         this.currentGame = game;
+        this.currentGame.initialiseTimer();
 
-        questionNumber.setText("#1");
-        question.setText(currentGame.getCurrentQuestion().getPrompt());
+        questionNumber.setText("#" + (currentGame.getCurrentQuestionIndex() + 1));
+        //question.setText(currentGame.getCurrentQuestion().getPrompt());
         //start client timer
-        progressBar.start();
+        //progressBar.start();
         //start game timer and set gamestate to playing
         currentGame.start(this::setNextQuestion);
     }
 
     @FXML
     public void setNextQuestion() {
-        //increment and return next question
-        questionNumber.setText("#" + (1 + currentGame.nextQuestion()));
-        question.setText(currentGame.getCurrentQuestion().getPrompt());
+        currentGame.nextQuestion();
+        //logic to show leaderboard
+        if ((currentGame.getCurrentQuestionIndex()) % 10 == 0) {
+            Platform.runLater(() -> {
+                //var root = fxml.displayLeaderboardMomentarily(LeaderboardController.class);
+                //LeaderboardController leaderboardController = root.getKey();
+                //leaderboardController.displayLeaderboard(this.currentGame.getId());
+            });
+        }
+
+        Platform.runLater(() -> {
+            questionNumber.setText("#" + (currentGame.getCurrentQuestionIndex() + 1));
+            question.setText(currentGame.getCurrentQuestion().getPrompt());
+        });
         //start client timer
-        progressBar.start();
+        //progressBar.start();
         //start game timer
         currentGame.start(this::setNextQuestion);
     }

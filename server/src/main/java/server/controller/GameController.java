@@ -69,6 +69,7 @@ public class GameController {
      *
      * @return The current active game which accepts new players
      */
+    @Deprecated
     @GetMapping("/current")
     public Game getCurrentGame() {
         return gameService.getCurrentGame();

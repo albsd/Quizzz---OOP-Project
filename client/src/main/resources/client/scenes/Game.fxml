@@ -209,7 +209,7 @@
                         </image>
                     </ImageView>
                 </graphic></Button>
-         <Label fx:id="questionNumber" alignment="TOP_LEFT" layoutX="7.0" layoutY="124.0" text="#1">
+         <Label fx:id="questionNumber" alignment="TOP_LEFT" layoutX="7.0" layoutY="124.0" text="#">
             <font>
                <Font name="System Bold" size="24.0" />
             </font>
