@@ -10,6 +10,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
+import javafx.scene.control.ListView;
+
+
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -25,6 +32,10 @@ import java.util.ArrayList;
 import client.FXMLController;
 
 public class LeaderboardController {
+    private int questionNumber = 0;
+    private ServerUtils server;
+    @FXML
+    private ListView playerRanking;
 
     private ServerUtils server;
     @FXML
@@ -33,8 +44,9 @@ public class LeaderboardController {
     private final FXMLController fxml;
 
     @Inject
-    public LeaderboardController(final FXMLController fxml) {
+    public LeaderboardController(final FXMLController fxml, final ServerUtils server) {
         this.fxml = fxml;
+        this.server = server;
     }
 
     @FXML

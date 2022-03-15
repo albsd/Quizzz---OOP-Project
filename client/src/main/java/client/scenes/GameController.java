@@ -23,7 +23,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
