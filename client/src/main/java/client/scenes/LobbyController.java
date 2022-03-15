@@ -60,8 +60,6 @@ public class LobbyController implements Initializable {
 
     private final DateTimeFormatter timeFormat;
 
-    private Game lobby;
-
     @Inject
     public LobbyController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;

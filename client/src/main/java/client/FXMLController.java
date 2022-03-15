@@ -6,10 +6,12 @@ import client.scenes.IPPromptController;
 import client.scenes.LeaderboardController;
 import client.scenes.LobbyController;
 import client.scenes.SplashController;
+import javafx.animation.PauseTransition;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 public class FXMLController {
@@ -55,6 +57,7 @@ public class FXMLController {
         return root;
     }
 
+
     public Pair<IPPromptController, Parent> showIPPrompt() {
         return displayScene(IPPromptController.class);
     }
@@ -79,4 +82,16 @@ public class FXMLController {
         return displayScene(GameController.class);
     }
 
+    public <LeaderboardController> Pair<LeaderboardController, Parent> displayLeaderboardMomentarily(
+            final Class<LeaderboardController> type) {
+        String file = type.getSimpleName().replace("Controller", ".fxml");
+        var root = myFXML.load(type, "client", "scenes", file);
+        Stage stage1 = new Stage();
+        Scene scene = new Scene(root.getValue());
+        stage1.setScene(scene);
+        stage1.show();
+        PauseTransition delay = new PauseTransition(Duration.seconds(5));
+        delay.setOnFinished(event -> stage1.close());
+        return root;
+    }
 }

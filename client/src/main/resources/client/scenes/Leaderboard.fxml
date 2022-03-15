@@ -15,7 +15,9 @@
          <Font size="25.0" />
       </font>
    </Label>
-   <ListView fx:id="playerRank" prefHeight="497.0" prefWidth="435.0" />
+
+   <ListView fx:id="playerRanking" prefHeight="497.0" prefWidth="435.0" />
+
    <Separator prefHeight="11.0" prefWidth="1254.0" />
    <ListView prefHeight="24.0" prefWidth="430.0" />
 </VBox>
