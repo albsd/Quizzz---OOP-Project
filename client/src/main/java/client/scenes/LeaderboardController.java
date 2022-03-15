@@ -33,16 +33,13 @@ public class LeaderboardController {
     @FXML
     private ListView playerRanking;
 
-    @Inject
-    public LeaderboardController(final ServerUtils server) {
-        this.server = server;
-    }
 
     private FXMLController fxml;
 
     @Inject
-    public LeaderboardController(final FXMLController fxml) {
+    public LeaderboardController(final FXMLController fxml, ServerUtils server) {
         this.fxml = fxml;
+        this.server = server;
     }
 
     @FXML
