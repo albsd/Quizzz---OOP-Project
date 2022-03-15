@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 

@@ -3,6 +3,7 @@ package server.service;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Question;
+import commons.ScoreMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.GameRepository;
@@ -47,7 +48,7 @@ public class GameService {
     /**
      * Creates a new game as an active lobby.
      * The previous lobby is propagated to the game that has just started.
-     * 
+     *
      * @return Game that has been created
      */
     public Game newGame() {
@@ -66,8 +67,6 @@ public class GameService {
         return repo.getLeaderboard(id);
     }
 
-
-
     public List<Question> getQuestions(final UUID id) {
         if (questionsPerGame.containsKey(id)) {
             return questionsPerGame.get(id);
@@ -75,6 +74,10 @@ public class GameService {
             questionsPerGame.put(id, activityService.getQuestionList());
             return questionsPerGame.get(id);
         }
+    }
+    
+    public void updatePlayerScore(final ScoreMessage scoreMessage) {
+        repo.updatePlayerScore(scoreMessage);
     }
 
 }

@@ -17,9 +17,10 @@ package client.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import commons.Player;
+import commons.PlayerUpdate;
 import commons.Game;
 import commons.Leaderboard;
-import commons.Player;
 import commons.Question;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -43,15 +44,36 @@ import java.util.function.Consumer;
 @Controller
 public class ServerUtils {
 
-    private final String kGameUrl;
-
     private final HttpClient client;
 
-    private static StompSession session = connect("ws://localhost:8080/websocket");
+    private String kGameUrl;
+
+    private StompSession session;
 
     public ServerUtils() {
-        this.kGameUrl = "http://localhost:8080/game";
         this.client = HttpClient.newHttpClient();
+    }
+
+    public String isRunning(final String host, final String port) {
+        try {
+            final URI uri = URI.create("http://" + host + ":" + port);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .GET()
+                    .build();
+
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+            // if the above code does not throw -> we can set the urls
+            this.kGameUrl = uri + "/game";
+            this.session = connect("ws://" + host + ":" + port + "/websocket");
+            return null;
+        } catch (IllegalArgumentException e) {
+            return "Host is invalid.\n"
+                    + "Supported are IPv4 ('192.168.xxx.xxx') or ('localhost')";
+        } catch (Exception e) {
+            return "The server on the given address is not running.\n"
+                    + "Make sure the server is running first. To get more help refer to README.md";
+        }
     }
 
     // Initial POST request to get gameId
@@ -98,7 +120,11 @@ public class ServerUtils {
             @Override
             public void handleFrame(final StompHeaders headers,
                     final Object payload) {
-                consumer.accept((T) payload);
+                try {
+                    consumer.accept((T) payload);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -119,8 +145,11 @@ public class ServerUtils {
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<Player>() {
-        });
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player != null) {
+            send("/app/playerUpdate", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.join));
+        }
+        return player;
     }
 
     /**
@@ -135,8 +164,26 @@ public class ServerUtils {
                 .DELETE()
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<Player>() {
-        });
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player != null) {
+            send("/app/playerUpdate", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
+        }
+        return player;
+    }
+
+    /**
+     * Calls the REST endpoint to get current lobby(game).
+     *
+     * @return Current game object in lobby
+     */
+    public Game getGame() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/current"))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+
+        return parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
     /**
@@ -150,8 +197,7 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        Game game = parseResponseToObject(request, new TypeReference<Game>() {
-        });
+        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
         if (game == null) return null;
         return game.getPlayers();
     }
@@ -163,8 +209,7 @@ public class ServerUtils {
                 .GET()
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<Leaderboard>() {
-        });
+        return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
 
     public List<Question> getQuestions(final String id) {
@@ -175,8 +220,7 @@ public class ServerUtils {
                 .GET()
                 .build();
 
-        return parseResponseToObject(request, new TypeReference<List<Question>>() {
-        });
+        return parseResponseToObject(request, new TypeReference<List<Question>>() { });
     }
 
     /**
@@ -192,9 +236,7 @@ public class ServerUtils {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() != 200) {
-                return null;
-            }
+            if (response.statusCode() != 200) return null;
 
             ObjectMapper mapper = new ObjectMapper();
             T obj = mapper.readValue(response.body(), type);

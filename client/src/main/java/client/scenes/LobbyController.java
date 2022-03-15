@@ -1,31 +1,34 @@
 package client.scenes;
 
-import client.Main;
+import client.FXMLController;
 import client.utils.ServerUtils;
-import com.google.inject.Inject;
-import commons.JoinMessage;
-import commons.Message;
+import commons.Game;
+import commons.LobbyMessage;
 import commons.Player;
+import commons.PlayerUpdate;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
-import org.springframework.web.util.HtmlUtils;
 
 import java.net.URL;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.inject.Inject;
+
+import org.springframework.web.util.HtmlUtils;
 
 public class LobbyController implements Initializable {
 
@@ -44,46 +47,70 @@ public class LobbyController implements Initializable {
     @FXML
     private Label playersRight;
 
-    private boolean left = true;
-
     @FXML
     private Label playerCount;
 
-    private List<Player> players;
+    private List<String> players;
 
     private final ServerUtils server;
 
+    private final FXMLController fxml;
+
     private Player me;
 
+    private final DateTimeFormatter timeFormat;
+
+    private Game lobby;
+
     @Inject
-    public LobbyController(final ServerUtils server) {
+    public LobbyController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
+        this.fxml = fxml;
         this.players = new ArrayList<>();
-        server.registerForMessages("/topic/join", JoinMessage.class, playerConsumer);
-        server.registerForMessages("/topic/lobby/chat",
-                Message.class, messageConsumer);
+        this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
+
+        server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, update -> {
+            if (update.getContent() == PlayerUpdate.Type.join) {
+                players.add(update.getNick());
+            } else {
+                players.remove(update.getNick());
+            }
+            updatePlayerList();
+        });
+
+        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, m -> {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    String nick = m.getNick();
+                    String time = m.getTimestamp();
+                    String content = m.getContent();
+                    String chatLogs = chatText.getText()
+                            + nick + " (" + time + ") - " + content + "\n";
+                    chatText.setText(chatLogs);
+                }
+            });
+        });
+
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        this.players = new ArrayList<>();
-        List<Player> lobbyPlayers = server.getPlayers();
-        if (lobbyPlayers != null) {
-            for (Player p : lobbyPlayers) {
-                playerConsumer.accept(new JoinMessage(p, true));
-            }
-        }
+        // We DON'T use the shorthand .toList() here, because that returns an immutable
+        // list and causes player updates to get ignored silently
+        this.players = server.getPlayers().stream().map(Player::getNick).collect(Collectors.toList());
+        updatePlayerList();
     }
 
     @FXML
     public void onEnter(final ActionEvent e) {
-        String content = chatInput.getText();
+        String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         chatInput.setText("");
-        final int demoTime = 10;
+        final LocalTime time = LocalTime.now();
         // escapes special characters in input
         server.send("/app/lobby/chat",
-                new Message(me.getNick(), demoTime,
-                        HtmlUtils.htmlEscape(content)));
+                //remove nanosecond when displaying time and convert to string
+                new LobbyMessage(me.getNick(), time.format(timeFormat), HtmlUtils.htmlEscape(content)));
         chatArea.setVvalue(1.0);
     }
 
@@ -91,14 +118,7 @@ public class LobbyController implements Initializable {
         this.me = me;
     }
 
-    private Consumer<JoinMessage> playerConsumer = msg -> {
-        final Player wsPlayer = msg.getPlayer();
-        if (msg.isJoining()) {
-            players.add(wsPlayer);
-        } else {
-            players.remove(wsPlayer);
-        }
-
+    private void updatePlayerList() {
         // GUI Updates must be run later
         // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
         Platform.runLater(new Runnable() {
@@ -106,55 +126,31 @@ public class LobbyController implements Initializable {
             public void run() {
                 playerCount.setText("Number of players: " + players.size());
 
-                if (msg.isJoining()) {
-                    final Label column = left ? playersLeft : playersRight;
-                    left = !left;
-                    String colText = column.getText();
-                    String newText = colText + wsPlayer.getNick();
-                    if (wsPlayer.getNick().equals(me.getNick())) {
-                        newText += "(me)";
+                List<String> nicks = players.stream().map(nick -> {
+                    if (nick.equals(me.getNick())) {
+                        return nick + " (me)";
                     }
-                    column.setText(newText + "\n\n");
+                    return nick;
+                }).toList();
 
-                } else {
-                    playersLeft.setText("");
-                    playersRight.setText("");
-                    left = true;
+                String leftText = IntStream.range(0, players.size())
+                        .filter(i -> i % 2 == 0)
+                        .mapToObj(nicks::get)
+                        .collect(Collectors.joining("\n\n"));
 
-                    for (Player p : players) {
-                        final Label column = left ? playersLeft : playersRight;
-                        left = !left;
-                        String colText = column.getText();
+                String rightText = IntStream.range(0, players.size())
+                        .filter(i -> i % 2 == 1)
+                        .mapToObj(nicks::get)
+                        .collect(Collectors.joining("\n\n"));
 
-                        String newText = colText + p.getNick();
-                        if (p.getNick().equals(me.getNick())) {
-                            newText += "(me)";
-                        }
-                        column.setText(newText + "\n\n");
-                    }
-                }
+                playersLeft.setText(leftText);
+                playersRight.setText(rightText);
             }
         });
-    };
-
-    private Consumer<Message> messageConsumer = m -> {
-        System.out.println("Message received");
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                String nick = m.getNick();
-                int time = m.getTime();
-                String content = m.getMessageContent();
-                // change. Scroll pane is not place to put messages
-                String chatLogs = chatText.getText()
-                        + nick + " (" + time + ") - " + content + "\n";
-                chatText.setText(chatLogs);
-            }
-        });
-    };
+    }
 
     @FXML
-    protected void onReturnButtonClick(final ActionEvent event) {
+    public void onReturnButtonClick(final ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation Screen");
         alert.setHeaderText("Confirmation needed!");
@@ -165,25 +161,19 @@ public class LobbyController implements Initializable {
         }
     }
 
+    @FXML
     public void returnToMenu(final ActionEvent event) {
         server.leaveGame(me.getNick());
-        server.send("/app/join", new JoinMessage(me, false));
 
-        var root = Main.FXML.load(SplashController.class, "client", "scenes", "Splash.fxml");
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        fxml.showSplash();
     }
 
+    @FXML
     public void start(final ActionEvent event) {
         // server.startGame();
-        var root = Main.FXML.load(GameMultiplayerController.class, "client", "scenes", "GameMultiplayer.fxml");
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene = new Scene(root.getValue());
-        stage.setScene(scene);
-        stage.show();
+        var root = fxml.showGame();
+        var ctrl = root.getKey();
+        ctrl.setMe(me);
+        ctrl.setGame(lobby);
     }
 }

@@ -9,7 +9,6 @@ public class PlayerTest {
     private Player p;
     private final int testNumber1 = 80;
     private final int testNumber2 = 100;
-    private final int testTime = 20000;
 
     @BeforeEach
     void setup() {
@@ -18,15 +17,7 @@ public class PlayerTest {
 
     @Test
     void testGetters() {
-        assertEquals("numpy as np", p.getNick());
-        assertEquals(0, p.getTime());
         assertEquals(0, p.getScore());
-    }
-
-    @Test
-    void testTime() {
-        p.setTime(testTime);
-        assertEquals(testTime, p.getTime());
     }
 
     @Test
