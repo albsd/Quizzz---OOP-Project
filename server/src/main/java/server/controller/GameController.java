@@ -26,7 +26,6 @@ import commons.PlayerUpdate;
 import commons.LobbyMessage;
 import commons.ScoreMessage;
 import commons.Question;
-import commons.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -193,15 +192,9 @@ public class GameController {
      * A Websocket endpoint for sending updates about the lobby player' status.
      * Namely, updates the active players in the lobby for all clients.
      *
-<<<<<<< HEAD
-     * @param player The player object who has joined the most recently
-     *
-     * @return The Player object created from the nick
-=======
      * @param update The object containing a player who has joined/left
      * 
      * @return The PlayerUpdate object
->>>>>>> main
      */
     @MessageMapping("/playerUpdate") // /app/player_update
     @SendTo("/topic/playerUpdate")
