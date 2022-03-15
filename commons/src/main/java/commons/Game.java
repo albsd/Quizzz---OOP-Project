@@ -116,13 +116,8 @@ public class Game {
         return currentQuestion;
     }
     
-    public <T> T getCurrentQuestion() {
-        if(this.questions[currentQuestion].getClass().equals(MultipleChoiceQuestion.class)){
-            return (T) (MultipleChoiceQuestion) this.questions[currentQuestion];
-        }
-        else {
-            return (T) (FreeResponseQuestion) this.questions[currentQuestion];
-        }
+    public Question getCurrentQuestion() {
+        return this.questions[currentQuestion];
     }
 
     @JsonIgnore

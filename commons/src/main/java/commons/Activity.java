@@ -56,7 +56,7 @@ public class Activity {
     }
 
     public int getMultipleActivitiesAnswerIndex(final List<Activity> answerOptions) {
-        
+
         long max = 0;
         int maxIndex = 0;
         for (int i = 0; i < answerOptions.size(); i++) {
