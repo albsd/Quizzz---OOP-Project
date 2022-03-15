@@ -32,6 +32,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,7 +80,7 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
-    @GetMapping("{id}/leaderboard")
+    @GetMapping("/{id}/leaderboard")
     public ResponseEntity<Leaderboard> getLeaderboard(
             @PathVariable final UUID id) {
         if (gameService.findById(id) == null) {
@@ -88,13 +89,12 @@ public class GameController {
         return ResponseEntity.ok(gameService.getLeaderboard(id));
     }
 
-    @GetMapping("{id}/question")
+    @GetMapping("/{id}/question")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
         if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(gameService.getQuestions(
-                gameService.generateSeed(id)));
+        return ResponseEntity.ok(gameService.getQuestions(gameService.generateSeed(id)));
     }
 
     /**
@@ -103,7 +103,6 @@ public class GameController {
      * @param nick User's nickname which identifies a given player in a game
      * @return Player
      */
-    // TODO: add sessionId to path so it can be used to construct the player
     @PostMapping("/join/{nick}")
     public ResponseEntity<Player> joinCurrentGame(final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
@@ -129,7 +128,6 @@ public class GameController {
      * @param nick User's nickname which identifies a given player in a game
      * @return Player
      */
-    // TODO: add sessionId to path so it can be used to find player
     @DeleteMapping("/leave/{nick}")
     public ResponseEntity<Player> leaveCurrentGame(final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
@@ -165,7 +163,6 @@ public class GameController {
         System.out.println(headers.getSessionId());
     }
 
-    // add leave game code onDisconnect
     @EventListener
     private void handleSessionDisconnect(final SessionDisconnectEvent event) {
         System.out.println("Client disconnected");
@@ -199,7 +196,7 @@ public class GameController {
         return message;
     }
 
-     /**
+    /**
      * Starts the current game.
      * Do not allow starting a game with less than 2 players.
      *
@@ -213,29 +210,38 @@ public class GameController {
     }
 
     /**
-     * Updates the players score on server-side every question.
-     * @param scoreMessage contains player name, score, and game id
+     * A Websocket endpoint for starting the lobby.
+     *
+     * @param lobby The message to be sent to all the players in the lobby
+     * 
+     * @return The Game object
      */
-    @PostMapping("/game/scores")
-    public void updatePlayerPoints(final ScoreMessage scoreMessage) {
-        gameService.updatePlayerScore(scoreMessage);
+    @MessageMapping("/lobby/start") // /app/lobby/start
+    @SendTo("/topic/lobby/start")
+    private Game sendLobbyStart(final Game lobby) {
+        return lobby;
     }
-    
-    /** 
-    * A Websocket endpoint for starting the lobby.
-    *
-    * @param Game The message to be sent to all the players in the lobby
-    * 
-    * @return The LobbyMessage object
-    */
-   @MessageMapping("/lobby/start") // /app/lobby/start
-   @SendTo("/topic/lobby/start")
-   private Game sendLobbyStart(final Game lobby) {
-       return lobby;
-   }
 
     /**
-     * Send an emote message to the game with the given id
+     * Updates the players score on server-side every question.
+     * 
+     * @param id           id of the game to be updated
+     * @param scoreMessage contains player name, score, and game id
+     * @return The updated game object
+     */
+    @PostMapping("/{id}/score")
+    public ResponseEntity<Game> updatePlayerPoints(final @PathVariable UUID id,
+            final @RequestBody ScoreMessage scoreMessage) {
+        Game game = gameService.findById(id);
+        if (game == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        gameService.updatePlayerScore(game, scoreMessage);
+        return ResponseEntity.ok(game);
+    }
+
+    /**
+     * Send an emote message to the game with the given id.
      * 
      * @param message EmoteMessage to be sent
      * @return        The same message object
@@ -246,7 +252,6 @@ public class GameController {
         return message;
     }
 
-    
     /**
      * A Websocket endpoint for halving the time for other users.
      *
@@ -257,7 +262,5 @@ public class GameController {
     public GameUpdate halveTimeWebsocket() {
         return GameUpdate.halveTimer;
     }
-
-   
 
 }

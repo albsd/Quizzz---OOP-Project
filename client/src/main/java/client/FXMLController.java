@@ -82,7 +82,7 @@ public class FXMLController {
         return displayScene(GameController.class);
     }
 
-    public <LeaderboardController> Pair<LeaderboardController, Parent> displayLeaderboardMomentarily(
+    public Pair<LeaderboardController, Parent> displayLeaderboardMomentarily(
             final Class<LeaderboardController> type) {
         String file = type.getSimpleName().replace("Controller", ".fxml");
         var root = myFXML.load(type, "client", "scenes", file);

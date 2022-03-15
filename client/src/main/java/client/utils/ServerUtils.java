@@ -22,6 +22,8 @@ import commons.PlayerUpdate;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Question;
+import commons.ScoreMessage;
+
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -38,6 +40,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
@@ -74,22 +77,6 @@ public class ServerUtils {
             return "The server on the given address is not running.\n"
                     + "Make sure the server is running first. To get more help refer to README.md";
         }
-    }
-
-    // Initial POST request to get gameId
-    @Deprecated
-    public String createGame() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl))
-                .POST(HttpRequest.BodyPublishers.ofString(""))
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-        String gameId = response.body().replaceAll("^\"|\"$", "");
-
-        System.out.println(gameId);
-        return gameId;
     }
 
     private static StompSession connect(final String url) {
@@ -135,8 +122,8 @@ public class ServerUtils {
     /**
      * Calls the REST endpoint to join the current active lobby.
      *
-     * @param nick String of the user nickname
-     * @return Player that has joined the game
+     * @param nick  String of the user nickname
+     * @return      Player that has joined the game
      */
     public Player joinGame(final String nick) {
         HttpRequest request = HttpRequest.newBuilder()
@@ -154,8 +141,8 @@ public class ServerUtils {
     /**
      * Calls the REST endpoint to leave the current active lobby.
      *
-     * @param nick String of the user nickname
-     * @return Player that has left the game
+     * @param nick  String of the user nickname
+     * @return      Player that has left the game
      */
     public Player leaveGame(final String nick) {
         HttpRequest request = HttpRequest.newBuilder()
@@ -228,7 +215,26 @@ public class ServerUtils {
     }
 
     /**
-     * Utility method to send and receive a Player object.
+     * Calls the REST endpoint to update the score of the player.
+     *
+     * @param id    UUID of the game to be updated
+     * @param score Score message to update the score of a given player
+     * @return      The updated game object
+     */
+    public Game updateScore(final UUID id, final ScoreMessage score) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/" + id + "/score"))
+                .header("accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
+        return game;
+    }
+
+
+    /**
+     * Utility method to parse HttpResponse to a given object type.
      *
      * @param <T>     Type the response shall get parsed to
      * @param request Request to be sent
