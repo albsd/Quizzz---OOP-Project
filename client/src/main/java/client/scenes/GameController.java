@@ -160,7 +160,7 @@ public class GameController implements Initializable {
             option = correctAnswer * -200;
         }
         sendScores(me.getNick(), progressBar.getClientTime(),
-                "open", correctAnswer, option, currentGame.getId());
+                "open", (int) correctAnswer, (int) option, currentGame.getId());
     }
 
     public void setMe(final Player me) {
@@ -175,7 +175,7 @@ public class GameController implements Initializable {
     public void setNextQuestion() {
         //increment and return next question
         questionNumber.setText("#" + (1 + currentGame.nextQuestion()));
-        question.setText(currentGame.getCurrentQuestion().getPrompt());
+        question.setText(((Question) currentGame.getCurrentQuestion()).getPrompt());
         //start client timer
         progressBar.start();
         //start game timer
