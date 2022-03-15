@@ -84,7 +84,8 @@ public class Activity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
-        return energyConsumption == activity.energyConsumption && Objects.equals(title, activity.title) && Objects.equals(source, activity.source) && Arrays.equals(imageBytes, activity.imageBytes);
+        return energyConsumption == activity.energyConsumption && Objects.equals(title, activity.title)
+                && Objects.equals(source, activity.source) && Arrays.equals(imageBytes, activity.imageBytes);
     }
 
     @Override
