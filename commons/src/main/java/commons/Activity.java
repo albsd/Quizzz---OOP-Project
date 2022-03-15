@@ -79,24 +79,32 @@ public class Activity {
         return new FreeResponseQuestion(prompt, imageBytes, energyConsumption);
     }
 
-    public String[] generateChoices(final long energyConsumption) {
-        String[] choices = new String[3];
-        Random r = new Random();
-        for (int i = 0; i < choices.length; i++) {
-            choices[i] = Integer.toString((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()));
-        }
-        int correctAnswerIndex = r.nextInt(choices.length);
-        choices[correctAnswerIndex] = Long.toString(energyConsumption);
-        return choices;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
-        return energyConsumption == activity.energyConsumption && Objects.equals(title, activity.title)
-                && Objects.equals(source, activity.source) && Arrays.equals(imageBytes, activity.imageBytes);
+        return energyConsumption == activity.energyConsumption && Objects.equals(title, activity.title) && Objects.equals(source, activity.source) && Arrays.equals(imageBytes, activity.imageBytes);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(title, energyConsumption, source);
+        result = 31 * result + Arrays.hashCode(imageBytes);
+        return result;
+    }
+
+    public String[] generateChoices(final long energyConsumption) {
+        String[] choices = new String[3];
+        for (int i = 0; i < choices.length; i++) {
+            Random r = new Random();
+            choices[i] = Integer.toString((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()));
+        }
+        Random r  = new Random();
+        int correctAnswerIndex = r.nextInt(choices.length);
+
+        choices[correctAnswerIndex] = Long.toString(energyConsumption);
+        return choices;
     }
 
     public String getTitle() {
@@ -121,13 +129,6 @@ public class Activity {
 
     public void setSource(final String source) {
         this.source = source;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(title, energyConsumption, source);
-        result = 31 * result + Arrays.hashCode(imageBytes);
-        return result;
     }
 
     public byte[] getImageBytes() {

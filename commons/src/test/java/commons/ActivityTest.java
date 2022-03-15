@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,7 +33,7 @@ class ActivityTest {
         actual.setOptions(choices);
         MultipleChoiceQuestion expected = new MultipleChoiceQuestion("How much energy does "
                 + activity.getTitle() + " take in watt hours?",
-                activity.getImageBytes(), choices, ArrayUtils.indexOf(choices, "123123"));
+                activity.getImageBytes(), choices, actual.getAnswer());
         assertEquals(actual, expected);
     }
 
