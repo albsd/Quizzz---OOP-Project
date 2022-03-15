@@ -14,7 +14,7 @@ class QuestionTimerTest {
     @Test
     void getCurrentTime() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
 
         assertEquals(20000, questionTimer.getCurrentTime());
     }
@@ -22,23 +22,15 @@ class QuestionTimerTest {
     @Test
     void getMaxTime() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
 
         assertEquals(20000, questionTimer.getMaxTime());
     }
 
     @Test
-    void getId() {
-        UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
-
-        assertEquals(id, questionTimer.getId());
-    }
-
-    @Test
     void getTimer() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         Timer timer = new Timer();
         questionTimer.setTimer(timer);
         assertEquals(timer, questionTimer.getTimer());
@@ -46,8 +38,6 @@ class QuestionTimerTest {
 
     @Test
     void getTask() {
-        UUID id = new UUID(0, 1);
-
         TimerTask task1 = new TimerTask() {
             @Override
             public void run() {
@@ -55,7 +45,7 @@ class QuestionTimerTest {
             }
         };
 
-        QuestionTimer questionTimer = new QuestionTimer(id, task1);
+        QuestionTimer questionTimer = new QuestionTimer(task1);
 
         TimerTask task2 = questionTimer.getTask();
 
@@ -65,7 +55,7 @@ class QuestionTimerTest {
     @Test
     void getDecrement() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
 
         assertEquals(25, questionTimer.getDecrement());
     }
@@ -73,7 +63,7 @@ class QuestionTimerTest {
     @Test
     void getOneSecond() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
 
         assertEquals(1000, questionTimer.getOneSecond());
     }
@@ -81,7 +71,7 @@ class QuestionTimerTest {
     @Test
     void setCurrentTime() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         questionTimer.setCurrentTime(20);
         assertEquals(20, questionTimer.getCurrentTime());
     }
@@ -89,7 +79,7 @@ class QuestionTimerTest {
     @Test
     void setTimer() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         Timer timer = new Timer();
         questionTimer.setTimer(timer);
         assertEquals(timer, questionTimer.getTimer());
@@ -106,7 +96,7 @@ class QuestionTimerTest {
             }
         };
 
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
 
         questionTimer.setCurrentTask(task1);
 
@@ -118,7 +108,7 @@ class QuestionTimerTest {
     @Test
     void setStarted() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         questionTimer.setStarted(true);
         assertTrue(questionTimer.isStarted());
     }
@@ -126,7 +116,7 @@ class QuestionTimerTest {
     @Test
     void setOver() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         questionTimer.setOver(true);
         assertTrue(questionTimer.isOver());
     }
@@ -134,21 +124,21 @@ class QuestionTimerTest {
     @Test
     void isStarted() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         assertFalse(questionTimer.isStarted());
     }
 
     @Test
     void isOver() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         assertFalse(questionTimer.isOver());
     }
 
     @Test
     void startGameTimer() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         questionTimer.startGameTimer(() -> { });
         if (questionTimer.getTask() != null) {
             questionTimer.getTask().cancel();
@@ -158,7 +148,7 @@ class QuestionTimerTest {
     @Test
     void stopGameTimer() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         questionTimer.startGameTimer(() -> { });
         questionTimer.stopGameTimer();
     }
@@ -166,7 +156,7 @@ class QuestionTimerTest {
     @Test
     void halve() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         questionTimer.setStarted(true);
         questionTimer.halve();
         assertEquals(10000, questionTimer.getCurrentTime());
@@ -175,7 +165,7 @@ class QuestionTimerTest {
     @Test
     void reset() {
         UUID id = new UUID(0, 1);
-        QuestionTimer questionTimer = new QuestionTimer(id);
+        QuestionTimer questionTimer = new QuestionTimer();
         TimerTask task1 = new TimerTask() {
             @Override
             public void run() {

@@ -1,14 +1,10 @@
 package client.scenes;
 
-
-
 import client.utils.ServerUtils;
-import com.google.inject.Inject;
 import commons.Leaderboard;
 import commons.Player;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -23,6 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
+
+import java.util.UUID;
 
 
 import client.FXMLController;
@@ -33,8 +33,7 @@ public class LeaderboardController {
     @FXML
     private ListView playerRanking;
 
-
-    private FXMLController fxml;
+    private final FXMLController fxml;
 
     @Inject
     public LeaderboardController(final FXMLController fxml, final ServerUtils server) {
@@ -66,12 +65,7 @@ public class LeaderboardController {
         fxml.showLeaderboard();
     }
 
-    public void setQuestionNumber(final int questionNumber) {
-        this.questionNumber = questionNumber;
-        System.out.println(questionNumber);
-    }
-
-    public void displayLeaderboard(final String id) {
+    public void displayLeaderboard(final UUID id) {
         //TODO:Uncomment this when game initialization functionality has been implemented
 //        Leaderboard leaderboard = server.getLeaderboard(id);
 //        System.out.println(Arrays.toString(leaderboard.getRanking().toArray()));
