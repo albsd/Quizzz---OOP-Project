@@ -37,10 +37,6 @@ public class LeaderboardController {
     @FXML
     private ListView playerRanking;
 
-    private ServerUtils server;
-    @FXML
-    private ListView playerRanking;
-
     private final FXMLController fxml;
 
     @Inject
