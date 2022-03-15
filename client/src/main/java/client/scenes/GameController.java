@@ -116,12 +116,6 @@ public class GameController implements Initializable {
         });
         server.registerForMessages("/topic/game/chat", EmoteMessage.class, emoteConsumer);
 
-        questionNumber.setText("#1");
-        question.setText(currentGame.getCurrentQuestion().getPrompt());
-        //start client timer
-        progressBar.start();
-        //start game timer and set gamestate to playing
-        currentGame.start(this::setNextQuestion);
     }
 
     public void setSingle() {
@@ -173,6 +167,13 @@ public class GameController implements Initializable {
 
     public void setGame(final Game game) {
         this.currentGame = game;
+
+        questionNumber.setText("#1");
+        question.setText(currentGame.getCurrentQuestion().getPrompt());
+        //start client timer
+        progressBar.start();
+        //start game timer and set gamestate to playing
+        currentGame.start(this::setNextQuestion);
     }
 
     @FXML
