@@ -20,13 +20,9 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javafx.scene.control.ListView;
 
 
 import java.util.UUID;
-import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
 
 
 import client.FXMLController;
