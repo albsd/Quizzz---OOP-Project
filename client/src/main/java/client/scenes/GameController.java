@@ -2,11 +2,7 @@ package client.scenes;
 
 import client.FXMLController;
 import client.utils.ServerUtils;
-import commons.Player;
-import commons.ScoreMessage;
-import commons.Emote;
-import commons.EmoteMessage;
-import commons.Game;
+import commons.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -117,7 +113,7 @@ public class GameController implements Initializable {
         server.registerForMessages("/topic/game/chat", EmoteMessage.class, emoteConsumer);
 
         questionNumber.setText("#1");
-        question.setText(currentGame.getCurrentQuestion().getPrompt());
+        question.setText(((Question) currentGame.getCurrentQuestion()).getPrompt());
         //start client timer
         progressBar.start();
         //start game timer and set gamestate to playing
@@ -140,7 +136,7 @@ public class GameController implements Initializable {
 
     //this is for multiple choice. Also sets player's time
     public void checkMulChoiceAnswer(final ActionEvent e) {
-        int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
+        int correctAnswer = ((MultipleChoiceQuestion) currentGame.getCurrentQuestion()).getAnswer();
         String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
         if (option == correctAnswer) {
@@ -153,9 +149,9 @@ public class GameController implements Initializable {
     }
     //this is for open questions
     public void checkOpenAnswer(final ActionEvent e) {
-        int correctAnswer = currentGame.getCurrentQuestion().getAnswer();
+        long correctAnswer = ((FreeResponseQuestion) currentGame.getCurrentQuestion()).getAnswer();
         String optionStr = ((Button) e.getSource()).getText();
-        int option;
+        long option;
         try {
             option = Integer.parseInt(optionStr);
         } catch (NumberFormatException exception) {

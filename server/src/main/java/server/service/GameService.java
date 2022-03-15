@@ -75,7 +75,7 @@ public class GameService {
             return questionsPerGame.get(id);
         }
     }
-    
+
     public void updatePlayerScore(final ScoreMessage scoreMessage) {
         repo.updatePlayerScore(scoreMessage);
     }

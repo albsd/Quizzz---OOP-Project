@@ -116,8 +116,13 @@ public class Game {
         return currentQuestion;
     }
     
-    public Question getCurrentQuestion() {
-        return this.questions[currentQuestion];
+    public <T> T getCurrentQuestion() {
+        if(this.questions[currentQuestion].getClass().equals(MultipleChoiceQuestion.class)){
+            return (T) (MultipleChoiceQuestion) this.questions[currentQuestion];
+        }
+        else {
+            return (T) (FreeResponseQuestion) this.questions[currentQuestion];
+        }
     }
 
     @JsonIgnore
@@ -125,4 +130,5 @@ public class Game {
         this.gameState = GameState.playing;
         startTimer(callback);
     }
+
 }
