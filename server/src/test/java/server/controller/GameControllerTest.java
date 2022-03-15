@@ -95,12 +95,6 @@ public class GameControllerTest {
     }
 
     @Test
-    public void startTheEmptyLobby() {
-        var actual = ctrl.startCurrentGame();
-        assertEquals(405, actual.getStatusCode().value());
-    }
-
-    @Test
     public void startTheLobby() {
         ctrl.joinCurrentGame("johny");
         ctrl.joinCurrentGame("niko");
