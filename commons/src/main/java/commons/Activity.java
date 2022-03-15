@@ -49,27 +49,29 @@ public class Activity {
         //TODO:We need to decide what image (if any) to display on this type of question
         byte[] imgBytes = new byte[1];
         String prompt = "Which of the following activities take the most energy";
-        String[] options  = (String[]) this.generateActivityOptions(answerOptions)[0];
+        String[] options  = (String[]) this.sortActivityOptions(answerOptions)[0];
 
         return new MultipleChoiceQuestion(prompt, imgBytes, options,
-                (int) this.generateActivityOptions(answerOptions)[1]);
+                (int) this.sortActivityOptions(answerOptions)[1]);
     }
 
-    public Object[] generateActivityOptions(final List<Activity> answerOptions) {
-        String[] options  = new String[3];
-        int counter = 0;
+    public Object[] sortActivityOptions(final List<Activity> answerOptions) {
+
+        String[] options = answerOptions.stream().map(Activity::getTitle).toArray(String[]::new);
+        long max = 0;
         int maxIndex = 0;
-        for (Activity a:answerOptions) {
-            if (a.getEnergyConsumption() > answerOptions.get(maxIndex).getEnergyConsumption()) {
-                maxIndex = counter;
+        for (int i = 0; i < answerOptions.size(); i++) {
+            long energy = answerOptions.get(i).getEnergyConsumption();
+            if (energy > max) {
+                max = energy;
+                maxIndex = i;
             }
-            options[counter] = a.getTitle();
-            counter++;
         }
         Object[] ret = new Object[2];
         ret[0] = options;
         ret[1] = maxIndex;
         return ret;
+
     }
 
     public FreeResponseQuestion getFreeResponseQuestion() {
@@ -79,11 +81,11 @@ public class Activity {
 
     public String[] generateChoices(final long energyConsumption) {
         String[] choices = new String[3];
+        Random r = new Random();
         for (int i = 0; i < choices.length; i++) {
-            Random r = new Random();
             choices[i] = Integer.toString((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()));
         }
-        int correctAnswerIndex = (int) Math.random() * (choices.length);
+        int correctAnswerIndex = r.nextInt(choices.length);
         choices[correctAnswerIndex] = Long.toString(energyConsumption);
         return choices;
     }
