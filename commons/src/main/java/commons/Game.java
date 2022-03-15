@@ -75,11 +75,6 @@ public class Game {
         this.timer = new QuestionTimer();
     }
 
-    @JsonIgnore
-    public boolean isPlayable() {
-        return players.size() >= 1;
-    }
-
     public boolean addPlayer(final Player p) {
         if (players.contains(p)) {
             return false;

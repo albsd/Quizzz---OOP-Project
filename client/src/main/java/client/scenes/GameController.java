@@ -187,9 +187,9 @@ public class GameController implements Initializable {
         //logic to show leaderboard
         if ((currentGame.getCurrentQuestionIndex()) % 10 == 0) {
             Platform.runLater(() -> {
-                //var root = fxml.displayLeaderboardMomentarily(LeaderboardController.class);
-                //LeaderboardController leaderboardController = root.getKey();
-                //leaderboardController.displayLeaderboard(this.currentGame.getId());
+                var root = fxml.displayLeaderboardMomentarily(LeaderboardController.class);
+                LeaderboardController leaderboardController = root.getKey();
+                leaderboardController.displayLeaderboard(this.currentGame.getId());
             });
         }
 

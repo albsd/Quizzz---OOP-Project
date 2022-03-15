@@ -236,9 +236,6 @@ public class GameController {
     @PostMapping("/start")
     public ResponseEntity<Game> startCurrentGame() {
         Game lobby = gameService.getCurrentGame();
-        if (!lobby.isPlayable()) {
-            return ResponseEntity.status(405).build(); // NOT_ALLOWED
-        }
         return ResponseEntity.ok(gameService.newGame());
     }
 
