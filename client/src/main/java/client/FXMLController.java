@@ -1,5 +1,11 @@
 package client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
+
 import client.scenes.GameController;
 import client.scenes.HelpController;
 import client.scenes.IPPromptController;
@@ -7,6 +13,8 @@ import client.scenes.LeaderboardController;
 import client.scenes.LobbyController;
 import client.scenes.SplashController;
 import javafx.animation.PauseTransition;
+import commons.Game;
+import commons.Player;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -19,6 +27,10 @@ public class FXMLController {
     private Stage primaryStage;
 
     private MyFXML myFXML;
+    
+    private List<Subscription> lobbySubscriptions;
+
+    private List<Subscription> gameSubscriptions;
 
     /**
      * Store the primaryStage of the application and MyFXML reference for
@@ -28,15 +40,17 @@ public class FXMLController {
      * @param myFXML       Custom FXML loader
      */
     public void initialize(final Stage primaryStage, final MyFXML myFXML) {
-        this.primaryStage = primaryStage;
         this.myFXML = myFXML;
+        this.primaryStage = primaryStage;
+        this.lobbySubscriptions = new ArrayList<>();
+        this.gameSubscriptions = new ArrayList<>();
 
         Image logo = new Image(Main.class.getResourceAsStream("/images/icon.png"));
         primaryStage.getIcons().add(logo);
         primaryStage.setTitle("Energy Quizzz");
         primaryStage.setResizable(false);
 
-        showIPPrompt();
+        displayScene(IPPromptController.class);
     }
 
     /**
@@ -46,7 +60,7 @@ public class FXMLController {
      * 
      * @param <T>  Generic type for the controller's class
      * @param type Type of the controller for which to set the scene
-     * @return Pair<T, Parent> for the controller's type
+     * @return     Pair<T, Parent> for the controller's type
      */
     private <T> Pair<T, Parent> displayScene(final Class<T> type) {
         String file = type.getSimpleName().replace("Controller", ".fxml");
@@ -57,35 +71,65 @@ public class FXMLController {
         return root;
     }
 
-
-    public Pair<IPPromptController, Parent> showIPPrompt() {
-        return displayScene(IPPromptController.class);
+    /**
+     * Re-initialize subscripition for the screen that is being set.
+     * Unsubscribe from all the other screen's subscriptions.
+     * 
+     * @param <T>           Generic type for the controller's class
+     * @param type          Type of the controller for which to set the scene
+     * @param subscriptions Array of subscriptions to re-initialize
+     */
+    private <T> void subscribe(final Class<T> type, final Subscription... subscriptions) {
+        this.lobbySubscriptions.forEach((s) -> s.unsubscribe());
+        this.gameSubscriptions.forEach((s) -> s.unsubscribe());
+        if (type == LobbyController.class) {
+            this.lobbySubscriptions = Arrays.asList(subscriptions);
+        }
+        if (type == GameController.class) {
+            this.gameSubscriptions = Arrays.asList(subscriptions);
+        }
     }
 
     public Pair<SplashController, Parent> showSplash() {
+        subscribe(SplashController.class);
         return displayScene(SplashController.class);
     }
 
     public Pair<LeaderboardController, Parent> showLeaderboard() {
+        subscribe(LeaderboardController.class);
         return displayScene(LeaderboardController.class);
     }
 
     public Pair<HelpController, Parent> showHelp() {
+        subscribe(HelpController.class);
         return displayScene(HelpController.class);
     }
 
     public Pair<LobbyController, Parent> showLobby() {
-        return displayScene(LobbyController.class);
+        var root = displayScene(LobbyController.class);
+        var ctrl = root.getKey();    
+        subscribe(LobbyController.class, ctrl.registerForMessages());
+        return root;
     }
 
-    public Pair<GameController, Parent> showGame() {
-        return displayScene(GameController.class);
+    public Pair<GameController, Parent> showMultiPlayer(final Player me, final Game game) {
+        var root = displayScene(GameController.class);
+        var ctrl = root.getKey();
+        ctrl.setGame(me, game);
+        subscribe(GameController.class, ctrl.registerForMessages());
+        return root;
     }
 
-    public Pair<LeaderboardController, Parent> displayLeaderboardMomentarily(
-            final Class<LeaderboardController> type) {
-        String file = type.getSimpleName().replace("Controller", ".fxml");
-        var root = myFXML.load(type, "client", "scenes", file);
+    public Pair<GameController, Parent> showSinglePlayer(final Player me) {
+        var root = displayScene(GameController.class);
+        var ctrl = root.getKey();
+        ctrl.setSinglePlayer(me);
+        subscribe(GameController.class);
+        return root;
+    }
+    
+    public Pair<LeaderboardController, Parent> displayLeaderboardMomentarily() {
+        var root = myFXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
         Stage stage1 = new Stage();
         Scene scene = new Scene(root.getValue());
         stage1.setScene(scene);

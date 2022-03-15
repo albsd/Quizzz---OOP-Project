@@ -77,7 +77,7 @@ public class LobbyController implements Initializable {
 
         updatePlayerList();
 
-        server.registerForMessages("/topic/update/player", PlayerUpdate.class, update -> {
+        server.registerForMessages("/topic/lobby/player", PlayerUpdate.class, update -> {
             if (update.getContent() == PlayerUpdate.Type.join) {
                 players.add(update.getNick());
             } else {
@@ -95,9 +95,7 @@ public class LobbyController implements Initializable {
 
         server.registerForMessages("/topic/lobby/start", Game.class, game -> {
             Platform.runLater(() -> {
-                var root = fxml.showGame();
-                var ctrl = root.getKey();
-                ctrl.setGame(me, game);
+                fxml.showMultiPlayer(me, game);
             });
         });
     }
@@ -177,6 +175,6 @@ public class LobbyController implements Initializable {
             return;
         }
 
-        fxml.showGame();
+        fxml.showMultiPlayer(me, game);
     }
 }

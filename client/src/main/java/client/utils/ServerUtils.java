@@ -29,6 +29,7 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -84,8 +85,7 @@ public class ServerUtils {
         var stomp = new WebSocketStompClient(wsClient);
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
         try {
-            return stomp.connect(url, new StompSessionHandlerAdapter() {
-            }).get();
+            return stomp.connect(url, new StompSessionHandlerAdapter() { }).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
@@ -94,10 +94,8 @@ public class ServerUtils {
         throw new IllegalStateException();
     }
 
-    public <T> void registerForMessages(final String dest,
-            final Class<T> type,
-            final Consumer<T> consumer) {
-        session.subscribe(dest, new StompFrameHandler() {
+    public <T> Subscription registerForMessages(final String dest, final Class<T> type, final Consumer<T> consumer) {
+        return session.subscribe(dest, new StompFrameHandler() {
             @Override
             public Type getPayloadType(final StompHeaders headers) {
                 return type;
@@ -108,6 +106,7 @@ public class ServerUtils {
             public void handleFrame(final StompHeaders headers, final Object payload) {
                 try {
                     consumer.accept((T) payload);
+                    
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

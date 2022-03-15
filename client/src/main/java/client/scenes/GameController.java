@@ -17,6 +17,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -26,6 +28,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javax.inject.Inject;
+
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 public class GameController implements Initializable {
 
@@ -90,6 +94,47 @@ public class GameController implements Initializable {
         points.setFont(font);
         timer1.setFont(font);
         timer2.setFont(font);
+    }
+
+    public Subscription[] registerForMessages() {
+        Subscription[] subscriptions = new Subscription[1];
+        subscriptions[0] = server.registerForMessages("/topic" + chatPath, EmoteMessage.class, message -> {
+            Platform.runLater(() -> {
+                Label nickname = new Label(message.getNick());
+                nickname.setFont(font);
+                
+                String emotePath = switch (message.getContent()) {
+                    case cry -> "/images/face-sad.png";
+                    case frown -> "/images/face-frown.png";
+                    case smile -> "/images/face-smile.png";
+                    case surprised -> "/images/face-surprise.png";
+                };
+                ImageView emoteImage = new ImageView();
+                emoteImage.setImage(new Image(emotePath));
+                
+                HBox emoteBox = new HBox(20);
+                emoteBox.setAlignment(Pos.CENTER_RIGHT);
+                emoteBox.getChildren().addAll(nickname, emoteImage);
+                emoteChat.getChildren().add(emoteBox);
+                
+                // update scrollpane's layout before scrolling to the bottom
+                emoteScroll.layout();
+                emoteScroll.setVvalue(1);
+            });
+        });
+        return subscriptions;
+    }
+
+    public void setGame(final Player me, final Game game) {
+        this.me = me;
+        this.game = game;
+        this.chatPath = "/game/" + game.getId() + "/chat";
+       
+        questionNumber.setText("#1");
+        question.setText(game.getCurrentQuestion().getPrompt());
+        // start client timer
+        progressBar.start();
+        game.start(this::setNextQuestion);
     }
 
     public void setSinglePlayer(final Player me) {
@@ -158,7 +203,7 @@ public class GameController implements Initializable {
         //logic to show leaderboard
         if ((game.getCurrentQuestionIndex()) % 10 == 0) {
             Platform.runLater(() -> {
-                var root = fxml.displayLeaderboardMomentarily(LeaderboardController.class);
+                var root = fxml.displayLeaderboardMomentarily();
                 LeaderboardController leaderboardController = root.getKey();
                 leaderboardController.displayLeaderboard(this.game.getId());
             });
@@ -222,6 +267,6 @@ public class GameController implements Initializable {
 
     private void sendScores(final String nick, final int time, final String type,
             final int answer, final int option) {
-        server.updateScore(game.getId(), new ScoreMessage(nick, time, type, answer, option, null));
+        server.updateScore(game.getId(), new ScoreMessage(nick, time, type, answer, option));
     }
 }

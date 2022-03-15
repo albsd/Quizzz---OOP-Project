@@ -71,11 +71,8 @@ public class SplashController {
             return;
         }
 
-        final Player player = new Player(nick);
-        var root = fxml.showGame();
-        var ctrl = root.getKey();
-
-        ctrl.setSinglePlayer(player);
+        final Player me = new Player(nick);
+        fxml.showSinglePlayer(me);
     }
 
     /**
