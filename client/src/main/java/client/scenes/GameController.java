@@ -22,7 +22,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -178,6 +177,16 @@ public class GameController implements Initializable {
 
     @FXML
     public void setNextQuestion() {
+        int prevQuNum = Integer.parseInt(questionNumber.getText().replace("#", ""));
+        //logic to show leaderboard
+        if ((prevQuNum) % 10 == 0) {
+            var root = fxml.displayLeaderboardMomentarily(LeaderboardController.class);
+            LeaderboardController leaderboardController = root.getKey();
+            leaderboardController.setQuestionNumber(prevQuNum);
+            leaderboardController.displayLeaderboard(this.currentGame.getId().toString());
+
+        }
+
         //increment and return next question
         questionNumber.setText("#" + (1 + currentGame.nextQuestion()));
         question.setText(currentGame.getCurrentQuestion().getPrompt());
