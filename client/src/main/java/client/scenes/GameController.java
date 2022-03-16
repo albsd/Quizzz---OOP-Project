@@ -74,6 +74,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private String chatPath;
 
+    private boolean doubleScore = false;
+
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml,
             final ProgressBarController progressBar) {
@@ -186,6 +188,11 @@ public class GameController implements Initializable, WebSocketSubscription {
             //assume the player always inputs a number
             score = me.calculateOpenPoints(correctAnswer, option, progressBar.getClientTime());
         }
+        //check for doublescore
+        if (doubleScore) {
+            score *= 2;
+            doubleScore = false;
+        }
         me.addScore(score);
     }
         //sendScores(me.getNick(), progressBar.getClientTime(), "open", correctAnswer, option);
@@ -233,7 +240,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void scorePowerup(final ActionEvent e) {
-
+        doubleScore = true;
+        ((Button) e.getSource()).setDisable(true);
     }
 
     @FXML
