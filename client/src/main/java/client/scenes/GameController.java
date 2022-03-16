@@ -8,7 +8,6 @@ import commons.ScoreMessage;
 import commons.Emote;
 import commons.EmoteMessage;
 import commons.Game;
-import commons.Question;
 import commons.MultipleChoiceQuestion;
 import commons.FreeResponseQuestion;
 import javafx.application.Platform;
@@ -30,7 +29,6 @@ import javafx.scene.text.Font;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
