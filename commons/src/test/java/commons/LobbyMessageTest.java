@@ -44,6 +44,6 @@ class LobbyMessageTest {
 
     @Test
     void testEquals() {
-        assertEquals(message1, new LobbyMessage(nick1, content1, time1));
+        assertEquals(message1, new LobbyMessage(nick1, time1, content1));
     }
 }

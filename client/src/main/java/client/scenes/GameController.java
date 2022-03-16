@@ -3,14 +3,15 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
-import commons.Player;
-import commons.ScoreMessage;
-import commons.Emote;
+
 import commons.EmoteMessage;
 import commons.Game;
-import commons.Question;
 import commons.MultipleChoiceQuestion;
+import commons.Question;
+import commons.ScoreMessage;
 import commons.FreeResponseQuestion;
+import commons.Emote;
+import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,14 +28,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
+
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.UUID;
-
-import javax.inject.Inject;
-
-import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 public class GameController implements Initializable, WebSocketSubscription {
 

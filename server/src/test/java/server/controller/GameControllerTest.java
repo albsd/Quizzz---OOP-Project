@@ -21,7 +21,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 import commons.Game;
-import commons.LobbyMessage;
 import commons.Player;
 
 import commons.ScoreMessage;
