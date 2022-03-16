@@ -31,12 +31,37 @@ public class Player {
         return this.score;
     }
 
-    public void setScore(final int amount) {
-        this.score = amount;
+    public void setScore(final int score) {
+        this.score = score;
     }
 
-    public void addScore(final int amount) {
-        this.score += amount;
+    public void setScore(final ScoreMessage sm) {
+        if (sm.getType().equals("multiple")) {
+            this.score = calculateMulChoicePoints(sm.getContent());
+        } else {
+            this.score = calculateOpenPoints(sm.getAnswer(), sm.getOption(), sm.getContent());
+        }
+    }
+
+    private int calculateMulChoicePoints(final int time) {
+        int base = 50;
+        int bonusScore = calculateBonusPoints(time);
+        return base + bonusScore;
+    }
+
+    private int calculateOpenPoints(final int answer, final int option, final int time) {
+        int bonusScore = calculateBonusPoints(time);
+        int offPercentage = (int) Math.round(((double) Math.abs((option - answer)) / answer) * 100);
+        int accuracyPercentage = 100 - offPercentage;
+        if (accuracyPercentage < 0) {
+            accuracyPercentage = 0;
+        }
+        int base = (accuracyPercentage / 10) * 10;
+        return base + bonusScore;
+    }
+
+    private int calculateBonusPoints(final int time) {
+        return (time / 1000) * 2;
     }
 
     @Override

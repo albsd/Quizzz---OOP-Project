@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.FXMLController;
 import client.utils.ServerUtils;
+import client.utils.WebSocketSubscription;
 import commons.Game;
 import commons.LobbyMessage;
 import commons.Player;
@@ -28,9 +29,9 @@ import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 
-import org.springframework.web.util.HtmlUtils;
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
-public class LobbyController implements Initializable {
+public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     private ScrollPane chatArea;
@@ -50,15 +51,15 @@ public class LobbyController implements Initializable {
     @FXML
     private Label playerCount;
 
-    private List<String> players;
-
     private final ServerUtils server;
-
+    
     private final FXMLController fxml;
 
-    private Player me;
-
     private final DateTimeFormatter timeFormat;
+    
+    private Player me;
+    
+    private List<String> players;
 
     @Inject
     public LobbyController(final ServerUtils server, final FXMLController fxml) {
@@ -66,8 +67,23 @@ public class LobbyController implements Initializable {
         this.fxml = fxml;
         this.players = new ArrayList<>();
         this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
+    }
 
-        server.registerForMessages("/topic/playerUpdate", PlayerUpdate.class, update -> {
+    @Override
+    public void initialize(final URL location, final ResourceBundle resources) {
+        // We DON'T use the shorthand .toList() here, because that returns an immutable
+        // list and causes player updates to get ignored silently
+        this.players = server.getPlayers().stream()
+                .map(Player::getNick)
+                .collect(Collectors.toList());
+
+        updatePlayerList();
+    }
+
+    @Override
+    public Subscription[] registerForMessages() {
+        Subscription[] subscriptions = new Subscription[3];
+        subscriptions[0] = server.registerForMessages("/topic/update/player", PlayerUpdate.class, update -> {
             if (update.getContent() == PlayerUpdate.Type.join) {
                 players.add(update.getNick());
             } else {
@@ -76,39 +92,30 @@ public class LobbyController implements Initializable {
             updatePlayerList();
         });
 
-        server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, m -> {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    String nick = m.getNick();
-                    String time = m.getTimestamp();
-                    String content = m.getContent();
-                    String chatLogs = chatText.getText()
-                            + nick + " (" + time + ") - " + content + "\n";
-                    chatText.setText(chatLogs);
-                }
+        subscriptions[1] = server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, message -> {
+            Platform.runLater(() -> {
+                String chatBox = chatText.getText() + message.toString();
+                chatText.setText(chatBox);
             });
         });
 
-    }
-
-    @Override
-    public void initialize(final URL location, final ResourceBundle resources) {
-        // We DON'T use the shorthand .toList() here, because that returns an immutable
-        // list and causes player updates to get ignored silently
-        this.players = server.getPlayers().stream().map(Player::getNick).collect(Collectors.toList());
-        updatePlayerList();
+        subscriptions[2] = server.registerForMessages("/topic/lobby/start", Game.class, game -> {
+            Platform.runLater(() -> { 
+                fxml.showMultiPlayer(me, game); 
+            });
+        });
+        return subscriptions;
     }
 
     @FXML
     public void onEnter(final ActionEvent e) {
         String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         chatInput.setText("");
+
         final LocalTime time = LocalTime.now();
-        // escapes special characters in input
-        server.send("/app/lobby/chat",
-                //remove nanosecond when displaying time and convert to string
-                new LobbyMessage(me.getNick(), time.format(timeFormat), HtmlUtils.htmlEscape(content)));
+        final LobbyMessage message = new LobbyMessage(me.getNick(), time.format(timeFormat), content);
+        
+        server.send("/app/lobby/chat", message);
         chatArea.setVvalue(1.0);
     }
 
@@ -119,31 +126,28 @@ public class LobbyController implements Initializable {
     private void updatePlayerList() {
         // GUI Updates must be run later
         // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                playerCount.setText("Number of players: " + players.size());
+        Platform.runLater(() -> {
+            playerCount.setText("Number of players: " + players.size());
 
-                List<String> nicks = players.stream().map(nick -> {
-                    if (nick.equals(me.getNick())) {
-                        return nick + " (me)";
-                    }
-                    return nick;
-                }).toList();
+            List<String> nicks = players.stream().map(nick -> {
+                if (nick.equals(me.getNick())) {
+                    return nick + " (me)";
+                }
+                return nick;
+            }).toList();
 
-                String leftText = IntStream.range(0, players.size())
-                        .filter(i -> i % 2 == 0)
-                        .mapToObj(nicks::get)
-                        .collect(Collectors.joining("\n\n"));
+            String leftText = IntStream.range(0, players.size())
+                    .filter(i -> i % 2 == 0)
+                    .mapToObj(nicks::get)
+                    .collect(Collectors.joining("\n\n"));
 
-                String rightText = IntStream.range(0, players.size())
-                        .filter(i -> i % 2 == 1)
-                        .mapToObj(nicks::get)
-                        .collect(Collectors.joining("\n\n"));
+            String rightText = IntStream.range(0, players.size())
+                    .filter(i -> i % 2 == 1)
+                    .mapToObj(nicks::get)
+                    .collect(Collectors.joining("\n\n"));
 
-                playersLeft.setText(leftText);
-                playersRight.setText(rightText);
-            }
+            playersLeft.setText(leftText);
+            playersRight.setText(rightText);
         });
     }
 
@@ -162,17 +166,12 @@ public class LobbyController implements Initializable {
     @FXML
     public void returnToMenu(final ActionEvent event) {
         server.leaveGame(me.getNick());
-
         fxml.showSplash();
     }
 
     @FXML
     public void start(final ActionEvent event) {
         Game game = server.startGame();
-        var root = fxml.showGame();
-        var ctrl = root.getKey();
-        ctrl.setMe(me);
-        System.out.println("lobbyGame = " + game);
-        ctrl.setGame(game);
+        fxml.showMultiPlayer(me, game);
     }
 }

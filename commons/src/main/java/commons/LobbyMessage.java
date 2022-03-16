@@ -22,6 +22,11 @@ public class LobbyMessage extends Message<String> {
     }
 
     @Override
+    public String toString() {
+        return  super.getNick() + " (" + timestamp + ") - " + super.getContent() + "\n";
+    }
+
+    @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

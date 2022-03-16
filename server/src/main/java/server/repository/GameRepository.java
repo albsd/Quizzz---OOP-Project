@@ -102,36 +102,8 @@ public class GameRepository {
         return seed;
     }
 
-    public void updatePlayerScore(final ScoreMessage sm) {
-        Game game = findById(sm.getId());
-        Player player = game.getPlayerByNick(sm.getNick());
-        int score;
-        if (sm.getType().equals("multiple")) {
-            score = calculateMulChoicePoints(sm.getContent());
-        } else {
-            score = calculateOpenPoints(sm.getAnswer(), sm.getOption(), sm.getContent());
-        }
+    public void updatePlayerScore(final Game game,  final ScoreMessage score) {
+        Player player = game.getPlayerByNick(score.getNick());
         player.setScore(score);
-    }
-
-    private int calculateMulChoicePoints(final int time) {
-        int base = 50;
-        int bonusScore = calculateBonusPoints(time);
-        return base + bonusScore;
-    }
-
-    private int calculateOpenPoints(final int answer, final int option, final int time) {
-        int bonusScore = calculateBonusPoints(time);
-        int offPercentage = (int) Math.round(((double) Math.abs((option - answer)) / answer) * 100);
-        int accuracyPercentage = 100 - offPercentage;
-        if (accuracyPercentage < 0) {
-            accuracyPercentage = 0;
-        }
-        int base = (accuracyPercentage / 10) * 10;
-        return base + bonusScore;
-    }
-
-    private int calculateBonusPoints(final int time) {
-        return (time / 1000) * 2;
     }
 }

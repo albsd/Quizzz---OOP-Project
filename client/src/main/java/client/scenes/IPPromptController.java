@@ -18,11 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.util.converter.IntegerStringConverter;
 
 public class IPPromptController implements Initializable {
-
-    private final ServerUtils server;
-
-    private final FXMLController fxml;
-
+    
     @FXML
     private TextField hostField;
 
@@ -31,6 +27,10 @@ public class IPPromptController implements Initializable {
 
     @FXML
     private Text warning;
+    
+    private final ServerUtils server;
+
+    private final FXMLController fxml;
 
     @Inject
     public IPPromptController(final ServerUtils server, final FXMLController fxml) {
