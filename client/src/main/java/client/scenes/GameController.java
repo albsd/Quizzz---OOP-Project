@@ -100,41 +100,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         timer1.setFont(font);
         timer2.setFont(font);
 
-
-
-        Consumer<EmoteMessage> emoteConsumer = msg -> Platform.runLater(() -> {
-            Label nickname = new Label(msg.getNick());
-            nickname.setFont(font);
-            String emotePath = switch (msg.getContent()) {
-                case cry -> "/images/face-sad.png";
-                case frown -> "/images/face-frown.png";
-                case smile -> "/images/face-smile.png";
-                case surprised -> "/images/face-surprise.png";
-            };
-            ImageView emoteImage = new ImageView();
-            emoteImage.setImage(new Image(emotePath));
-
-            HBox message = new HBox(20);
-            message.setAlignment(Pos.CENTER_RIGHT);
-            message.getChildren().addAll(nickname, emoteImage);
-
-            emoteChat.getChildren().add(message);
-
-            // layout is needed to make sure the scroll pane is updated before scrolling to
-            // the bottom
-            emoteScroll.layout();
-            emoteScroll.setVvalue(1);
-        });
-        server.registerForMessages("/topic/game/chat", EmoteMessage.class, emoteConsumer);
-
-        questionNumber.setText("#1");
-        question.setText(((Question) game.getCurrentQuestion()).getPrompt());
-        //start client timer
-        progressBar.start();
-        //start game timer and set gamestate to playing
-        game.start(this::setNextQuestion);
-
-
     }
 
     @Override
