@@ -3,6 +3,11 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 
+import client.utils.WebSocketSubscription;
+import commons.Player;
+import commons.ScoreMessage;
+import commons.Emote;
+
 import commons.EmoteMessage;
 import commons.Game;
 import commons.Player;
@@ -19,6 +24,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,33 +32,26 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.UUID;
-import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
-public class GameController implements Initializable {
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
-    private final ServerUtils server;
-
-    private final FXMLController fxml;
-
-    private Player me;
-
-    private final ProgressBarController progressBar;
-
-    // TODO: inject the ProgressBar.fxml into this scene
+public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private Button option1, option2, option3,
             timeButton, scoreButton, removeButton,
             cancelButton, confirmButton;
+    
     @FXML
     private Label question, questionNumber, points, popupText, timer1, timer2;
+
+    @FXML
+    private ProgressBar timer;
 
     @FXML
     private Pane popupMenu;
@@ -66,21 +65,31 @@ public class GameController implements Initializable {
     @FXML
     private HBox mainHorizontalBox;
 
-    private Game currentGame;
+    private final ServerUtils server;
+
+    private final FXMLController fxml;
+
+    private final ProgressBarController progressBar;
+
+    private final Font font;
+
+    private Player me;
+
+    private Game game;
+
+    private String chatPath;
 
     @Inject
-    public GameController(final ServerUtils server,
-                          final FXMLController fxml,
-                          final ProgressBarController progressBar) {
+    public GameController(final ServerUtils server, final FXMLController fxml,
+            final ProgressBarController progressBar) {
         this.server = server;
         this.fxml = fxml;
         this.progressBar = progressBar;
+        this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        Font font = Font.loadFont(getClass().getResourceAsStream(
-                "/fonts/Righteous-Regular.ttf"), 24);
         option1.setFont(font);
         option2.setFont(font);
         option3.setFont(font);
@@ -94,6 +103,7 @@ public class GameController implements Initializable {
         points.setFont(font);
         timer1.setFont(font);
         timer2.setFont(font);
+
 
         Consumer<EmoteMessage> emoteConsumer = msg -> Platform.runLater(() -> {
             Label nickname = new Label(msg.getNick());
@@ -126,9 +136,55 @@ public class GameController implements Initializable {
         progressBar.start();
         //start game timer and set gamestate to playing
         currentGame.start(this::setNextQuestion);
+
     }
 
-    public void setSingle() {
+    @Override
+    public Subscription[] registerForMessages() {
+        Subscription[] subscriptions = new Subscription[1];
+        subscriptions[0] = server.registerForMessages("/topic" + chatPath, EmoteMessage.class, message -> {
+            Platform.runLater(() -> {
+                Label nickname = new Label(message.getNick());
+                nickname.setFont(font);
+                
+                String emotePath = switch (message.getContent()) {
+                    case cry -> "/images/face-sad.png";
+                    case frown -> "/images/face-frown.png";
+                    case smile -> "/images/face-smile.png";
+                    case surprised -> "/images/face-surprise.png";
+                };
+                ImageView emoteImage = new ImageView();
+                emoteImage.setImage(new Image(emotePath));
+                
+                HBox emoteBox = new HBox(20);
+                emoteBox.setAlignment(Pos.CENTER_RIGHT);
+                emoteBox.getChildren().addAll(nickname, emoteImage);
+                emoteChat.getChildren().add(emoteBox);
+                
+                // update scrollpane's layout before scrolling to the bottom
+                emoteScroll.layout();
+                emoteScroll.setVvalue(1);
+            });
+        });
+        return subscriptions;
+    }
+
+    public void setGame(final Player me, final Game game) {
+        this.me = me;
+        this.game = game;
+        this.game.initialiseTimer();
+    
+        this.chatPath = "/game/" + game.getId() + "/chat";
+       
+        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
+        // question.setText(game.getCurrentQuestion().getPrompt());
+        // start client timer
+        // progressBar.start();
+        game.start(this::setNextQuestion);
+    }
+
+    public void setSinglePlayer(final Player me) {
+        this.me = me;
         leftBox.getChildren().remove(1);
         mainHorizontalBox.getChildren().remove(3, 5);
         optionBox.setAlignment(Pos.CENTER);
@@ -139,23 +195,25 @@ public class GameController implements Initializable {
 
     @FXML
     public void returnToMenu(final ActionEvent e) {
+        // TODO: confirmation dialog
         fxml.showSplash();
     }
 
-    //this is for multiple choice. Also sets player's time
+    // this is for multiple choice. Also sets player's time
     public void checkMulChoiceAnswer(final ActionEvent e) {
         int correctAnswer = ((MultipleChoiceQuestion) currentGame.getCurrentQuestion()).getAnswer();
+
         String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
         if (option == correctAnswer) {
             System.out.println("Correct answer!");
-            sendScores(me.getNick(), progressBar.getClientTime(), "multiple",
-                    correctAnswer, option, currentGame.getId());
+            sendScores(me.getNick(), progressBar.getClientTime(), "multiple", correctAnswer, option);
         } else {
             System.out.println("Wrong answer. No points");
         }
     }
-    //this is for open questions
+
+    // this is for open questions
     public void checkOpenAnswer(final ActionEvent e) {
         long correctAnswer = ((FreeResponseQuestion) currentGame.getCurrentQuestion()).getAnswer();
         String optionStr = ((Button) e.getSource()).getText();
@@ -164,30 +222,34 @@ public class GameController implements Initializable {
             option = Integer.parseInt(optionStr);
         } catch (NumberFormatException exception) {
             System.out.println("invalid input");
-            //set for 0 accuracy
+            // set for 0 accuracy
             option = correctAnswer * -200;
         }
-        sendScores(me.getNick(), progressBar.getClientTime(),
-                "open", correctAnswer, option, currentGame.getId());
+        sendScores(me.getNick(), progressBar.getClientTime(), "open", correctAnswer, option);
     }
 
     public void setMe(final Player me) {
         this.me = me;
     }
 
-    public void setGame(final Game game) {
-        this.currentGame = game;
-    }
-
     @FXML
     public void setNextQuestion() {
-        //increment and return next question
-        questionNumber.setText("#" + (1 + currentGame.nextQuestion()));
-        question.setText(((Question) currentGame.getCurrentQuestion()).getPrompt());
-        //start client timer
-        progressBar.start();
-        //start game timer
-        currentGame.start(this::setNextQuestion);
+        game.nextQuestion();
+        //logic to show leaderboard
+        if ((game.getCurrentQuestionIndex()) % 10 == 0) {
+            Platform.runLater(() -> {
+                var root = fxml.displayLeaderboardMomentarily();
+                LeaderboardController leaderboardController = root.getKey();
+                leaderboardController.displayLeaderboard(this.game.getId());
+            });
+        }
+
+        Platform.runLater(() -> {
+            questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
+//            question.setText(game.getCurrentQuestion().getPrompt());
+        });
+        
+        game.start(this::setNextQuestion);
     }
 
     public void openPopup(final ActionEvent e) throws IOException {
@@ -235,11 +297,11 @@ public class GameController implements Initializable {
     }
 
     private void sendEmote(final Emote emote) {
-        server.send("/app/game/chat", new EmoteMessage(me.getNick(), emote));
+        server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
     }
 
     private void sendScores(final String nick, final int time, final String type,
-                            final long answer, final long option, final UUID id) {
-        server.send("/app/game/scores",  new ScoreMessage(nick, time, type, answer, option, id));
+            final long answer, final long option) {
+        server.updateScore(game.getId(), new ScoreMessage(nick, time, type, answer, option));
     }
 }
