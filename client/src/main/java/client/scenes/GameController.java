@@ -129,6 +129,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     public void setGame(final Player me, final Game game) {
         this.me = me;
+        this.game = game;
         this.game.initialiseTimer();
     
         this.chatPath = "/game/" + game.getId() + "/chat";

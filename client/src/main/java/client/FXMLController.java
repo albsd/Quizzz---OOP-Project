@@ -80,12 +80,11 @@ public class FXMLController {
      * @param subscriptions Array of subscriptions to re-initialize
      */
     private <T> void subscribe(final Class<T> type, final Subscription... subscriptions) {
-        this.lobbySubscriptions.forEach((s) -> s.unsubscribe());
-        this.gameSubscriptions.forEach((s) -> s.unsubscribe());
+        this.lobbySubscriptions.forEach(Subscription::unsubscribe);
+        this.gameSubscriptions.forEach(Subscription::unsubscribe);
         if (type == LobbyController.class) {
             this.lobbySubscriptions = Arrays.asList(subscriptions);
-        }
-        if (type == GameController.class) {
+        } else if (type == GameController.class) {
             this.gameSubscriptions = Arrays.asList(subscriptions);
         }
     }
