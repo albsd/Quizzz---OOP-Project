@@ -22,6 +22,7 @@ public class GameService {
     private static HashMap<UUID, List<Question>> questionsPerGame = new HashMap<>();
 
     private ActivityService activityService;
+
     @Autowired
     public GameService(final GameRepository repo, final ActivityService activityService) {
         this.repo = repo;
@@ -70,10 +71,10 @@ public class GameService {
     public List<Question> getQuestions(final UUID id) {
         if (questionsPerGame.containsKey(id)) {
             return questionsPerGame.get(id);
-        } else {
-            questionsPerGame.put(id, activityService.getQuestionList());
-            return questionsPerGame.get(id);
-        }
+        } 
+        
+        questionsPerGame.put(id, activityService.getQuestionList());
+        return questionsPerGame.get(id);
     }
 
     public void updatePlayerScore(final Game game, final ScoreMessage scoreMessage) {

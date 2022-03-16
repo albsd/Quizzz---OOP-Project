@@ -50,7 +50,7 @@ public class GameControllerTest {
     public void setup() {
         as = new ActivityService();
         service =  new GameService(new GameRepository(), as);
-        ctrl = new GameController(service, as);
+        ctrl = new GameController(service);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
         game = service.getCurrentGame();

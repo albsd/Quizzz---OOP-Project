@@ -21,7 +21,6 @@ import commons.Leaderboard;
 import commons.Player;
 import commons.ScoreMessage;
 import org.springframework.stereotype.Repository;
-import server.FakeDatabase;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -33,11 +32,9 @@ import java.util.List;
 public class GameRepository {
 
     private Set<Game> games;
-    private final FakeDatabase fd;
 
     public GameRepository() {
         games = new HashSet<>();
-        fd = new FakeDatabase();
     }
 
     public List<Game> getGames() {

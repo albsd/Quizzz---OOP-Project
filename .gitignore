@@ -5,8 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+# H2 database files
 **/*.mv.db
-server/quizzzz.trace.db
+**/*.trace.db
 
 **/*.swp
 

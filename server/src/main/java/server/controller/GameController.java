@@ -15,8 +15,6 @@
  */
 package server.controller;
 
-
-
 import commons.Game;
 import commons.EmoteMessage;
 import commons.GameUpdate;
@@ -41,7 +39,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import server.service.ActivityService;
 import server.service.GameService;
 
 import java.util.List;
@@ -53,12 +50,9 @@ public class GameController {
 
     private final GameService gameService;
 
-    private final ActivityService activityService;
-
     @Autowired
-    public GameController(final GameService gameService, final ActivityService activityService) {
+    public GameController(final GameService gameService) {
         this.gameService = gameService;
-        this.activityService = activityService;
     }
 
     /**
@@ -93,15 +87,16 @@ public class GameController {
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
+
         return ResponseEntity.ok(game);
     }
 
     @GetMapping("/{id}/leaderboard")
-    public ResponseEntity<Leaderboard> getLeaderboard(
-            @PathVariable final UUID id) {
+    public ResponseEntity<Leaderboard> getLeaderboard(@PathVariable final UUID id) {
         if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
         }
+
         return ResponseEntity.ok(gameService.getLeaderboard(id));
     }
 
@@ -253,6 +248,7 @@ public class GameController {
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
+
         gameService.updatePlayerScore(game, scoreMessage);
         return ResponseEntity.ok(game);
     }
@@ -261,7 +257,7 @@ public class GameController {
      * Send an emote message to the game with the given id.
      * 
      * @param message EmoteMessage to be sent
-     * @return        The same message object
+     * @return The same message object
      */
     @MessageMapping("/game/{id}/chat") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/chat
     @SendTo("/topic/game/{id}/chat")

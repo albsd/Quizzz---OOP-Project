@@ -97,7 +97,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         points.setFont(font);
         timer1.setFont(font);
         timer2.setFont(font);
-
     }
 
     @Override
@@ -130,11 +129,17 @@ public class GameController implements Initializable, WebSocketSubscription {
         return subscriptions;
     }
 
+    /**
+     * Assign the currentGame and myself as a Player.
+     * Initialize the game's timer and start the game loop.
+     * 
+     * @param me    Player of myself
+     * @param game  Current game that I'm a part of
+     */
     public void setGame(final Player me, final Game game) {
         this.me = me;
         this.game = game;
         this.game.initialiseTimer();
-    
         this.chatPath = "/game/" + game.getId() + "/chat";
        
         questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
@@ -161,12 +166,16 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     // this is for multiple choice. Also sets player's time
-    public void checkMulChoiceAnswer(final ActionEvent e) {
-
+    /**
+     * Validates the answer for the multiple choice question.
+     * Updates the user's score given in what time frame he/she has answered.
+     * 
+     * @param event triggered by a button click
+     */
+    public void checkMulChoiceAnswer(final ActionEvent event) {
         int correctAnswer = ((MultipleChoiceQuestion) game.getCurrentQuestion()).getAnswer();
-
-
-        String optionStr = ((Button) e.getSource()).getText();
+        
+        String optionStr = ((Button) event.getSource()).getText();
         int option = Integer.parseInt(optionStr);
         if (option == correctAnswer) {
             System.out.println("Correct answer!");
@@ -176,11 +185,16 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
     }
 
-    // this is for open questions
-    public void checkOpenAnswer(final ActionEvent e) {
+    /**
+     * Validate the answer for the free-response/open question
+     * Updates the user's score given in what time frame he/she has answered.
+     * 
+     * @param event triggered by a button click
+     */
+    public void checkOpenAnswer(final ActionEvent event) {
         long correctAnswer = ((FreeResponseQuestion) game.getCurrentQuestion()).getAnswer();
 
-        String optionStr = ((Button) e.getSource()).getText();
+        String optionStr = ((Button) event.getSource()).getText();
         long option;
         try {
             option = Integer.parseInt(optionStr);
@@ -196,10 +210,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.me = me;
     }
 
+    /**
+     * Set the next question, in case we are passed the 10th question
+     * displays the leaderboard above the current screen.
+     */
     @FXML
     public void setNextQuestion() {
         game.nextQuestion();
-        //logic to show leaderboard
         if ((game.getCurrentQuestionIndex()) % 10 == 0) {
             Platform.runLater(() -> {
                 var root = fxml.displayLeaderboardMomentarily();
@@ -266,6 +283,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private void sendScores(final String nick, final int time, final String type,
             final long answer, final long option) {
-        server.updateScore(game.getId(), new ScoreMessage(nick, time, type, answer, option, game.getId()));
+        server.updateScore(game.getId(), new ScoreMessage(nick, time, type, answer, option));
     }
 }

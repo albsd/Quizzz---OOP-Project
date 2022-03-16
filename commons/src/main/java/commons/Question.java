@@ -8,9 +8,8 @@ import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.Objects;
 
-//TODO: Make this class abstract?
 @Entity
-public class Question {
+public abstract class Question {
 
     @Id
     @JsonProperty("prompt")

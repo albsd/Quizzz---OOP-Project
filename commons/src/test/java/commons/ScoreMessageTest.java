@@ -3,8 +3,6 @@ package commons;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ScoreMessageTest {
@@ -34,8 +32,8 @@ class ScoreMessageTest {
         answer2 = 3000;
         option1 = 400;
         option2 = 2700;
-        message1 = new ScoreMessage(nick1, time1, type1, answer1, option1, UUID.randomUUID());
-        message2 = new ScoreMessage(nick2, time2, type2, answer2, option2, UUID.randomUUID());
+        message1 = new ScoreMessage(nick1, time1, type1, answer1, option1);
+        message2 = new ScoreMessage(nick2, time2, type2, answer2, option2);
     }
 
     @Test
