@@ -70,6 +70,7 @@ public class QuestionTimer {
     public boolean isStarted() {
         return started;
     }
+
     public boolean isOver() {
         return over;
     }
@@ -132,5 +133,4 @@ public class QuestionTimer {
             }
         };
     }
-
 }
