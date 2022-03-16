@@ -57,6 +57,12 @@ public class SplashController {
             return false;
         }
 
+        if (!user.matches("[a-zA-Z0-9]*")) {
+            warning.setTextFill(red);
+            warning.setText("Nickname can only contain letters and numbers");
+            return false;
+        }
+
         warning.setTextFill(green);
         warning.setText("Nickname set");
         return true;
@@ -64,7 +70,7 @@ public class SplashController {
 
     @FXML
     public void singleGame(final ActionEvent event) {
-        String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
+        String nick = nickField.getText();
         if (!validateNicknameLength(nick)) {
             return;
         }
@@ -82,7 +88,7 @@ public class SplashController {
      */
     @FXML
     public void lobby(final ActionEvent event) {
-        String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
+        String nick = nickField.getText();
         if (!validateNicknameLength(nick)) {
             return;
         }
