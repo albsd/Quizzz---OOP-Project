@@ -41,4 +41,9 @@ class LobbyMessageTest {
         assertEquals(time2, message2.getTimestamp());
         assertEquals(content2, message2.getContent());
     }
+
+    @Test
+    void testEquals() {
+        assertEquals(message1, new LobbyMessage(nick1, content1, time1));
+    }
 }

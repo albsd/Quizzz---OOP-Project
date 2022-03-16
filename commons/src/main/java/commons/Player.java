@@ -14,6 +14,7 @@ public class Player {
 
     public Player(final String nick) {
         this.nick = nick;
+        this.score = 0;
     }
 
     @JsonCreator
@@ -35,12 +36,8 @@ public class Player {
         this.score += score;
     }
 
-    public void setScore(final ScoreMessage sm) {
-        if (sm.getType().equals("multiple")) {
-            this.score = calculateMulChoicePoints(sm.getContent());
-        } else {
-            this.score = calculateOpenPoints(sm.getAnswer(), sm.getOption(), sm.getContent());
-        }
+    public void setScore(final int score) {
+        this.score = score;
     }
 
     public int calculateMulChoicePoints(final int time) {

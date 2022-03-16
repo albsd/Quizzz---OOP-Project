@@ -30,6 +30,7 @@ import javafx.scene.text.Font;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -195,20 +196,16 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
         me.addScore(score);
     }
-        //sendScores(me.getNick(), progressBar.getClientTime(), "open", correctAnswer, option);
-
-    public void setMe(final Player me) {
-        this.me = me;
-    }
 
     /**
      * Set the next question, in case we are passed the 10th question
-     * displays the leaderboard above the current screen.
+     * sends the player score and displays the leaderboard above the current screen.
      */
     @FXML
     public void setNextQuestion() {
         game.nextQuestion();
         if ((game.getCurrentQuestionIndex()) % 10 == 0) {
+            server.updateScore(game.getId(), new ScoreMessage(me.getNick(), me.getScore()));
             Platform.runLater(() -> {
                 var root = fxml.displayLeaderboardMomentarily();
                 LeaderboardController leaderboardController = root.getKey();
@@ -271,10 +268,5 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private void sendEmote(final Emote emote) {
         server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
-    }
-
-    private void sendScores(final String nick, final int time, final String type,
-            final long answer, final long option) {
-        server.updateScore(game.getId(), new ScoreMessage(nick, time, type, answer, option));
     }
 }

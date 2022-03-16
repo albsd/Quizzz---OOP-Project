@@ -78,7 +78,6 @@ public class GameRepository {
 
     public void updatePlayerScore(final Game game,  final ScoreMessage score) {
         Player player = game.getPlayerByNick(score.getNick());
-        player.setScore(score);
+        player.setScore(score.getContent());
     }
-
 }

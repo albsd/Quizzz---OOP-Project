@@ -248,7 +248,6 @@ public class GameController {
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
-
         gameService.updatePlayerScore(game, scoreMessage);
         return ResponseEntity.ok(game);
     }
