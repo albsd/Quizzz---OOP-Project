@@ -203,7 +203,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         Platform.runLater(() -> {
             questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
-            question.setText(game.getCurrentQuestion().getPrompt());
+//            question.setText(game.getCurrentQuestion().getPrompt());
         });
         
         game.start(this::setNextQuestion);
