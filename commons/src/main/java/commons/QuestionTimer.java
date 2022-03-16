@@ -2,7 +2,6 @@ package commons;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 public class QuestionTimer {
     private final int maxTime = 20000;
@@ -11,17 +10,14 @@ public class QuestionTimer {
     private int currentTime = maxTime;
     private boolean started = false;
     private boolean over = false;
-    private final UUID id;
     private Timer timer;
     private TimerTask currentTask;
 
-    public QuestionTimer(final UUID id) {
-        this.id = id;
+    public QuestionTimer() {
         this.timer = new Timer();
     }
 
-    public QuestionTimer(final UUID id, final TimerTask task) {
-        this.id = id;
+    public QuestionTimer(final TimerTask task) {
         this.timer = new Timer();
         this.currentTask = task;
     }
@@ -32,10 +28,6 @@ public class QuestionTimer {
 
     public double getMaxTime() {
         return maxTime;
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public Timer getTimer() {
@@ -130,11 +122,11 @@ public class QuestionTimer {
                     //callback
                     //set 5 second delay
                     try {
+                        stopGameTimer();
                         callback.run();
                     } catch (Exception e) {
                     e.printStackTrace();
                     }
-                    stopGameTimer();
                     cancel();
                 }
             }

@@ -53,7 +53,7 @@ public class GameControllerTest {
         ctrl = new GameController(service, as);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
-        game = ctrl.getCurrentGame();
+        game = service.getCurrentGame();
         ctrl.joinCurrentGame("johny");
         ctrl.joinCurrentGame("niko");
         ctrl.joinCurrentGame("babe");
@@ -63,7 +63,7 @@ public class GameControllerTest {
 
     @Test
     public void lobbyIsEmpty() {
-        var actual = ctrl.getCurrentGame();
+        var actual = service.getCurrentGame();
         assertEquals(0, actual.getPlayers().size());
     }
 
@@ -93,12 +93,6 @@ public class GameControllerTest {
         var actual = ctrl.joinCurrentGame(nick);
         actual = ctrl.joinCurrentGame(nick);
         assertEquals(403, actual.getStatusCode().value());
-    }
-
-    @Test
-    public void startTheEmptyLobby() {
-        var actual = ctrl.startCurrentGame();
-        assertEquals(405, actual.getStatusCode().value());
     }
 
     @Test

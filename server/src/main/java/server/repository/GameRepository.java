@@ -111,4 +111,5 @@ public class GameRepository {
     private int calculateBonusPoints(final int time) {
         return (time / 1000) * 2;
     }
+
 }

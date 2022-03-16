@@ -10,15 +10,14 @@ public class ScoreMessage extends Message<Integer> {
     @JsonProperty("type")
     private final String type;
 
-    @JsonProperty("id")
-    private final UUID id;
-
     @JsonProperty("answer")
     private final long answer;
 
     @JsonProperty("option")
     private final long option;
 
+    @JsonProperty("id")
+    private final UUID id;
 
     //for open questions
     @JsonCreator
@@ -42,7 +41,6 @@ public class ScoreMessage extends Message<Integer> {
     public UUID getId() {
         return id;
     }
-
     public long getAnswer() {
         return answer;
     }

@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.FXMLController;
 import client.utils.ServerUtils;
-
 import client.utils.WebSocketSubscription;
 import commons.Player;
 import commons.ScoreMessage;
@@ -35,6 +34,7 @@ import javafx.scene.text.Font;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -105,6 +105,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         timer2.setFont(font);
 
 
+
         Consumer<EmoteMessage> emoteConsumer = msg -> Platform.runLater(() -> {
             Label nickname = new Label(msg.getNick());
             nickname.setFont(font);
@@ -131,11 +132,12 @@ public class GameController implements Initializable, WebSocketSubscription {
         server.registerForMessages("/topic/game/chat", EmoteMessage.class, emoteConsumer);
 
         questionNumber.setText("#1");
-        question.setText(((Question) currentGame.getCurrentQuestion()).getPrompt());
+        question.setText(((Question) game.getCurrentQuestion()).getPrompt());
         //start client timer
         progressBar.start();
         //start game timer and set gamestate to playing
-        currentGame.start(this::setNextQuestion);
+        game.start(this::setNextQuestion);
+
 
     }
 
@@ -201,7 +203,9 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     // this is for multiple choice. Also sets player's time
     public void checkMulChoiceAnswer(final ActionEvent e) {
-        int correctAnswer = ((MultipleChoiceQuestion) currentGame.getCurrentQuestion()).getAnswer();
+
+        int correctAnswer = ((MultipleChoiceQuestion) game.getCurrentQuestion()).getAnswer();
+
 
         String optionStr = ((Button) e.getSource()).getText();
         int option = Integer.parseInt(optionStr);
@@ -215,7 +219,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     // this is for open questions
     public void checkOpenAnswer(final ActionEvent e) {
-        long correctAnswer = ((FreeResponseQuestion) currentGame.getCurrentQuestion()).getAnswer();
+        long correctAnswer = ((FreeResponseQuestion) game.getCurrentQuestion()).getAnswer();
+
         String optionStr = ((Button) e.getSource()).getText();
         long option;
         try {
@@ -302,6 +307,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private void sendScores(final String nick, final int time, final String type,
             final long answer, final long option) {
-        server.updateScore(game.getId(), new ScoreMessage(nick, time, type, answer, option));
+        server.updateScore(game.getId(), new ScoreMessage(nick, time, type, answer, option, game.getId()));
     }
 }

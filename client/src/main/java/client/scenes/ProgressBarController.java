@@ -3,7 +3,12 @@ package client.scenes;
 //import javafx.application.Platform;
 
 import client.utils.ServerUtils;
+import client.utils.WebSocketSubscription;
+
 import com.google.inject.Inject;
+
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
+
 import commons.GameUpdate;
 import commons.QuestionTimer;
 import javafx.application.Platform;
@@ -16,14 +21,10 @@ import javafx.scene.control.ProgressBar;
 
 import java.net.URL;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TimerTask;
-import java.util.UUID;
-import java.util.function.Consumer;
 
-public class ProgressBarController implements Initializable {
+public class ProgressBarController implements Initializable, WebSocketSubscription {
 
     @FXML
     private ProgressBar bar = new ProgressBar(1);
@@ -45,75 +46,59 @@ public class ProgressBarController implements Initializable {
 
     private ServerUtils server;
 
+    private String gameId;
+
     private QuestionTimer questionTimer;
 
     @Inject
     public ProgressBarController(final ServerUtils server) {
-        this.questionTimer = new QuestionTimer(UUID.randomUUID());
+        this.questionTimer = new QuestionTimer();
         this.server = server;
-        server.registerForMessages("/topic/game/update",
-                GameUpdate.class, updateConsumer);
     }
-
-    private Consumer<GameUpdate> updateConsumer = update -> {
-        System.out.println("Halve message received!");
-        Platform.runLater(() -> {
-            switch (update) {
-                case halveTimer -> questionTimer.halve();
-                case stopTimer -> reset();
-                case startTimer -> start();
-
-                default -> {
-                }
-            }
-        });
-    };
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         start();
     }
 
-    private TimerTask clientTimerTask(final QuestionTimer questionTimer,
-            final Label label, final ProgressBar bar,
-            final List<Button> buttons) {
+    @Override
+    public Subscription[] registerForMessages() {
+        Subscription[] subscriptions = new Subscription[1];
+        subscriptions[0] = server.registerForMessages("/topic/game/" + gameId + "/update", GameUpdate.class, update -> {
+            System.out.println("Halve message received!");
+            Platform.runLater(() -> {
+                switch (update) {
+                    case halveTimer -> questionTimer.halve();
+                    case stopTimer -> reset();
+                    case startTimer -> start();
+                    default -> { }
+                }
+            });
+        });
+        return subscriptions;
+    }
+
+    public void setGameId(final String id) {
+        this.gameId = id;
+    }
+
+    private TimerTask clientTimerTask(final QuestionTimer questionTimer) {
         return new TimerTask() {
             @Override
             public void run() {
                 questionTimer.setCurrentTime(
-                        questionTimer.getCurrentTime()
-                                - questionTimer.getDecrement());
+                        questionTimer.getCurrentTime() - questionTimer.getDecrement());
                 if (questionTimer.getCurrentTime() <= 0) {
                     questionTimer.setOver(true);
                     System.out.println("Time's over!");
-                    Platform.runLater(() -> label.setText("Time's over!"));
                     questionTimer.setCurrentTime(0);
-
-                    for (Button b : buttons) {
-                        b.setDisable(true);
-                    }
-
                     cancel();
-                } else {
-                    Platform.runLater(() -> {
-                        label.setText(
-                                String.format("%.2f",
-                                        questionTimer.getCurrentTime()
-                                                / questionTimer.getOneSecond()));
-
-                        bar.setProgress((double) questionTimer.getCurrentTime()
-                                / questionTimer.getMaxTime()
-                        );
-                    });
                 }
             }
         };
     }
 
-    public void startClientTimer(final QuestionTimer questionTimer,
-            final Label label,
-            final ProgressBar bar,
-            final List<Button> buttons) {
+    public void startClientTimer(final QuestionTimer questionTimer) {
         if (questionTimer.isStarted()) {
             System.out.println("Timer already started! Reset first.");
         } else {
@@ -122,12 +107,9 @@ public class ProgressBarController implements Initializable {
             questionTimer.setOver(false);
 
             final int period = questionTimer.getDecrement();
-            for (Button b : buttons) {
-                b.setDisable(false);
-            }
 
             questionTimer.setCurrentTask(clientTimerTask(
-                    questionTimer, label, bar, buttons));
+                    questionTimer));
             questionTimer.getTimer().scheduleAtFixedRate(
                     questionTimer.getTask(), 0, period);
         }
@@ -136,19 +118,15 @@ public class ProgressBarController implements Initializable {
     @FXML
     public void reset() {
         questionTimer.reset();
-        Platform.runLater(() ->
-                label.setText(String.valueOf(questionTimer.getCurrentTime()
-                        / questionTimer.getOneSecond())));
-                bar.setProgress((double) questionTimer.getCurrentTime()
-                        / questionTimer.getMaxTime());
+        Platform.runLater(() -> label.setText(String.valueOf(questionTimer.getCurrentTime()
+                / questionTimer.getOneSecond())));
+        bar.setProgress((double) questionTimer.getCurrentTime()
+                / questionTimer.getMaxTime());
     }
 
     @FXML
     public void start() {
-        List<Button> buttons = new ArrayList<>();
-        buttons.add(option1);
-        buttons.add(option2);
-        startClientTimer(questionTimer, label, bar, buttons);
+        startClientTimer(questionTimer);
     }
 
     @FXML
@@ -159,13 +137,10 @@ public class ProgressBarController implements Initializable {
 
     @FXML
     public void onHalveButtonClick(final ActionEvent e) {
-        server.send("/app/halve",
-                GameUpdate.halveTimer);
+        server.send("/app/game/" + gameId + "/halve", GameUpdate.halveTimer);
 
-        // Solution to ensure that the client's timer is not halved.
-        // (if he was the one that clicked on the button)
+        // Solution to ensure that the initiator's timer is not halved
         questionTimer.setCurrentTime(questionTimer.getCurrentTime() * 2);
-
         halveButton.setDisable(true);
     }
 

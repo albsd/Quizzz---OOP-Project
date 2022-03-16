@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PlayerTest {
     private Player p;
-    private final int testNumber1 = 80;
-    private final int testNumber2 = 100;
 
     @BeforeEach
     void setup() {
@@ -22,10 +20,10 @@ public class PlayerTest {
 
     @Test
     void testScore() {
-        p.addScore(testNumber1);
-        assertEquals(testNumber1, p.getScore());
-        p.addScore(testNumber2);
-        assertEquals(testNumber1 + testNumber2, p.getScore());
+        p.setScore(80);
+        assertEquals(80, p.getScore());
+        p.setScore(120);
+        assertEquals(120, p.getScore());
         p.setScore(0);
         assertEquals(0, p.getScore());
     }

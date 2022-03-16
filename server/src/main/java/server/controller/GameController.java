@@ -34,6 +34,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -95,7 +96,7 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
-    @GetMapping("{id}/leaderboard")
+    @GetMapping("/{id}/leaderboard")
     public ResponseEntity<Leaderboard> getLeaderboard(
             @PathVariable final UUID id) {
         if (gameService.findById(id) == null) {
@@ -104,7 +105,7 @@ public class GameController {
         return ResponseEntity.ok(gameService.getLeaderboard(id));
     }
 
-    @GetMapping("{id}/question")
+    @GetMapping("/{id}/question")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
         if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
@@ -119,7 +120,6 @@ public class GameController {
      * @param nick User's nickname which identifies a given player in a game
      * @return Player
      */
-    // TODO: add sessionId to path so it can be used to construct the player
     @PostMapping("/join/{nick}")
     public ResponseEntity<Player> joinCurrentGame(final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
@@ -145,7 +145,6 @@ public class GameController {
      * @param nick User's nickname which identifies a given player in a game
      * @return Player
      */
-    // TODO: add sessionId to path so it can be used to find player
     @DeleteMapping("/leave/{nick}")
     public ResponseEntity<Player> leaveCurrentGame(final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
@@ -181,7 +180,6 @@ public class GameController {
         System.out.println(headers.getSessionId());
     }
 
-    // add leave game code onDisconnect
     @EventListener
     private void handleSessionDisconnect(final SessionDisconnectEvent event) {
         System.out.println("Client disconnected");
@@ -189,15 +187,15 @@ public class GameController {
     }
 
     /**
-     * A Websocket endpoint for sending updates about the lobby player' status.
-     * Namely, updates the active players in the lobby for all clients.
+     * A Websocket endpoint for sending updates about the game's player' status.
+     * Namely, updates the active players in the game for all clients.
      *
      * @param update The object containing a player who has joined/left
      * 
      * @return The PlayerUpdate object
      */
-    @MessageMapping("/playerUpdate") // /app/player_update
-    @SendTo("/topic/playerUpdate")
+    @MessageMapping("/update/player") // /app/update/player
+    @SendTo("/topic/update/player")
     private PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
         return update;
     }
@@ -216,23 +214,6 @@ public class GameController {
     }
 
     /**
-     * A Websocket endpoint for halving the time for other users.
-     *
-     * @return The GameUpdate.halveTimer enum property
-     */
-    @MessageMapping("/halve")
-    @SendTo("/topic/game/update")
-    public GameUpdate halveTimeWebsocket() {
-        return GameUpdate.halveTimer;
-    }
-
-    @MessageMapping("/game/chat") // /app/game/chat
-    @SendTo("/topic/game/chat")
-    private EmoteMessage sendEmoteMessage(final EmoteMessage msg) {
-        return msg;
-    }
-
-    /**
      * Starts the current game.
      * Do not allow starting a game with less than 2 players.
      *
@@ -241,18 +222,62 @@ public class GameController {
     @PostMapping("/start")
     public ResponseEntity<Game> startCurrentGame() {
         Game lobby = gameService.getCurrentGame();
-        if (!lobby.isPlayable()) {
-            return ResponseEntity.status(405).build(); // NOT_ALLOWED
-        }
-        return ResponseEntity.ok(gameService.newGame());
+        gameService.newGame();
+        return ResponseEntity.ok(lobby);
+    }
+
+    /**
+     * A Websocket endpoint for starting the lobby.
+     *
+     * @param lobby The message to be sent to all the players in the lobby
+     * 
+     * @return The Game object
+     */
+    @MessageMapping("/lobby/start") // /app/lobby/start
+    @SendTo("/topic/lobby/start")
+    private Game sendLobbyStart(final Game lobby) {
+        return lobby;
     }
 
     /**
      * Updates the players score on server-side every question.
+     * 
+     * @param id           id of the game to be updated
      * @param scoreMessage contains player name, score, and game id
+     * @return The updated game object
      */
-    @PostMapping("/game/scores")
-    public void updatePlayerPoints(final ScoreMessage scoreMessage) {
-        gameService.updatePlayerScore(scoreMessage);
+    @PostMapping("/{id}/score")
+    public ResponseEntity<Game> updatePlayerPoints(final @PathVariable UUID id,
+            final @RequestBody ScoreMessage scoreMessage) {
+        Game game = gameService.findById(id);
+        if (game == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        gameService.updatePlayerScore(game, scoreMessage);
+        return ResponseEntity.ok(game);
     }
+
+    /**
+     * Send an emote message to the game with the given id.
+     * 
+     * @param message EmoteMessage to be sent
+     * @return        The same message object
+     */
+    @MessageMapping("/game/{id}/chat") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/chat
+    @SendTo("/topic/game/{id}/chat")
+    private EmoteMessage sendEmoteMessage(final EmoteMessage message) {
+        return message;
+    }
+
+    /**
+     * A Websocket endpoint for halving the time for other users.
+     *
+     * @return The GameUpdate.halveTimer enum property
+     */
+    @MessageMapping("/game/{id}/halve") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/halve
+    @SendTo("/topic/game/{id}/update")
+    public GameUpdate halveTimeWebsocket() {
+        return GameUpdate.halveTimer;
+    }
+
 }
