@@ -9,19 +9,17 @@ public class ScoreMessage extends Message<Integer> {
     private final String type;
 
     @JsonProperty("answer")
-    private final int answer;
+    private final long answer;
 
     @JsonProperty("option")
-    private final int option;
-
-
+    private final long option;
     //for open questions
     @JsonCreator
     public ScoreMessage(final @JsonProperty("nick") String nick,
                         final @JsonProperty("time") int time,
                         final @JsonProperty("type") String type,
-                        final @JsonProperty("answer") int answer,
-                        final @JsonProperty("option") int option) {
+                        final @JsonProperty("answer") long answer,
+                        final @JsonProperty("option") long option) {
         super(nick, time);
         this.type = type;
         this.option = option;
@@ -32,11 +30,11 @@ public class ScoreMessage extends Message<Integer> {
         return type;
     }
 
-    public int getAnswer() {
+    public long getAnswer() {
         return answer;
     }
 
-    public int getOption() {
+    public long getOption() {
         return option;
     }
 

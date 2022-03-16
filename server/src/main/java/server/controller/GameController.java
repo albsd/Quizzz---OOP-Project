@@ -87,15 +87,16 @@ public class GameController {
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
+
         return ResponseEntity.ok(game);
     }
 
     @GetMapping("/{id}/leaderboard")
-    public ResponseEntity<Leaderboard> getLeaderboard(
-            @PathVariable final UUID id) {
+    public ResponseEntity<Leaderboard> getLeaderboard(@PathVariable final UUID id) {
         if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
         }
+
         return ResponseEntity.ok(gameService.getLeaderboard(id));
     }
 
@@ -104,7 +105,8 @@ public class GameController {
         if (gameService.findById(id) == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(gameService.getQuestions(gameService.generateSeed(id)));
+
+        return ResponseEntity.ok(gameService.getQuestions(id));
     }
 
     /**
@@ -246,6 +248,7 @@ public class GameController {
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
+
         gameService.updatePlayerScore(game, scoreMessage);
         return ResponseEntity.ok(game);
     }
@@ -254,7 +257,7 @@ public class GameController {
      * Send an emote message to the game with the given id.
      * 
      * @param message EmoteMessage to be sent
-     * @return        The same message object
+     * @return The same message object
      */
     @MessageMapping("/game/{id}/chat") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/chat
     @SendTo("/topic/game/{id}/chat")

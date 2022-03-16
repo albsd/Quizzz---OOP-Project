@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.GameRepository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,10 +19,15 @@ public class GameService {
 
     private Game lobby;
 
+    private static HashMap<UUID, List<Question>> questionsPerGame = new HashMap<>();
+
+    private ActivityService activityService;
+
     @Autowired
-    public GameService(final GameRepository repo) {
+    public GameService(final GameRepository repo, final ActivityService activityService) {
         this.repo = repo;
         this.lobby = new Game(UUID.randomUUID());
+        this.activityService = activityService;
     }
 
     public UUID addGame(final Game game) {
@@ -62,12 +68,13 @@ public class GameService {
         return repo.getLeaderboard(id);
     }
 
-    public List<Question> getQuestions(final long seed) {
-        return repo.getQuestions(seed);
-    }
-
-    public long generateSeed(final UUID id) {
-        return repo.generateSeed(id);
+    public List<Question> getQuestions(final UUID id) {
+        if (questionsPerGame.containsKey(id)) {
+            return questionsPerGame.get(id);
+        } 
+        
+        questionsPerGame.put(id, activityService.getQuestionList());
+        return questionsPerGame.get(id);
     }
 
     public void updatePlayerScore(final Game game, final ScoreMessage scoreMessage) {

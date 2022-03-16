@@ -19,12 +19,8 @@ package server.repository;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
-import commons.Question;
 import commons.ScoreMessage;
 import org.springframework.stereotype.Repository;
-import server.FakeDatabase;
-
-
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -32,20 +28,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Collections;
-import java.util.Random;
-
 @Repository
 public class GameRepository {
 
     private Set<Game> games;
-    private final FakeDatabase fd;
-    private final List<Question> questions;
 
     public GameRepository() {
         games = new HashSet<>();
-        fd = new FakeDatabase();
-        questions = fd.getFakeQuestions();
     }
 
     public List<Game> getGames() {
@@ -87,23 +76,9 @@ public class GameRepository {
         return leaderboard;
     }
 
-    public List<Question> getQuestions(final long seed) {
-        Collections.shuffle(questions, new Random(seed));
-        return questions;
-    }
-
-    public long generateSeed(final UUID id) {
-        String str = id.toString();
-        long seed = 0;
-        for (int i = 0; i < str.length(); i++) {
-            char ch = str.charAt(i);
-            seed = seed + (long) ch;
-        }
-        return seed;
-    }
-
     public void updatePlayerScore(final Game game,  final ScoreMessage score) {
         Player player = game.getPlayerByNick(score.getNick());
         player.setScore(score);
     }
+
 }

@@ -49,7 +49,7 @@ public class Player {
         return base + bonusScore;
     }
 
-    private int calculateOpenPoints(final int answer, final int option, final int time) {
+    private int calculateOpenPoints(final long answer, final long option, final int time) {
         int bonusScore = calculateBonusPoints(time);
         int offPercentage = (int) Math.round(((double) Math.abs((option - answer)) / answer) * 100);
         int accuracyPercentage = 100 - offPercentage;
