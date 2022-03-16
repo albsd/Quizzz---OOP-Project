@@ -31,8 +31,8 @@ public class Player {
         return this.score;
     }
 
-    public void setScore(final int score) {
-        this.score = score;
+    public void addScore(final int score) {
+        this.score += score;
     }
 
     public void setScore(final ScoreMessage sm) {

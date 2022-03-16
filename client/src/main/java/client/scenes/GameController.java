@@ -167,7 +167,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-     * Validates the answer for the multiple choice question.
+     * Validates the answer for the multiple choice question and open question
      * Updates the user's score given in what time frame he/she has answered.
      *
      * @param event triggered by a button click
@@ -177,41 +177,18 @@ public class GameController implements Initializable, WebSocketSubscription {
         long correctAnswer = game.getCurrentQuestion().getAnswer();
         String optionStr = ((Button) event.getSource()).getText();
         int option = Integer.parseInt(optionStr);
+        int score = 0;
         if (currentQuestion instanceof MultipleChoiceQuestion) {
             if (option == correctAnswer) {
-                System.out.println("Correct answer!");
-                sendScores(me.getNick(), progressBar.getClientTime(), "multiple", correctAnswer, option);
-                me.calculateMulChoicePoints(progressBar.getClientTime());
-            } else {
-                System.out.println("Wrong answer. No points");
+                score = me.calculateMulChoicePoints(progressBar.getClientTime());
             }
         } else if (currentQuestion instanceof FreeResponseQuestion) {
-
-            int option = Integer.parseInt(optionStr);
+            //assume the player always inputs a number
+            score = me.calculateOpenPoints(correctAnswer, option, progressBar.getClientTime());
         }
-
+        me.addScore(score);
     }
-
-    /**
-     * Validate the answer for the free-response/open question
-     * Updates the user's score given in what time frame he/she has answered.
-     * 
-     * @param event triggered by a button click
-     */
-    public void checkOpenAnswer(final ActionEvent event) {
-        long correctAnswer = ((FreeResponseQuestion) game.getCurrentQuestion()).getAnswer();
-
-        String optionStr = ((Button) event.getSource()).getText();
-        long option;
-        try {
-            option = Integer.parseInt(optionStr);
-        } catch (NumberFormatException exception) {
-            System.out.println("invalid input");
-            // set for 0 accuracy
-            option = correctAnswer * -200;
-        }
-        sendScores(me.getNick(), progressBar.getClientTime(), "open", correctAnswer, option);
-    }
+        //sendScores(me.getNick(), progressBar.getClientTime(), "open", correctAnswer, option);
 
     public void setMe(final Player me) {
         this.me = me;
