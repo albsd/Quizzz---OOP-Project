@@ -274,5 +274,4 @@ public class GameController {
     public GameUpdate halveTimeWebsocket() {
         return GameUpdate.halveTimer;
     }
-
 }

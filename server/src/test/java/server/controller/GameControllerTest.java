@@ -21,8 +21,10 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 import commons.Game;
+import commons.LobbyMessage;
 import commons.Player;
 
+import commons.ScoreMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,6 +48,8 @@ public class GameControllerTest {
 
     private ActivityService as;
 
+    private ScoreMessage sm;
+
     @BeforeEach
     public void setup() {
         as = new ActivityService();
@@ -57,7 +61,7 @@ public class GameControllerTest {
         ctrl.joinCurrentGame("johny");
         ctrl.joinCurrentGame("niko");
         ctrl.joinCurrentGame("babe");
-
+        sm = new ScoreMessage("johny", 50);
         lobby = ctrl.startCurrentGame().getBody();
     }
 
@@ -120,6 +124,13 @@ public class GameControllerTest {
 
         assertEquals(ctrl.getLeaderboard(game.getId()).getBody().getRanking(), expected);
     }
+
+    @Test
+    public void updatePoints() {
+        Game current = ctrl.updatePlayerPoints(game.getId(), sm).getBody();
+        assertEquals(sm.getContent(), current.getPlayerByNick(sm.getNick()).getScore());
+    }
+
 //TODO:Make spring initialize activityService
 //
 //    @Test

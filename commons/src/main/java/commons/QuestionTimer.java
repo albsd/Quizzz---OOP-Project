@@ -17,11 +17,6 @@ public class QuestionTimer {
         this.timer = new Timer();
     }
 
-    public QuestionTimer(final TimerTask task) {
-        this.timer = new Timer();
-        this.currentTask = task;
-    }
-
     public int getCurrentTime() {
         return currentTime;
     }
