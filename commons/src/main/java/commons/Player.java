@@ -43,13 +43,13 @@ public class Player {
         }
     }
 
-    private int calculateMulChoicePoints(final int time) {
+    public int calculateMulChoicePoints(final int time) {
         int base = 50;
         int bonusScore = calculateBonusPoints(time);
         return base + bonusScore;
     }
 
-    private int calculateOpenPoints(final long answer, final long option, final int time) {
+    public int calculateOpenPoints(final long answer, final long option, final int time) {
         int bonusScore = calculateBonusPoints(time);
         int offPercentage = (int) Math.round(((double) Math.abs((option - answer)) / answer) * 100);
         int accuracyPercentage = 100 - offPercentage;

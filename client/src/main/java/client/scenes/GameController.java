@@ -8,6 +8,7 @@ import commons.ScoreMessage;
 import commons.Emote;
 import commons.EmoteMessage;
 import commons.Game;
+import commons.Question;
 import commons.MultipleChoiceQuestion;
 import commons.FreeResponseQuestion;
 import javafx.application.Platform;
@@ -165,24 +166,30 @@ public class GameController implements Initializable, WebSocketSubscription {
         fxml.showSplash();
     }
 
-    // this is for multiple choice. Also sets player's time
     /**
      * Validates the answer for the multiple choice question.
      * Updates the user's score given in what time frame he/she has answered.
-     * 
+     *
      * @param event triggered by a button click
      */
-    public void checkMulChoiceAnswer(final ActionEvent event) {
-        int correctAnswer = ((MultipleChoiceQuestion) game.getCurrentQuestion()).getAnswer();
-        
+    public void checkAnswer(final ActionEvent event) {
+        Question currentQuestion = game.getCurrentQuestion();
+        long correctAnswer = game.getCurrentQuestion().getAnswer();
         String optionStr = ((Button) event.getSource()).getText();
         int option = Integer.parseInt(optionStr);
-        if (option == correctAnswer) {
-            System.out.println("Correct answer!");
-            sendScores(me.getNick(), progressBar.getClientTime(), "multiple", correctAnswer, option);
-        } else {
-            System.out.println("Wrong answer. No points");
+        if (currentQuestion instanceof MultipleChoiceQuestion) {
+            if (option == correctAnswer) {
+                System.out.println("Correct answer!");
+                sendScores(me.getNick(), progressBar.getClientTime(), "multiple", correctAnswer, option);
+                me.calculateMulChoicePoints(progressBar.getClientTime());
+            } else {
+                System.out.println("Wrong answer. No points");
+            }
+        } else if (currentQuestion instanceof FreeResponseQuestion) {
+
+            int option = Integer.parseInt(optionStr);
         }
+
     }
 
     /**
