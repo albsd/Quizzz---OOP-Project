@@ -6,15 +6,11 @@ import client.utils.WebSocketSubscription;
 import commons.Player;
 import commons.ScoreMessage;
 import commons.Emote;
-
 import commons.EmoteMessage;
 import commons.Game;
-import commons.Player;
 import commons.Question;
 import commons.MultipleChoiceQuestion;
 import commons.FreeResponseQuestion;
-import commons.Emote;
-import commons.ScoreMessage;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

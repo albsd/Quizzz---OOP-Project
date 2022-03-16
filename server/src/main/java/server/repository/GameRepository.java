@@ -79,17 +79,11 @@ public class GameRepository {
         return leaderboard;
     }
 
-    public void updatePlayerScore(final ScoreMessage sm) {
-        Game game = findById(sm.getId());
-        Player player = game.getPlayerByNick(sm.getNick());
-        int score;
-        if (sm.getType().equals("multiple")) {
-            score = calculateMulChoicePoints(sm.getContent());
-        } else {
-            score = calculateOpenPoints(sm.getAnswer(), sm.getOption(), sm.getContent());
-        }
+    public void updatePlayerScore(final Game game,  final ScoreMessage score) {
+        Player player = game.getPlayerByNick(score.getNick());
         player.setScore(score);
     }
+
 
     private int calculateMulChoicePoints(final int time) {
         int base = 50;
