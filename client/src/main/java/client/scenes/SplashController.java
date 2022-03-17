@@ -46,7 +46,7 @@ public class SplashController {
         Platform.exit();
     }
 
-    private boolean validateNicknameLength(final String user) {
+    private boolean validateNickname(final String user) {
         final int maxChrLimit = 8;
         final int minChrLimit = 3;
         int len = user.length();
@@ -77,7 +77,7 @@ public class SplashController {
     @FXML
     public void singleGame(final ActionEvent event) {
         String nick = nickField.getText();
-        if (!validateNicknameLength(nick)) {
+        if (!validateNickname(nick)) {
             return;
         }
 
@@ -95,7 +95,7 @@ public class SplashController {
     @FXML
     public void lobby(final ActionEvent event) {
         String nick = nickField.getText();
-        if (!validateNicknameLength(nick)) {
+        if (!validateNickname(nick)) {
             return;
         }
 
