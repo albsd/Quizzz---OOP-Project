@@ -63,6 +63,12 @@ public class SplashController {
             return false;
         }
 
+        if (user.matches("[0-9]*")) {
+            warning.setTextFill(red);
+            warning.setText("Nickname must contain at least one letter");
+            return false;
+        }
+
         warning.setTextFill(green);
         warning.setText("Nickname set");
         return true;
