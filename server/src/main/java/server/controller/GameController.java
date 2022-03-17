@@ -71,6 +71,16 @@ public class GameController {
     }
 
     /**
+     * Creates a game for a singleplayer game.
+     *
+     * @return Game object for singleplayer
+     */
+    @PostMapping("/single/{nick}")
+    public Game createGame(final @PathVariable String nick) {
+        return gameService.createSingleplayer(nick, activityService.getQuestionList());
+    }
+
+    /**
      * Fetches the active game lobby.
      *
      * @return The current active game which accepts new players
