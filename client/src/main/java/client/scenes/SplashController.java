@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.FXMLController;
 import client.utils.ServerUtils;
+import commons.Game;
 import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -81,8 +82,8 @@ public class SplashController {
             return;
         }
 
-        final Player me = new Player(nick);
-        fxml.showSinglePlayer(me);
+        Game single = server.createSingleplayer(nick);
+        fxml.showSinglePlayer(single);
     }
 
     /**

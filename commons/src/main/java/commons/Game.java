@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-enum GameState { waiting, playing }
+enum GameState { waiting, playing, singleplayer }
 
 public class Game {
 
@@ -62,12 +62,30 @@ public class Game {
     public GameState getGameState() {
         return gameState;
     }
+    
+    public void setSinglePlayer(final Player p) {
+        addPlayer(p);
+        gameState = GameState.singleplayer;
+    }
+
+    @JsonIgnore
+    public boolean showLeaderboard() {
+        return gameState == GameState.singleplayer && currentQuestion % 10 == 0;
+    }
+
+    @JsonIgnore
+    public int getCurrentQuestionNumber() {
+        return currentQuestion + 1;
+    }
 
     public QuestionTimer getTimer() {
         return timer;
     }
 
-    // Since the QuestionTimer cannot be serialised over HTTP, we can call this method in the client to create a new timer.
+    /**
+     * Since the QuestionTimer cannot be serialised over HTTP, 
+     * we can call this method in the client to create a new timer. 
+     */
     public void initialiseTimer() {
         this.timer = new QuestionTimer();
     }
@@ -89,14 +107,13 @@ public class Game {
     }
 
     public Player getPlayerByNick(final String nick) {
-        for (Player p : players) {
-            if (p.getNick().equals(nick)) {
-                return p;
-            }
-        }
-        return null;
+        return players.stream()
+            .filter((p) -> p.getNick().equals(nick))
+            .findFirst()
+            .get();
     }
-    //if not ignored, game in serverUtil from getplayers is null
+
+    
     @JsonIgnore
     public int nextQuestion() {
         return currentQuestion++;
