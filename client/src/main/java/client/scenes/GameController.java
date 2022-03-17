@@ -147,10 +147,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         // start client timer
         // progressBar.start();
         game.start(this::setNextQuestion);
-        for(int i = 0; i<10;i++) {
-            System.out.println(this.game.getCurrentQuestion().getPrompt());
-            this.game.nextQuestion();
-        }
     }
 
     public void setSinglePlayer(final Player me) {
