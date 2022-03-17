@@ -11,7 +11,6 @@ import java.util.UUID;
 enum GameState { waiting, playing }
 
 public class Game {
-    private final int questionLimit = 20;
 
     @JsonIgnore
     private QuestionTimer timer;
@@ -23,7 +22,7 @@ public class Game {
     private List<Player> players;
 
     @JsonProperty("questions")
-    private Question[] questions;
+    private List<Question> questions;
 
     @JsonProperty("currentQuestion")
     private int currentQuestion;
@@ -31,22 +30,10 @@ public class Game {
     @JsonProperty("gameState")
     private GameState gameState;
 
-    public Game(final UUID id) {
-        this.id = id;
-        this.players = new ArrayList<>();
-        this.questions = new Question[questionLimit];
-        // Generating questions is not implemented yet:
-        // this.questions = QuestionService.generateQuestions()
-        this.currentQuestion = 0;
-        this.gameState = GameState.waiting;
-    }
-
-    public Game(final UUID id, final Question[] questions) {
+    public Game(final UUID id, final List<Question> questions) {
         this.id = id;
         this.players = new ArrayList<>();
         this.questions = questions;
-        // Generating questions is not implemented yet:
-        // this.questions = QuestionService.generateQuestions()
         this.currentQuestion = 0;
         this.gameState = GameState.waiting;
     }
@@ -54,7 +41,7 @@ public class Game {
     @JsonCreator
     public Game(final @JsonProperty("id") UUID id,
                 final @JsonProperty("players") List<Player> players,
-                final @JsonProperty("questions") Question[] questions,
+                final @JsonProperty("questions") List<Question> questions,
                 final @JsonProperty("currentQuestion") int currentQuestion,
                 final @JsonProperty("gameState") GameState gameState) {
         this.id = id;
@@ -73,7 +60,7 @@ public class Game {
     }
 
     public GameState getGameState() {
-        return this.gameState;
+        return gameState;
     }
 
     public QuestionTimer getTimer() {
@@ -112,7 +99,7 @@ public class Game {
     //if not ignored, game in serverUtil from getplayers is null
     @JsonIgnore
     public int nextQuestion() {
-        return this.currentQuestion++;
+        return currentQuestion++;
     }
 
     @JsonIgnore
@@ -121,8 +108,13 @@ public class Game {
     }
 
     @JsonIgnore
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    @JsonIgnore
     public Question getCurrentQuestion() {
-        return this.questions[currentQuestion];
+        return questions.get(currentQuestion);
     }
 
     @JsonIgnore
