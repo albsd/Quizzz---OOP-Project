@@ -26,7 +26,7 @@ public class GameService {
     @Autowired
     public GameService(final GameRepository repo, final ActivityService activityService) {
         this.repo = repo;
-        this.lobby = new Game(UUID.randomUUID());
+        this.lobby = new Game(UUID.randomUUID(), activityService.getQuestionList().toArray(new Question[0]));
         this.activityService = activityService;
     }
 
@@ -39,6 +39,7 @@ public class GameService {
     }
 
     public Game getCurrentGame() {
+        System.out.println(lobby.getCurrentQuestion().getPrompt());
         return lobby;
     }
 
@@ -56,7 +57,7 @@ public class GameService {
         // TODO: this method breaks the tests as the while loop is infinite
         // lobby.start();
         repo.addGame(lobby);
-        lobby = new Game(UUID.randomUUID());
+        lobby = new Game(UUID.randomUUID(), activityService.getQuestionList().toArray(new Question[0]));
         return lobby;
     }
 

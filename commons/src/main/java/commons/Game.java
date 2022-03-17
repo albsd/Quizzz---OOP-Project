@@ -41,6 +41,16 @@ public class Game {
         this.gameState = GameState.waiting;
     }
 
+    public Game(final UUID id, final Question[] questions) {
+        this.id = id;
+        this.players = new ArrayList<>();
+        this.questions = questions;
+        // Generating questions is not implemented yet:
+        // this.questions = QuestionService.generateQuestions()
+        this.currentQuestion = 0;
+        this.gameState = GameState.waiting;
+    }
+
     @JsonCreator
     public Game(final @JsonProperty("id") UUID id,
                 final @JsonProperty("players") List<Player> players,
@@ -120,5 +130,6 @@ public class Game {
         this.gameState = GameState.playing;
         timer.startGameTimer(callback);
     }
+
 
 }

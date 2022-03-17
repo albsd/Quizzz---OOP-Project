@@ -169,6 +169,7 @@ public class ServerUtils {
                 .build();
 
         Game game = parseResponseToObject(request, new TypeReference<Game>() { });
+        System.out.println(game.getCurrentQuestion().getPrompt());
         if (game == null) return null;
         return game.getPlayers();
     }
@@ -254,4 +255,5 @@ public class ServerUtils {
         }
         return null;
     }
+
 }
