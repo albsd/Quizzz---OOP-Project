@@ -82,7 +82,7 @@ public class SplashController {
             return;
         }
 
-        Game single = server.createSingleplayer(nick);
+        Game single = server.startSinglePlayer(nick);
         fxml.showSinglePlayer(single);
     }
 

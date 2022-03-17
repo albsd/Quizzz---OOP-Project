@@ -122,21 +122,6 @@ public class ServerUtils {
      * @param nick  String of the user nickname
      * @return      Player that has joined the game
      */
-    public Game createSingleplayer(final String nick) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/single/" + nick))
-                .POST(HttpRequest.BodyPublishers.ofString(""))
-                .build();
-
-       return parseResponseToObject(request, new TypeReference<Game>() { });
-    }
-
-    /**
-     * Calls the REST endpoint to join the current active lobby.
-     *
-     * @param nick  String of the user nickname
-     * @return      Player that has joined the game
-     */
     public Player joinGame(final String nick) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/join/" + nick))
@@ -174,7 +159,7 @@ public class ServerUtils {
      *
      * @return List of players in a lobby
      */
-    public List<Player> getPlayers() {
+    public List<Player> getLobbyPlayers() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/current"))
                 .header("accept", "application/json")
@@ -186,7 +171,13 @@ public class ServerUtils {
         return game.getPlayers();
     }
 
-    public Leaderboard getLeaderboard(final String id) {
+    /**
+     * Fetch a leaderboard for a given Game with the id.
+     * 
+     * @param id UUID of the game
+     * @return Leaderboard of players for the game
+     */
+    public Leaderboard getLeaderboard(final UUID id) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/" + id + "/leaderboard"))
                 .header("accept", "application/json")
@@ -195,13 +186,28 @@ public class ServerUtils {
 
         return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
+    
+    /**
+     * Calls the REST endpoint to join the current active lobby.
+     *
+     * @param nick  String of the user nickname
+     * @return      Player that has joined the game
+     */
+    public Game startSinglePlayer(final String nick) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/single/" + nick))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+       return parseResponseToObject(request, new TypeReference<Game>() { });
+    }
 
     /**
      * Calls the REST endpoint to start the current lobby.
      *
      * @return The game that has just started
      */
-    public Game startGame() {
+    public Game startMultiPlayer() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/start"))
                 .header("accept", "application/json")
