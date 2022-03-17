@@ -43,7 +43,6 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import server.service.ActivityService;
 import server.service.GameService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

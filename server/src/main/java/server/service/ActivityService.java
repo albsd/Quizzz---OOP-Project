@@ -34,8 +34,7 @@ public class ActivityService {
         Long qty = activityRepository.count();
         int idx = (int) (Math.random() * qty);
         var all = activityRepository.findAll();
-        if (all.size() == 0)
-            return null;
+        if (all.size() == 0) return null;
         return all.get(idx % all.size());
     }
 

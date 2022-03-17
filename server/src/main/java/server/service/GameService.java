@@ -23,7 +23,7 @@ public class GameService {
         this.repo = repo;
     }
 
-    public void initializeLobby(List<Question> questions) {
+    public void initializeLobby(final List<Question> questions) {
         this.lobby = new Game(UUID.randomUUID(), questions);
     }
 
@@ -43,9 +43,10 @@ public class GameService {
      * Creates a new game as an active lobby.
      * The previous lobby is propagated to the game that has just started.
      *
+     * @param questions List of questions for the newly created lobby
      * @return Game that has been created
      */
-    public Game newGame(List<Question> questions) {
+    public Game newGame(final List<Question> questions) {
         repo.addGame(lobby);
         lobby = new Game(UUID.randomUUID(), questions);
         return lobby;

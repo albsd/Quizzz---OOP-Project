@@ -38,7 +38,6 @@ import server.service.GameService;
 
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Comparator;
 @DataJpaTest
 public class GameControllerTest {
@@ -63,7 +62,7 @@ public class GameControllerTest {
         GameService service =  new GameService(new GameRepository());
         ActivityService activityService = new ActivityService(activityRepository);
         service.initializeLobby(activityService.getQuestionList());
-        
+
         ctrl = new GameController(service, activityService);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
