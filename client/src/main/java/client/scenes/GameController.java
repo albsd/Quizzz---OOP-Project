@@ -19,7 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalTime;
 import java.util.ResourceBundle;
 
 import javax.inject.Inject;
@@ -53,6 +52,9 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private TextField openAnswer;
+
+    @FXML
+    private Label warning;
 
     private final ServerUtils server;
 
@@ -140,10 +142,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game = game;
         this.game.initialiseTimer();
         this.chatPath = "/game/" + game.getId() + "/chat";
-       
         questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
+        //by default game.fxml set to multiple question mode
         currentQuestion = game.getCurrentQuestion();
         isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
+        if (isOpenQuestion) {
+            changeToFreeMode();
+        }
         // question.setText(question.getPrompt());
         // start client timer
         // progressBar.start();
@@ -175,7 +180,6 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     public void checkMulChoiceAnswer(final ActionEvent event) {
         int correctAnswer = ((MultipleChoiceQuestion) game.getCurrentQuestion()).getAnswer();
-        
         String optionStr = ((Button) event.getSource()).getText();
         int option = Integer.parseInt(optionStr);
         if (option == correctAnswer) {
@@ -190,16 +194,15 @@ public class GameController implements Initializable, WebSocketSubscription {
      * Validate the answer for the free-response/open question
      * Updates the user's score given in what time frame he/she has answered.
      * 
-     * @param event triggered by a button click
+     * @param event triggered when hit enter
      */
     public void checkOpenAnswer(final ActionEvent event) {
         String optionStr = openAnswer.getText();
         if (!optionStr.matches("[0-9]*")) {
-            //warning.setTextFill(red);
-            //warning.setText("You can only input numbers");
+            warning.setVisible(true);
             return;
         }
-        openAnswer.setText("");
+        warning.setVisible(false);
         long correctAnswer = ((FreeResponseQuestion) game.getCurrentQuestion()).getAnswer();
         long option = Integer.parseInt(optionStr);
         sendScores(me.getNick(), progressBar.getClientTime(), "multiple", correctAnswer, option);
@@ -293,10 +296,15 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     private void changeToMultiMode() {
-
+        openAnswer.toBack();
+        openAnswer.setVisible(false);
+        option1.setVisible(true);
+        option2.setVisible(true);
+        option3.setVisible(true);
     }
+
     private void changeToFreeMode() {
-        optionBox.getChildren().get(4);
+        openAnswer.toFront();
         openAnswer.setVisible(true);
         option1.setVisible(false);
         option2.setVisible(false);
