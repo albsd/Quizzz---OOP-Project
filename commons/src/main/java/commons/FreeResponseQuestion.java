@@ -4,7 +4,6 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
 
 public class FreeResponseQuestion extends Question {
 
