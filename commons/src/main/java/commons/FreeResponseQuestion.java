@@ -1,8 +1,17 @@
 package commons;
 
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Objects;
+
 public class FreeResponseQuestion extends Question {
 
-    public FreeResponseQuestion(final String prompt, final byte[] imageBytes, final long answer) {
+    @JsonCreator
+    public FreeResponseQuestion(@JsonProperty("prompt") final String prompt,
+                                @JsonProperty("imageBytes") final byte[] imageBytes,
+                                @JsonProperty("answer") final long answer) {
         super(prompt, answer, imageBytes);
     }
 }
