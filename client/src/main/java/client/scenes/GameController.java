@@ -8,7 +8,6 @@ import commons.EmoteMessage;
 import commons.Game;
 import commons.MultipleChoiceQuestion;
 import commons.Question;
-import commons.ScoreMessage;
 import commons.FreeResponseQuestion;
 import commons.Emote;
 import commons.Player;
@@ -204,7 +203,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void setNextQuestion() {
         game.nextQuestion();
         if ((game.getCurrentQuestionIndex()) % 10 == 0) {
-            server.updateScore(game.getId(), new ScoreMessage(me.getNick(), me.getScore()));
+            server.updateScore(game.getId(), me.getNick(), Integer.toString(me.getScore()));
             Platform.runLater(() -> {
                 var root = fxml.displayLeaderboardMomentarily();
                 LeaderboardController leaderboardController = root.getKey();

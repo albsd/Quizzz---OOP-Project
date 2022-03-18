@@ -19,7 +19,6 @@ package server.repository;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
-import commons.ScoreMessage;
 import org.springframework.stereotype.Repository;
 import java.util.HashSet;
 import java.util.Optional;
@@ -76,8 +75,8 @@ public class GameRepository {
         return leaderboard;
     }
 
-    public void updatePlayerScore(final Game game,  final ScoreMessage score) {
-        Player player = game.getPlayerByNick(score.getNick());
-        player.setScore(score.getContent());
+    public void updatePlayerScore(final Game game, final String nick, final int score) {
+        Player player = game.getPlayerByNick(nick);
+        player.setScore(score);
     }
 }
