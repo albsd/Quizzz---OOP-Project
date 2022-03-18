@@ -3,13 +3,7 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
-import commons.Player;
-import commons.ScoreMessage;
-import commons.Emote;
-import commons.EmoteMessage;
-import commons.Game;
-import commons.MultipleChoiceQuestion;
-import commons.FreeResponseQuestion;
+import commons.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -72,6 +66,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     private Game game;
 
     private String chatPath;
+
+    private Question currentQuestion;
+
+    private boolean isOpenQuestion;
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml,
@@ -143,7 +141,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.chatPath = "/game/" + game.getId() + "/chat";
        
         questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
-        // question.setText(game.getCurrentQuestion().getPrompt());
+        currentQuestion = game.getCurrentQuestion();
+        isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
+        // question.setText(question.getPrompt());
         // start client timer
         // progressBar.start();
         game.start(this::setNextQuestion);
@@ -227,9 +227,16 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         Platform.runLater(() -> {
             questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
-//            question.setText(game.getCurrentQuestion().getPrompt());
+            currentQuestion = game.getCurrentQuestion();
+//            question.setText(currentQuestion.getPrompt());
+            if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
+                changeToMultiMode();
+                isOpenQuestion = false;
+            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
+                changeToFreeMode();
+                isOpenQuestion = true;
+            }
         });
-        
         game.start(this::setNextQuestion);
     }
 
@@ -284,5 +291,12 @@ public class GameController implements Initializable, WebSocketSubscription {
     private void sendScores(final String nick, final int time, final String type,
             final long answer, final long option) {
         server.updateScore(game.getId(), new ScoreMessage(nick, time, type, answer, option));
+    }
+
+    private void changeToMultiMode() {
+
+    }
+    private void changeToFreeMode() {
+
     }
 }
