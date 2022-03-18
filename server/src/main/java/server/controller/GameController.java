@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import server.service.GameService;
+import server.service.SinglePlayerService;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,9 +43,12 @@ public class GameController {
 
     private final GameService gameService;
 
+    private final SinglePlayerService singlePlayerService;
+
     @Autowired
-    public GameController(final GameService gameService) {
+    public GameController(final GameService gameService, final SinglePlayerService singlePlayerService) {
         this.gameService = gameService;
+        this.singlePlayerService = singlePlayerService;
     }
 
     /**
@@ -267,22 +271,17 @@ public class GameController {
     public GameUpdate halveTimeWebsocket() {
         return GameUpdate.halveTimer;
     }
-    @PostMapping("/join/{nick}")
-    public ResponseEntity<Player> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick, final @PathVariable("score") int score) {
+
+    @PostMapping("/join/{nick}/{score}")
+    public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick, final @PathVariable("score") int score) {
         if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
 
-        Game lobby = gameService.getCurrentGame();
-
         SinglePlayerLeaderboardMessage splm = new SinglePlayerLeaderboardMessage(nick, score);
-        boolean success = lobby.addPlayer(p);
-
-        final int errorCode = 403; // FORBIDDEN
-        if (!success) {
-            return ResponseEntity.status(errorCode).build();
-        }
-
-        return ResponseEntity.ok(p);
+        singlePlayerService.addPlayerToLeaderboard(splm);
+        Leaderboard l = new Leaderboard();
+        l.setRanking(singlePlayerService.getAllPlayerInfo());
+        return ResponseEntity.ok(l);
     }
 }

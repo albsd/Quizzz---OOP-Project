@@ -1,6 +1,7 @@
 package server.service;
 
 import commons.Activity;
+import commons.Player;
 import commons.SinglePlayerLeaderboardMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,13 @@ public class SinglePlayerService {
         singlePlayerRepository.save(singlePlayerLeaderboardMessage);
     }
 
-    public List<SinglePlayerLeaderboardMessage> getAllPlayerInfo() {
-        return singlePlayerRepository.findAll();
+    public List<Player> getAllPlayerInfo() {
+        List<SinglePlayerLeaderboardMessage>allSinglePlayers =  singlePlayerRepository.findAll();
+        List<Player> players = new ArrayList<>();
+        for(int i = 0; i < allSinglePlayers.size(); i++) {
+            SinglePlayerLeaderboardMessage sl = allSinglePlayers.get(i);
+            players.add(new Player(sl.getNick(), sl.getScore()));
+        }
+        return players;
     }
 }
