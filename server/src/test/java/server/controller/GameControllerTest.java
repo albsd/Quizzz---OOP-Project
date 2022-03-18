@@ -22,7 +22,6 @@ import static org.springframework.http.HttpStatus.OK;
 
 import commons.Game;
 import commons.Player;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,6 +45,10 @@ public class GameControllerTest {
 
     private ActivityService as;
 
+    private String nick;
+
+    private int score;
+
     @BeforeEach
     public void setup() {
         as = new ActivityService();
@@ -57,7 +60,8 @@ public class GameControllerTest {
         ctrl.joinCurrentGame("johny");
         ctrl.joinCurrentGame("niko");
         ctrl.joinCurrentGame("babe");
-
+        nick = "johny";
+        score = 50;
         lobby = ctrl.startCurrentGame().getBody();
     }
 
@@ -81,7 +85,6 @@ public class GameControllerTest {
 
     @Test
     public void addValidNickName() {
-        final String nick = "johny";
         var actual = ctrl.joinCurrentGame(nick);
         assertEquals(OK, actual.getStatusCode());
         assertEquals(nick, actual.getBody().getNick());
@@ -89,7 +92,6 @@ public class GameControllerTest {
 
     @Test
     public void addValidNickNameTwice() {
-        final String nick = "johny";
         var actual = ctrl.joinCurrentGame(nick);
         actual = ctrl.joinCurrentGame(nick);
         assertEquals(403, actual.getStatusCode().value());
@@ -120,6 +122,13 @@ public class GameControllerTest {
 
         assertEquals(ctrl.getLeaderboard(game.getId()).getBody().getRanking(), expected);
     }
+
+    @Test
+    public void updatePoints() {
+        Game current = ctrl.updatePlayerPoints(game.getId(), nick, Integer.toString(score)).getBody();
+        assertEquals(score, current.getPlayerByNick(nick).getScore());
+    }
+
 //TODO:Make spring initialize activityService
 //
 //    @Test
