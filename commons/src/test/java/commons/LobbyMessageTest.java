@@ -43,7 +43,17 @@ class LobbyMessageTest {
     }
 
     @Test
-    void testEquals() {
+    void testSameObjectEquals() {
+        assertEquals(message1, message1);
+    }
+
+    @Test
+    void testDifferentObjectEquals() {
         assertEquals(message1, new LobbyMessage(nick1, time1, content1));
+    }
+
+    @Test
+    void testDifferentObjectNotEquals() {
+        assertEquals(message1, new LobbyMessage(nick2, time1, content1));
     }
 }
