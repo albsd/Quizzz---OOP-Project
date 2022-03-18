@@ -15,15 +15,7 @@
  */
 package server.controller;
 
-import commons.Game;
-import commons.EmoteMessage;
-import commons.GameUpdate;
-import commons.Leaderboard;
-import commons.Player;
-import commons.PlayerUpdate;
-import commons.LobbyMessage;
-import commons.ScoreMessage;
-import commons.Question;
+import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -275,5 +267,22 @@ public class GameController {
     public GameUpdate halveTimeWebsocket() {
         return GameUpdate.halveTimer;
     }
+    @PostMapping("/join/{nick}")
+    public ResponseEntity<Player> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick, final @PathVariable("score") int score) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
 
+        Game lobby = gameService.getCurrentGame();
+
+        SinglePlayerLeaderboardMessage splm = new SinglePlayerLeaderboardMessage(nick, score);
+        boolean success = lobby.addPlayer(p);
+
+        final int errorCode = 403; // FORBIDDEN
+        if (!success) {
+            return ResponseEntity.status(errorCode).build();
+        }
+
+        return ResponseEntity.ok(p);
+    }
 }
