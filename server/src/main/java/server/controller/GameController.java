@@ -22,7 +22,6 @@ import commons.Leaderboard;
 import commons.Player;
 import commons.PlayerUpdate;
 import commons.LobbyMessage;
-import commons.ScoreMessage;
 import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -234,22 +233,15 @@ public class GameController {
         return lobby;
     }
 
-    /**
-     * Updates the players score on server-side every question.
-     * 
-     * @param id           id of the game to be updated
-     * @param scoreMessage contains player name, score, and game id
-     * @return The updated game object
-     */
-    @PostMapping("/{id}/score")
+
+    @PostMapping("/{id}/score/{nick}")
     public ResponseEntity<Game> updatePlayerPoints(final @PathVariable UUID id,
-            final @RequestBody ScoreMessage scoreMessage) {
+            final @PathVariable String nick, final @RequestBody String score) {
         Game game = gameService.findById(id);
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
-
-        gameService.updatePlayerScore(game, scoreMessage);
+        gameService.updatePlayerScore(game, nick, Integer.parseInt(score));
         return ResponseEntity.ok(game);
     }
 
@@ -275,5 +267,4 @@ public class GameController {
     public GameUpdate halveTimeWebsocket() {
         return GameUpdate.halveTimer;
     }
-
 }

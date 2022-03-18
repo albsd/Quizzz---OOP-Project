@@ -46,7 +46,7 @@ public class SplashController {
         Platform.exit();
     }
 
-    private boolean validateNicknameLength(final String user) {
+    private boolean validateNickname(final String user) {
         final int maxChrLimit = 8;
         final int minChrLimit = 3;
         int len = user.length();
@@ -57,6 +57,18 @@ public class SplashController {
             return false;
         }
 
+        if (!user.matches("[a-zA-Z0-9]*")) {
+            warning.setTextFill(red);
+            warning.setText("Nickname can only contain letters and numbers");
+            return false;
+        }
+
+        if (user.matches("[0-9]*")) {
+            warning.setTextFill(red);
+            warning.setText("Nickname must contain at least one letter");
+            return false;
+        }
+
         warning.setTextFill(green);
         warning.setText("Nickname set");
         return true;
@@ -64,8 +76,8 @@ public class SplashController {
 
     @FXML
     public void singleGame(final ActionEvent event) {
-        String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
-        if (!validateNicknameLength(nick)) {
+        String nick = nickField.getText();
+        if (!validateNickname(nick)) {
             return;
         }
 
@@ -82,8 +94,8 @@ public class SplashController {
      */
     @FXML
     public void lobby(final ActionEvent event) {
-        String nick = nickField.getText().replaceAll("[\s\t\"\'><&]", "");
-        if (!validateNicknameLength(nick)) {
+        String nick = nickField.getText();
+        if (!validateNickname(nick)) {
             return;
         }
 

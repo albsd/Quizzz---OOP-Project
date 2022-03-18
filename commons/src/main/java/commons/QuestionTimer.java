@@ -17,11 +17,6 @@ public class QuestionTimer {
         this.timer = new Timer();
     }
 
-    public QuestionTimer(final TimerTask task) {
-        this.timer = new Timer();
-        this.currentTask = task;
-    }
-
     public int getCurrentTime() {
         return currentTime;
     }
@@ -70,6 +65,7 @@ public class QuestionTimer {
     public boolean isStarted() {
         return started;
     }
+
     public boolean isOver() {
         return over;
     }
@@ -132,5 +128,4 @@ public class QuestionTimer {
             }
         };
     }
-
 }
