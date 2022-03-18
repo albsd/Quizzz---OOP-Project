@@ -3,7 +3,15 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
-import commons.*;
+
+import commons.EmoteMessage;
+import commons.Game;
+import commons.MultipleChoiceQuestion;
+import commons.Player;
+import commons.Question;
+import commons.Emote;
+import commons.FreeResponseQuestion;
+import commons.ScoreMessage;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -139,8 +147,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
         question.setText(game.getCurrentQuestion().getPrompt());
         Question currentQuestion = game.getCurrentQuestion();
-        if(currentQuestion instanceof MultipleChoiceQuestion) {
-            String options[] = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+        if (currentQuestion instanceof MultipleChoiceQuestion) {
+            String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
             option1.setText(options[0]);
             option2.setText(options[1]);
             option3.setText(options[2]);
@@ -231,8 +239,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
             question.setText(game.getCurrentQuestion().getPrompt());
             Question currentQuestion = game.getCurrentQuestion();
-            if(currentQuestion instanceof MultipleChoiceQuestion) {
-                String options[] = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+            if (currentQuestion instanceof MultipleChoiceQuestion) {
+                String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
                 option1.setText(options[0]);
                 option2.setText(options[1]);
                 option3.setText(options[2]);
