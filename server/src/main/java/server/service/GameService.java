@@ -59,21 +59,7 @@ public class GameService {
         return repo.getLeaderboard(id);
     }
 
-<<<<<<< HEAD
-    public List<Question> getQuestions(final UUID id) {
-        if (questionsPerGame.containsKey(id)) {
-            return questionsPerGame.get(id);
-        } 
-        
-        questionsPerGame.put(id, activityService.getQuestionList());
-        return questionsPerGame.get(id);
-    }
-
     public void updatePlayerScore(final Game game, final String nick, final int score) {
         repo.updatePlayerScore(game, nick, score);
-=======
-    public void updatePlayerScore(final Game game, final ScoreMessage scoreMessage) {
-        repo.updatePlayerScore(game, scoreMessage);
->>>>>>> 57-assign-each-game-the-generated-question-list
     }
 }
