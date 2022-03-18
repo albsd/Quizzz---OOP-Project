@@ -10,10 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -22,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalTime;
 import java.util.ResourceBundle;
 
 import javax.inject.Inject;
@@ -52,6 +50,9 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private HBox mainHorizontalBox;
+
+    @FXML
+    private TextField openAnswer;
 
     private final ServerUtils server;
 
@@ -192,18 +193,16 @@ public class GameController implements Initializable, WebSocketSubscription {
      * @param event triggered by a button click
      */
     public void checkOpenAnswer(final ActionEvent event) {
-        long correctAnswer = ((FreeResponseQuestion) game.getCurrentQuestion()).getAnswer();
-
-        String optionStr = ((Button) event.getSource()).getText();
-        long option;
-        try {
-            option = Integer.parseInt(optionStr);
-        } catch (NumberFormatException exception) {
-            System.out.println("invalid input");
-            // set for 0 accuracy
-            option = correctAnswer * -200;
+        String optionStr = openAnswer.getText();
+        if (!optionStr.matches("[0-9]*")) {
+            //warning.setTextFill(red);
+            //warning.setText("You can only input numbers");
+            return;
         }
-        sendScores(me.getNick(), progressBar.getClientTime(), "open", correctAnswer, option);
+        openAnswer.setText("");
+        long correctAnswer = ((FreeResponseQuestion) game.getCurrentQuestion()).getAnswer();
+        long option = Integer.parseInt(optionStr);
+        sendScores(me.getNick(), progressBar.getClientTime(), "multiple", correctAnswer, option);
     }
 
     public void setMe(final Player me) {
@@ -297,6 +296,10 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     }
     private void changeToFreeMode() {
-
+        optionBox.getChildren().get(4);
+        openAnswer.setVisible(true);
+        option1.setVisible(false);
+        option2.setVisible(false);
+        option3.setVisible(false);
     }
 }
