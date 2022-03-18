@@ -3,10 +3,12 @@ package server.repository;
 import commons.Activity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ActivityRepository extends CrudRepository<Activity, String> {
-    long count();
+import java.util.Optional;
+
+public interface ActivityRepository extends JpaRepository<Activity, Long> {
     Page<Activity> findAll(Pageable pageable);
 
+    Optional<Activity> findTopByOrderByIdDesc();
 }

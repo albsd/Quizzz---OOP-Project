@@ -1,81 +1,55 @@
 package server.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import server.service.ActivityService;
-import server.service.GameService;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Endpoint to configure Activity repository.
+ * Allow clients to add or remove activities in the repository.
+ */
 @RestController
 @RequestMapping("/activity")
-/*
-   Do not need to use these methods unless we are not allowed to store the quizzz.mv.db file on the repo
-   , in which case you would replace the path to your path and make a POST request to /activity/addAllAct
- */
 public class ActivityController {
     private final ActivityService activityService;
 
     @Autowired
-    public ActivityController(final GameService gameService, final ActivityService activityService) {
+    public ActivityController(final ActivityService activityService) {
         this.activityService = activityService;
     }
-    //get all activities
-    @GetMapping("/getAct")
-    public ResponseEntity<List<Activity>> getAllActivities() {
-        return ResponseEntity.ok(activityService.getAllActivities());
+
+    /**
+     * Adds the activity in the activity repo in the request body.
+     * @param activity activity to be added.
+     * @return the activity that was added
+     */
+    @PostMapping("/add")
+    public ResponseEntity<Activity> addActivity(final @RequestBody Activity activity) {
+        return ResponseEntity.ok(activityService.addActivity(activity));
     }
 
-    //add all activities
-    @PostMapping("/addAllAct")
-    public void addAllActivities() throws IOException {
-        //parse json into activity
-        List<File> f = getFiles(".json", new File("C:\\Users\\LohithSai\\Desktop\\activity-bank\\activities"));
-        ObjectMapper mapper = new ObjectMapper();
-        for (int i = 0; i < f.size(); i++) {
-            Activity a = mapper.readValue(readFile(f.get(i)), Activity.class);
-            System.out.println(a.getTitle());
-            if (a.getSource().length() > 255) {
-                a.setSource(a.getSource().substring(0, 255));
-            }
-            String str = f.get(i).getName();
-            System.out.println(str);
-            File file = find("C:\\Users\\LohithSai\\Desktop\\activity-bank\\activities",
-                    str.substring(0, str.lastIndexOf('.')) + ".png");
-            if (file == null) {
-                System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpeg");
-                file = find("C:\\Users\\LohithSai\\Desktop\\activity-bank\\activities",
-                        str.substring(0, str.lastIndexOf('.')) + ".jpeg");
-            }
-            if (file == null) {
-                System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpg");
-                file = find("C:\\Users\\LohithSai\\Desktop\\activity-bank\\activities",
-                        str.substring(0, str.lastIndexOf('.')) + ".jpg");
-            }
-            System.out.println(file);
-            BufferedImage bImage = ImageIO.read(file);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-            byte[] data = bos.toByteArray();
-            a.setImageBytes(data);
-            activityService.addActivity(a);
-        }
+    /**
+     * removes activity in repo based on id from parameter.
+     * @param id Long id
+     * @return the activity that was deleted
+     */
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Activity> deleteActivity(final @PathVariable Long id) {
+        return ResponseEntity.ok(activityService.deleteActivity(id));
     }
 
     public static File find(final String path, final String fName) {
@@ -109,9 +83,7 @@ public class ActivityController {
     }
 
     public static List<File> getFiles(final String ext, final File folder) {
-
         String extension = ext.toUpperCase();
-
         final List<File> files = new ArrayList<File>();
         for (final File file : folder.listFiles()) {
             if (file.isDirectory()) {
@@ -119,10 +91,7 @@ public class ActivityController {
             } else if (file.getName().toUpperCase().endsWith(extension)) {
                 files.add(file);
             }
-
         }
-
         return files;
-
     }
 }

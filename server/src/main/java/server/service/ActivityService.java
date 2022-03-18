@@ -11,6 +11,7 @@ import server.repository.ActivityRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ActivityService {
@@ -35,10 +36,6 @@ public class ActivityService {
             a = activityPage.getContent().get(0);
         }
         return a;
-    }
-
-    public void addActivity(final Activity activity) {
-        activityRepository.save(activity);
     }
 
     public List<Question> getQuestionList() {
@@ -71,5 +68,27 @@ public class ActivityService {
         List<Activity> copy = new ArrayList<Activity>(allActivities);
         Collections.shuffle(copy);
         return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
+    }
+
+    public Activity addActivity(final Activity activity) {
+        Optional<Activity> optionalAct = activityRepository.findTopByOrderByIdDesc();
+        long id;
+        if (optionalAct.isEmpty()) {
+            id = 1L;
+        } else {
+            id = optionalAct.get().getId() + 1;
+        }
+        activity.setId(id);
+        return activityRepository.save(activity);
+    }
+
+    public Activity deleteActivity(final Long id) {
+        Optional<Activity> activity = activityRepository.findById(id);
+        if (activity.isEmpty()) {
+            return null;
+        } else {
+            activityRepository.delete(activity.get());
+            return activity.get();
+        }
     }
 }

@@ -3,8 +3,11 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.ArrayUtils;
+import javax.persistence.GenerationType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +16,17 @@ import java.util.Random;
 @Entity
 public class Activity {
     @Id
+    @SequenceGenerator(
+            name = "activity_sequence",
+            sequenceName = "activity_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "activity_sequence"
+    )
+    @JsonProperty("id")
+    private long id;
     @JsonProperty("title")
     private String title;
     @JsonProperty("consumption_in_wh")
@@ -116,6 +130,14 @@ public class Activity {
 
         choices[correctAnswerIndex] = Long.toString(energyConsumption);
         return choices;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getTitle() {
