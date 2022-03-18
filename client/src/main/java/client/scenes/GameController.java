@@ -190,8 +190,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      * @param event triggered by a button click
      */
     public void checkAnswer(final ActionEvent event) {
-        Question currentQuestion = game.getCurrentQuestion();
-        long correctAnswer = game.getCurrentQuestion().getAnswer();
+        long correctAnswer = currentQuestion.getAnswer();
         String optionStr = ((Button) event.getSource()).getText();
         int option = Integer.parseInt(optionStr);
         int score = 0;

@@ -87,7 +87,7 @@
                                  <Font size="24.0" />
                               </font>
                            </Button>
-                           <TextField fx:id="openAnswer" alignment="CENTER" onAction="#checkOpenAnswer" prefHeight="53.0" prefWidth="196.0" promptText="Type in only numbers">
+                           <TextField fx:id="openAnswer" alignment="CENTER" onAction="#checkAnswer" prefHeight="53.0" prefWidth="196.0" promptText="Type in only numbers">
                               <font>
                                  <Font size="24.0" />
                               </font>
