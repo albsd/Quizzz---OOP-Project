@@ -39,6 +39,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import server.service.ActivityService;
 import server.service.GameService;
 
 import java.util.List;
@@ -50,9 +52,13 @@ public class GameController {
 
     private final GameService gameService;
 
+    private final ActivityService activityService;
+
     @Autowired
-    public GameController(final GameService gameService) {
+    public GameController(final GameService gameService, final ActivityService activityService) {
         this.gameService = gameService;
+        this.activityService = activityService;
+        gameService.initializeLobby(activityService.getQuestionList());
     }
 
     /**
@@ -102,11 +108,12 @@ public class GameController {
 
     @GetMapping("/{id}/question")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
-        if (gameService.findById(id) == null) {
+        Game game = gameService.findById(id); 
+        if (game == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(gameService.getQuestions(id));
+        return ResponseEntity.ok(game.getQuestions());
     }
 
     /**
@@ -217,7 +224,7 @@ public class GameController {
     @PostMapping("/start")
     public ResponseEntity<Game> startCurrentGame() {
         Game lobby = gameService.getCurrentGame();
-        gameService.newGame();
+        gameService.newGame(activityService.getQuestionList());
         return ResponseEntity.ok(lobby);
     }
 
