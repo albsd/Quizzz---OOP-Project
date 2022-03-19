@@ -240,7 +240,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         game.start(this::setNextQuestion);
     }
 
-    private void displayQuestion(Question currentQuestion) {
+    private void displayQuestion(final Question currentQuestion) {
         questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
         question.setText(currentQuestion.getPrompt());
         if (currentQuestion instanceof MultipleChoiceQuestion) {
