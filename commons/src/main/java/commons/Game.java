@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-enum GameState { waiting, multiplayer, singleplayer }
-
 public class Game {
 
     @JsonIgnore
@@ -27,15 +25,15 @@ public class Game {
     @JsonProperty("currentQuestion")
     private int currentQuestion;
 
-    @JsonProperty("gameState")
-    private GameState gameState;
+    @JsonProperty("isMultiplayer")
+    private boolean isMultiplayer;
 
     public Game(final UUID id, final List<Question> questions) {
         this.id = id;
         this.players = new ArrayList<>();
         this.questions = questions;
         this.currentQuestion = 0;
-        this.gameState = GameState.waiting;
+        this.isMultiplayer = true;
     }
 
     @JsonCreator
@@ -43,12 +41,12 @@ public class Game {
                 final @JsonProperty("players") List<Player> players,
                 final @JsonProperty("questions") List<Question> questions,
                 final @JsonProperty("currentQuestion") int currentQuestion,
-                final @JsonProperty("gameState") GameState gameState) {
+                final @JsonProperty("isMultiplayer") boolean isMultiplayer) {
         this.id = id;
         this.players = players;
         this.questions = questions;
         this.currentQuestion = currentQuestion;
-        this.gameState = gameState;
+        this.isMultiplayer = isMultiplayer;
     }
 
     public UUID getId() {
@@ -59,18 +57,18 @@ public class Game {
         return players;
     }
 
-    public GameState getGameState() {
-        return gameState;
+    public boolean getIsMultiplayer() {
+        return this.isMultiplayer;
     }
     
     public void setSinglePlayer(final Player p) {
         addPlayer(p);
-        gameState = GameState.singleplayer;
+        isMultiplayer = false;
     }
 
     @JsonIgnore
-    public boolean showLeaderboard() {
-        return gameState == GameState.singleplayer && currentQuestion % 10 == 0;
+    public boolean shouldShowLeaderboard() {
+        return isMultiplayer && currentQuestion % 10 == 0;
     }
 
     @JsonIgnore
@@ -136,7 +134,6 @@ public class Game {
 
     @JsonIgnore
     public void start(final Runnable callback) {
-        this.gameState = GameState.multiplayer;
         timer.startGameTimer(callback);
     }
 }

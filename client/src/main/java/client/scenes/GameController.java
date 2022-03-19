@@ -205,7 +205,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void setNextQuestion() {
         game.nextQuestion();
         
-        if (game.showLeaderboard()) {
+        if (game.shouldShowLeaderboard()) {
             server.updateScore(game.getId(), me.getNick(), Integer.toString(me.getScore()));
             Platform.runLater(() -> {
                 var root = fxml.displayLeaderboardMomentarily();
@@ -215,8 +215,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
 
         Platform.runLater(() -> {
-            displayQuestion();
-           
+            displayQuestion();  
         });
         
         game.start(this::setNextQuestion);

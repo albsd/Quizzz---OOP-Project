@@ -188,10 +188,10 @@ public class ServerUtils {
     }
     
     /**
-     * Calls the REST endpoint to join the current active lobby.
+     * Calls the REST endpoint to create and start a singleplayer game.
      *
      * @param nick  String of the user nickname
-     * @return      Player that has joined the game
+     * @return      Player that has started the game
      */
     public Game startSinglePlayer(final String nick) {
         HttpRequest request = HttpRequest.newBuilder()
