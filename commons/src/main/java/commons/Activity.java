@@ -2,10 +2,13 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.ArrayUtils;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.*;
+import java.util.List;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.Arrays;
+import java.util.Random;
 
 @Entity
 public class Activity {
