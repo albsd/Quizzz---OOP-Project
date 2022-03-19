@@ -66,13 +66,7 @@ public class GameRepository {
 
     public Leaderboard getLeaderboard(final UUID id) {
         Game game = this.findById(id);
-        List<Player> players = game.getPlayers();
-        Leaderboard leaderboard = new Leaderboard();
-        List<Player> rank = players.stream().
-                sorted(Comparator.comparingInt(Player::getScore).reversed())
-                .collect(Collectors.toList());
-        leaderboard.setRanking(rank);
-        return leaderboard;
+        return new Leaderboard(game.getPlayers());
     }
 
     public void updatePlayerScore(final Game game, final String nick, final int score) {

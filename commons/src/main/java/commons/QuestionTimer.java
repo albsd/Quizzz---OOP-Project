@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class QuestionTimer {
-    private final int maxTime = 20000;
+    private final int maxTime = 1000;
     private final int oneSecond = 1000;
     private final int decrement = 25;    // 25ms
     private int currentTime = maxTime;

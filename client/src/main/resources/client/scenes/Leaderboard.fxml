@@ -79,53 +79,7 @@
          </StackPane>
          <ScrollPane hbarPolicy="NEVER" layoutX="320.0" layoutY="115.0" prefHeight="460.0" prefWidth="615.0" style="-fx-background-color: transparent;">
             <content>
-               <VBox alignment="TOP_CENTER" prefWidth="600.0" spacing="10.0">
-                  <children>
-                     <StackPane style="-fx-background-color: #ffd644;">
-                        <children>
-                           <Label text="Username">
-                              <font>
-                                 <Font size="24.0" />
-                              </font>
-                           </Label>
-                           <Label text="#1" StackPane.alignment="CENTER_LEFT">
-                              <font>
-                                 <Font size="24.0" />
-                              </font>
-                           </Label>
-                           <Label text="1000" StackPane.alignment="CENTER_RIGHT">
-                              <font>
-                                 <Font size="24.0" />
-                              </font>
-                           </Label>
-                        </children>
-                        <padding>
-                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                        </padding>
-                     </StackPane>
-                     <StackPane style="-fx-background-color: #eae9e9;">
-                        <children>
-                           <Label text="Username2">
-                              <font>
-                                 <Font size="24.0" />
-                              </font>
-                           </Label>
-                           <Label text="#2" StackPane.alignment="CENTER_LEFT">
-                              <font>
-                                 <Font size="24.0" />
-                              </font>
-                           </Label>
-                           <Label text="999" StackPane.alignment="CENTER_RIGHT">
-                              <font>
-                                 <Font size="24.0" />
-                              </font>
-                           </Label>
-                        </children>
-                        <padding>
-                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                        </padding>
-                     </StackPane>
-                  </children>
+               <VBox fx:id="playerRanking" alignment="TOP_CENTER" prefWidth="600.0" spacing="10.0">
                   <padding>
                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                   </padding>
