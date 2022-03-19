@@ -27,7 +27,7 @@
                <Font name="System Bold" size="72.0" />
             </font>
          </Label>
-         <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#returnToMenu" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" textAlignment="CENTER">
+         <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" textAlignment="CENTER">
             <graphic>
                <ImageView pickOnBounds="true" preserveRatio="true">
                   <image>
@@ -100,7 +100,8 @@
                </GridPane>
             </children>
          </HBox>
+         <!-- Include the popup at top of everything -->
+         <fx:include fx:id="popup" source="/client/scenes/Popup.fxml" />
       </children>
     </AnchorPane>
-    <!--    <ScrollPane prefHeight="200.0" prefWidth="200.0" />-->
 </VBox>
