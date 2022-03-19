@@ -159,7 +159,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         currentQuestion = game.getCurrentQuestion();
         isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
         if (isOpenQuestion) {
-            changeToFreeMode();
+            fxml.changeToFreeMode(openAnswer, option1, option2, option3);
         }
         // question.setText(question.getPrompt());
         // start client timer
@@ -231,10 +231,10 @@ public class GameController implements Initializable, WebSocketSubscription {
             currentQuestion = game.getCurrentQuestion();
 //            question.setText(currentQuestion.getPrompt());
             if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
-                changeToMultiMode();
+                fxml.changeToMultiMode(openAnswer, option1, option2, option3);
                 isOpenQuestion = false;
             } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
-                changeToFreeMode();
+                fxml.changeToFreeMode(openAnswer, option1, option2, option3);
                 isOpenQuestion = true;
             }
         });
@@ -288,21 +288,5 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private void sendEmote(final Emote emote) {
         server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
-    }
-
-    private void changeToMultiMode() {
-        openAnswer.toBack();
-        openAnswer.setVisible(false);
-        option1.setVisible(true);
-        option2.setVisible(true);
-        option3.setVisible(true);
-    }
-
-    private void changeToFreeMode() {
-        openAnswer.toFront();
-        openAnswer.setVisible(true);
-        option1.setVisible(false);
-        option2.setVisible(false);
-        option3.setVisible(false);
     }
 }
