@@ -18,6 +18,7 @@ public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
+    @JsonProperty("id")
     private long id;
     @JsonProperty("title")
     private String title;
@@ -25,24 +26,21 @@ public class Activity {
     private long energyConsumption;
     @JsonProperty("source")
     private String source;
-//TODO: make this a json property?
     @JsonProperty
     private byte[] imageBytes;
 
     public Activity() {
 
     }
-    //TODO: add @JsonCreator
     @JsonCreator
-    public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption,
-                    @JsonProperty final String source, @JsonProperty final byte[] imageBytes) {
+    public Activity(@JsonProperty final String title,
+                    @JsonProperty final long energyConsumption,
+                    @JsonProperty final String source) {
         this.title = title;
         this.energyConsumption = energyConsumption;
         this.source = source;
-        this.imageBytes = imageBytes;
     }
 
-    //TODO: Implement the getActivityMultipleChoiceQuestion() where the options are other activities in another class
     public MultipleChoiceQuestion getNumberMultipleChoiceQuestion() {
         String prompt = "How much energy does " + title + " take in watt hours?";
         String[] choices = generateChoices(energyConsumption);
@@ -52,7 +50,6 @@ public class Activity {
     }
 
     public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(final List<Activity> answerOptions) {
-        //TODO:We need to decide what image (if any) to display on this type of question
         byte[] imgBytes = new byte[1];
         String prompt = "Which of the following activities take the most energy";
         String[] options = this.getMultipleActivitiesOptions(answerOptions);
@@ -62,7 +59,6 @@ public class Activity {
     }
 
     public int getMultipleActivitiesAnswerIndex(final List<Activity> answerOptions) {
-
         long max = 0;
         int maxIndex = 0;
         for (int i = 0; i < answerOptions.size(); i++) {
@@ -73,11 +69,9 @@ public class Activity {
             }
         }
         return maxIndex;
-
     }
 
     public String[] getMultipleActivitiesOptions(final List<Activity> answerOptions) {
-
         String[] options = answerOptions.stream().map(Activity::getTitle).toArray(String[]::new);
         long max = 0;
         for (int i = 0; i < answerOptions.size(); i++) {

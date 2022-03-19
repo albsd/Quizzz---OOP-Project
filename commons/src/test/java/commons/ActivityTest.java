@@ -17,10 +17,10 @@ class ActivityTest {
     @BeforeEach
     void setup() {
         activityChoices = new ArrayList<>();
-        activity = new Activity("title", 123123, "source", new byte[1]);
+        activity = new Activity("title", 123123, "source");
         activityChoices.add(activity);
-        activityChoices.add(new Activity("title1", 12, "source1", new byte[1]));
-        activityChoices.add(new Activity("title2", 123, "source2", new byte[1]));
+        activityChoices.add(new Activity("title1", 12, "source1"));
+        activityChoices.add(new Activity("title2", 123, "source2"));
 
         choices = activity.generateChoices(123123);
         activity.setImageBytes(new byte[1]);
