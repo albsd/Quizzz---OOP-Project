@@ -85,6 +85,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     
     private boolean doubleScore = false;
 
+    private final String green = "#66ff66";
+
+    private final String red = "#ff0000";
+
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml,
             final ProgressBarController progressBar) {
