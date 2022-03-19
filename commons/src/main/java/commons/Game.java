@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-enum GameState { waiting, playing, singleplayer }
+enum GameState { waiting, multiplayer, singleplayer }
 
 public class Game {
 
@@ -136,7 +136,7 @@ public class Game {
 
     @JsonIgnore
     public void start(final Runnable callback) {
-        this.gameState = GameState.playing;
+        this.gameState = GameState.multiplayer;
         timer.startGameTimer(callback);
     }
 }
