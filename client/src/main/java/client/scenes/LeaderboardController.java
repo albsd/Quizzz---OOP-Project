@@ -17,7 +17,11 @@ import javax.inject.Inject;
 
 import client.FXMLController;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -25,7 +29,6 @@ public class LeaderboardController {
 
     public final Color orange = new Color(1, 0.84, 0.26, 1); // #ffd644
     public final Color grey = new Color(0.918, 0.914, 0.914, 1); // #eae9e9
-    public final Color green = new Color(0.878, 0.988, 0.812, 1); // e0fccf
     public final Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
 
     @FXML
