@@ -57,17 +57,17 @@
          </HBox>
          <StackPane layoutX="320.0" layoutY="600.0" prefWidth="600.0" style="-fx-background-color: #e0fccf;">
             <children>
-               <Label text="Username">
+               <Label fx:id="nick" text="Username">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label text="#1" StackPane.alignment="CENTER_LEFT">
+               <Label fx:id="rank" text="#1" StackPane.alignment="CENTER_LEFT">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label text="1000" StackPane.alignment="CENTER_RIGHT">
+               <Label fx:id="score" text="1000" StackPane.alignment="CENTER_RIGHT">
                   <font>
                      <Font size="24.0" />
                   </font>
@@ -86,7 +86,7 @@
                </VBox>
             </content>
          </ScrollPane>
-         <Label alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" text="LEADERBOARD">
+         <Label fx:id="title" alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" text="LEADERBOARD">
             <font>
                <Font name="System Bold" size="72.0" />
             </font>

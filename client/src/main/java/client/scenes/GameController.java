@@ -207,7 +207,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             Platform.runLater(() -> {
                 var root = fxml.displayLeaderboardMomentarily();
                 LeaderboardController leaderboardController = root.getKey();
-                leaderboardController.displayLeaderboard(this.game.getId());
+                leaderboardController.displayLeaderboard(this.game.getId(), me);
             });
         }
 
