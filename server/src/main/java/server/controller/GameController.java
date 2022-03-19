@@ -182,6 +182,32 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
+    /**
+     * Leave the active game lobby as a Player with id "nick".
+     *
+     * @param nick User's nickname which identifies a given player in a game
+     * @return Player
+     */
+    @DeleteMapping("/{id}/player/{nick}")
+    public ResponseEntity<Player> leaveGame(final @PathVariable UUID id, final @PathVariable("nick") String nick) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game game = gameService.findById(id);
+        final int errorCode = 403; // FORBIDDEN
+
+        Player p = game.getPlayerByNick(nick);
+        boolean success = game.removePlayer(p);
+        System.out.println(success);
+
+        if (!success) {
+            return ResponseEntity.status(errorCode).build();
+        }
+
+        return ResponseEntity.ok(p);
+    }
+
     // TODO: send generated session id to client so that it can send it back when
     // joining lobby after nickname
     @EventListener
@@ -285,5 +311,19 @@ public class GameController {
     @SendTo("/topic/game/{id}/update")
     public GameUpdate halveTimeWebsocket() {
         return GameUpdate.halveTimer;
+    }
+
+    /**
+     * A Websocket endpoint for sending updates about the game's player' status.
+     * Namely, updates the active players in the game for all clients.
+     *
+     * @param player The player who has left
+     * 
+     * @return The player object
+     */
+    @MessageMapping("/game/{id}/leave") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/leave
+    @SendTo("/topic/game/{id}/leave")
+    private Player sendPlayerLeft(final Player player) {
+        return player;
     }
 }

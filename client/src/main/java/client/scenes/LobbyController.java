@@ -12,16 +12,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ButtonType;
 
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -160,9 +157,10 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void openPopup(final ActionEvent event) {
-        popupController.open();
-        // server.leaveGame(me.getNick());
-        // fxml.showSplash();
+        popupController.open(() -> {
+            server.leaveLobby(me.getNick());
+            fxml.showSplash();
+        });
     }
 
     @FXML

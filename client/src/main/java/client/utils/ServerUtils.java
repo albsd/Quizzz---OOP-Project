@@ -141,7 +141,7 @@ public class ServerUtils {
      * @param nick  String of the user nickname
      * @return      Player that has left the game
      */
-    public Player leaveGame(final String nick) {
+    public Player leaveLobby(final String nick) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/leave/" + nick))
                 .DELETE()
@@ -150,6 +150,25 @@ public class ServerUtils {
         Player player = parseResponseToObject(request, new TypeReference<Player>() { });
         if (player != null) {
             send("/app/update/player", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
+        }
+        return player;
+    }
+
+    /**
+     * Calls the REST endpoint to leave the current active lobby.
+     *
+     * @param nick  String of the user nickname
+     * @return      Player that has left the game
+     */
+    public Player leaveGame(final String nick, final String id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/" + id + "/player/" + nick))
+                .DELETE()
+                .build();
+
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player != null) {
+            send("/app/game/" + id  + "/player", player);
         }
         return player;
     }

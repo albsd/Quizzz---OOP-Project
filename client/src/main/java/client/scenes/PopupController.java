@@ -28,6 +28,8 @@ public class PopupController implements Initializable {
 
     private final Font font;
 
+    private Runnable onConfirm;
+
     @Inject
     public PopupController(final FXMLController fxml) {
         this.fxml = fxml;
@@ -41,17 +43,19 @@ public class PopupController implements Initializable {
         confirmButton.setFont(font);
     }
 
-    public void open() {
+    public void open(final Runnable onConfirm) {
         menu.setVisible(true);
+        this.onConfirm = onConfirm;
     }
 
     @FXML
     public void close(final ActionEvent e) {
         menu.setVisible(false);
     }
-    
+
     @FXML
-    public void returnToMenu(final ActionEvent e) {
+    public void returnToMenu() {
+        onConfirm.run();
         fxml.showSplash();
     }
 }

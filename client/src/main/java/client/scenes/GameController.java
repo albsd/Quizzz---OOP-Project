@@ -85,6 +85,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private boolean isOpenQuestion;
     
+    private String leavePath;
+
     private boolean doubleScore = false;
 
     @Inject
@@ -109,32 +111,50 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @Override
     public Subscription[] registerForMessages() {
-        Subscription[] subscriptions = new Subscription[1];
+        Subscription[] subscriptions = new Subscription[2];
         subscriptions[0] = server.registerForMessages("/topic" + chatPath, EmoteMessage.class, message -> {
             Platform.runLater(() -> {
-                Label nickname = new Label(message.getNick());
-                nickname.setFont(font);
-                
                 String emotePath = switch (message.getContent()) {
                     case cry -> "/images/face-sad.png";
                     case frown -> "/images/face-frown.png";
                     case smile -> "/images/face-smile.png";
                     case surprised -> "/images/face-surprise.png";
                 };
-                ImageView emoteImage = new ImageView();
-                emoteImage.setImage(new Image(emotePath));
                 
-                HBox emoteBox = new HBox(20);
-                emoteBox.setAlignment(Pos.CENTER_RIGHT);
-                emoteBox.getChildren().addAll(nickname, emoteImage);
-                emoteChat.getChildren().add(emoteBox);
-                
-                // update scrollpane's layout before scrolling to the bottom
-                emoteScroll.layout();
-                emoteScroll.setVvalue(1);
+                updateEmoteBox(message.getNick(), emotePath);
             });
         });
+
+        subscriptions[1] = server.registerForMessages("/topic" + leavePath, Player.class, player -> {
+            Platform.runLater(() -> {
+                updateEmoteBox(player.getNick(), "/images/disconnected.png");
+            });
+        });
+
         return subscriptions;
+    }
+
+    /**
+     * Updates the emotebox with the given event.
+     * 
+     * @param nick Player who sends an event
+     * @param imagePath Image to be displayed as result of the event
+     */
+    private void updateEmoteBox(String nick, String imagePath) {
+        Label nickname = new Label(nick);
+        nickname.setFont(font);
+    
+        ImageView emoteImage = new ImageView();
+        emoteImage.setImage(new Image(imagePath));
+
+        HBox emoteBox = new HBox(20);
+        emoteBox.setAlignment(Pos.CENTER_RIGHT);
+        emoteBox.getChildren().addAll(nickname, emoteImage);
+        emoteChat.getChildren().add(emoteBox);
+        
+        // update scrollpane's layout before scrolling to the bottom
+        emoteScroll.layout();
+        emoteScroll.setVvalue(1);
     }
 
     /**
@@ -149,15 +169,17 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game = game;
         this.game.initialiseTimer();
         this.chatPath = "/game/" + game.getId() + "/chat";
+        this.leavePath = "/game/" + game.getId() + "/leave";
+
         //by default game.fxml set to multiple question mode
         currentQuestion = game.getCurrentQuestion();
         isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
         if (isOpenQuestion) {
             fxml.changeToFreeMode(openAnswer, option1, option2, option3);
         }
+        
         displayQuestion(currentQuestion);
-        // start client timer
-        // progressBar.start();
+        
         game.start(this::setNextQuestion);
     }
 
@@ -250,7 +272,9 @@ public class GameController implements Initializable, WebSocketSubscription {
     
     @FXML
     public void openPopup(final ActionEvent e) {
-        popupController.open();
+        popupController.open(() -> {
+            server.leaveGame(me.getNick(), game.getId().toString());
+        });
     }
 
     @FXML
