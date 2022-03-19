@@ -1,11 +1,9 @@
 package commons;
 
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
-public class FreeResponseQuestion extends Question {
+public class FreeResponseQuestion extends Question<Long> {
 
     @JsonCreator
     public FreeResponseQuestion(@JsonProperty("prompt") final String prompt,

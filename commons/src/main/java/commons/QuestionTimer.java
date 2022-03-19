@@ -2,87 +2,50 @@ package commons;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Consumer;
 
 public class QuestionTimer {
-    private final int maxTime = 20000;
-    private final int oneSecond = 1000;
+    public static final int MAX_TIME = 20000;
     private final int decrement = 25;    // 25ms
-    private int currentTime = maxTime;
+    private int currentTime = MAX_TIME;
     private boolean started = false;
     private boolean over = false;
-    private Timer timer;
+    private final Timer timer;
     private TimerTask currentTask;
+    private final Consumer<Integer> timeDisplayer;
+    private final Runnable finishCallback;
 
-    public QuestionTimer() {
+    public QuestionTimer(final Consumer<Integer> timeDisplayer, final Runnable finishCallback) {
         this.timer = new Timer();
+        this.timeDisplayer = timeDisplayer;
+        this.finishCallback = finishCallback;
     }
 
     public int getCurrentTime() {
         return currentTime;
     }
 
-    public double getMaxTime() {
-        return maxTime;
-    }
-
-    public Timer getTimer() {
-        return timer;
-    }
-
-    public TimerTask getTask() {
-        return currentTask;
-    }
-
-    public int getDecrement() {
-        return decrement;
-    }
-
-    public double getOneSecond() {
-        return oneSecond;
-    }
-
     public void setCurrentTime(final int currentTime) {
         this.currentTime = currentTime;
     }
 
-    public void setTimer(final Timer timer) {
-        this.timer = timer;
-    }
-
-    public void setCurrentTask(final TimerTask currentTask) {
-        this.currentTask = currentTask;
-    }
-
-    public void setStarted(final boolean started) {
-        this.started = started;
-    }
-
-
-    public void setOver(final boolean over) {
-        this.over = over;
-    }
-
-    public boolean isStarted() {
-        return started;
-    }
-
-    public boolean isOver() {
-        return over;
-    }
-
-    public void startGameTimer(final Runnable callback) {
-        reset();
-        System.out.println("Game timer started.");
+    public void start(final int delay) {
+        if (currentTask != null) {
+            currentTask.cancel();
+        }
+        currentTime = MAX_TIME;
         started = true;
         over = false;
-        final int delay = 0;
-        currentTask = gameTimerTask(callback);
+        currentTask = newTimerTask();
         timer.scheduleAtFixedRate(currentTask, delay, decrement);
+        System.out.println("Timer started.");
     }
 
-    public void stopGameTimer() {
-        this.currentTime = 0;
-        this.over = true;
+    public void stop() {
+        over = true;
+        if (currentTask != null) {
+            currentTask.cancel();
+        }
     }
 
     public void halve() {
@@ -98,30 +61,23 @@ public class QuestionTimer {
         }
     }
 
-    public void reset() {
-        over = false;
-        System.out.println("Reset timer.");
-        if (currentTask != null) {
-            currentTask.cancel();
-        }
-        started = false;
-        currentTime = maxTime;
-    }
-
-    private TimerTask gameTimerTask(final Runnable callback) {
+    private TimerTask newTimerTask() {
         return new TimerTask() {
             @Override
             public void run() {
                 currentTime -= decrement;
-                if (currentTime <= 0) {
-                    System.out.println("Time's over!");
-                    //callback
-                    //set 5 second delay
-                    try {
-                        stopGameTimer();
-                        callback.run();
-                    } catch (Exception e) {
+                try {
+                    timeDisplayer.accept(currentTime);
+                } catch (Exception e) {
                     e.printStackTrace();
+                }
+                if (currentTime <= 0) {
+                    over = true;
+                    currentTime = 0;
+                    try {
+                        finishCallback.run();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     cancel();
                 }

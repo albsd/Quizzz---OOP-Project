@@ -12,9 +12,6 @@ enum GameState { waiting, playing }
 
 public class Game {
 
-    @JsonIgnore
-    private QuestionTimer timer;
-
     @JsonProperty("id")
     private UUID id;
 
@@ -63,15 +60,6 @@ public class Game {
         return gameState;
     }
 
-    public QuestionTimer getTimer() {
-        return timer;
-    }
-
-    // Since the QuestionTimer cannot be serialised over HTTP, we can call this method in the client to create a new timer.
-    public void initialiseTimer() {
-        this.timer = new QuestionTimer();
-    }
-
     public boolean addPlayer(final Player p) {
         if (players.contains(p)) {
             return false;
@@ -96,10 +84,9 @@ public class Game {
         }
         return null;
     }
-    //if not ignored, game in serverUtil from getplayers is null
-    @JsonIgnore
-    public int nextQuestion() {
-        return currentQuestion++;
+
+    public void nextQuestion() {
+        this.currentQuestion++;
     }
 
     @JsonIgnore
@@ -115,11 +102,5 @@ public class Game {
     @JsonIgnore
     public Question getCurrentQuestion() {
         return questions.get(currentQuestion);
-    }
-
-    @JsonIgnore
-    public void start(final Runnable callback) {
-        this.gameState = GameState.playing;
-        timer.startGameTimer(callback);
     }
 }

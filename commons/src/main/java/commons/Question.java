@@ -5,31 +5,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.Objects;
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MultipleChoiceQuestion.class, name = "MultipleChoiceQuestion"),
         @JsonSubTypes.Type(value = FreeResponseQuestion.class, name = "FreeResponseQuestion")
 })
-@Entity
-public abstract class Question {
 
-    @Id
+public abstract class Question<T> {
+
     @JsonProperty("prompt")
     private final String prompt;
 
     @JsonProperty("answer")
-    private long answer;
+    private T answer;
 
     @JsonProperty("imageBytes")
     private final byte[] imageBytes;
 
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
-            final @JsonProperty("answer") long answer,
+            final @JsonProperty("answer") T answer,
             final @JsonProperty("imageBytes") byte[] imageBytes
     ) {
         this.prompt = prompt;
@@ -45,11 +42,11 @@ public abstract class Question {
         return this.imageBytes;
     }
 
-    public long getAnswer() {
+    public T getAnswer() {
         return answer;
     }
 
-    public void setAnswer(final long answer) {
+    public void setAnswer(final T answer) {
         this.answer = answer;
     }
 
@@ -72,6 +69,4 @@ public abstract class Question {
         result = hashInt * result + Arrays.hashCode(imageBytes);
         return result;
     }
-
-
 }

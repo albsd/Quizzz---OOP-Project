@@ -14,9 +14,9 @@ import java.util.List;
 @Service
 public class ActivityService {
 
-    @Autowired
     private ActivityRepository activityRepository;
 
+    @Autowired
     public ActivityService(final ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
@@ -59,7 +59,7 @@ public class ActivityService {
             final List<Activity> options) {
         if (activity == null) {
             String[] ops = new String[] {"a", "b", "c"};
-            return new MultipleChoiceQuestion("", new byte[0], ops, 0);
+            return new MultipleChoiceQuestion("What is the first letter of the alphabet?", new byte[0], ops, "a");
         }
         // question type of 0 means number multiple choice
         return switch (questionType) {

@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.ArrayUtils;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 @Entity
 public class Activity {
@@ -42,7 +39,7 @@ public class Activity {
         String[] choices = generateChoices(energyConsumption);
 
         return new MultipleChoiceQuestion(prompt, imageBytes, choices,
-                ArrayUtils.indexOf(choices, Long.toString(energyConsumption)));
+                Long.toString(energyConsumption));
     }
 
     public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(final List<Activity> answerOptions) {
@@ -52,22 +49,14 @@ public class Activity {
         String[] options = this.getMultipleActivitiesOptions(answerOptions);
 
         return new MultipleChoiceQuestion(prompt, imgBytes, options,
-                 this.getMultipleActivitiesAnswerIndex(answerOptions));
+                 this.getMultipleActivitiesAnswer(answerOptions));
     }
 
-    public int getMultipleActivitiesAnswerIndex(final List<Activity> answerOptions) {
-
-        long max = 0;
-        int maxIndex = 0;
-        for (int i = 0; i < answerOptions.size(); i++) {
-            long energy = answerOptions.get(i).getEnergyConsumption();
-            if (energy > max) {
-                max = energy;
-                maxIndex = i;
-            }
-        }
-        return maxIndex;
-
+    public String getMultipleActivitiesAnswer(final List<Activity> answerOptions) {
+        return answerOptions.stream()
+                .max(Comparator.comparingLong(Activity::getEnergyConsumption))
+                .map(Activity::getTitle)
+                .orElse(null);
     }
 
     public String[] getMultipleActivitiesOptions(final List<Activity> answerOptions) {

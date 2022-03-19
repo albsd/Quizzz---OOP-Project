@@ -19,7 +19,7 @@
             </Label>
          <VBox layoutY="100.0">
             <children>
-               <Label fx:id="question" prefHeight="82.0" prefWidth="1240.0" text="What is the expected energy consumption of an average personal gaming computer system per hour?" wrapText="true">
+               <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" text="What is the expected energy consumption of an average personal gaming computer system per hour?" wrapText="true">
                   <font>
                      <Font size="24.0" />
                   </font>

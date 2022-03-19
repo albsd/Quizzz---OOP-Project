@@ -4,13 +4,14 @@ import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
 
-import commons.EmoteMessage;
-import commons.Game;
-import commons.MultipleChoiceQuestion;
-import commons.Question;
-import commons.FreeResponseQuestion;
-import commons.Emote;
+import commons.QuestionTimer;
 import commons.Player;
+import commons.Game;
+import commons.Emote;
+import commons.EmoteMessage;
+import commons.Question;
+import commons.MultipleChoiceQuestion;
+import commons.FreeResponseQuestion;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,7 +43,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             cancelButton, confirmButton;
     
     @FXML
-    private Label question, questionNumber, points, popupText, timer1, timer2;
+    private Label questionPrompt, questionNumber, points, popupText, timer1, timer2;
 
     @FXML
     private ProgressBar timer;
@@ -63,7 +64,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final FXMLController fxml;
 
-    private final ProgressBarController progressBar;
+    private final QuestionTimer gameTimer;
+    private final QuestionTimer clientTimer;
 
     private final Font font;
 
@@ -76,11 +78,12 @@ public class GameController implements Initializable, WebSocketSubscription {
     private boolean doubleScore = false;
 
     @Inject
-    public GameController(final ServerUtils server, final FXMLController fxml,
-            final ProgressBarController progressBar) {
+public GameController(final ServerUtils server, final FXMLController fxml) {
+        this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
+        this.clientTimer = new QuestionTimer(
+                time -> timer.setProgress((double) time / QuestionTimer.MAX_TIME), () -> { });
         this.server = server;
         this.fxml = fxml;
-        this.progressBar = progressBar;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
     }
 
@@ -94,7 +97,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         confirmButton.setFont(font);
         popupText.setFont(font);
 
-        question.setFont(font);
+        questionPrompt.setFont(font);
         questionNumber.setFont(font);
         points.setFont(font);
         timer1.setFont(font);
@@ -141,14 +144,12 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void setGame(final Player me, final Game game) {
         this.me = me;
         this.game = game;
-        this.game.initialiseTimer();
         this.chatPath = "/game/" + game.getId() + "/chat";
 
-        displayQuestion();
-        // question.setText(game.getCurrentQuestion().getPrompt());
-        // start client timer
-        // progressBar.start();
-        game.start(this::setNextQuestion);
+        Platform.runLater(this::displayQuestion);
+
+        clientTimer.start(0);
+        gameTimer.start(0);
     }
 
     public void setSinglePlayer(final Player me) {
@@ -174,20 +175,24 @@ public class GameController implements Initializable, WebSocketSubscription {
      * @param event triggered by a button click
      */
     public void checkAnswer(final ActionEvent event) {
-        Question currentQuestion = game.getCurrentQuestion();
-        long correctAnswer = game.getCurrentQuestion().getAnswer();
-        String optionStr = ((Button) event.getSource()).getText();
-        int option = Integer.parseInt(optionStr);
+        int time = clientTimer.getCurrentTime();
+        Question question = game.getCurrentQuestion();
+        String option = ((Button) event.getSource()).getText();
         int score = 0;
-        if (currentQuestion instanceof MultipleChoiceQuestion) {
-            if (option == correctAnswer) {
-                score = me.calculateMulChoicePoints(progressBar.getClientTime());
+        if (question instanceof MultipleChoiceQuestion mcQuestion) {
+            if (option.equals(mcQuestion.getAnswer())) {
+                score = me.calculateMulChoicePoints(time);
             }
-        } else if (currentQuestion instanceof FreeResponseQuestion) {
-            //assume the player always inputs a number
-            score = me.calculateOpenPoints(correctAnswer, option, progressBar.getClientTime());
+        } else if (question instanceof FreeResponseQuestion frQuestion) {
+            try {
+                score = me.calculateOpenPoints(frQuestion.getAnswer(), Integer.parseInt(option), time);
+            } catch (NumberFormatException e) {
+                // TODO: Add label in FXML to inform user of incorrect input
+                System.out.println("Invalid input, should be a number");
+                return;
+            }
         }
-        //check for doublescore
+        // check for double score
         if (doubleScore) {
             score *= 2;
             doubleScore = false;
@@ -211,19 +216,22 @@ public class GameController implements Initializable, WebSocketSubscription {
             });
         }
 
-        Platform.runLater(() -> {
-            displayQuestion();
-        });
-        
-        game.start(this::setNextQuestion);
+        // TODO: Show answer
+
+        Platform.runLater(() -> timer.setProgress(0.0));
+        clientTimer.start(5000);
+        gameTimer.start(5000);
+
+        // TODO: Add five second delay before showing next question
+        Platform.runLater(this::displayQuestion);
     }
 
     public void displayQuestion() {
         questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
-        question.setText(game.getCurrentQuestion().getPrompt());
+        questionPrompt.setText(game.getCurrentQuestion().getPrompt());
         Question currentQuestion = game.getCurrentQuestion();
-        if (currentQuestion instanceof MultipleChoiceQuestion) {
-            String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+        if (currentQuestion instanceof MultipleChoiceQuestion mcQuestion) {
+            String[] options = mcQuestion.getOptions();
             option1.setText(options[0]);
             option2.setText(options[1]);
             option3.setText(options[2]);
