@@ -186,6 +186,7 @@ public class GameController {
      * Leave the active game lobby as a Player with id "nick".
      *
      * @param nick User's nickname which identifies a given player in a game
+     * @param id   UUID of the game that the player has left
      * @return Player
      */
     @DeleteMapping("/{id}/player/{nick}")

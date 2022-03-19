@@ -140,7 +140,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      * @param nick Player who sends an event
      * @param imagePath Image to be displayed as result of the event
      */
-    private void updateEmoteBox(String nick, String imagePath) {
+    private void updateEmoteBox(final String nick, final String imagePath) {
         Label nickname = new Label(nick);
         nickname.setFont(font);
     

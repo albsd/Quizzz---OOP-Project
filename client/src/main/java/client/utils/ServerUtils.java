@@ -158,6 +158,7 @@ public class ServerUtils {
      * Calls the REST endpoint to leave the current active lobby.
      *
      * @param nick  String of the user nickname
+     * @param id    UUID of the game as a String
      * @return      Player that has left the game
      */
     public Player leaveGame(final String nick, final String id) {
