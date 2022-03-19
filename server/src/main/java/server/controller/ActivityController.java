@@ -31,7 +31,6 @@ public class ActivityController {
     public ActivityController(final ActivityService activityService) {
         this.activityService = activityService;
     }
-
     /**
      * Adds the activity in the activity repo in the request body.
      * @param activity activity to be added.
