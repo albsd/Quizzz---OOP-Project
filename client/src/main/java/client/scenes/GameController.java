@@ -3,13 +3,7 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
-import commons.Player;
-import commons.ScoreMessage;
-import commons.Emote;
-import commons.EmoteMessage;
-import commons.Game;
-import commons.MultipleChoiceQuestion;
-import commons.FreeResponseQuestion;
+import commons.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -72,6 +66,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     private Game game;
 
     private String chatPath;
+
+    private boolean isMultiplayer = true;
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml,
@@ -157,6 +153,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         optionBox.setPrefWidth(600);
         optionBox.setPadding(Insets.EMPTY);
         optionBox.setSpacing(55);
+        this.isMultiplayer = false;
     }
 
     @FXML
@@ -216,13 +213,22 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void setNextQuestion() {
+        if(!this.isMultiplayer && game.getCurrentQuestionIndex() == 20) {
+            //TODO:Maybe split the setting and getting of the leaderboard in to two different functions/endpoints?
+            Leaderboard singlePlayerLeaderboard = server.sendSinglePlayerLeaderboardInfo(this.me.getNick(), this.me.getScore());
+            var root = fxml.showLeaderboard();
+            LeaderboardController leaderboardController = root.getKey();
+            leaderboardController.displayLeaderboard(singlePlayerLeaderboard);
+        }
         game.nextQuestion();
-        if ((game.getCurrentQuestionIndex()) % 10 == 0) {
-            Platform.runLater(() -> {
-                var root = fxml.displayLeaderboardMomentarily();
-                LeaderboardController leaderboardController = root.getKey();
-                leaderboardController.displayLeaderboard(this.game.getId());
-            });
+        if(this.isMultiplayer) {
+            if ((game.getCurrentQuestionIndex()) % 10 == 0) {
+                Platform.runLater(() -> {
+                    var root = fxml.displayLeaderboardMomentarily();
+                    LeaderboardController leaderboardController = root.getKey();
+                    leaderboardController.displayLeaderboard(this.game.getId());
+                });
+            }
         }
 
         Platform.runLater(() -> {
