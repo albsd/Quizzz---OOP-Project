@@ -15,15 +15,19 @@ public abstract class Question {
     @JsonProperty("prompt")
     private final String prompt;
 
+    @JsonProperty("answer")
+    private long answer;
+
     @JsonProperty("imageBytes")
     private final byte[] imageBytes;
 
-
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
-            final @JsonProperty("imageBytes") byte[] imageBytes) {
-
+            final @JsonProperty("answer") long answer,
+            final @JsonProperty("imageBytes") byte[] imageBytes
+    ) {
         this.prompt = prompt;
+        this.answer = answer;
         this.imageBytes = imageBytes;
     }
 
@@ -35,6 +39,13 @@ public abstract class Question {
         return this.imageBytes;
     }
 
+    public long getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(final long answer) {
+        this.answer = answer;
+    }
 
     @Override
     public boolean equals(final Object other) {

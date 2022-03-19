@@ -3,13 +3,14 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
-import commons.Player;
-import commons.ScoreMessage;
-import commons.Emote;
+
 import commons.EmoteMessage;
 import commons.Game;
 import commons.MultipleChoiceQuestion;
+import commons.Question;
 import commons.FreeResponseQuestion;
+import commons.Emote;
+import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,13 +27,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
+
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import javax.inject.Inject;
-
-import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 public class GameController implements Initializable, WebSocketSubscription {
 
@@ -72,6 +72,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     private Game game;
 
     private String chatPath;
+
+    private boolean doubleScore = false;
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml,
@@ -165,59 +167,43 @@ public class GameController implements Initializable, WebSocketSubscription {
         fxml.showSplash();
     }
 
-    // this is for multiple choice. Also sets player's time
     /**
-     * Validates the answer for the multiple choice question.
+     * Validates the answer for the multiple choice question and open question
      * Updates the user's score given in what time frame he/she has answered.
-     * 
+     *
      * @param event triggered by a button click
      */
-    public void checkMulChoiceAnswer(final ActionEvent event) {
-        int correctAnswer = ((MultipleChoiceQuestion) game.getCurrentQuestion()).getAnswer();
-        
+    public void checkAnswer(final ActionEvent event) {
+        Question currentQuestion = game.getCurrentQuestion();
+        long correctAnswer = game.getCurrentQuestion().getAnswer();
         String optionStr = ((Button) event.getSource()).getText();
         int option = Integer.parseInt(optionStr);
-        if (option == correctAnswer) {
-            System.out.println("Correct answer!");
-            sendScores(me.getNick(), progressBar.getClientTime(), "multiple", correctAnswer, option);
-        } else {
-            System.out.println("Wrong answer. No points");
+        int score = 0;
+        if (currentQuestion instanceof MultipleChoiceQuestion) {
+            if (option == correctAnswer) {
+                score = me.calculateMulChoicePoints(progressBar.getClientTime());
+            }
+        } else if (currentQuestion instanceof FreeResponseQuestion) {
+            //assume the player always inputs a number
+            score = me.calculateOpenPoints(correctAnswer, option, progressBar.getClientTime());
         }
-    }
-
-    /**
-     * Validate the answer for the free-response/open question
-     * Updates the user's score given in what time frame he/she has answered.
-     * 
-     * @param event triggered by a button click
-     */
-    public void checkOpenAnswer(final ActionEvent event) {
-        long correctAnswer = ((FreeResponseQuestion) game.getCurrentQuestion()).getAnswer();
-
-        String optionStr = ((Button) event.getSource()).getText();
-        long option;
-        try {
-            option = Integer.parseInt(optionStr);
-        } catch (NumberFormatException exception) {
-            System.out.println("invalid input");
-            // set for 0 accuracy
-            option = correctAnswer * -200;
+        //check for doublescore
+        if (doubleScore) {
+            score *= 2;
+            doubleScore = false;
         }
-        sendScores(me.getNick(), progressBar.getClientTime(), "open", correctAnswer, option);
-    }
-
-    public void setMe(final Player me) {
-        this.me = me;
+        me.addScore(score);
     }
 
     /**
      * Set the next question, in case we are passed the 10th question
-     * displays the leaderboard above the current screen.
+     * sends the player score and displays the leaderboard above the current screen.
      */
     @FXML
     public void setNextQuestion() {
         game.nextQuestion();
         if ((game.getCurrentQuestionIndex()) % 10 == 0) {
+            server.updateScore(game.getId(), me.getNick(), Integer.toString(me.getScore()));
             Platform.runLater(() -> {
                 var root = fxml.displayLeaderboardMomentarily();
                 LeaderboardController leaderboardController = root.getKey();
@@ -249,7 +235,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void scorePowerup(final ActionEvent e) {
-
+        doubleScore = true;
+        ((Button) e.getSource()).setDisable(true);
     }
 
     @FXML
@@ -279,10 +266,5 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private void sendEmote(final Emote emote) {
         server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
-    }
-
-    private void sendScores(final String nick, final int time, final String type,
-            final long answer, final long option) {
-        server.updateScore(game.getId(), new ScoreMessage(nick, time, type, answer, option));
     }
 }

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.ArrayUtils;
 import javax.persistence.GenerationType;
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -16,16 +16,8 @@ import java.util.Random;
 @Entity
 public class Activity {
     @Id
-    @SequenceGenerator(
-            name = "activity_sequence",
-            sequenceName = "activity_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "activity_sequence"
-    )
-    @JsonProperty("id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private long id;
     @JsonProperty("title")
     private String title;
