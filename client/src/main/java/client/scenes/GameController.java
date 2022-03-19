@@ -144,15 +144,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game.initialiseTimer();
         this.chatPath = "/game/" + game.getId() + "/chat";
 
-        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
-        question.setText(game.getCurrentQuestion().getPrompt());
-        Question currentQuestion = game.getCurrentQuestion();
-        if (currentQuestion instanceof MultipleChoiceQuestion) {
-            String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
-            option1.setText(options[0]);
-            option2.setText(options[1]);
-            option3.setText(options[2]);
-        }
+        displayQuestion();
         // question.setText(game.getCurrentQuestion().getPrompt());
         // start client timer
         // progressBar.start();
@@ -220,18 +212,22 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
 
         Platform.runLater(() -> {
-            questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
-            question.setText(game.getCurrentQuestion().getPrompt());
-            Question currentQuestion = game.getCurrentQuestion();
-            if (currentQuestion instanceof MultipleChoiceQuestion) {
-                String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
-                option1.setText(options[0]);
-                option2.setText(options[1]);
-                option3.setText(options[2]);
-            }
+            displayQuestion();
         });
         
         game.start(this::setNextQuestion);
+    }
+
+    public void displayQuestion() {
+        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
+        question.setText(game.getCurrentQuestion().getPrompt());
+        Question currentQuestion = game.getCurrentQuestion();
+        if (currentQuestion instanceof MultipleChoiceQuestion) {
+            String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+            option1.setText(options[0]);
+            option2.setText(options[1]);
+            option3.setText(options[2]);
+        }
     }
 
     public void openPopup(final ActionEvent e) throws IOException {
