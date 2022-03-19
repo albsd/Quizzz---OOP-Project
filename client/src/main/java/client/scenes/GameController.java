@@ -193,6 +193,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      *
      * @param event triggered by a button click
      */
+    @FXML
     public void checkAnswer(final ActionEvent event) {
         long correctAnswer = currentQuestion.getAnswer();
         String optionStr = ((Button) event.getSource()).getText();
@@ -211,7 +212,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             score *= 2;
             doubleScore = false;
         }
-        me.addScore(score);
+        server.addScore(game.getId(), me.getNick(), score);
+        //TODO: Display correct answer for free response
     }
 
     /**
@@ -223,7 +225,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         game.nextQuestion();
         
         if (game.shouldShowLeaderboard()) {
-            server.updateScore(game.getId(), me.getNick(), Integer.toString(me.getScore()));
             Platform.runLater(() -> {
                 var root = fxml.displayLeaderboardMomentarily();
                 var ctrl = root.getKey();
