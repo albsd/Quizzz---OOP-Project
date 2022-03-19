@@ -70,9 +70,9 @@ public class ActivityService {
         return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
     }
     public Activity addActivity(final Activity activity) {
-        return activityRepository.save(activity);
+        return activityRepository.saveAndFlush(activity);
     }
-//
+
 //    public Activity addActivity(final Activity activity) {
 //        Optional<Activity> optionalAct = activityRepository.findTopByOrderByIdDesc();
 //        long id;
@@ -93,5 +93,8 @@ public class ActivityService {
             activityRepository.delete(activity.get());
             return activity.get();
         }
+    }
+    public void deleteAll(){
+        activityRepository.deleteAll();
     }
 }

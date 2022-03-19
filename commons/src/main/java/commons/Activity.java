@@ -33,12 +33,12 @@ public class Activity {
 
     }
     @JsonCreator
-    public Activity(@JsonProperty final String title,
-                    @JsonProperty final long energyConsumption,
-                    @JsonProperty final String source) {
+    public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption,
+                    @JsonProperty final String source, @JsonProperty final byte[] imageBytes) {
         this.title = title;
         this.energyConsumption = energyConsumption;
         this.source = source;
+        this.imageBytes = imageBytes;
     }
 
     public MultipleChoiceQuestion getNumberMultipleChoiceQuestion() {
