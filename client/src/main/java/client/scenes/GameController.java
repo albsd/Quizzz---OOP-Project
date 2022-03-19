@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -25,7 +26,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
@@ -38,17 +38,13 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private Button option1, option2, option3,
-            timeButton, scoreButton, removeButton,
-            cancelButton, confirmButton;
+            timeButton, scoreButton, removeButton;
     
     @FXML
-    private Label question, questionNumber, points, popupText, timer1, timer2;
+    private Label question, questionNumber, points, timer1, timer2;
 
     @FXML
     private ProgressBar timer;
-
-    @FXML
-    private Pane popupMenu;
 
     @FXML
     private ScrollPane emoteScroll;
@@ -65,12 +61,18 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     private Label warning;
 
+    private ProgressBarController progressBar;
+    
+    @FXML
+    private Parent popup;
+
+    @FXML
+    private PopupController popupController; 
+    
     private final ServerUtils server;
-
+    
     private final FXMLController fxml;
-
-    private final ProgressBarController progressBar;
-
+    
     private final Font font;
 
     private Player me;
@@ -86,11 +88,9 @@ public class GameController implements Initializable, WebSocketSubscription {
     private boolean doubleScore = false;
 
     @Inject
-    public GameController(final ServerUtils server, final FXMLController fxml,
-            final ProgressBarController progressBar) {
+    public GameController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
         this.fxml = fxml;
-        this.progressBar = progressBar;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
     }
 
@@ -99,10 +99,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         option1.setFont(font);
         option2.setFont(font);
         option3.setFont(font);
-
-        cancelButton.setFont(font);
-        confirmButton.setFont(font);
-        popupText.setFont(font);
 
         question.setFont(font);
         questionNumber.setFont(font);
@@ -181,11 +177,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         optionBox.setSpacing(55);
     }
 
-    @FXML
-    public void returnToMenu(final ActionEvent e) {
-        // TODO: confirmation dialog
-        fxml.showSplash();
-    }
 
     /**
      * Validates the answer for the multiple choice question and open question
@@ -256,15 +247,10 @@ public class GameController implements Initializable, WebSocketSubscription {
             option3.setText(options[2]);
         }
     }
-
+    
     @FXML
     public void openPopup(final ActionEvent e) {
-        popupMenu.setVisible(true);
-    }
-
-    @FXML
-    public void closePopup(final ActionEvent e) {
-        popupMenu.setVisible(false);
+        popupController.open();
     }
 
     @FXML
