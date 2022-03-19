@@ -278,7 +278,7 @@ public class GameController {
             return ResponseEntity.badRequest().build();
         }
 
-        SinglePlayerLeaderboardMessage splm = new SinglePlayerLeaderboardMessage(nick, score);
+        LeaderboardMessage splm = new LeaderboardMessage(nick, score);
         singlePlayerService.addPlayerToLeaderboard(splm);
         Leaderboard l = new Leaderboard();
         l.setRanking(singlePlayerService.getAllPlayerInfo());
