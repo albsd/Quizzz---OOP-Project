@@ -154,14 +154,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game = game;
         this.game.initialiseTimer();
         this.chatPath = "/game/" + game.getId() + "/chat";
-        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
         //by default game.fxml set to multiple question mode
         currentQuestion = game.getCurrentQuestion();
         isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
         if (isOpenQuestion) {
             fxml.changeToFreeMode(openAnswer, option1, option2, option3);
         }
-        // question.setText(question.getPrompt());
+        displayQuestion(currentQuestion);
         // start client timer
         // progressBar.start();
         game.start(this::setNextQuestion);
@@ -227,7 +226,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
 
         Platform.runLater(() -> {
-            questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
             currentQuestion = game.getCurrentQuestion();
 //            question.setText(currentQuestion.getPrompt());
             if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
@@ -237,8 +235,20 @@ public class GameController implements Initializable, WebSocketSubscription {
                 fxml.changeToFreeMode(openAnswer, option1, option2, option3);
                 isOpenQuestion = true;
             }
+            displayQuestion(currentQuestion);
         });
         game.start(this::setNextQuestion);
+    }
+
+    private void displayQuestion(Question currentQuestion) {
+        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
+        question.setText(currentQuestion.getPrompt());
+        if (currentQuestion instanceof MultipleChoiceQuestion) {
+            String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+            option1.setText(options[0]);
+            option2.setText(options[1]);
+            option3.setText(options[2]);
+        }
     }
 
     public void openPopup(final ActionEvent e) throws IOException {

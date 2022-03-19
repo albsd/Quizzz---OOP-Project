@@ -17,33 +17,40 @@ package server.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
+import commons.Activity;
 import commons.Game;
 import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import server.service.ActivityService;
+import server.repository.ActivityRepository;
 import server.repository.GameRepository;
 import server.service.GameService;
 
 
 import java.util.List;
 import java.util.Comparator;
-
+@DataJpaTest
 public class GameControllerTest {
-
-    private GameService service;
-
-    private GameController ctrl;
 
     private Game lobby;
 
     private Game game;
 
-    private ActivityService as;
+    private GameController ctrl;
+
+    @Mock
+    private ActivityRepository activityRepository;
+
+    private List<Activity> activities = List.of(new Activity());
 
     private String nick;
 
@@ -51,9 +58,15 @@ public class GameControllerTest {
 
     @BeforeEach
     public void setup() {
-        as = new ActivityService();
-        service =  new GameService(new GameRepository(), as);
-        ctrl = new GameController(service);
+        MockitoAnnotations.openMocks(this);
+        when(activityRepository.count()).thenReturn(100L);
+        when(activityRepository.findAll()).thenReturn(activities);
+
+        GameService service =  new GameService(new GameRepository());
+        ActivityService activityService = new ActivityService(activityRepository);
+        service.initializeLobby(activityService.getQuestionList());
+
+        ctrl = new GameController(service, activityService);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
         game = service.getCurrentGame();
@@ -67,7 +80,7 @@ public class GameControllerTest {
 
     @Test
     public void lobbyIsEmpty() {
-        var actual = service.getCurrentGame();
+        var actual = ctrl.getCurrentGame();
         assertEquals(0, actual.getPlayers().size());
     }
 
