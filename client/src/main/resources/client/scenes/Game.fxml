@@ -72,17 +72,17 @@
                      <Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
                      <VBox fx:id="optionBox" prefHeight="400.0" prefWidth="300.0" spacing="45.0">
                         <children>
-                           <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceAnswer" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="200 Watts / hour" textFill="#a07400" VBox.vgrow="ALWAYS">
+                           <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkAnswer" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="200 Watts / hour" textFill="#a07400" VBox.vgrow="ALWAYS">
                               <font>
                                  <Font size="24.0" />
                               </font>
                            </Button>
-                           <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceAnswer" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="100 Watts / hour" textFill="#a07400">
+                           <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkAnswer" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="100 Watts / hour" textFill="#a07400">
                               <font>
                                  <Font size="24.0" />
                               </font>
                            </Button>
-                           <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceAnswer" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="50 Watts / hour" textFill="#a07400">
+                           <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkAnswer" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="50 Watts / hour" textFill="#a07400">
                               <font>
                                  <Font size="24.0" />
                               </font>

@@ -2,12 +2,18 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.Objects;
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = MultipleChoiceQuestion.class, name = "MultipleChoiceQuestion"),
+        @JsonSubTypes.Type(value = FreeResponseQuestion.class, name = "FreeResponseQuestion")
+})
 @Entity
 public abstract class Question {
 
@@ -15,15 +21,19 @@ public abstract class Question {
     @JsonProperty("prompt")
     private final String prompt;
 
+    @JsonProperty("answer")
+    private long answer;
+
     @JsonProperty("imageBytes")
     private final byte[] imageBytes;
 
-
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
-            final @JsonProperty("imageBytes") byte[] imageBytes) {
-
+            final @JsonProperty("answer") long answer,
+            final @JsonProperty("imageBytes") byte[] imageBytes
+    ) {
         this.prompt = prompt;
+        this.answer = answer;
         this.imageBytes = imageBytes;
     }
 
@@ -35,6 +45,13 @@ public abstract class Question {
         return this.imageBytes;
     }
 
+    public long getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(final long answer) {
+        this.answer = answer;
+    }
 
     @Override
     public boolean equals(final Object other) {

@@ -3,12 +3,10 @@ package server.service;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Question;
-import commons.ScoreMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.GameRepository;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,19 +17,13 @@ public class GameService {
 
     private Game lobby;
 
-    private static HashMap<UUID, List<Question>> questionsPerGame = new HashMap<>();
-
-    private ActivityService activityService;
-
     @Autowired
-    public GameService(final GameRepository repo, final ActivityService activityService) {
+    public GameService(final GameRepository repo) {
         this.repo = repo;
-        this.lobby = new Game(UUID.randomUUID());
-        this.activityService = activityService;
     }
 
-    public UUID addGame(final Game game) {
-        return repo.addGame(game);
+    public void initializeLobby(final List<Question> questions) {
+        this.lobby = new Game(UUID.randomUUID(), questions);
     }
 
     public boolean deleteGame(final UUID id) {
@@ -50,13 +42,12 @@ public class GameService {
      * Creates a new game as an active lobby.
      * The previous lobby is propagated to the game that has just started.
      *
+     * @param questions List of questions for the newly created lobby
      * @return Game that has been created
      */
-    public Game newGame() {
-        // TODO: this method breaks the tests as the while loop is infinite
-        // lobby.start();
+    public Game newGame(final List<Question> questions) {
         repo.addGame(lobby);
-        lobby = new Game(UUID.randomUUID());
+        lobby = new Game(UUID.randomUUID(), questions);
         return lobby;
     }
 
@@ -68,17 +59,7 @@ public class GameService {
         return repo.getLeaderboard(id);
     }
 
-    public List<Question> getQuestions(final UUID id) {
-        if (questionsPerGame.containsKey(id)) {
-            return questionsPerGame.get(id);
-        } 
-        
-        questionsPerGame.put(id, activityService.getQuestionList());
-        return questionsPerGame.get(id);
+    public void updatePlayerScore(final Game game, final String nick, final int score) {
+        repo.updatePlayerScore(game, nick, score);
     }
-
-    public void updatePlayerScore(final Game game, final ScoreMessage scoreMessage) {
-        repo.updatePlayerScore(game, scoreMessage);
-    }
-
 }

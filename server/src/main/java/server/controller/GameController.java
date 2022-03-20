@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import server.service.ActivityService;
 import server.service.GameService;
 import server.service.SinglePlayerService;
 
@@ -43,12 +45,16 @@ public class GameController {
 
     private final GameService gameService;
 
+    private final ActivityService activityService;
+
     private final SinglePlayerService singlePlayerService;
 
     @Autowired
-    public GameController(final GameService gameService, final SinglePlayerService singlePlayerService) {
+    public GameController(final GameService gameService, final ActivityService activityService, final SinglePlayerService singlePlayerService) {
         this.gameService = gameService;
+        this.activityService = activityService;
         this.singlePlayerService = singlePlayerService;
+        gameService.initializeLobby(activityService.getQuestionList());
     }
 
     /**
@@ -98,11 +104,12 @@ public class GameController {
 
     @GetMapping("/{id}/question")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
-        if (gameService.findById(id) == null) {
+        Game game = gameService.findById(id); 
+        if (game == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(gameService.getQuestions(id));
+        return ResponseEntity.ok(game.getQuestions());
     }
 
     /**
@@ -213,7 +220,7 @@ public class GameController {
     @PostMapping("/start")
     public ResponseEntity<Game> startCurrentGame() {
         Game lobby = gameService.getCurrentGame();
-        gameService.newGame();
+        gameService.newGame(activityService.getQuestionList());
         return ResponseEntity.ok(lobby);
     }
 
@@ -230,22 +237,15 @@ public class GameController {
         return lobby;
     }
 
-    /**
-     * Updates the players score on server-side every question.
-     * 
-     * @param id           id of the game to be updated
-     * @param scoreMessage contains player name, score, and game id
-     * @return The updated game object
-     */
-    @PostMapping("/{id}/score")
+
+    @PostMapping("/{id}/score/{nick}")
     public ResponseEntity<Game> updatePlayerPoints(final @PathVariable UUID id,
-            final @RequestBody ScoreMessage scoreMessage) {
+            final @PathVariable String nick, final @RequestBody String score) {
         Game game = gameService.findById(id);
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
-
-        gameService.updatePlayerScore(game, scoreMessage);
+        gameService.updatePlayerScore(game, nick, Integer.parseInt(score));
         return ResponseEntity.ok(game);
     }
 

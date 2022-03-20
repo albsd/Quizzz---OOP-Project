@@ -21,8 +21,6 @@ import commons.Player;
 import commons.PlayerUpdate;
 import commons.Game;
 import commons.Leaderboard;
-import commons.Question;
-import commons.ScoreMessage;
 
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -183,16 +181,6 @@ public class ServerUtils {
         return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
 
-    public List<Question> getQuestions(final String id) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/" + id + "/question"))
-                .header("accept", "application/json")
-                .GET()
-                .build();
-
-        return parseResponseToObject(request, new TypeReference<List<Question>>() { });
-    }
-
     /**
      * Calls the REST endpoint to start the current lobby.
      *
@@ -213,23 +201,21 @@ public class ServerUtils {
     }
 
     /**
-     * Calls the REST endpoint to update the score of the player.
-     *
-     * @param id    UUID of the game to be updated
-     * @param score Score message to update the score of a given player
-     * @return      The updated game object
+     * Updates player score on server side every 10 questions for leaderboard.
+     * @param id game id to find game
+     * @param nick name of player
+     * @param score score of player
+     * @return The game that was used to update with
      */
-    public Game updateScore(final UUID id, final ScoreMessage score) {
+    public Game updateScore(final UUID id, final String nick, final String score) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/" + id + "/score"))
+                .uri(URI.create(kGameUrl + "/" + id + "/score/" + nick))
                 .header("accept", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .POST(HttpRequest.BodyPublishers.ofString(score))
                 .build();
-
         Game game = parseResponseToObject(request, new TypeReference<Game>() { });
         return game;
     }
-
 
     /**
      * Utility method to parse HttpResponse to a given object type.
@@ -254,6 +240,7 @@ public class ServerUtils {
         }
         return null;
     }
+
     //TODO: Call this method when single player game ends
     public Leaderboard sendSinglePlayerLeaderboardInfo(final String nick, final int score) {
         HttpRequest request = HttpRequest.newBuilder()

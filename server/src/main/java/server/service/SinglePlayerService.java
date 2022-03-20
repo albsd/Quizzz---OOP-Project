@@ -1,12 +1,7 @@
 package server.service;
-
-import commons.Activity;
 import commons.LeaderboardMessage;
 import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import server.repository.ActivityRepository;
 import server.repository.SinglePlayerRepository;
 
 import java.util.ArrayList;
@@ -15,6 +10,10 @@ import java.util.List;
 public class SinglePlayerService {
     @Autowired
     private SinglePlayerRepository singlePlayerRepository;
+
+    public SinglePlayerService(final SinglePlayerRepository singlePlayerRepository) {
+        this.singlePlayerRepository = singlePlayerRepository;
+    }
 
     public void addPlayerToLeaderboard(final LeaderboardMessage singlePlayerLeaderboardMessage) {
         singlePlayerRepository.save(singlePlayerLeaderboardMessage);

@@ -17,53 +17,82 @@ package server.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
+import commons.Activity;
 import commons.Game;
+import commons.LeaderboardMessage;
 import commons.Player;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import server.repository.SinglePlayerRepository;
 import server.service.ActivityService;
+import server.repository.ActivityRepository;
 import server.repository.GameRepository;
 import server.service.GameService;
+import server.service.SinglePlayerService;
 
 
 import java.util.List;
 import java.util.Comparator;
-
+@DataJpaTest
 public class GameControllerTest {
-
-    private GameService service;
-
-    private GameController ctrl;
 
     private Game lobby;
 
     private Game game;
 
-    private ActivityService as;
+    private GameController ctrl;
+
+    @Mock
+    private ActivityRepository activityRepository;
+
+    private List<Activity> activities = List.of(new Activity());
+
+    @Mock
+    SinglePlayerRepository singlePlayerRepository;
+
+    private List<LeaderboardMessage> leaderboardMessages = List.of(new LeaderboardMessage("nick", 0));
+
+    private String nick;
+
+    private int score;
 
     @BeforeEach
     public void setup() {
-        as = new ActivityService();
-        service =  new GameService(new GameRepository(), as);
-        ctrl = new GameController(service);
+        MockitoAnnotations.openMocks(this);
+        when(activityRepository.count()).thenReturn(100L);
+        when(activityRepository.findAll()).thenReturn(activities);
+
+        MockitoAnnotations.openMocks(this);
+        when(singlePlayerRepository.findAll()).thenReturn(leaderboardMessages);
+
+        GameService service =  new GameService(new GameRepository());
+        ActivityService activityService = new ActivityService(activityRepository);
+        SinglePlayerService singlePlayerService = new SinglePlayerService(singlePlayerRepository);
+        service.initializeLobby(activityService.getQuestionList());
+
+        ctrl = new GameController(service, activityService, singlePlayerService);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
         game = service.getCurrentGame();
         ctrl.joinCurrentGame("johny");
         ctrl.joinCurrentGame("niko");
         ctrl.joinCurrentGame("babe");
-
+        nick = "johny";
+        score = 50;
         lobby = ctrl.startCurrentGame().getBody();
     }
 
     @Test
     public void lobbyIsEmpty() {
-        var actual = service.getCurrentGame();
+        var actual = ctrl.getCurrentGame();
         assertEquals(0, actual.getPlayers().size());
     }
 
@@ -81,7 +110,6 @@ public class GameControllerTest {
 
     @Test
     public void addValidNickName() {
-        final String nick = "johny";
         var actual = ctrl.joinCurrentGame(nick);
         assertEquals(OK, actual.getStatusCode());
         assertEquals(nick, actual.getBody().getNick());
@@ -89,7 +117,6 @@ public class GameControllerTest {
 
     @Test
     public void addValidNickNameTwice() {
-        final String nick = "johny";
         var actual = ctrl.joinCurrentGame(nick);
         actual = ctrl.joinCurrentGame(nick);
         assertEquals(403, actual.getStatusCode().value());
@@ -120,6 +147,13 @@ public class GameControllerTest {
 
         assertEquals(ctrl.getLeaderboard(game.getId()).getBody().getRanking(), expected);
     }
+
+    @Test
+    public void updatePoints() {
+        Game current = ctrl.updatePlayerPoints(game.getId(), nick, Integer.toString(score)).getBody();
+        assertEquals(score, current.getPlayerByNick(nick).getScore());
+    }
+
 //TODO:Make spring initialize activityService
 //
 //    @Test
