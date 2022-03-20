@@ -4,7 +4,7 @@ import commons.LeaderboardMessage;
 import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import server.repository.SinglePlayerRepository;
+import server.repository.LeaderboardRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,18 +12,18 @@ import java.util.List;
 @Service
 public class LeaderboardService {
     @Autowired
-    private SinglePlayerRepository singlePlayerRepository;
+    private LeaderboardRepository leaderboardRepository;
 
-    public LeaderboardService(final SinglePlayerRepository singlePlayerRepository) {
-        this.singlePlayerRepository = singlePlayerRepository;
+    public LeaderboardService(final LeaderboardRepository leaderboardRepository) {
+        this.leaderboardRepository = leaderboardRepository;
     }
 
     public void addPlayerToLeaderboard(final LeaderboardMessage singlePlayerLeaderboardMessage) {
-        singlePlayerRepository.save(singlePlayerLeaderboardMessage);
+        leaderboardRepository.save(singlePlayerLeaderboardMessage);
     }
 
     public Leaderboard getAllPlayerInfo() {
-        List<LeaderboardMessage> allSinglePlayers =  singlePlayerRepository.findAll();
+        List<LeaderboardMessage> allSinglePlayers =  leaderboardRepository.findAll();
         List<Player> players = new ArrayList<>();
         for (int i = 0; i < allSinglePlayers.size(); i++) {
             LeaderboardMessage sl = allSinglePlayers.get(i);

@@ -31,7 +31,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import server.repository.SinglePlayerRepository;
+import server.repository.LeaderboardRepository;
 import server.service.ActivityService;
 import server.repository.ActivityRepository;
 import server.repository.GameRepository;
@@ -56,7 +56,7 @@ public class GameControllerTest {
     private List<Activity> activities = List.of(new Activity());
 
     @Mock
-    SinglePlayerRepository singlePlayerRepository;
+    LeaderboardRepository leaderboardRepository;
 
     private List<LeaderboardMessage> leaderboardMessages = List.of(new LeaderboardMessage("nick", 0));
 
@@ -71,11 +71,11 @@ public class GameControllerTest {
         when(activityRepository.findAll()).thenReturn(activities);
 
         MockitoAnnotations.openMocks(this);
-        when(singlePlayerRepository.findAll()).thenReturn(leaderboardMessages);
+        when(leaderboardRepository.findAll()).thenReturn(leaderboardMessages);
 
         GameService service =  new GameService(new GameRepository());
         ActivityService activityService = new ActivityService(activityRepository);
-        LeaderboardService leaderboardService = new LeaderboardService(singlePlayerRepository);
+        LeaderboardService leaderboardService = new LeaderboardService(leaderboardRepository);
         service.initializeLobby(activityService.getQuestionList());
 
         ctrl = new GameController(service, activityService, leaderboardService);
