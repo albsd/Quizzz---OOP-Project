@@ -44,28 +44,21 @@ public class ActConfig {
 
                 File file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
                         str.substring(0, str.lastIndexOf('.')) + ".png");
-                String extension = "png";
                 if (file == null) {
                     System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpeg");
                     file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
                             str.substring(0, str.lastIndexOf('.')) + ".jpeg");
-                    extension = "jpeg";
                 }
                 if (file == null) {
                     System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpg");
                     file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
                             str.substring(0, str.lastIndexOf('.')) + ".jpg");
-                    extension = "jpg";
                 }
-                BufferedImage bImage = ImageIO.read(file);
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ImageIO.write(bImage, extension, bos);
-                byte[] data = bos.toByteArray();
                 String title = list.get("title").toString();
                 BigInteger bigvolt = (BigInteger) list.get("consumption_in_wh");
                 long volt = bigvolt.longValue();
                 String source = list.get("source").toString();
-                Activity activity = new Activity(title, volt, source, data);
+                Activity activity = new Activity(title, volt, source, file.getPath());
                 activity.setId(i + 1L);
                 activityService.addActivity(activity);
             }

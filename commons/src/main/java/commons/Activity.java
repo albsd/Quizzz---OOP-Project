@@ -32,8 +32,8 @@ public class Activity {
     private String path;
 
     public Activity() {
-
     }
+
     @JsonCreator
     public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption,
                     @JsonProperty final String source, @JsonProperty final String path) {
@@ -46,16 +46,15 @@ public class Activity {
     public MultipleChoiceQuestion getNumberMultipleChoiceQuestion() {
         String prompt = "How much energy does " + title + " take in watt hours?";
         String[] choices = generateChoices(energyConsumption);
-        return new MultipleChoiceQuestion(prompt, imageToByteArray(), choices,
+        return new MultipleChoiceQuestion(prompt, "path1", choices,
                 ArrayUtils.indexOf(choices, Long.toString(energyConsumption)));
     }
 
     public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(final List<Activity> answerOptions) {
-        byte[] imgBytes = new byte[1];
         String prompt = "Which of the following activities take the most energy";
         String[] options = this.getMultipleActivitiesOptions(answerOptions);
 
-        return new MultipleChoiceQuestion(prompt, imgBytes, options,
+        return new MultipleChoiceQuestion(prompt, "path2", options,
                  this.getMultipleActivitiesAnswerIndex(answerOptions));
     }
 
@@ -87,7 +86,7 @@ public class Activity {
 
     public FreeResponseQuestion getFreeResponseQuestion() {
         String prompt = "How much energy does " + title + " take in watt hours?";
-        return new FreeResponseQuestion(prompt, imageToByteArray(), energyConsumption);
+        return new FreeResponseQuestion(prompt, "path2", energyConsumption);
     }
 
     @Override
@@ -160,7 +159,8 @@ public class Activity {
             ImageIO.write(bImage, extension, bos);
             return bos.toByteArray();
         } catch (IOException e) {
-            System.out.println("something went wrong");
+            System.err.println("IndexOutOfBoundsException: " + e.getMessage());
+            return null;
         }
     }
 }

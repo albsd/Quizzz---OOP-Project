@@ -5,38 +5,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
 public abstract class Question {
-
     @Id
     @JsonProperty("prompt")
-    private final String prompt;
+    private String prompt;
 
     @JsonProperty("answer")
     private long answer;
 
-    @JsonProperty("imageBytes")
-    private final byte[] imageBytes;
+    @JsonProperty("image_path")
+    private String path;
 
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
-            final @JsonProperty("answer") long answer,
-            final @JsonProperty("imageBytes") byte[] imageBytes
-    ) {
+                    final @JsonProperty("answer") long answer,
+                    final @JsonProperty("image_path") String path) {
         this.prompt = prompt;
         this.answer = answer;
-        this.imageBytes = imageBytes;
+        this.path = path;
+    }
+
+    public Question() {
     }
 
     public String getPrompt() {
         return this.prompt;
     }
 
-    public byte[] getImageBytes() {
-        return this.imageBytes;
+    public String getPath() {
+        return this.path;
     }
 
     public long getAnswer() {
@@ -48,24 +48,16 @@ public abstract class Question {
     }
 
     @Override
-    public boolean equals(final Object other) {
-        if (other == null) {
-            return false;
-        }
-        if (other instanceof Question that) {
-            return  prompt.equals(that.prompt)
-                    && Arrays.equals(imageBytes, that.imageBytes);
-        }
-        return false;
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return answer == question.answer && Objects.equals(prompt, question.prompt)
+                && Objects.equals(path, question.path);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(prompt);
-        final int hashInt = 31;
-        result = hashInt * result + Arrays.hashCode(imageBytes);
-        return result;
+        return Objects.hash(prompt, answer, path);
     }
-
-
 }
