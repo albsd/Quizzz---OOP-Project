@@ -9,7 +9,7 @@
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-   <Button mnemonicParsing="false" onAction="#onReturnButtonClick" prefHeight="25.0" prefWidth="137.0" text="Return to Start Menu" />
+   <Button mnemonicParsing="false" onAction="#backToSplash" prefHeight="25.0" prefWidth="137.0" text="Return to Start Menu" />
    <Label text="LEADERBOARD">
       <font>
          <Font size="25.0" />
