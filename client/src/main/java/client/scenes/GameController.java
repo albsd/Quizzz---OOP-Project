@@ -89,6 +89,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String red = "#ff0000";
 
+    private final String orange = "#FFD029";
+
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml,
             final ProgressBarController progressBar) {
@@ -207,7 +209,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             Button[] options = {option1, option2, option3};
             Button chosenOption = (Button) event.getSource();
             chosenOption.setStyle("-fx-border-color: black;");
-            for(int i = 0; i < options.length; i++) {
+            for (int i = 0; i < options.length; i++) {
                 if (i == correctAnswer) {
                     options[i].setStyle("-fx-background-color:" + green + ";");
                 } else {
@@ -267,6 +269,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         question.setText(currentQuestion.getPrompt());
         if (currentQuestion instanceof MultipleChoiceQuestion) {
             String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+            option1.setStyle("-fx-background-color:" + orange + ";");
+            option2.setStyle("-fx-background-color:" + orange + ";");
+            option3.setStyle("-fx-background-color:" + orange + ";");
             option1.setText(options[0]);
             option2.setText(options[1]);
             option3.setText(options[2]);

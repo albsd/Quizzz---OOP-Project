@@ -25,12 +25,12 @@ public class PlayerTest {
 
     @Test
     void testScores() {
-        p1.setScore(80);
+        p1.addScore(80);
         assertEquals(80, p1.getScore());
         p1.addScore(120);
         assertEquals(200, p1.getScore());
-        p1.setScore(0);
-        assertEquals(0, p1.getScore());
+        p1.addScore(0);
+        assertEquals(200, p1.getScore());
         assertEquals(fullMulPoints, p1.calculateMulChoicePoints(20000));
         assertEquals(fullOpenPoints, p1.calculateOpenPoints(20, 20, 20000));
     }

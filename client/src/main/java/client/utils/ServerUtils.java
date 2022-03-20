@@ -226,7 +226,6 @@ public class ServerUtils {
      * @param id game id to find game
      * @param nick name of player
      * @param score score of player
-     * @return The game that was used to update with
      */
     public void addScore(final UUID id, final String nick, final int score) {
         HttpRequest request = HttpRequest.newBuilder()
