@@ -19,14 +19,14 @@ public class Activity {
     private long energyConsumption;
     @JsonProperty("source")
     private String source;
-//TODO: make this a json property?
+    
     @JsonProperty
     private byte[] imageBytes;
 
     public Activity() {
 
     }
-    //TODO: add @JsonCreator
+
     @JsonCreator
     public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption,
                     @JsonProperty final String source, @JsonProperty final byte[] imageBytes) {

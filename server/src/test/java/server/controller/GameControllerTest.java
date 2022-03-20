@@ -142,19 +142,4 @@ public class GameControllerTest {
         assertEquals(score, current.getPlayerByNick(nick).getScore());
     }
 
-//TODO:Make spring initialize activityService
-//
-//    @Test
-//    public void getQuestionsNull() {
-//
-//        assertEquals(ctrl.getQuestions(game.getId()).getStatusCode(), 400);
-//    }
-
-//    @Test
-//    public void getQuestionsNotNull() {
-//        GameRepository gr = new GameRepository();
-//        GameService gs = new GameService(gr, as);
-//        List<Question> questions = ctrl.getQuestions(game.getId()).getBody();
-//        assertEquals(questions, gs.getQuestions(game.getId()));
-//    }
 }

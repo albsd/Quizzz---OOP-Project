@@ -42,20 +42,20 @@ public class ActivityService {
         activityRepository.save(activity);
     }
 
-    public List<Question> getQuestionList() {
+    public List<Question<?>> getQuestionList() {
         List<Activity> activityList = this.getActivities();
-        List<Question> questionList = new ArrayList<>();
+        List<Question<?>> questionList = new ArrayList<>();
 
         for (int i = 0; i < 20; i++) {
             int questionType = (int) ((Math.random() * (3)));
-            Question question = this.turnActivityIntoQuestion(activityList.get(i),
+            Question<?> question = this.turnActivityIntoQuestion(activityList.get(i),
                     questionType, this.generateOptions(activityList, 3));
             questionList.add(question);
         }
         return questionList;
     }
 
-    public Question turnActivityIntoQuestion(final Activity activity, final int questionType,
+    public Question<?> turnActivityIntoQuestion(final Activity activity, final int questionType,
             final List<Activity> options) {
         if (activity == null) {
             String[] ops = new String[] {"a", "b", "c"};

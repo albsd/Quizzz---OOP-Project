@@ -106,7 +106,7 @@ public class GameController {
     }
 
     @GetMapping("/{id}/question")
-    public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
+    public ResponseEntity<List<Question<?>>> getQuestions(@PathVariable final UUID id) {
         Game game = gameService.findById(id); 
         if (game == null) {
             return ResponseEntity.badRequest().build();

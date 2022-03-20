@@ -191,7 +191,7 @@ public GameController(final ServerUtils server, final FXMLController fxml) {
      */
     public void checkAnswer(final ActionEvent event) {
         int time = clientTimer.getCurrentTime();
-        Question question = game.getCurrentQuestion();
+        Question<?> question = game.getCurrentQuestion();
         String option = ((Button) event.getSource()).getText();
         int score = 0;
         if (question instanceof MultipleChoiceQuestion mcQuestion) {
@@ -237,8 +237,6 @@ public GameController(final ServerUtils server, final FXMLController fxml) {
         clientTimer.start(5000);
         gameTimer.start(5000);
 
-        // TODO: Add five second delay before showing next question
-
         try {
             Thread.sleep(5000);
             Platform.runLater(this::displayQuestion);
@@ -250,7 +248,7 @@ public GameController(final ServerUtils server, final FXMLController fxml) {
     public void displayQuestion() {
         questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
         questionPrompt.setText(game.getCurrentQuestion().getPrompt());
-        Question currentQuestion = game.getCurrentQuestion();
+        Question<?> currentQuestion = game.getCurrentQuestion();
         if (currentQuestion instanceof MultipleChoiceQuestion mcQuestion) {
             String[] options = mcQuestion.getOptions();
             option1.setText(options[0]);

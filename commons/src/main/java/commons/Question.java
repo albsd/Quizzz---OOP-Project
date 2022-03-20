@@ -55,7 +55,7 @@ public abstract class Question<T> {
         if (other == null) {
             return false;
         }
-        if (other instanceof Question that) {
+        if (other instanceof Question<?> that) {
             return  prompt.equals(that.prompt)
                     && Arrays.equals(imageBytes, that.imageBytes);
         }

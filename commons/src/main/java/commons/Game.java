@@ -19,7 +19,7 @@ public class Game {
     private List<Player> players;
 
     @JsonProperty("questions")
-    private List<Question> questions;
+    private List<Question<?>> questions;
 
     @JsonProperty("currentQuestion")
     private int currentQuestion;
@@ -27,7 +27,7 @@ public class Game {
     @JsonProperty("gameState")
     private GameState gameState;
 
-    public Game(final UUID id, final List<Question> questions) {
+    public Game(final UUID id, final List<Question<?>> questions) {
         this.id = id;
         this.players = new ArrayList<>();
         this.questions = questions;
@@ -38,7 +38,7 @@ public class Game {
     @JsonCreator
     public Game(final @JsonProperty("id") UUID id,
                 final @JsonProperty("players") List<Player> players,
-                final @JsonProperty("questions") List<Question> questions,
+                final @JsonProperty("questions") List<Question<?>> questions,
                 final @JsonProperty("currentQuestion") int currentQuestion,
                 final @JsonProperty("gameState") GameState gameState) {
         this.id = id;
@@ -95,12 +95,12 @@ public class Game {
     }
 
     @JsonIgnore
-    public List<Question> getQuestions() {
+    public List<Question<?>> getQuestions() {
         return questions;
     }
 
     @JsonIgnore
-    public Question getCurrentQuestion() {
+    public Question<?> getCurrentQuestion() {
         return questions.get(currentQuestion);
     }
 }
