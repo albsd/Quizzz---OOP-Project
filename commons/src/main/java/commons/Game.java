@@ -68,7 +68,7 @@ public class Game {
 
     @JsonIgnore
     public boolean shouldShowLeaderboard() {
-        return isMultiplayer && currentQuestion % 10 == 0;
+        return (isMultiplayer && currentQuestion % 10 == 0) || (!isMultiplayer && currentQuestion == 20);
     }
 
     @JsonIgnore
