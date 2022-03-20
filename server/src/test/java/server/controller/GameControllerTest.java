@@ -23,7 +23,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import commons.Activity;
 import commons.Game;
-import commons.LeaderboardMessage;
+import commons.GameResult;
 import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ public class GameControllerTest {
     @Mock
     LeaderboardRepository leaderboardRepository;
 
-    private List<LeaderboardMessage> leaderboardMessages = List.of(new LeaderboardMessage("nick", 0));
+    private List<GameResult> gameResults = List.of(new GameResult("nick", 0));
 
     private String nick;
 
@@ -71,7 +71,7 @@ public class GameControllerTest {
         when(activityRepository.findAll()).thenReturn(activities);
 
         MockitoAnnotations.openMocks(this);
-        when(leaderboardRepository.findAll()).thenReturn(leaderboardMessages);
+        when(leaderboardRepository.findAll()).thenReturn(gameResults);
 
         GameService service =  new GameService(new GameRepository());
         ActivityService activityService = new ActivityService(activityRepository);

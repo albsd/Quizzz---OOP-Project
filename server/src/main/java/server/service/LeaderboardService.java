@@ -1,6 +1,6 @@
 package server.service;
 import commons.Leaderboard;
-import commons.LeaderboardMessage;
+import commons.GameResult;
 import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,16 +18,16 @@ public class LeaderboardService {
         this.leaderboardRepository = leaderboardRepository;
     }
 
-    public void addPlayerToLeaderboard(final LeaderboardMessage singlePlayerLeaderboardMessage) {
-        leaderboardRepository.save(singlePlayerLeaderboardMessage);
+    public void addPlayerToLeaderboard(final GameResult singlePlayerGameResult) {
+        leaderboardRepository.save(singlePlayerGameResult);
     }
 
     public Leaderboard getAllPlayerInfo() {
-        List<LeaderboardMessage> allSinglePlayers =  leaderboardRepository.findAll();
+        List<GameResult> allSinglePlayers =  leaderboardRepository.findAll();
         List<Player> players = new ArrayList<>();
         for (int i = 0; i < allSinglePlayers.size(); i++) {
-            LeaderboardMessage sl = allSinglePlayers.get(i);
-            players.add(new Player(sl.getNick(), sl.getContent()));
+            GameResult sl = allSinglePlayers.get(i);
+            players.add(new Player(sl.getNick(), sl.getScore()));
         }
         Leaderboard leaderboard = new Leaderboard();
         leaderboard.setRanking(players);

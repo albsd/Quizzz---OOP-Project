@@ -21,7 +21,7 @@ import commons.Player;
 import commons.Question;
 import commons.PlayerUpdate;
 import commons.LobbyMessage;
-import commons.LeaderboardMessage;
+import commons.GameResult;
 import commons.GameUpdate;
 import commons.EmoteMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -251,8 +251,8 @@ public class GameController {
             return ResponseEntity.badRequest().build();
         }
 
-        LeaderboardMessage leaderboardMessage = new LeaderboardMessage(nick, score);
-        leaderboardService.addPlayerToLeaderboard(leaderboardMessage);
+        GameResult gameResult = new GameResult(nick, score);
+        leaderboardService.addPlayerToLeaderboard(gameResult);
         return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
     }
 
