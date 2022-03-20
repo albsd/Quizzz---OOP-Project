@@ -43,4 +43,4 @@ out/
 .vscode/
 
 ### JSON and images in activities ###
-activities
+/resources/activites/*

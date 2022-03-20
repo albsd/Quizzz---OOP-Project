@@ -240,7 +240,6 @@ public class ServerUtils {
         }
         return game;
     }
-
     /**
      * Updates player score.
      * @param id game id to find game

@@ -26,7 +26,7 @@ public class Activity {
     @Column(length = 500)
     @JsonProperty("source")
     private String source;
-    @JsonProperty("image_location")
+    @JsonProperty("image_path")
     private String path;
 
     public Activity() {
@@ -117,10 +117,6 @@ public class Activity {
         return choices;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public long getId() {
         return id;
     }
@@ -129,24 +125,12 @@ public class Activity {
         return title;
     }
 
-    public void setTitle(final String title) {
-        this.title = title;
-    }
-
     public long getEnergyConsumption() {
         return energyConsumption;
     }
 
-    public void setEnergyConsumption(final long energyConsumption) {
-        this.energyConsumption = energyConsumption;
-    }
-
     public String getSource() {
         return source;
-    }
-
-    public void setSource(final String source) {
-        this.source = source;
     }
 
     public String getPath() {

@@ -30,6 +30,8 @@ public class ActivityService {
     @Autowired
     private ActivityRepository activityRepository;
 
+    private String imagePath = "./server/src/main/resources/activities";
+
     public ActivityService(final ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
@@ -103,7 +105,7 @@ public class ActivityService {
     public List<Activity> getAllActivities() throws FileNotFoundException, ParseException {
         List<Activity> activities = new ArrayList<>(activityRepository.findAll());
         if (activities.isEmpty()) {
-            List<File> files = getFiles(".json", new File("./server/src/main/resources/activities"));
+            List<File> files = getFiles(".json", new File(imagePath));
             for (int i = 0; i < files.size(); i++) {
                 File jsonFile = files.get(i);
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(jsonFile));
@@ -114,18 +116,13 @@ public class ActivityService {
                 String source = list.get("source").toString();
 
                 String str = jsonFile.getName();
-                File file = find("./server/src/main/resources/activities",
-                        str.substring(0, str.lastIndexOf('.')) + ".png");
+                File file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".png");
                 if (file == null) {
-                    file = find("./server/src/main/resources/activities",
-                            str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+                    file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
                 }
                 if (file == null) {
-                    file = find("./server/src/main/resources/activities",
-                            str.substring(0, str.lastIndexOf('.')) + ".jpg");
+                    file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
                 }
-                //example:
-                // /resources/activities/00/fridge.png
                 String path = file.getPath().replaceAll("\\\\", "/");
                 String realPath = path.substring(path.lastIndexOf("/resources"));
                 activities.add(new Activity(title, wattHours, source, realPath));
