@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
     Page<Activity> findAll(Pageable pageable);
 
-//    Optional<Activity> findTopByOrderByIdDesc();
+    Optional<Activity> findTopByOrderByIdDesc();
 }

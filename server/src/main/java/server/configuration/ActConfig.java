@@ -5,23 +5,32 @@ import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import server.repository.ActivityRepository;
 import server.service.ActivityService;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 @Configuration
 public class ActConfig {
     @Bean
-    CommandLineRunner commandLineRunner(final ActivityService activityService) {
+    CommandLineRunner commandLineRunner(final ActivityService activityService, final ActivityRepository activityRepository) {
         return args -> {
+//            Activity activity = activityRepository.findTopByOrderByIdDesc().get();
+//            System.out.println(activity.getId());
+//            System.out.println(activity.getTitle());
+//            System.out.println(activity.getSource());
+//            System.out.println(Arrays.toString(activity.getImageBytes()));
+
             List<File> f = getFiles(".json", new File("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities"));
-            for (int i = 0; i < f.size(); i++) {
+            for (int i = 0; i < 2; i++) {
                 File fl = f.get(i);
                 FileReader fileStream = new FileReader(fl);
                 BufferedReader bufferedReader = new BufferedReader(fileStream);
@@ -33,24 +42,30 @@ public class ActConfig {
 
                 File file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
                         str.substring(0, str.lastIndexOf('.')) + ".png");
+                String extension = "png";
                 if (file == null) {
                     System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpeg");
                     file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
                             str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+                    extension = "jpeg";
                 }
                 if (file == null) {
                     System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpg");
                     file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
                             str.substring(0, str.lastIndexOf('.')) + ".jpg");
+                    extension = "jpg";
                 }
                 BufferedImage bImage = ImageIO.read(file);
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ImageIO.write(bImage, extension, bos);
                 byte[] data = bos.toByteArray();
                 String title = list.get("title").toString();
                 BigInteger bigvolt = (BigInteger) list.get("consumption_in_wh");
                 long volt = bigvolt.longValue();
                 String source = list.get("source").toString();
-                activityService.addActivity(new Activity(title, volt, source, data));
+                Activity activity = new Activity(title, volt, source, data);
+                activity.setId(i + 1L);
+                activityService.addActivity(activity);
             }
         };
     }

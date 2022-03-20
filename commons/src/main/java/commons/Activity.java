@@ -24,8 +24,10 @@ public class Activity {
     private String title;
     @JsonProperty("consumption_in_wh")
     private long energyConsumption;
+    @Column(length = 500)
     @JsonProperty("source")
     private String source;
+    @Column(length = 8000)
     @JsonProperty
     private byte[] imageBytes;
 
