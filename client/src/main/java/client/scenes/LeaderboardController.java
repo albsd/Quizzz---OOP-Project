@@ -61,7 +61,7 @@ public class LeaderboardController implements Initializable {
     }
 
     @FXML
-    protected void onConfirmButtonClick(final ActionEvent e) {
+    public void backToSplash(final ActionEvent e) {
         fxml.showSplash();
     }
 
@@ -88,7 +88,7 @@ public class LeaderboardController implements Initializable {
         nick.setText(me.getNick());
         score.setText(Integer.toString(me.getScore()));
 
-        List<Player> ranking = server.getLeaderboard(id.toString()).getRanking();
+        List<Player> ranking = server.getLeaderboard(id).getRanking();
         for (int i = 0; i < ranking.size(); i++) {
             Player player = ranking.get(i);
 

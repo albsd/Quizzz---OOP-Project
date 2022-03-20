@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 import client.scenes.GameController;
@@ -120,10 +122,10 @@ public class FXMLController {
         return root;
     }
 
-    public Pair<GameController, Parent> showSinglePlayer(final Player me) {
+    public Pair<GameController, Parent> showSinglePlayer(final Game game) {
         var root = displayScene(GameController.class);
         var ctrl = root.getKey();
-        ctrl.setSinglePlayer(me);
+        ctrl.setSinglePlayer(game);
         subscribe(GameController.class);
         return root;
     }
@@ -137,5 +139,23 @@ public class FXMLController {
         PauseTransition delay = new PauseTransition(Duration.seconds(5));
         delay.setOnFinished(event -> stage1.close());
         return root;
+    }
+
+    public void changeToMultiMode(final TextField openAnswer, final Button option1,
+                                  final Button option2, final Button option3) {
+        openAnswer.toFront();
+        openAnswer.setVisible(false);
+        option1.setVisible(true);
+        option2.setVisible(true);
+        option3.setVisible(true);
+    }
+
+    public void changeToFreeMode(final TextField openAnswer, final Button option1,
+                                 final Button option2, final Button option3) {
+        openAnswer.toBack();
+        openAnswer.setVisible(true);
+        option1.setVisible(false);
+        option2.setVisible(false);
+        option3.setVisible(false);
     }
 }

@@ -68,12 +68,9 @@ class GameRepositoryTest {
         Player player1 = new Player("player1");
         Player player2 = new Player("player2");
         Player player3 = new Player("player3");
-        final int ten = 10;
-        final int twenty = 20;
-        final int thirty = 30;
-        player1.setScore(ten);
-        player2.setScore(twenty);
-        player3.setScore(thirty);
+        player1.addScore(10);
+        player2.addScore(20);
+        player3.addScore(30);
         game1.addPlayer(player1);
         game1.addPlayer(player2);
         game1.addPlayer(player3);

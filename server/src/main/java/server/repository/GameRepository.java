@@ -19,6 +19,8 @@ package server.repository;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
+import commons.Question;
+
 import org.springframework.stereotype.Repository;
 import java.util.HashSet;
 import java.util.Optional;
@@ -48,6 +50,12 @@ public class GameRepository {
         }
         return optional.get();
     }
+    
+    public Game createSingleplayer(final String nick, final List<Question> questions) {
+        Game single = new Game(UUID.randomUUID(), questions);
+        single.setSinglePlayer(new Player(nick));
+        return single;
+    }
 
     public UUID addGame(final Game game) {
         games.add(game);
@@ -67,8 +75,8 @@ public class GameRepository {
         return new Leaderboard(game.getPlayers());
     }
 
-    public void updatePlayerScore(final Game game, final String nick, final int score) {
+    public void addPlayerScore(final Game game, final String nick, final int score) {
         Player player = game.getPlayerByNick(nick);
-        player.setScore(score);
+        player.addScore(score);
     }
 }

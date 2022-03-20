@@ -26,6 +26,14 @@ public class GameService {
         this.lobby = new Game(UUID.randomUUID(), questions);
     }
 
+    public Game createSingleplayer(final String nick, final List<Question> questions) {
+        return repo.createSingleplayer(nick, questions);
+    }
+
+    public UUID addGame(final Game game) {
+        return repo.addGame(game);
+    }
+
     public boolean deleteGame(final UUID id) {
         return repo.removeGame(id);
     }
@@ -59,7 +67,7 @@ public class GameService {
         return repo.getLeaderboard(id);
     }
 
-    public void updatePlayerScore(final Game game, final String nick, final int score) {
-        repo.updatePlayerScore(game, nick, score);
+    public void addPlayerScore(final Game game, final String nick, final int score) {
+        repo.addPlayerScore(game, nick, score);
     }
 }
