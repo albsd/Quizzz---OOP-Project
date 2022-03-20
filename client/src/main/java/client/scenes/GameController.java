@@ -82,9 +82,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private String chatPath;
 
-    private Question currentQuestion;
-
-    private boolean isOpenQuestion;
+    private boolean isOpenQuestion = false;
     
     private String leavePath;
 
@@ -182,15 +180,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.chatPath = "/game/" + game.getId() + "/chat";
         this.leavePath = "/game/" + game.getId() + "/leave";
 
-        //by default game.fxml set to multiple question mode
-        currentQuestion = game.getCurrentQuestion();
-        isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
-        if (isOpenQuestion) {
-            fxml.changeToFreeMode(openAnswer, option1, option2, option3);
-        }
-        
-        displayQuestion(currentQuestion);
-        
+        displayCurrentQuestion();
         game.start(this::setNextQuestion);
     }
 
@@ -199,7 +189,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game = game;
         this.game.initialiseTimer();
         
-        questionNumber.setText("#" + game.getCurrentQuestionNumber());
+        displayCurrentQuestion();
         game.start(this::setNextQuestion);
 
         leftBox.getChildren().remove(1);
@@ -219,9 +209,10 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void checkAnswer(final ActionEvent event) {
+        Question currentQuestion = game.getCurrentQuestion();
         long correctAnswer = currentQuestion.getAnswer();
         Button[] options = {option1, option2, option3};
-        int option = ArrayUtils.indexOf(options, ((Button) event.getSource()));
+        int option = ArrayUtils.indexOf(options, event.getSource());
         int score = 0;
         if (currentQuestion instanceof MultipleChoiceQuestion) {
             Button chosenOption = (Button) event.getSource();
@@ -268,23 +259,20 @@ public class GameController implements Initializable, WebSocketSubscription {
             });
         }
 
-        Platform.runLater(() -> {
-            currentQuestion = game.getCurrentQuestion();
-//            question.setText(currentQuestion.getPrompt());
-            if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
-                fxml.changeToMultiMode(openAnswer, option1, option2, option3);
-                isOpenQuestion = false;
-            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
-                fxml.changeToFreeMode(openAnswer, option1, option2, option3);
-                isOpenQuestion = true;
-            }
-            displayQuestion(currentQuestion);
-
-        });
+        Platform.runLater(this::displayCurrentQuestion);
         game.start(this::setNextQuestion);
     }
 
-    private void displayQuestion(final Question currentQuestion) {
+    private void displayCurrentQuestion() {
+        Question currentQuestion = game.getCurrentQuestion();
+        if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
+            fxml.changeToMultiMode(openAnswer, option1, option2, option3);
+            isOpenQuestion = false;
+        } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
+            fxml.changeToFreeMode(openAnswer, option1, option2, option3);
+            isOpenQuestion = true;
+        }
+
         questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
         question.setText(currentQuestion.getPrompt());
         if (currentQuestion instanceof MultipleChoiceQuestion) {
