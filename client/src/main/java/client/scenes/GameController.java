@@ -28,6 +28,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 import javax.inject.Inject;
@@ -206,11 +207,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void checkAnswer(final ActionEvent event) {
         long correctAnswer = currentQuestion.getAnswer();
-        String optionStr = ((Button) event.getSource()).getText();
-        int option = Integer.parseInt(optionStr);
+        Button[] options = {option1, option2, option3};
+        int option = ArrayUtils.indexOf(options, ((Button) event.getSource()));
         int score = 0;
         if (currentQuestion instanceof MultipleChoiceQuestion) {
-            Button[] options = {option1, option2, option3};
             Button chosenOption = (Button) event.getSource();
             chosenOption.setStyle("-fx-border-color: black;");
             for (int i = 0; i < options.length; i++) {
