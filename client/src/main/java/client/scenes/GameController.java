@@ -219,7 +219,6 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void checkAnswer(final ActionEvent event) {
-        Question currentQuestion = game.getCurrentQuestion();
         long correctAnswer = currentQuestion.getAnswer();
         Button[] options = {option1, option2, option3};
         int option = ArrayUtils.indexOf(options, ((Button) event.getSource()));
