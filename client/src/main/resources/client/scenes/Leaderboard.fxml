@@ -20,7 +20,12 @@
     </padding>
    <AnchorPane prefHeight="680.0" prefWidth="1240.0">
       <children>
-         <Button mnemonicParsing="false" onAction="#onReturnButtonClick" prefHeight="80.0" prefWidth="80.0">
+         <Label fx:id="title" alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" text="LEADERBOARD">
+            <font>
+               <Font name="System Bold" size="72.0" />
+            </font>
+         </Label>
+         <Button mnemonicParsing="false" onAction="#onReturnButtonClick" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" stylesheets="@/stylesheets/style.css">
             <graphic>
                <ImageView pickOnBounds="true" preserveRatio="true">
                   <image>
@@ -86,11 +91,6 @@
                </VBox>
             </content>
          </ScrollPane>
-         <Label fx:id="title" alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" text="LEADERBOARD">
-            <font>
-               <Font name="System Bold" size="72.0" />
-            </font>
-         </Label>
       </children>
    </AnchorPane>
 </VBox>
