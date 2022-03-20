@@ -73,7 +73,7 @@ public class LeaderboardController implements Initializable {
         alert.setContentText("You are about to leave to the main screen. Are you sure?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.YES) {
-            onConfirmButtonClick(e);
+            backToSplash(e);
         } else {
             switchToLeaderboard(e);
         }
