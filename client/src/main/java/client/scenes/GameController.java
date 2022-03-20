@@ -204,6 +204,16 @@ public class GameController implements Initializable, WebSocketSubscription {
         int option = Integer.parseInt(optionStr);
         int score = 0;
         if (currentQuestion instanceof MultipleChoiceQuestion) {
+            Button[] options = {option1, option2, option3};
+            Button chosenOption = (Button) event.getSource();
+            chosenOption.setStyle("-fx-border-color: black;");
+            for(int i = 0; i < options.length; i++) {
+                if (i == correctAnswer) {
+                    options[i].setStyle("-fx-background-color:" + green + ";");
+                } else {
+                    options[i].setStyle("-fx-background-color:" + red + ";");
+                }
+            }
             if (option == correctAnswer) {
                 score = me.calculateMulChoicePoints(progressBar.getClientTime());
             }
@@ -247,6 +257,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                 isOpenQuestion = true;
             }
             displayQuestion(currentQuestion);
+
         });
         game.start(this::setNextQuestion);
     }
