@@ -222,20 +222,18 @@ public class ServerUtils {
     }
 
     /**
-     * Updates player score on server side every 10 questions for leaderboard.
+     * Updates player score.
      * @param id game id to find game
      * @param nick name of player
      * @param score score of player
-     * @return The game that was used to update with
      */
-    public Game updateScore(final UUID id, final String nick, final String score) {
+    public void addScore(final UUID id, final String nick, final int score) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/" + id + "/score/" + nick))
                 .header("accept", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(score))
+                .POST(HttpRequest.BodyPublishers.ofString(Integer.toString(score)))
                 .build();
-        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
-        return game;
+        parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
     /**

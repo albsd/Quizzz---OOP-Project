@@ -28,6 +28,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 import javax.inject.Inject;
@@ -84,6 +85,16 @@ public class GameController implements Initializable, WebSocketSubscription {
     private boolean isOpenQuestion;
     
     private boolean doubleScore = false;
+
+    private final String green = "#E0FCCF";
+
+    private final String red = "#FE6F5B";
+
+    private final String orange = "#FFD029";
+
+    private final String darkGreen = "#009a19";
+
+    private final String darkRed = "#A00000";
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml,
@@ -193,12 +204,22 @@ public class GameController implements Initializable, WebSocketSubscription {
      *
      * @param event triggered by a button click
      */
+    @FXML
     public void checkAnswer(final ActionEvent event) {
         long correctAnswer = currentQuestion.getAnswer();
-        String optionStr = ((Button) event.getSource()).getText();
-        int option = Integer.parseInt(optionStr);
+        Button[] options = {option1, option2, option3};
+        int option = ArrayUtils.indexOf(options, ((Button) event.getSource()));
         int score = 0;
         if (currentQuestion instanceof MultipleChoiceQuestion) {
+            Button chosenOption = (Button) event.getSource();
+            chosenOption.setStyle("-fx-border-color: black;");
+            for (int i = 0; i < options.length; i++) {
+                if (i == correctAnswer) {
+                    options[i].setStyle("-fx-background-color:" + green + ";\n-fx-text-fill:" + darkGreen + ";");
+                } else {
+                    options[i].setStyle("-fx-background-color:" + red + ";\n-fx-text-fill:" + darkRed + ";");
+                }
+            }
             if (option == correctAnswer) {
                 score = me.calculateMulChoicePoints(progressBar.getClientTime());
             }
@@ -211,7 +232,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             score *= 2;
             doubleScore = false;
         }
-        me.addScore(score);
+        server.addScore(game.getId(), me.getNick(), score);
+        //TODO: Display correct answer for free response
     }
 
     /**
@@ -223,7 +245,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         game.nextQuestion();
         
         if (game.shouldShowLeaderboard()) {
-            server.updateScore(game.getId(), me.getNick(), Integer.toString(me.getScore()));
             Platform.runLater(() -> {
                 var root = fxml.displayLeaderboardMomentarily();
                 var ctrl = root.getKey();
@@ -242,6 +263,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                 isOpenQuestion = true;
             }
             displayQuestion(currentQuestion);
+
         });
         game.start(this::setNextQuestion);
     }
@@ -251,6 +273,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         question.setText(currentQuestion.getPrompt());
         if (currentQuestion instanceof MultipleChoiceQuestion) {
             String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+            option1.setStyle("-fx-background-color:" + orange + ";");
+            option2.setStyle("-fx-background-color:" + orange + ";");
+            option3.setStyle("-fx-background-color:" + orange + ";");
             option1.setText(options[0]);
             option2.setText(options[1]);
             option3.setText(options[2]);

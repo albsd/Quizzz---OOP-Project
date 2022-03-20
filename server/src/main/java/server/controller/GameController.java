@@ -254,13 +254,13 @@ public class GameController {
 
 
     @PostMapping("/{id}/score/{nick}")
-    public ResponseEntity<Game> updatePlayerPoints(final @PathVariable UUID id,
+    public ResponseEntity<Game> addPlayerPoints(final @PathVariable UUID id,
             final @PathVariable String nick, final @RequestBody String score) {
         Game game = gameService.findById(id);
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
-        gameService.updatePlayerScore(game, nick, Integer.parseInt(score));
+        gameService.addPlayerScore(game, nick, Integer.parseInt(score));
         return ResponseEntity.ok(game);
     }
 

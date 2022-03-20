@@ -36,10 +36,6 @@ public class Player {
         this.score += score;
     }
 
-    public void setScore(final int score) {
-        this.score = score;
-    }
-
     public int calculateMulChoicePoints(final int time) {
         int base = 50;
         int bonusScore = calculateBonusPoints(time);

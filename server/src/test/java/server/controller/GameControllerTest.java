@@ -127,7 +127,7 @@ public class GameControllerTest {
     public void leaderboardSorted() {
         List<Player> players = game.getPlayers();
         for (int i = 0; i < players.size(); i++) {
-            players.get(0).setScore(4 * i + 2);
+            players.get(i).addScore(4 * i + 2);
         }
 
         List<Player> expected = players.stream()
@@ -138,7 +138,7 @@ public class GameControllerTest {
 
     @Test
     public void updatePoints() {
-        Game current = ctrl.updatePlayerPoints(game.getId(), nick, Integer.toString(score)).getBody();
+        Game current = ctrl.addPlayerPoints(game.getId(), nick, Integer.toString(score)).getBody();
         assertEquals(score, current.getPlayerByNick(nick).getScore());
     }
 
