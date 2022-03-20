@@ -23,6 +23,7 @@ import commons.Player;
 import commons.PlayerUpdate;
 import commons.LobbyMessage;
 import commons.Question;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import server.service.ActivityService;
 import server.service.GameService;
 
 import java.util.List;
@@ -49,9 +52,13 @@ public class GameController {
 
     private final GameService gameService;
 
+    private final ActivityService activityService;
+
     @Autowired
-    public GameController(final GameService gameService) {
+    public GameController(final GameService gameService, final ActivityService activityService) {
         this.gameService = gameService;
+        this.activityService = activityService;
+        gameService.initializeLobby(activityService.getQuestionList());
     }
 
     /**
@@ -62,6 +69,17 @@ public class GameController {
     @GetMapping(path = { "", "/" })
     public List<Game> getAll() {
         return gameService.getAll();
+    }
+
+    /**
+     * Creates a game for a singleplayer game.
+     *
+     * @param nick Name of the player who started a singleplayer game
+     * @return Game object for singleplayer
+     */
+    @PostMapping("/single/{nick}")
+    public Game createGame(final @PathVariable String nick) {
+        return gameService.createSingleplayer(nick, activityService.getQuestionList());
     }
 
     /**
@@ -101,11 +119,12 @@ public class GameController {
 
     @GetMapping("/{id}/question")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
-        if (gameService.findById(id) == null) {
+        Game game = gameService.findById(id); 
+        if (game == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(gameService.getQuestions(id));
+        return ResponseEntity.ok(game.getQuestions());
     }
 
     /**
@@ -216,7 +235,7 @@ public class GameController {
     @PostMapping("/start")
     public ResponseEntity<Game> startCurrentGame() {
         Game lobby = gameService.getCurrentGame();
-        gameService.newGame();
+        gameService.newGame(activityService.getQuestionList());
         return ResponseEntity.ok(lobby);
     }
 
@@ -235,13 +254,13 @@ public class GameController {
 
 
     @PostMapping("/{id}/score/{nick}")
-    public ResponseEntity<Game> updatePlayerPoints(final @PathVariable UUID id,
+    public ResponseEntity<Game> addPlayerPoints(final @PathVariable UUID id,
             final @PathVariable String nick, final @RequestBody String score) {
         Game game = gameService.findById(id);
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
-        gameService.updatePlayerScore(game, nick, Integer.parseInt(score));
+        gameService.addPlayerScore(game, nick, Integer.parseInt(score));
         return ResponseEntity.ok(game);
     }
 

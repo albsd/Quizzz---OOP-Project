@@ -73,7 +73,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void initialize(final URL location, final ResourceBundle resources) {
         // We DON'T use the shorthand .toList() here, because that returns an immutable
         // list and causes player updates to get ignored silently
-        this.players = server.getPlayers().stream()
+        this.players = server.getLobbyPlayers().stream()
                 .map(Player::getNick)
                 .collect(Collectors.toList());
 
@@ -171,7 +171,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void start(final ActionEvent event) {
-        Game game = server.startGame();
+        Game game = server.startMultiPlayer();
         fxml.showMultiPlayer(me, game);
     }
 }

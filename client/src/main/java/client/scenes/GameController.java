@@ -21,16 +21,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -63,6 +64,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     private ImageView questionImage;
 
+    private TextField openAnswer;
+
+    @FXML
+    private Label warning;
 
     private final ServerUtils server;
 
@@ -78,9 +83,21 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private String chatPath;
 
+    private Question currentQuestion;
+
+    private boolean isOpenQuestion;
+    
     private boolean doubleScore = false;
 
-    private Question currentQuestion;
+    private final String green = "#E0FCCF";
+
+    private final String red = "#FE6F5B";
+
+    private final String orange = "#FFD029";
+
+    private final String darkGreen = "#009a19";
+
+    private final String darkRed = "#A00000";
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml,
@@ -150,24 +167,26 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game = game;
         this.game.initialiseTimer();
         this.chatPath = "/game/" + game.getId() + "/chat";
-        this.currentQuestion = game.getCurrentQuestion();
-        setQuestionElements();
+        //by default game.fxml set to multiple question mode
+        currentQuestion = game.getCurrentQuestion();
+        isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
+        if (isOpenQuestion) {
+            fxml.changeToFreeMode(openAnswer, option1, option2, option3);
+        }
+        displayQuestion();
         // start client timer
         // progressBar.start();
         game.start(this::setNextQuestion);
     }
-    @FXML
-    private void setQuestionElements() {
-        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
-        question.setText(currentQuestion.getPrompt());
-        InputStream is = new ByteArrayInputStream(currentQuestion.getImage());
-        Image img = new Image(is);
-        questionImage.setImage(img);
-    }
 
+    public void setSinglePlayer(final Game game) {
+        this.me = game.getPlayers().get(0); // only 1 player
+        this.game = game;
+        this.game.initialiseTimer();
+        
+        questionNumber.setText("#" + game.getCurrentQuestionNumber());
+        game.start(this::setNextQuestion);
 
-    public void setSinglePlayer(final Player me) {
-        this.me = me;
         leftBox.getChildren().remove(1);
         mainHorizontalBox.getChildren().remove(3, 5);
         optionBox.setAlignment(Pos.CENTER);
@@ -188,13 +207,22 @@ public class GameController implements Initializable, WebSocketSubscription {
      *
      * @param event triggered by a button click
      */
+    @FXML
     public void checkAnswer(final ActionEvent event) {
-        currentQuestion = game.getCurrentQuestion();
-        long correctAnswer = game.getCurrentQuestion().getAnswer();
-        String optionStr = ((Button) event.getSource()).getText();
-        int option = Integer.parseInt(optionStr);
+        long correctAnswer = currentQuestion.getAnswer();
+        Button[] options = {option1, option2, option3};
+        int option = ArrayUtils.indexOf(options, ((Button) event.getSource()));
         int score = 0;
         if (currentQuestion instanceof MultipleChoiceQuestion) {
+            Button chosenOption = (Button) event.getSource();
+            chosenOption.setStyle("-fx-border-color: black;");
+            for (int i = 0; i < options.length; i++) {
+                if (i == correctAnswer) {
+                    options[i].setStyle("-fx-background-color:" + green + ";\n-fx-text-fill:" + darkGreen + ";");
+                } else {
+                    options[i].setStyle("-fx-background-color:" + red + ";\n-fx-text-fill:" + darkRed + ";");
+                }
+            }
             if (option == correctAnswer) {
                 score = me.calculateMulChoicePoints(progressBar.getClientTime());
             }
@@ -207,7 +235,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             score *= 2;
             doubleScore = false;
         }
-        me.addScore(score);
+        server.addScore(game.getId(), me.getNick(), score);
+        //TODO: Display correct answer for free response
     }
 
     /**
@@ -217,22 +246,49 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void setNextQuestion() {
         game.nextQuestion();
-        if ((game.getCurrentQuestionIndex()) % 10 == 0) {
-            server.updateScore(game.getId(), me.getNick(), Integer.toString(me.getScore()));
+        
+        if (game.shouldShowLeaderboard()) {
             Platform.runLater(() -> {
                 var root = fxml.displayLeaderboardMomentarily();
-                LeaderboardController leaderboardController = root.getKey();
-                leaderboardController.displayLeaderboard(this.game.getId());
+                var ctrl = root.getKey();
+                ctrl.displayLeaderboard(game.getId());
             });
         }
         Platform.runLater(() -> {
-            setQuestionElements();
+            currentQuestion = game.getCurrentQuestion();
+//            question.setText(currentQuestion.getPrompt());
+            if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
+                fxml.changeToMultiMode(openAnswer, option1, option2, option3);
+                isOpenQuestion = false;
+            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
+                fxml.changeToFreeMode(openAnswer, option1, option2, option3);
+                isOpenQuestion = true;
+            }
+            displayQuestion();
+
         });
-        
         game.start(this::setNextQuestion);
     }
+    @FXML
+    private void displayQuestion() {
+        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
+        question.setText(currentQuestion.getPrompt());
+        InputStream is = new ByteArrayInputStream(currentQuestion.getImage());
+        Image img = new Image(is);
+        questionImage.setImage(img);
+        if (currentQuestion instanceof MultipleChoiceQuestion) {
+            String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+            option1.setStyle("-fx-background-color:" + orange + ";");
+            option2.setStyle("-fx-background-color:" + orange + ";");
+            option3.setStyle("-fx-background-color:" + orange + ";");
+            option1.setText(options[0]);
+            option2.setText(options[1]);
+            option3.setText(options[2]);
+        }
+    }
 
-    public void openPopup(final ActionEvent e) throws IOException {
+    @FXML
+    public void openPopup(final ActionEvent e) {
         popupMenu.setVisible(true);
     }
 

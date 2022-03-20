@@ -9,6 +9,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
+// TODO: add meaningful tests
 public class GameTest {
     private List<Player> p;
     private Game g;
@@ -19,7 +20,7 @@ public class GameTest {
                 new Player("test1"),
                 new Player("test2"),
                 new Player("test3")});
-        g = new Game(UUID.randomUUID());
+        g = new Game(UUID.randomUUID(), null);
         for (Player player : p) g.addPlayer(player);
     }
 

@@ -8,10 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-enum GameState { waiting, playing }
-
 public class Game {
-    private final int questionLimit = 20;
 
     @JsonIgnore
     private QuestionTimer timer;
@@ -23,35 +20,33 @@ public class Game {
     private List<Player> players;
 
     @JsonProperty("questions")
-    private Question[] questions;
+    private List<Question> questions;
 
     @JsonProperty("currentQuestion")
     private int currentQuestion;
 
-    @JsonProperty("gameState")
-    private GameState gameState;
+    @JsonProperty("isMultiplayer")
+    private boolean isMultiplayer;
 
-    public Game(final UUID id) {
+    public Game(final UUID id, final List<Question> questions) {
         this.id = id;
         this.players = new ArrayList<>();
-        this.questions = new Question[questionLimit];
-        // Generating questions is not implemented yet:
-        // this.questions = QuestionService.generateQuestions()
+        this.questions = questions;
         this.currentQuestion = 0;
-        this.gameState = GameState.waiting;
+        this.isMultiplayer = true;
     }
 
     @JsonCreator
     public Game(final @JsonProperty("id") UUID id,
                 final @JsonProperty("players") List<Player> players,
-                final @JsonProperty("questions") Question[] questions,
+                final @JsonProperty("questions") List<Question> questions,
                 final @JsonProperty("currentQuestion") int currentQuestion,
-                final @JsonProperty("gameState") GameState gameState) {
+                final @JsonProperty("isMultiplayer") boolean isMultiplayer) {
         this.id = id;
         this.players = players;
         this.questions = questions;
         this.currentQuestion = currentQuestion;
-        this.gameState = gameState;
+        this.isMultiplayer = isMultiplayer;
     }
 
     public UUID getId() {
@@ -62,15 +57,33 @@ public class Game {
         return players;
     }
 
-    public GameState getGameState() {
-        return this.gameState;
+    public boolean getIsMultiplayer() {
+        return this.isMultiplayer;
+    }
+    
+    public void setSinglePlayer(final Player p) {
+        addPlayer(p);
+        isMultiplayer = false;
+    }
+
+    @JsonIgnore
+    public boolean shouldShowLeaderboard() {
+        return isMultiplayer && currentQuestion % 10 == 0;
+    }
+
+    @JsonIgnore
+    public int getCurrentQuestionNumber() {
+        return currentQuestion + 1;
     }
 
     public QuestionTimer getTimer() {
         return timer;
     }
 
-    // Since the QuestionTimer cannot be serialised over HTTP, we can call this method in the client to create a new timer.
+    /**
+     * Since the QuestionTimer cannot be serialised over HTTP, 
+     * we can call this method in the client to create a new timer. 
+     */
     public void initialiseTimer() {
         this.timer = new QuestionTimer();
     }
@@ -92,17 +105,16 @@ public class Game {
     }
 
     public Player getPlayerByNick(final String nick) {
-        for (Player p : players) {
-            if (p.getNick().equals(nick)) {
-                return p;
-            }
-        }
-        return null;
+        return players.stream()
+            .filter((p) -> p.getNick().equals(nick))
+            .findFirst()
+            .get();
     }
-    //if not ignored, game in serverUtil from getplayers is null
+
+    
     @JsonIgnore
     public int nextQuestion() {
-        return this.currentQuestion++;
+        return currentQuestion++;
     }
 
     @JsonIgnore
@@ -111,14 +123,17 @@ public class Game {
     }
 
     @JsonIgnore
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    @JsonIgnore
     public Question getCurrentQuestion() {
-        return this.questions[currentQuestion];
+        return questions.get(currentQuestion);
     }
 
     @JsonIgnore
     public void start(final Runnable callback) {
-        this.gameState = GameState.playing;
         timer.startGameTimer(callback);
     }
-
 }

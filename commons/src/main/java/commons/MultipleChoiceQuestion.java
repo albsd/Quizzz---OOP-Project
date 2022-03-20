@@ -1,5 +1,6 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Arrays;
@@ -10,11 +11,15 @@ public class MultipleChoiceQuestion extends Question {
     @JsonProperty("options")
     private String[] options;
 
-    public MultipleChoiceQuestion(final String prompt, final byte[] image,
-                                  final String[] options, final long answer) {
-        super(prompt, answer, image);
+    @JsonCreator
+    public MultipleChoiceQuestion(@JsonProperty("prompt") final String prompt,
+                                  @JsonProperty("imageBytes") final byte[] imageBytes,
+                                  @JsonProperty("options") final String[] options,
+                                  @JsonProperty("answer") final long answer) {
+        super(prompt, answer, imageBytes);
         this.options = options;
     }
+    
     public String[] getOptions() {
         return options;
     }
