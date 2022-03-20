@@ -4,6 +4,7 @@ import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
 
+import commons.GameUpdate;
 import commons.QuestionTimer;
 import commons.Player;
 import commons.Game;
@@ -106,7 +107,7 @@ public GameController(final ServerUtils server, final FXMLController fxml) {
 
     @Override
     public Subscription[] registerForMessages() {
-        Subscription[] subscriptions = new Subscription[1];
+        Subscription[] subscriptions = new Subscription[2];
         subscriptions[0] = server.registerForMessages("/topic" + chatPath, EmoteMessage.class, message -> {
             Platform.runLater(() -> {
                 Label nickname = new Label(message.getNick());
@@ -129,6 +130,20 @@ public GameController(final ServerUtils server, final FXMLController fxml) {
                 // update scrollpane's layout before scrolling to the bottom
                 emoteScroll.layout();
                 emoteScroll.setVvalue(1);
+
+
+            });
+        });
+
+        subscriptions[1] = server.registerForMessages("/topic/game/" + this.game.getId()
+                + "/update", GameUpdate.class, update -> {
+            System.out.println("Halve message received!");
+            Platform.runLater(() -> {
+                switch (update) {
+                    case halveTimer -> clientTimer.halve();
+                    case startTimer -> clientTimer.start(0);
+                    default -> { }
+                }
             });
         });
         return subscriptions;
@@ -255,7 +270,11 @@ public GameController(final ServerUtils server, final FXMLController fxml) {
 
     @FXML
     public void timePowerup(final ActionEvent e) {
+        server.send("/app/game/" + this.game.getId() + "/halve", GameUpdate.halveTimer);
 
+        // Solution to ensure that the initiator's timer is not halved
+        clientTimer.setCurrentTime(clientTimer.getCurrentTime() * 2);
+        timeButton.setDisable(true);
     }
 
     @FXML
