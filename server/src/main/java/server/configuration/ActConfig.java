@@ -8,13 +8,11 @@ import org.springframework.context.annotation.Configuration;
 import server.repository.ActivityRepository;
 import server.service.ActivityService;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -41,24 +39,31 @@ public class ActConfig {
                 LinkedHashMap list = (LinkedHashMap) obj;
                 String str = fl.getName();
                 System.out.println(str);
-
+                String extension = "png";
                 File file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
                         str.substring(0, str.lastIndexOf('.')) + ".png");
                 if (file == null) {
                     System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpeg");
                     file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
                             str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+                    extension = "jpeg";
                 }
                 if (file == null) {
                     System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpg");
                     file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
                             str.substring(0, str.lastIndexOf('.')) + ".jpg");
+                    extension = "jpg";
                 }
                 String title = list.get("title").toString();
                 BigInteger bigvolt = (BigInteger) list.get("consumption_in_wh");
                 long volt = bigvolt.longValue();
                 String source = list.get("source").toString();
-                Activity activity = new Activity(title, volt, source, file.getPath());
+
+                //check if accurate
+                String path = getClass().getClassLoader().getResource(title + "." + extension).getPath();
+                System.out.println(path);
+
+                Activity activity = new Activity(title, volt, source, path);
                 activity.setId(i + 1L);
                 activityService.addActivity(activity);
             }
@@ -74,24 +79,6 @@ public class ActConfig {
             }
         }
         return null;
-    }
-
-    public static String readFile(final File fileToRead) {
-        String content = "";
-        try (FileReader fileStream = new FileReader(fileToRead);
-             BufferedReader bufferedReader = new BufferedReader(fileStream)) {
-            String line = null;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                content += line;
-            }
-
-        } catch (FileNotFoundException ex) {
-            //exception Handling
-        } catch (IOException ex) {
-            //exception Handling
-        }
-        return content;
     }
 
     public static List<File> getFiles(final String ext, final File folder) {

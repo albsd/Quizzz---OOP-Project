@@ -4,15 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.imageio.ImageIO;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.*;
+import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 @Entity
 public class Activity {
@@ -150,17 +145,7 @@ public class Activity {
         this.source = source;
     }
 
-    private byte[] imageToByteArray() {
-        File file = new File(path);
-        String extension = path.substring(path.lastIndexOf('.') + path.length());
-        try {
-            BufferedImage bImage = ImageIO.read(file);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ImageIO.write(bImage, extension, bos);
-            return bos.toByteArray();
-        } catch (IOException e) {
-            System.err.println("IndexOutOfBoundsException: " + e.getMessage());
-            return null;
-        }
+    public String getPath() {
+        return path;
     }
 }

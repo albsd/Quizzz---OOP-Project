@@ -8,6 +8,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import server.repository.ActivityRepository;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,13 +60,17 @@ public class ActivityService {
     public Question turnActivityIntoQuestion(final Activity activity, final int questionType,
                                              final List<Activity> options) {
         //question type of 0 means number multiple choice
+        Question question;
         if (questionType == 0) {
-            return activity.getNumberMultipleChoiceQuestion();
+            question = activity.getNumberMultipleChoiceQuestion();
         } else if (questionType == 1) {
-            return activity.getActivityMultipleChoiceQuestion(options);
+            question = activity.getActivityMultipleChoiceQuestion(options);
         } else {
-            return activity.getFreeResponseQuestion();
+            question = activity.getFreeResponseQuestion();
         }
+        byte[] image = generateImageByteArray(activity.getPath());
+        question.setImage(image);
+        return question;
     }
 
     public List<Activity> generateOptions(final List<Activity> allActivities, final int numberOfOptions) {
@@ -94,7 +103,23 @@ public class ActivityService {
             return activity.get();
         }
     }
-    public void deleteAll(){
+    public void deleteAll() {
         activityRepository.deleteAll();
+    }
+
+    private byte[] generateImageByteArray(final String imagePath) {
+        //example of image path
+        //"/resources/images/title.jpg";
+        File file = new File(imagePath);
+        String extension = imagePath.substring(imagePath.lastIndexOf('.') + imagePath.length());
+        try {
+            BufferedImage bImage = ImageIO.read(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ImageIO.write(bImage, extension, bos);
+            return bos.toByteArray();
+        } catch (IOException e) {
+            System.err.println("IndexOutOfBoundsException: " + e.getMessage());
+            return new byte[0];
+        }
     }
 }

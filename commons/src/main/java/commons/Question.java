@@ -19,6 +19,9 @@ public abstract class Question {
     @JsonProperty("image_path")
     private String path;
 
+    @JsonProperty("image")
+    private byte[] image;
+
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
                     final @JsonProperty("answer") long answer,
@@ -45,6 +48,14 @@ public abstract class Question {
 
     public void setAnswer(final long answer) {
         this.answer = answer;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(final byte[] image) {
+        this.image = image;
     }
 
     @Override
