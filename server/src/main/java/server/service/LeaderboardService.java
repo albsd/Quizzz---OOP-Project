@@ -27,7 +27,7 @@ public class LeaderboardService {
         List<Player> players = new ArrayList<>();
         for (int i = 0; i < allSinglePlayers.size(); i++) {
             LeaderboardMessage sl = allSinglePlayers.get(i);
-            players.add(new Player(sl.getNick(), sl.getScore()));
+            players.add(new Player(sl.getNick(), sl.getContent()));
         }
         Leaderboard leaderboard = new Leaderboard();
         leaderboard.setRanking(players);

@@ -243,7 +243,7 @@ public class GameController {
         gameService.newGame(activityService.getQuestionList());
         return ResponseEntity.ok(lobby);
     }
-    
+
     @PostMapping("/leaderboard/{nick}/{score}")
     public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
                                                                      final @PathVariable("score") int score) {

@@ -12,18 +12,8 @@ public class LeaderboardMessage extends Message<Integer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private long id;
-    private String nick;
-    private int score;
 
     public LeaderboardMessage(final String nick, final int score) {
         super(nick, score);
-    }
-
-    public String getNick() {
-        return nick;
-    }
-
-    public int getScore() {
-        return score;
     }
 }
