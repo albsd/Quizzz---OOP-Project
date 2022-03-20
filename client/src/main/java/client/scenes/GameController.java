@@ -60,6 +60,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     private ImageView questionImage;
 
+    @FXML
     private TextField openAnswer;
 
     @FXML
