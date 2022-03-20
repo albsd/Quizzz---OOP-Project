@@ -21,15 +21,10 @@ import java.util.List;
 @Configuration
 public class ActConfig {
     @Bean
-    CommandLineRunner commandLineRunner(final ActivityService activityService, final ActivityRepository activityRepository) {
+    CommandLineRunner commandLineRunner(final ActivityService activityService,
+                                        final ActivityRepository activityRepository) {
         return args -> {
-//            Activity activity = activityRepository.findTopByOrderByIdDesc().get();
-//            System.out.println(activity.getId());
-//            System.out.println(activity.getTitle());
-//            System.out.println(activity.getSource());
-//            System.out.println(Arrays.toString(activity.getImageBytes()));
-
-            List<File> f = getFiles(".json", new File("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities"));
+            List<File> f = getFiles(".json", new File("C:\\Users\\pkcho\\Desktop\\repository-template\\commons\\src\\main\\resources\\activity-bank\\activities"));
             for (int i = 0; i < 2; i++) {
                 File fl = f.get(i);
                 FileReader fileStream = new FileReader(fl);
@@ -40,17 +35,17 @@ public class ActConfig {
                 String str = fl.getName();
                 System.out.println(str);
                 String extension = "png";
-                File file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
+                File file = find("C:\\Users\\pkcho\\Desktop\\repository-template\\commons\\src\\main\\resources\\activity-bank\\activities",
                         str.substring(0, str.lastIndexOf('.')) + ".png");
                 if (file == null) {
                     System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpeg");
-                    file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
+                    file = find("C:\\Users\\pkcho\\Desktop\\repository-template\\commons\\src\\main\\resources\\activity-bank\\activities",
                             str.substring(0, str.lastIndexOf('.')) + ".jpeg");
                     extension = "jpeg";
                 }
                 if (file == null) {
                     System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpg");
-                    file = find("C:\\Users\\pkcho\\Desktop\\activity-bank\\activities",
+                    file = find("C:\\Users\\pkcho\\Desktop\\repository-template\\commons\\src\\main\\resources\\activity-bank\\activities",
                             str.substring(0, str.lastIndexOf('.')) + ".jpg");
                     extension = "jpg";
                 }
@@ -60,12 +55,18 @@ public class ActConfig {
                 String source = list.get("source").toString();
 
                 //check if accurate
-                String path = getClass().getClassLoader().getResource(title + "." + extension).getPath();
+                String path = file.getPath();
+//                String path = getClass().getClassLoader().getResource(title + "." + extension).getPath();
                 System.out.println(path);
 
                 Activity activity = new Activity(title, volt, source, path);
                 activity.setId(i + 1L);
                 activityService.addActivity(activity);
+//            Activity activity = activityRepository.findTopByOrderByIdDesc().get();
+//            System.out.println(activity.getId());
+//            System.out.println(activity.getTitle());
+//            System.out.println(activity.getSource());
+//            System.out.println(Arrays.toString(activity.getImageBytes()));
             }
         };
     }

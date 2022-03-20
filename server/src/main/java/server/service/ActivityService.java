@@ -91,7 +91,7 @@ public class ActivityService {
 //            id = optionalAct.get().getId() + 1;
 //        }
 //        activity.setId(id);
-//        return activityRepository.save(activity);
+//        return activityRepository.saveAndFlush(activity);
 //    }
 
     public Activity deleteActivity(final Long id) {
@@ -102,9 +102,6 @@ public class ActivityService {
             activityRepository.delete(activity.get());
             return activity.get();
         }
-    }
-    public void deleteAll() {
-        activityRepository.deleteAll();
     }
 
     private byte[] generateImageByteArray(final String imagePath) {
