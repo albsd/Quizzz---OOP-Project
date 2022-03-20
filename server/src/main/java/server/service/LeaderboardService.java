@@ -1,17 +1,20 @@
 package server.service;
+import commons.Leaderboard;
 import commons.LeaderboardMessage;
 import commons.Player;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import server.repository.SinglePlayerRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SinglePlayerService {
+@Service
+public class LeaderboardService {
     @Autowired
     private SinglePlayerRepository singlePlayerRepository;
 
-    public SinglePlayerService(final SinglePlayerRepository singlePlayerRepository) {
+    public LeaderboardService(final SinglePlayerRepository singlePlayerRepository) {
         this.singlePlayerRepository = singlePlayerRepository;
     }
 
@@ -19,13 +22,15 @@ public class SinglePlayerService {
         singlePlayerRepository.save(singlePlayerLeaderboardMessage);
     }
 
-    public List<Player> getAllPlayerInfo() {
+    public Leaderboard getAllPlayerInfo() {
         List<LeaderboardMessage> allSinglePlayers =  singlePlayerRepository.findAll();
         List<Player> players = new ArrayList<>();
         for (int i = 0; i < allSinglePlayers.size(); i++) {
             LeaderboardMessage sl = allSinglePlayers.get(i);
             players.add(new Player(sl.getNick(), sl.getScore()));
         }
-        return players;
+        Leaderboard leaderboard = new Leaderboard();
+        leaderboard.setRanking(players);
+        return leaderboard;
     }
 }

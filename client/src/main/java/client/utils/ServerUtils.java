@@ -265,7 +265,7 @@ public class ServerUtils {
     //TODO: Call this method when single player game ends
     public Leaderboard sendSinglePlayerLeaderboardInfo(final String nick, final int score) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/join/" + nick + "/" + score))
+                .uri(URI.create(kGameUrl + "/leaderboard/" + nick + "/" + score))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 

@@ -36,7 +36,7 @@ import server.service.ActivityService;
 import server.repository.ActivityRepository;
 import server.repository.GameRepository;
 import server.service.GameService;
-import server.service.SinglePlayerService;
+import server.service.LeaderboardService;
 
 
 import java.util.List;
@@ -75,10 +75,10 @@ public class GameControllerTest {
 
         GameService service =  new GameService(new GameRepository());
         ActivityService activityService = new ActivityService(activityRepository);
-        SinglePlayerService singlePlayerService = new SinglePlayerService(singlePlayerRepository);
+        LeaderboardService leaderboardService = new LeaderboardService(singlePlayerRepository);
         service.initializeLobby(activityService.getQuestionList());
 
-        ctrl = new GameController(service, activityService, singlePlayerService);
+        ctrl = new GameController(service, activityService, leaderboardService);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
         game = service.getCurrentGame();

@@ -42,7 +42,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import server.service.ActivityService;
 import server.service.GameService;
-import server.service.SinglePlayerService;
+import server.service.LeaderboardService;
 
 import java.util.List;
 import java.util.UUID;
@@ -55,14 +55,14 @@ public class GameController {
 
     private final ActivityService activityService;
 
-    private final SinglePlayerService singlePlayerService;
+    private final LeaderboardService leaderboardService;
 
     @Autowired
     public GameController(final GameService gameService, final ActivityService activityService,
-                          final SinglePlayerService singlePlayerService) {
+                          final LeaderboardService leaderboardService) {
         this.gameService = gameService;
         this.activityService = activityService;
-        this.singlePlayerService = singlePlayerService;
+        this.leaderboardService = leaderboardService;
         gameService.initializeLobby(activityService.getQuestionList());
     }
 
@@ -292,17 +292,15 @@ public class GameController {
         return GameUpdate.halveTimer;
     }
 
-    @PostMapping("/join/{nick}/{score}")
+    @PostMapping("/leaderboard/{nick}/{score}")
     public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
                                                                      final @PathVariable("score") int score) {
         if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
 
-        LeaderboardMessage splm = new LeaderboardMessage(nick, score);
-        singlePlayerService.addPlayerToLeaderboard(splm);
-        Leaderboard l = new Leaderboard();
-        l.setRanking(singlePlayerService.getAllPlayerInfo());
-        return ResponseEntity.ok(l);
+        LeaderboardMessage leaderboardMessage = new LeaderboardMessage(nick, score);
+        leaderboardService.addPlayerToLeaderboard(leaderboardMessage);
+        return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
     }
 }
