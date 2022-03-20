@@ -223,7 +223,13 @@ public GameController(final ServerUtils server, final FXMLController fxml) {
         gameTimer.start(5000);
 
         // TODO: Add five second delay before showing next question
-        Platform.runLater(this::displayQuestion);
+
+        try {
+            Thread.sleep(5000);
+            Platform.runLater(this::displayQuestion);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void displayQuestion() {
