@@ -47,6 +47,15 @@ public class LeaderboardController {
         playerRanking.setItems(items);
     }
 
+    public void displayLeaderboard(final Leaderboard singlePlayerLeaderboard) {
+        List<String> names = new ArrayList<>();
+        for (Player player : singlePlayerLeaderboard.getRanking()) {
+            names.add(calculateBuffer(player.getNick(), player.getScore()));
+        }
+        ObservableList<String> items = FXCollections.observableArrayList(names);
+        playerRanking.setItems(items);
+    }
+
     // TODO: Make scores align. This should make it align but listView is weird so
     // maybe we can change leaderboard fxml in another issue?
     private String calculateBuffer(final String nick, final int score) {
