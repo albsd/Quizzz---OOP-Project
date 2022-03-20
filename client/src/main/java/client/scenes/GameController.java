@@ -21,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -59,6 +60,12 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     private HBox mainHorizontalBox;
 
+    @FXML
+    private TextField openAnswer;
+
+    @FXML
+    private Label warning;
+
     private final ServerUtils server;
 
     private final FXMLController fxml;
@@ -73,6 +80,10 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private String chatPath;
 
+    private Question currentQuestion;
+
+    private boolean isOpenQuestion;
+    
     private boolean doubleScore = false;
 
     @Inject
@@ -143,8 +154,15 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game = game;
         this.game.initialiseTimer();
         this.chatPath = "/game/" + game.getId() + "/chat";
-
-        displayQuestion();
+        //by default game.fxml set to multiple question mode
+        currentQuestion = game.getCurrentQuestion();
+        isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
+        if (isOpenQuestion) {
+            fxml.changeToFreeMode(openAnswer, option1, option2, option3);
+        }
+        displayQuestion(currentQuestion);
+        // start client timer
+        // progressBar.start();
         game.start(this::setNextQuestion);
     }
 
@@ -181,6 +199,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         long correctAnswer = currentQuestion.getAnswer();
         Button[] options = {option1, option2, option3};
         int option = ArrayUtils.indexOf(options, ((Button) event.getSource()));
+
         int score = 0;
         if (currentQuestion instanceof MultipleChoiceQuestion) {
             if (option == correctAnswer) {
@@ -218,16 +237,23 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
 
         Platform.runLater(() -> {
-            displayQuestion();  
+            currentQuestion = game.getCurrentQuestion();
+//            question.setText(currentQuestion.getPrompt());
+            if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
+                fxml.changeToMultiMode(openAnswer, option1, option2, option3);
+                isOpenQuestion = false;
+            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
+                fxml.changeToFreeMode(openAnswer, option1, option2, option3);
+                isOpenQuestion = true;
+            }
+            displayQuestion(currentQuestion);
         });
-        
         game.start(this::setNextQuestion);
     }
 
-    public void displayQuestion() {
+    private void displayQuestion(final Question currentQuestion) {
         questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
-        question.setText(game.getCurrentQuestion().getPrompt());
-        Question currentQuestion = game.getCurrentQuestion();
+        question.setText(currentQuestion.getPrompt());
         if (currentQuestion instanceof MultipleChoiceQuestion) {
             String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
             option1.setText(options[0]);
