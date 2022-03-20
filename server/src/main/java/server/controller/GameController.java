@@ -159,7 +159,7 @@ public class GameController {
      * @return Player
      */
     @DeleteMapping("/leave/{nick}")
-    public ResponseEntity<Player> leaveCurrentGame(final @PathVariable("nick") String nick) {
+    public ResponseEntity<Player> leaveLobby(final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
@@ -173,7 +173,32 @@ public class GameController {
             return ResponseEntity.status(errorCode).build();
         }
         boolean success = lobby.removePlayer(p);
-        System.out.println(success);
+
+        if (!success) {
+            return ResponseEntity.status(errorCode).build();
+        }
+
+        return ResponseEntity.ok(p);
+    }
+
+    /**
+     * Leave the active game lobby as a Player with id "nick".
+     *
+     * @param nick User's nickname which identifies a given player in a game
+     * @param id   UUID of the game that the player has left
+     * @return Player
+     */
+    @DeleteMapping("/{id}/player/{nick}")
+    public ResponseEntity<Player> leaveGame(final @PathVariable UUID id, final @PathVariable("nick") String nick) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game game = gameService.findById(id);
+        final int errorCode = 403; // FORBIDDEN
+
+        Player p = game.getPlayerByNick(nick);
+        boolean success = game.removePlayer(p);
 
         if (!success) {
             return ResponseEntity.status(errorCode).build();
@@ -254,13 +279,13 @@ public class GameController {
 
 
     @PostMapping("/{id}/score/{nick}")
-    public ResponseEntity<Game> updatePlayerPoints(final @PathVariable UUID id,
+    public ResponseEntity<Game> addPlayerPoints(final @PathVariable UUID id,
             final @PathVariable String nick, final @RequestBody String score) {
         Game game = gameService.findById(id);
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
-        gameService.updatePlayerScore(game, nick, Integer.parseInt(score));
+        gameService.addPlayerScore(game, nick, Integer.parseInt(score));
         return ResponseEntity.ok(game);
     }
 
@@ -285,5 +310,19 @@ public class GameController {
     @SendTo("/topic/game/{id}/update")
     public GameUpdate halveTimeWebsocket() {
         return GameUpdate.halveTimer;
+    }
+
+    /**
+     * A Websocket endpoint for sending updates about the game's player' status.
+     * Namely, updates the active players in the game for all clients.
+     *
+     * @param player The player who has left
+     * 
+     * @return The player object
+     */
+    @MessageMapping("/game/{id}/leave") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/leave
+    @SendTo("/topic/game/{id}/leave")
+    private Player sendPlayerLeft(final Player player) {
+        return player;
     }
 }

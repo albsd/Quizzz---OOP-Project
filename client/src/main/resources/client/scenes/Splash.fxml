@@ -77,6 +77,8 @@
                   </image>
                </ImageView>
             </graphic></Button>
+            <!-- Include the popup at top of everything -->
+            <fx:include fx:id="popup" source="/client/scenes/Popup.fxml" />
         </children>
     </AnchorPane>
 <!--    <ScrollPane prefHeight="200.0" prefWidth="200.0" />-->
