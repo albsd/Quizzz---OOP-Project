@@ -159,7 +159,7 @@ public class GameController {
      * @return Player
      */
     @DeleteMapping("/leave/{nick}")
-    public ResponseEntity<Player> leaveCurrentGame(final @PathVariable("nick") String nick) {
+    public ResponseEntity<Player> leaveLobby(final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
@@ -173,7 +173,6 @@ public class GameController {
             return ResponseEntity.status(errorCode).build();
         }
         boolean success = lobby.removePlayer(p);
-        System.out.println(success);
 
         if (!success) {
             return ResponseEntity.status(errorCode).build();
@@ -200,7 +199,6 @@ public class GameController {
 
         Player p = game.getPlayerByNick(nick);
         boolean success = game.removePlayer(p);
-        System.out.println(success);
 
         if (!success) {
             return ResponseEntity.status(errorCode).build();

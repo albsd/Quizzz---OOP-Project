@@ -161,7 +161,7 @@ public class ServerUtils {
      * @param id    UUID of the game as a String
      * @return      Player that has left the game
      */
-    public Player leaveGame(final String nick, final String id) {
+    public Player leaveGame(final String nick, final UUID id) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/" + id + "/player/" + nick))
                 .DELETE()
@@ -169,7 +169,7 @@ public class ServerUtils {
 
         Player player = parseResponseToObject(request, new TypeReference<Player>() { });
         if (player != null) {
-            send("/app/game/" + id  + "/player", player);
+            send("/app/game/" + id  + "/leave", player);
         }
         return player;
     }

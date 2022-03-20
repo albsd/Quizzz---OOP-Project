@@ -43,7 +43,7 @@ public class PopupController implements Initializable {
         confirmButton.setFont(font);
     }
 
-    public void open( final String what, final Runnable onConfirm) {
+    public void open(final String what, final Runnable onConfirm) {
         menu.setVisible(true);
         this.text.setText("Do you really want to leave the " + what + "?");
         this.onConfirm = onConfirm;

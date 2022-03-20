@@ -273,7 +273,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void openPopup(final ActionEvent e) {
         popupController.open("game", () -> {
-            server.leaveGame(me.getNick(), game.getId().toString());
+            server.leaveGame(me.getNick(), game.getId());
         });
     }
 
