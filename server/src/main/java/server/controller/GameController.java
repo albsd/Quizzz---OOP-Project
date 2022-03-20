@@ -15,7 +15,15 @@
  */
 package server.controller;
 
-import commons.*;
+import commons.Game;
+import commons.Leaderboard;
+import commons.Player;
+import commons.Question;
+import commons.PlayerUpdate;
+import commons.LobbyMessage;
+import commons.LeaderboardMessage;
+import commons.GameUpdate;
+import commons.EmoteMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +58,8 @@ public class GameController {
     private final SinglePlayerService singlePlayerService;
 
     @Autowired
-    public GameController(final GameService gameService, final ActivityService activityService, final SinglePlayerService singlePlayerService) {
+    public GameController(final GameService gameService, final ActivityService activityService,
+                          final SinglePlayerService singlePlayerService) {
         this.gameService = gameService;
         this.activityService = activityService;
         this.singlePlayerService = singlePlayerService;
@@ -284,7 +293,8 @@ public class GameController {
     }
 
     @PostMapping("/join/{nick}/{score}")
-    public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick, final @PathVariable("score") int score) {
+    public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
+                                                                     final @PathVariable("score") int score) {
         if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
         }

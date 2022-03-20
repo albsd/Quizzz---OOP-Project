@@ -3,7 +3,14 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
-import commons.*;
+import commons.EmoteMessage;
+import commons.Game;
+import commons.Player;
+import commons.Question;
+import commons.MultipleChoiceQuestion;
+import commons.FreeResponseQuestion;
+import commons.Leaderboard;
+import commons.Emote;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -201,7 +208,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         if (game.shouldShowLeaderboard()) {
             server.updateScore(game.getId(), me.getNick(), Integer.toString(me.getScore()));
             Platform.runLater(() -> {
-                Leaderboard singlePlayerLeaderboard = server.sendSinglePlayerLeaderboardInfo(this.me.getNick(), this.me.getScore());
+                Leaderboard singlePlayerLeaderboard = server.sendSinglePlayerLeaderboardInfo(this.me.getNick(),
+                        this.me.getScore());
                 var root = fxml.displayLeaderboardMomentarily();
                 var ctrl = root.getKey();
                 ctrl.displayLeaderboard(singlePlayerLeaderboard);

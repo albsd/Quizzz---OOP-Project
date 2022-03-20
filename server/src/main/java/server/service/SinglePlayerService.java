@@ -20,9 +20,9 @@ public class SinglePlayerService {
     }
 
     public List<Player> getAllPlayerInfo() {
-        List<LeaderboardMessage>allSinglePlayers =  singlePlayerRepository.findAll();
+        List<LeaderboardMessage> allSinglePlayers =  singlePlayerRepository.findAll();
         List<Player> players = new ArrayList<>();
-        for(int i = 0; i < allSinglePlayers.size(); i++) {
+        for (int i = 0; i < allSinglePlayers.size(); i++) {
             LeaderboardMessage sl = allSinglePlayers.get(i);
             players.add(new Player(sl.getNick(), sl.getScore()));
         }

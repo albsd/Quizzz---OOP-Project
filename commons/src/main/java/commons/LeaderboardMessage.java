@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.GenerationType;
 
 @Entity
-public class LeaderboardMessage extends Message{
+public class LeaderboardMessage extends Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
@@ -15,7 +15,7 @@ public class LeaderboardMessage extends Message{
     private String nick;
     private int score;
 
-    public LeaderboardMessage(String nick, int score) {
+    public LeaderboardMessage(final String nick, final int score) {
         super(nick, score);
     }
 
@@ -23,7 +23,7 @@ public class LeaderboardMessage extends Message{
         return nick;
     }
 
-    public void setNick(String nick) {
+    public void setNick(final String nick) {
         this.nick = nick;
     }
 
@@ -31,7 +31,7 @@ public class LeaderboardMessage extends Message{
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(final int score) {
         this.score = score;
     }
 }
