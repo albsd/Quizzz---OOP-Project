@@ -27,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 import javax.inject.Inject;
@@ -177,9 +178,9 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     public void checkAnswer(final ActionEvent event) {
         Question currentQuestion = game.getCurrentQuestion();
-        long correctAnswer = game.getCurrentQuestion().getAnswer();
-        String optionStr = ((Button) event.getSource()).getText();
-        int option = Integer.parseInt(optionStr);
+        long correctAnswer = currentQuestion.getAnswer();
+        Button[] options = {option1, option2, option3};
+        int option = ArrayUtils.indexOf(options, ((Button) event.getSource()));
         int score = 0;
         if (currentQuestion instanceof MultipleChoiceQuestion) {
             if (option == correctAnswer) {
@@ -205,7 +206,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void setNextQuestion() {
         game.nextQuestion();
         
-        if (game.shouldShowLeaderboard()) {
+        if (game.shouldShowSingleplayerLeaderboard()) {
             server.updateScore(game.getId(), me.getNick(), Integer.toString(me.getScore()));
             Platform.runLater(() -> {
                 Leaderboard singlePlayerLeaderboard = server.sendSinglePlayerLeaderboardInfo(this.me.getNick(),
