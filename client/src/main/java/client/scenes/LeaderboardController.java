@@ -65,25 +65,6 @@ public class LeaderboardController implements Initializable {
         fxml.showSplash();
     }
 
-    @FXML
-    protected void onReturnButtonClick(final ActionEvent e) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Confirmation Screen");
-        alert.setHeaderText("Confirmation needed!");
-        alert.setContentText("You are about to leave to the main screen. Are you sure?");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.YES) {
-            backToSplash(e);
-        } else {
-            switchToLeaderboard(e);
-        }
-    }
-
-    @FXML
-    public void switchToLeaderboard(final ActionEvent e) {
-        fxml.showLeaderboard();
-    }
-
     public void displayLeaderboard(final UUID id, final Player me) {
         nick.setText(me.getNick());
         score.setText(Integer.toString(me.getScore()));
