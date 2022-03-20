@@ -243,6 +243,23 @@ public class GameController {
         gameService.newGame(activityService.getQuestionList());
         return ResponseEntity.ok(lobby);
     }
+    
+    @PostMapping("/leaderboard/{nick}/{score}")
+    public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
+                                                                     final @PathVariable("score") int score) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        LeaderboardMessage leaderboardMessage = new LeaderboardMessage(nick, score);
+        leaderboardService.addPlayerToLeaderboard(leaderboardMessage);
+        return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
+    }
+
+    @GetMapping("/leaderboard")
+    public ResponseEntity<Leaderboard> getSinglePlayerLeaderboard() {
+        return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
+    }
 
     /**
      * A Websocket endpoint for starting the lobby.
@@ -290,22 +307,5 @@ public class GameController {
     @SendTo("/topic/game/{id}/update")
     public GameUpdate halveTimeWebsocket() {
         return GameUpdate.halveTimer;
-    }
-
-    @PostMapping("/leaderboard/{nick}/{score}")
-    public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
-                                                                     final @PathVariable("score") int score) {
-        if (nick == null || nick.isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        LeaderboardMessage leaderboardMessage = new LeaderboardMessage(nick, score);
-        leaderboardService.addPlayerToLeaderboard(leaderboardMessage);
-        return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
-    }
-
-    @GetMapping("/leaderboard")
-    public ResponseEntity<Leaderboard> getSinglePlayerLeaderboard() {
-        return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
     }
 }
