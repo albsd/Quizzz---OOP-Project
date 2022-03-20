@@ -85,11 +85,15 @@ public class GameController implements Initializable, WebSocketSubscription {
     
     private boolean doubleScore = false;
 
-    private final String green = "#66ff66";
+    private final String green = "#E0FCCF";
 
-    private final String red = "#ff0000";
+    private final String red = "#FE6F5B";
 
     private final String orange = "#FFD029";
+
+    private final String darkGreen = "#009a19";
+
+    private final String darkRed = "#A00000";
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml,
@@ -211,9 +215,9 @@ public class GameController implements Initializable, WebSocketSubscription {
             chosenOption.setStyle("-fx-border-color: black;");
             for (int i = 0; i < options.length; i++) {
                 if (i == correctAnswer) {
-                    options[i].setStyle("-fx-background-color:" + green + ";");
+                    options[i].setStyle("-fx-background-color:" + green + ";\n-fx-text-fill:" + darkGreen + ";");
                 } else {
-                    options[i].setStyle("-fx-background-color:" + red + ";");
+                    options[i].setStyle("-fx-background-color:" + red + ";\n-fx-text-fill:" + darkRed + ";");
                 }
             }
             if (option == correctAnswer) {
