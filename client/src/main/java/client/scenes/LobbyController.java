@@ -157,7 +157,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void openPopup(final ActionEvent event) {
-        popupController.open(() -> {
+        popupController.open("lobby", () -> {
             server.leaveLobby(me.getNick());
             fxml.showSplash();
         });

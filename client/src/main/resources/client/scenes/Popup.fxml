@@ -18,7 +18,7 @@
                   <Font size="24.0" />
                </font>
             </Button>
-            <Label fx:id="text" alignment="CENTER" layoutY="27.0" prefHeight="35.0" prefWidth="804.0" text="Do you really want to leave the lobby?" wrapText="true">
+            <Label fx:id="text" alignment="CENTER" layoutY="27.0" prefHeight="35.0" prefWidth="804.0" wrapText="true">
                <font>
                   <Font size="24.0" />
                </font>
