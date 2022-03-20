@@ -303,4 +303,9 @@ public class GameController {
         leaderboardService.addPlayerToLeaderboard(leaderboardMessage);
         return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
     }
+
+    @GetMapping("/leaderboard")
+    public ResponseEntity<Leaderboard> getSinglePlayerLeaderboard() {
+        return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
+    }
 }
