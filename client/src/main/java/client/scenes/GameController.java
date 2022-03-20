@@ -31,7 +31,6 @@ import javafx.scene.text.Font;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -166,8 +165,14 @@ public class GameController implements Initializable, WebSocketSubscription {
         game.start(this::setNextQuestion);
     }
 
-    public void setSinglePlayer(final Player me) {
-        this.me = me;
+    public void setSinglePlayer(final Game game) {
+        this.me = game.getPlayers().get(0); // only 1 player
+        this.game = game;
+        this.game.initialiseTimer();
+        
+        questionNumber.setText("#" + game.getCurrentQuestionNumber());
+        game.start(this::setNextQuestion);
+
         leftBox.getChildren().remove(1);
         mainHorizontalBox.getChildren().remove(3, 5);
         optionBox.setAlignment(Pos.CENTER);
@@ -216,12 +221,13 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void setNextQuestion() {
         game.nextQuestion();
-        if ((game.getCurrentQuestionIndex()) % 10 == 0) {
+        
+        if (game.shouldShowLeaderboard()) {
             server.updateScore(game.getId(), me.getNick(), Integer.toString(me.getScore()));
             Platform.runLater(() -> {
                 var root = fxml.displayLeaderboardMomentarily();
-                LeaderboardController leaderboardController = root.getKey();
-                leaderboardController.displayLeaderboard(this.game.getId());
+                var ctrl = root.getKey();
+                ctrl.displayLeaderboard(game.getId());
             });
         }
 
@@ -251,7 +257,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
     }
 
-    public void openPopup(final ActionEvent e) throws IOException {
+    @FXML
+    public void openPopup(final ActionEvent e) {
         popupMenu.setVisible(true);
     }
 

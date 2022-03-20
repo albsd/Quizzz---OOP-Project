@@ -122,10 +122,10 @@ public class FXMLController {
         return root;
     }
 
-    public Pair<GameController, Parent> showSinglePlayer(final Player me) {
+    public Pair<GameController, Parent> showSinglePlayer(final Game game) {
         var root = displayScene(GameController.class);
         var ctrl = root.getKey();
-        ctrl.setSinglePlayer(me);
+        ctrl.setSinglePlayer(game);
         subscribe(GameController.class);
         return root;
     }

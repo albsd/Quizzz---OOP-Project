@@ -23,6 +23,7 @@ import commons.Player;
 import commons.PlayerUpdate;
 import commons.LobbyMessage;
 import commons.Question;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +69,17 @@ public class GameController {
     @GetMapping(path = { "", "/" })
     public List<Game> getAll() {
         return gameService.getAll();
+    }
+
+    /**
+     * Creates a game for a singleplayer game.
+     *
+     * @param nick Name of the player who started a singleplayer game
+     * @return Game object for singleplayer
+     */
+    @PostMapping("/single/{nick}")
+    public Game createGame(final @PathVariable String nick) {
+        return gameService.createSingleplayer(nick, activityService.getQuestionList());
     }
 
     /**
