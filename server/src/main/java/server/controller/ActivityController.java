@@ -1,11 +1,18 @@
 package server.controller;
 
 import commons.Activity;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import server.service.ActivityService;
-
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -23,13 +30,13 @@ public class ActivityController {
     }
 
     /**
-     * Adds the activity in the activity repo in the request body.
+     * Gets all the activities currently inside the database.
      *
-     * @return the activity that was added
+     * @return all activities
      */
     @GetMapping(path = {"", "/"})
-    public List<Activity> getAllActivity() {
-        return activityService.getActivities();
+    public List<Activity> getAllActivity() throws FileNotFoundException, ParseException {
+        return activityService.getAllActivities();
     }
 
     /**
@@ -53,5 +60,4 @@ public class ActivityController {
     public ResponseEntity<Activity> deleteActivity(final @PathVariable Long id) {
         return ResponseEntity.ok(activityService.deleteActivity(id));
     }
-
 }

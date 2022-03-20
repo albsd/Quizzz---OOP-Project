@@ -26,29 +26,29 @@ class ActivityTest {
     }
     @Test
     void getNumberMultipleChoiceQuestion() {
-        MultipleChoiceQuestion actual = activity.getNumberMultipleChoiceQuestion();
+        MultipleChoiceQuestion actual = activity.getNumberMultipleChoiceQuestion(new byte[2]);
         actual.setOptions(choices);
         MultipleChoiceQuestion expected = new MultipleChoiceQuestion("How much energy does "
-                + activity.getTitle() + " take in watt hours?", "path1", choices, actual.getAnswer());
+                + activity.getTitle() + " take in watt hours?", new byte[2], choices, actual.getAnswer());
         assertEquals(actual, expected);
     }
 
     @Test
     void getActivityMultipleChoiceQuestion() {
-        MultipleChoiceQuestion actual = activity.getActivityMultipleChoiceQuestion(activityChoices);
+        MultipleChoiceQuestion actual = activity.getActivityMultipleChoiceQuestion(activityChoices, new byte[2]);
         MultipleChoiceQuestion expected = new MultipleChoiceQuestion(
                 "Which of the following activities take the most energy",
-                "path1", (String[]) activity.getMultipleActivitiesOptions(activityChoices),
+                new byte[2], (String[]) activity.getMultipleActivitiesOptions(activityChoices),
                 activity.getMultipleActivitiesAnswerIndex(activityChoices));
         assertEquals(actual, expected);
     }
 
     @Test
     void getFreeResponseQuestion() {
-        FreeResponseQuestion actual = activity.getFreeResponseQuestion();
+        FreeResponseQuestion actual = activity.getFreeResponseQuestion(new byte[2]);
         FreeResponseQuestion expected = new FreeResponseQuestion(
                 "How much energy does " + activity.getTitle() + " take in watt hours?",
-                "path1", activity.getEnergyConsumption());
+                new byte[2], activity.getEnergyConsumption());
         assertEquals(actual, expected);
     }
 }

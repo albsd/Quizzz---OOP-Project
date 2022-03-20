@@ -10,9 +10,9 @@ public class MultipleChoiceQuestion extends Question {
     @JsonProperty("options")
     private String[] options;
 
-    public MultipleChoiceQuestion(final String prompt, final String path,
+    public MultipleChoiceQuestion(final String prompt, final byte[] image,
                                   final String[] options, final long answer) {
-        super(prompt, answer, path);
+        super(prompt, answer, image);
         this.options = options;
     }
     public String[] getOptions() {

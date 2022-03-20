@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -16,19 +17,16 @@ public abstract class Question {
     @JsonProperty("answer")
     private long answer;
 
-    @JsonProperty("image_path")
-    private String path;
-
     @JsonProperty("image")
     private byte[] image;
 
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
                     final @JsonProperty("answer") long answer,
-                    final @JsonProperty("image_path") String path) {
+                    final @JsonProperty("image") byte[] image) {
         this.prompt = prompt;
         this.answer = answer;
-        this.path = path;
+        this.image = image;
     }
 
     public Question() {
@@ -36,10 +34,6 @@ public abstract class Question {
 
     public String getPrompt() {
         return this.prompt;
-    }
-
-    public String getPath() {
-        return this.path;
     }
 
     public long getAnswer() {
@@ -54,21 +48,19 @@ public abstract class Question {
         return image;
     }
 
-    public void setImage(final byte[] image) {
-        this.image = image;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question question = (Question) o;
         return answer == question.answer && Objects.equals(prompt, question.prompt)
-                && Objects.equals(path, question.path);
+                && Arrays.equals(image, question.image);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(prompt, answer, path);
+        int result = Objects.hash(prompt, answer);
+        result = 31 * result + Arrays.hashCode(image);
+        return result;
     }
 }

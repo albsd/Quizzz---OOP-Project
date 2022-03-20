@@ -3,8 +3,11 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.ArrayUtils;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -38,18 +41,19 @@ public class Activity {
         this.path = path;
     }
 
-    public MultipleChoiceQuestion getNumberMultipleChoiceQuestion() {
+    public MultipleChoiceQuestion getNumberMultipleChoiceQuestion(final byte[] image) {
         String prompt = "How much energy does " + title + " take in watt hours?";
         String[] choices = generateChoices(energyConsumption);
-        return new MultipleChoiceQuestion(prompt, "path1", choices,
+        return new MultipleChoiceQuestion(prompt, image, choices,
                 ArrayUtils.indexOf(choices, Long.toString(energyConsumption)));
     }
 
-    public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(final List<Activity> answerOptions) {
+    public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(
+            final List<Activity> answerOptions, final byte[] image) {
         String prompt = "Which of the following activities take the most energy";
         String[] options = this.getMultipleActivitiesOptions(answerOptions);
 
-        return new MultipleChoiceQuestion(prompt, "path2", options,
+        return new MultipleChoiceQuestion(prompt, image, options,
                  this.getMultipleActivitiesAnswerIndex(answerOptions));
     }
 
@@ -79,9 +83,9 @@ public class Activity {
 
     }
 
-    public FreeResponseQuestion getFreeResponseQuestion() {
+    public FreeResponseQuestion getFreeResponseQuestion(final byte[] image) {
         String prompt = "How much energy does " + title + " take in watt hours?";
-        return new FreeResponseQuestion(prompt, "path2", energyConsumption);
+        return new FreeResponseQuestion(prompt, image, energyConsumption);
     }
 
     @Override
