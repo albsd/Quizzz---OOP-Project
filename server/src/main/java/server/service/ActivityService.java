@@ -136,9 +136,9 @@ public class ActivityService {
 
     private byte[] generateImageByteArray(final String imagePath) {
         //example of image path
-        //"/resources/images/title.jpg";
+        ///server/src/main/resources/activities/00/fridge.png
         File file = new File(imagePath);
-        String extension = imagePath.substring(imagePath.lastIndexOf('.') + imagePath.length());
+        String extension = imagePath.substring(imagePath.lastIndexOf('.') + 1);
         try {
             BufferedImage bImage = ImageIO.read(file);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
