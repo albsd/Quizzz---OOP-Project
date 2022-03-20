@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+
+//temporary file to push new activity records into database
 @Configuration
 public class ActConfig {
     @Bean

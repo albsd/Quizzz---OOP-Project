@@ -3,15 +3,16 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.ArrayUtils;
+
+import javax.imageio.ImageIO;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.*;
 
 @Entity
 public class Activity {
@@ -27,27 +28,25 @@ public class Activity {
     @Column(length = 500)
     @JsonProperty("source")
     private String source;
-    @Column(length = 8000)
-    @JsonProperty
-    private byte[] imageBytes;
+    @JsonProperty("image_location")
+    private String path;
 
     public Activity() {
 
     }
     @JsonCreator
     public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption,
-                    @JsonProperty final String source, @JsonProperty final byte[] imageBytes) {
+                    @JsonProperty final String source, @JsonProperty final String path) {
         this.title = title;
         this.energyConsumption = energyConsumption;
         this.source = source;
-        this.imageBytes = imageBytes;
+        this.path = path;
     }
 
     public MultipleChoiceQuestion getNumberMultipleChoiceQuestion() {
         String prompt = "How much energy does " + title + " take in watt hours?";
         String[] choices = generateChoices(energyConsumption);
-
-        return new MultipleChoiceQuestion(prompt, imageBytes, choices,
+        return new MultipleChoiceQuestion(prompt, imageToByteArray(), choices,
                 ArrayUtils.indexOf(choices, Long.toString(energyConsumption)));
     }
 
@@ -88,7 +87,7 @@ public class Activity {
 
     public FreeResponseQuestion getFreeResponseQuestion() {
         String prompt = "How much energy does " + title + " take in watt hours?";
-        return new FreeResponseQuestion(prompt, imageBytes, energyConsumption);
+        return new FreeResponseQuestion(prompt, imageToByteArray(), energyConsumption);
     }
 
     @Override
@@ -97,13 +96,13 @@ public class Activity {
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
         return energyConsumption == activity.energyConsumption && Objects.equals(title, activity.title)
-                && Objects.equals(source, activity.source) && Arrays.equals(imageBytes, activity.imageBytes);
+                && Objects.equals(source, activity.source);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(title, energyConsumption, source);
-        result = 31 * result + Arrays.hashCode(imageBytes);
+        result = 31 * result;
         return result;
     }
 
@@ -152,11 +151,16 @@ public class Activity {
         this.source = source;
     }
 
-    public byte[] getImageBytes() {
-        return imageBytes;
-    }
-
-    public void setImageBytes(final byte[] imageBytes) {
-        this.imageBytes = imageBytes;
+    private byte[] imageToByteArray() {
+        File file = new File(path);
+        String extension = path.substring(path.lastIndexOf('.') + path.length());
+        try {
+            BufferedImage bImage = ImageIO.read(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ImageIO.write(bImage, extension, bos);
+            return bos.toByteArray();
+        } catch (IOException e) {
+            System.out.println("something went wrong");
+        }
     }
 }
