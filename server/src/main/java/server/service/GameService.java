@@ -23,7 +23,7 @@ public class GameService {
     }
 
     public void initializeLobby(final List<Question> questions) {
-        this.lobby = new Game(UUID.randomUUID(), questions);
+        this.lobby = new Game(UUID.randomUUID(), questions, true);
     }
 
     public Game createSingleplayer(final String nick, final List<Question> questions) {
@@ -55,7 +55,7 @@ public class GameService {
      */
     public Game newGame(final List<Question> questions) {
         repo.addGame(lobby);
-        lobby = new Game(UUID.randomUUID(), questions);
+        lobby = new Game(UUID.randomUUID(), questions, true);
         return lobby;
     }
 

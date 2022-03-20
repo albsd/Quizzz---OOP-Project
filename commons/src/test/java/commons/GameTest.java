@@ -20,7 +20,7 @@ public class GameTest {
                 new Player("test1"),
                 new Player("test2"),
                 new Player("test3")});
-        g = new Game(UUID.randomUUID(), null);
+        g = new Game(UUID.randomUUID(), null, true);
         for (Player player : p) g.addPlayer(player);
     }
 

@@ -16,14 +16,14 @@
 package server.controller;
 
 import commons.Game;
-import commons.EmoteMessage;
-import commons.GameUpdate;
 import commons.Leaderboard;
 import commons.Player;
+import commons.Question;
 import commons.PlayerUpdate;
 import commons.LobbyMessage;
-import commons.Question;
-
+import commons.GameResult;
+import commons.GameUpdate;
+import commons.EmoteMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +42,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import server.service.ActivityService;
 import server.service.GameService;
+import server.service.LeaderboardService;
 
 import java.util.List;
 import java.util.UUID;
@@ -54,10 +55,14 @@ public class GameController {
 
     private final ActivityService activityService;
 
+    private final LeaderboardService leaderboardService;
+
     @Autowired
-    public GameController(final GameService gameService, final ActivityService activityService) {
+    public GameController(final GameService gameService, final ActivityService activityService,
+                          final LeaderboardService leaderboardService) {
         this.gameService = gameService;
         this.activityService = activityService;
+        this.leaderboardService = leaderboardService;
         gameService.initializeLobby(activityService.getQuestionList());
     }
 
@@ -262,6 +267,23 @@ public class GameController {
         Game lobby = gameService.getCurrentGame();
         gameService.newGame(activityService.getQuestionList());
         return ResponseEntity.ok(lobby);
+    }
+
+    @PostMapping("/leaderboard/{nick}/{score}")
+    public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
+                                                                     final @PathVariable("score") int score) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        GameResult gameResult = new GameResult(nick, score);
+        leaderboardService.addPlayerToLeaderboard(gameResult);
+        return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
+    }
+
+    @GetMapping("/leaderboard")
+    public ResponseEntity<Leaderboard> getSinglePlayerLeaderboard() {
+        return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
     }
 
     /**
