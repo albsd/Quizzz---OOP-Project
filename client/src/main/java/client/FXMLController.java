@@ -143,7 +143,7 @@ public class FXMLController {
 
     public void changeToMultiMode(final TextField openAnswer, final Button option1,
                                   final Button option2, final Button option3) {
-        openAnswer.toBack();
+        openAnswer.toFront();
         openAnswer.setVisible(false);
         option1.setVisible(true);
         option2.setVisible(true);
@@ -152,7 +152,7 @@ public class FXMLController {
 
     public void changeToFreeMode(final TextField openAnswer, final Button option1,
                                  final Button option2, final Button option3) {
-        openAnswer.toFront();
+        openAnswer.toBack();
         openAnswer.setVisible(true);
         option1.setVisible(false);
         option2.setVisible(false);
