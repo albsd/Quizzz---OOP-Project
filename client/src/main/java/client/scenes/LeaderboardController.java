@@ -60,7 +60,7 @@ public class LeaderboardController {
     }
 
     public void displayLeaderboard(final UUID id) {
-        Leaderboard leaderboard = server.getLeaderboard(id.toString());
+        Leaderboard leaderboard = server.getLeaderboard(id);
         List<String> names = new ArrayList<>();
         for (Player player : leaderboard.getRanking()) {
             names.add(calculateBuffer(player.getNick(), player.getScore()));

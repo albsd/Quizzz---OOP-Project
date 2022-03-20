@@ -26,6 +26,14 @@ public class GameService {
         this.lobby = new Game(UUID.randomUUID(), questions);
     }
 
+    public Game createSingleplayer(final String nick, final List<Question> questions) {
+        return repo.createSingleplayer(nick, questions);
+    }
+
+    public UUID addGame(final Game game) {
+        return repo.addGame(game);
+    }
+
     public boolean deleteGame(final UUID id) {
         return repo.removeGame(id);
     }

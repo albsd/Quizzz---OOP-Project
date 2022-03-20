@@ -19,6 +19,8 @@ package server.repository;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
+import commons.Question;
+
 import org.springframework.stereotype.Repository;
 import java.util.HashSet;
 import java.util.Optional;
@@ -49,6 +51,12 @@ public class GameRepository {
             return null;
         }
         return optional.get();
+    }
+    
+    public Game createSingleplayer(final String nick, final List<Question> questions) {
+        Game single = new Game(UUID.randomUUID(), questions);
+        single.setSinglePlayer(new Player(nick));
+        return single;
     }
 
     public UUID addGame(final Game game) {
