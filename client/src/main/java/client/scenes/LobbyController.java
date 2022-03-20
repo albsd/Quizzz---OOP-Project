@@ -11,16 +11,14 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ButtonType;
 
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -50,6 +48,12 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     private Label playerCount;
+    
+    @FXML
+    private Parent popup;
+
+    @FXML
+    private PopupController popupController; 
 
     private final ServerUtils server;
     
@@ -152,21 +156,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     }
 
     @FXML
-    public void onReturnButtonClick(final ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Confirmation Screen");
-        alert.setHeaderText("Confirmation needed!");
-        alert.setContentText("You are about to leave the lobby. Are you sure?");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.YES) {
-            returnToMenu(event);
-        }
-    }
-
-    @FXML
-    public void returnToMenu(final ActionEvent event) {
-        server.leaveGame(me.getNick());
-        fxml.showSplash();
+    public void openPopup(final ActionEvent event) {
+        popupController.open("lobby", () -> {
+            server.leaveLobby(me.getNick());
+            fxml.showSplash();
+        });
     }
 
     @FXML

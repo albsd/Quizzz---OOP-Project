@@ -7,6 +7,7 @@ import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -23,6 +24,12 @@ public class SplashController {
 
     @FXML
     private Label title;
+    
+    @FXML
+    private Parent popup;
+
+    @FXML
+    private PopupController popupController; 
 
     public final Color red = new Color(0.8, 0, 0, 1);
     public final Color green = new Color(0, 0.6, 0, 1);
@@ -44,7 +51,9 @@ public class SplashController {
 
     @FXML
     public void exitApp(final ActionEvent event) {
-        Platform.exit();
+        popupController.open("app", () -> {
+            Platform.exit();
+        });
     }
 
     private boolean validateNickname(final String user) {

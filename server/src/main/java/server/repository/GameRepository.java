@@ -83,8 +83,8 @@ public class GameRepository {
         return leaderboard;
     }
 
-    public void updatePlayerScore(final Game game, final String nick, final int score) {
+    public void addPlayerScore(final Game game, final String nick, final int score) {
         Player player = game.getPlayerByNick(nick);
-        player.setScore(score);
+        player.addScore(score);
     }
 }

@@ -141,7 +141,7 @@ public class ServerUtils {
      * @param nick  String of the user nickname
      * @return      Player that has left the game
      */
-    public Player leaveGame(final String nick) {
+    public Player leaveLobby(final String nick) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/leave/" + nick))
                 .DELETE()
@@ -150,6 +150,26 @@ public class ServerUtils {
         Player player = parseResponseToObject(request, new TypeReference<Player>() { });
         if (player != null) {
             send("/app/update/player", new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
+        }
+        return player;
+    }
+
+    /**
+     * Calls the REST endpoint to leave the current active lobby.
+     *
+     * @param nick  String of the user nickname
+     * @param id    UUID of the game as a String
+     * @return      Player that has left the game
+     */
+    public Player leaveGame(final String nick, final UUID id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/" + id + "/player/" + nick))
+                .DELETE()
+                .build();
+
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player != null) {
+            send("/app/game/" + id  + "/leave", player);
         }
         return player;
     }
@@ -222,20 +242,18 @@ public class ServerUtils {
     }
 
     /**
-     * Updates player score on server side every 10 questions for leaderboard.
+     * Updates player score.
      * @param id game id to find game
      * @param nick name of player
      * @param score score of player
-     * @return The game that was used to update with
      */
-    public Game updateScore(final UUID id, final String nick, final String score) {
+    public void addScore(final UUID id, final String nick, final int score) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/" + id + "/score/" + nick))
                 .header("accept", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(score))
+                .POST(HttpRequest.BodyPublishers.ofString(Integer.toString(score)))
                 .build();
-        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
-        return game;
+        parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
     /**

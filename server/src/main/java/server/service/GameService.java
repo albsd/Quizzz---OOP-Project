@@ -67,7 +67,7 @@ public class GameService {
         return repo.getLeaderboard(id);
     }
 
-    public void updatePlayerScore(final Game game, final String nick, final int score) {
-        repo.updatePlayerScore(game, nick, score);
+    public void addPlayerScore(final Game game, final String nick, final int score) {
+        repo.addPlayerScore(game, nick, score);
     }
 }

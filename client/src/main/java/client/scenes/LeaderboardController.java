@@ -7,13 +7,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -36,27 +33,8 @@ public class LeaderboardController {
     }
 
     @FXML
-    protected void onConfirmButtonClick(final ActionEvent e) {
+    public void backToSplash(final ActionEvent e) {
         fxml.showSplash();
-    }
-
-    @FXML
-    protected void onReturnButtonClick(final ActionEvent e) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Confirmation Screen");
-        alert.setHeaderText("Confirmation needed!");
-        alert.setContentText("You are about to leave to the main screen. Are you sure?");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.YES) {
-            onConfirmButtonClick(e);
-        } else {
-            switchToLeaderboard(e);
-        }
-    }
-
-    @FXML
-    public void switchToLeaderboard(final ActionEvent e) {
-        fxml.showLeaderboard();
     }
 
     public void displayLeaderboard(final UUID id) {
