@@ -78,21 +78,10 @@ public class ActivityService {
         Collections.shuffle(copy);
         return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
     }
+
     public Activity addActivity(final Activity activity) {
         return activityRepository.saveAndFlush(activity);
     }
-
-//    public Activity addActivity(final Activity activity) {
-//        Optional<Activity> optionalAct = activityRepository.findTopByOrderByIdDesc();
-//        long id;
-//        if (optionalAct.isEmpty()) {
-//            id = 1L;
-//        } else {
-//            id = optionalAct.get().getId() + 1;
-//        }
-//        activity.setId(id);
-//        return activityRepository.saveAndFlush(activity);
-//    }
 
     public Activity deleteActivity(final Long id) {
         Optional<Activity> activity = activityRepository.findById(id);

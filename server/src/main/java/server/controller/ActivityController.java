@@ -3,13 +3,10 @@ package server.controller;
 import commons.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import server.service.ActivityService;
+
+import java.util.List;
 
 /**
  * Endpoint to configure Activity repository.
@@ -23,6 +20,16 @@ public class ActivityController {
     @Autowired
     public ActivityController(final ActivityService activityService) {
         this.activityService = activityService;
+    }
+
+    /**
+     * Adds the activity in the activity repo in the request body.
+     *
+     * @return the activity that was added
+     */
+    @GetMapping(path = {"", "/"})
+    public List<Activity> getAllActivity() {
+        return activityService.getActivities();
     }
 
     /**
@@ -46,4 +53,5 @@ public class ActivityController {
     public ResponseEntity<Activity> deleteActivity(final @PathVariable Long id) {
         return ResponseEntity.ok(activityService.deleteActivity(id));
     }
+
 }

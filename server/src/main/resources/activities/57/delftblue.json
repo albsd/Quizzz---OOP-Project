@@ -1,0 +1,5 @@
+{
+    "title": "Running DelftBlue at 100% load for an hour on a cold day",
+    "consumption_in_wh": 360000,
+    "source": "https://www.tudelft.nl/en/dhpc/system"
+}

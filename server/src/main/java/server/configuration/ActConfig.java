@@ -18,14 +18,15 @@ import java.util.List;
 
 
 //temporary file to push new activity records into database
-@Configuration
+//@Configuration
 public class ActConfig {
-    @Bean
+//    @Bean
     CommandLineRunner commandLineRunner(final ActivityService activityService,
                                         final ActivityRepository activityRepository) {
         return args -> {
-            List<File> f = getFiles(".json", new File("C:\\Users\\pkcho\\Desktop\\repository-template\\commons\\src\\main\\resources\\activity-bank\\activities"));
-            for (int i = 0; i < 2; i++) {
+            //change path to relative
+            List<File> f = getFiles(".json", new File("C:/Users/pkcho/Desktop/repository-template/server/src/main/resources/activities"));
+            for (int i = 0; i < f.size(); i++) {
                 File fl = f.get(i);
                 FileReader fileStream = new FileReader(fl);
                 BufferedReader bufferedReader = new BufferedReader(fileStream);
@@ -33,35 +34,25 @@ public class ActConfig {
                 Object obj = jsonParser.parse();
                 LinkedHashMap list = (LinkedHashMap) obj;
                 String str = fl.getName();
-                System.out.println(str);
-                String extension = "png";
-                File file = find("C:\\Users\\pkcho\\Desktop\\repository-template\\commons\\src\\main\\resources\\activity-bank\\activities",
+                File file = find("C:/Users/pkcho/Desktop/repository-template/server/src/main/resources/activities",
                         str.substring(0, str.lastIndexOf('.')) + ".png");
                 if (file == null) {
-                    System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpeg");
-                    file = find("C:\\Users\\pkcho\\Desktop\\repository-template\\commons\\src\\main\\resources\\activity-bank\\activities",
+                    file = find("C:/Users/pkcho/Desktop/repository-template/server/src/main/resources/activities",
                             str.substring(0, str.lastIndexOf('.')) + ".jpeg");
-                    extension = "jpeg";
                 }
                 if (file == null) {
-                    System.out.println(str.substring(0, str.lastIndexOf('.')) + ".jpg");
-                    file = find("C:\\Users\\pkcho\\Desktop\\repository-template\\commons\\src\\main\\resources\\activity-bank\\activities",
+                    file = find("C:/Users/pkcho/Desktop/repository-template/server/src/main/resources/activities",
                             str.substring(0, str.lastIndexOf('.')) + ".jpg");
-                    extension = "jpg";
                 }
                 String title = list.get("title").toString();
-                BigInteger bigvolt = (BigInteger) list.get("consumption_in_wh");
-                long volt = bigvolt.longValue();
+                long wattHours = ((BigInteger) list.get("consumption_in_wh")).longValue();
                 String source = list.get("source").toString();
 
-                //check if accurate
-                String path = file.getPath();
-//                String path = getClass().getClassLoader().getResource(title + "." + extension).getPath();
-                System.out.println(path);
-
-                Activity activity = new Activity(title, volt, source, path);
-                activity.setId(i + 1L);
-                activityService.addActivity(activity);
+                //example:
+                // /resources/activities/00/fridge.png
+                String path = file.getPath().replaceAll("\\\\", "/");
+                String realPath = path.substring(path.lastIndexOf("/resources"));
+                activityService.addActivity(new Activity(title, wattHours, source, realPath));
 //            Activity activity = activityRepository.findTopByOrderByIdDesc().get();
 //            System.out.println(activity.getId());
 //            System.out.println(activity.getTitle());

@@ -1,0 +1,5 @@
+{
+    "title": "Energy consumption of 1 ethereum transaction, using proof of work",
+    "consumption_in_wh": 238000,
+    "source": "https://www.statista.com/statistics/1265891/ethereum-energy-consumption-transaction-comparison-visa/"
+}
