@@ -279,4 +279,15 @@ public class ServerUtils {
         }
         return null;
     }
+
+    //TODO: Call this method when single player game ends
+    public Leaderboard sendSinglePlayerLeaderboardInfo(final String nick, final int score) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/leaderboard/" + nick + "/" + score))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        Leaderboard leaderboard = parseResponseToObject(request, new TypeReference<Leaderboard>() { });
+        return leaderboard;
+    }
 }

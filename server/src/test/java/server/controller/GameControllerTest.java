@@ -23,6 +23,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import commons.Activity;
 import commons.Game;
+import commons.GameResult;
 import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,10 +31,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import server.repository.LeaderboardRepository;
 import server.service.ActivityService;
 import server.repository.ActivityRepository;
 import server.repository.GameRepository;
 import server.service.GameService;
+import server.service.LeaderboardService;
 
 
 import java.util.List;
@@ -52,6 +55,11 @@ public class GameControllerTest {
 
     private List<Activity> activities = List.of(new Activity());
 
+    @Mock
+    LeaderboardRepository leaderboardRepository;
+
+    private List<GameResult> gameResults = List.of(new GameResult("nick", 0));
+
     private String nick;
 
     private int score;
@@ -62,11 +70,15 @@ public class GameControllerTest {
         when(activityRepository.count()).thenReturn(100L);
         when(activityRepository.findAll()).thenReturn(activities);
 
+        MockitoAnnotations.openMocks(this);
+        when(leaderboardRepository.findAll()).thenReturn(gameResults);
+
         GameService service =  new GameService(new GameRepository());
         ActivityService activityService = new ActivityService(activityRepository);
+        LeaderboardService leaderboardService = new LeaderboardService(leaderboardRepository);
         service.initializeLobby(activityService.getQuestionList());
 
-        ctrl = new GameController(service, activityService);
+        ctrl = new GameController(service, activityService, leaderboardService);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
         game = service.getCurrentGame();

@@ -28,12 +28,12 @@ public class Game {
     @JsonProperty("isMultiplayer")
     private boolean isMultiplayer;
 
-    public Game(final UUID id, final List<Question> questions) {
+    public Game(final UUID id, final List<Question> questions, final boolean isMultiplayer) {
         this.id = id;
         this.players = new ArrayList<>();
         this.questions = questions;
         this.currentQuestion = 0;
-        this.isMultiplayer = true;
+        this.isMultiplayer = isMultiplayer;
     }
 
     @JsonCreator
@@ -60,15 +60,15 @@ public class Game {
     public boolean getIsMultiplayer() {
         return this.isMultiplayer;
     }
-    
-    public void setSinglePlayer(final Player p) {
-        addPlayer(p);
-        isMultiplayer = false;
+
+    @JsonIgnore
+    public boolean shouldShowMultiplayerLeaderboard() {
+        return (isMultiplayer && currentQuestion % 10 == 0);
     }
 
     @JsonIgnore
-    public boolean shouldShowLeaderboard() {
-        return isMultiplayer && currentQuestion % 10 == 0;
+    public boolean shouldShowSingleplayerLeaderboard() {
+        return (!isMultiplayer && currentQuestion == 20);
     }
 
     @JsonIgnore

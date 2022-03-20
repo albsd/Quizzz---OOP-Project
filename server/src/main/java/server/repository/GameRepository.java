@@ -54,9 +54,9 @@ public class GameRepository {
     }
     
     public Game createSingleplayer(final String nick, final List<Question> questions) {
-        Game single = new Game(UUID.randomUUID(), questions);
-        single.setSinglePlayer(new Player(nick));
-        return single;
+        Game game = new Game(UUID.randomUUID(), questions, false);
+        game.addPlayer(new Player(nick));
+        return game;
     }
 
     public UUID addGame(final Game game) {
