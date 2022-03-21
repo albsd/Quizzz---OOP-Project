@@ -38,7 +38,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -175,20 +174,18 @@ public class ServerUtils {
     }
 
     /**
-     * Calls the REST endpoint to get list of all players in the lobby.
+     * Calls the REST endpoint to get current lobby game object.
      *
      * @return List of players in a lobby
      */
-    public List<Player> getLobbyPlayers() {
+    public Game getLobby() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/current"))
                 .header("accept", "application/json")
                 .GET()
                 .build();
 
-        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
-        if (game == null) return null;
-        return game.getPlayers();
+        return parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
     /**
@@ -224,28 +221,18 @@ public class ServerUtils {
 
     /**
      * Calls the REST endpoint to start the current lobby.
-     *
-     * @return The game that has just started
+     * Nothing to return as all players already have instance
+     * of Game object.
      */
-    public Game startMultiPlayer() {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/start"))
-                .header("accept", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(""))
-                .build();
-
-        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
-        if (game != null) {
-            send("/app/lobby/start", game);
-        }
-        return game;
+    public void startMultiPlayer() {
+        send("/app/lobby/start", null);
     }
 
     /**
-     * Updates player score.
-     * @param id game id to find game
-     * @param nick name of player
-     * @param score score of player
+     * Updates player score every question.
+     * @param id game object
+     * @param nick name of user
+     * @param score score of user
      */
     public void addScore(final UUID id, final String nick, final int score) {
         HttpRequest request = HttpRequest.newBuilder()

@@ -19,6 +19,7 @@ public class MultipleChoiceQuestion extends Question {
         super(prompt, answer, imageBytes);
         this.options = options;
     }
+    
     public String[] getOptions() {
         return options;
     }

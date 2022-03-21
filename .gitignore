@@ -41,3 +41,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### JSON and images in activities ###
+/server/src/main/resources/activities/*
+activities.zip

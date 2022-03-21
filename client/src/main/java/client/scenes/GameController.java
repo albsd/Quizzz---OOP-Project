@@ -30,8 +30,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
-
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -55,6 +56,9 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private HBox mainHorizontalBox;
+
+    @FXML
+    private ImageView questionImage;
 
     @FXML
     private TextField openAnswer;
@@ -188,8 +192,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         if (isOpenQuestion) {
             fxml.changeToFreeMode(openAnswer, option1, option2, option3);
         }
-        
-        displayQuestion(currentQuestion);
+        displayQuestion();
         
         game.start(this::setNextQuestion);
     }
@@ -268,25 +271,28 @@ public class GameController implements Initializable, WebSocketSubscription {
             });
         }
 
-        Platform.runLater(() -> {
-            currentQuestion = game.getCurrentQuestion();
-//            question.setText(currentQuestion.getPrompt());
-            if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
-                fxml.changeToMultiMode(openAnswer, option1, option2, option3);
-                isOpenQuestion = false;
-            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
-                fxml.changeToFreeMode(openAnswer, option1, option2, option3);
-                isOpenQuestion = true;
-            }
-            displayQuestion(currentQuestion);
-
-        });
-        game.start(this::setNextQuestion);
+        if (game.getCurrentQuestionNumber() != 21) {
+            Platform.runLater(() -> {
+                currentQuestion = game.getCurrentQuestion();
+                if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
+                    fxml.changeToMultiMode(openAnswer, option1, option2, option3);
+                    isOpenQuestion = false;
+                } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
+                    fxml.changeToFreeMode(openAnswer, option1, option2, option3);
+                    isOpenQuestion = true;
+                }
+                displayQuestion();
+            });
+            game.start(this::setNextQuestion);
+        }
     }
-
-    private void displayQuestion(final Question currentQuestion) {
-        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
+    @FXML
+    private void displayQuestion() {
+        questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
         question.setText(currentQuestion.getPrompt());
+        InputStream is = new ByteArrayInputStream(currentQuestion.getImage());
+        Image img = new Image(is);
+        questionImage.setImage(img);
         if (currentQuestion instanceof MultipleChoiceQuestion) {
             String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
             option1.setStyle("-fx-background-color:" + orange + ";");
