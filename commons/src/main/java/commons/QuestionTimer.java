@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 public class QuestionTimer {
     public static final int MAX_TIME = 20000;
-    private final int decrement = 25;    // 25ms
+    private final int decrement = 1;    // 1ms
     private int currentTime = MAX_TIME;
     private boolean started = false;
     private boolean over = false;
