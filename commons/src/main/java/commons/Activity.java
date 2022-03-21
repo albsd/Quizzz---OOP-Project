@@ -46,7 +46,7 @@ public class Activity {
     }
 
     public MultipleChoiceQuestion getNumberMultipleChoiceQuestion(final byte[] image) {
-        String prompt = "How much energy does " + title + " take in watt hours?";
+        String prompt = "How much energy does " + title.toLowerCase() + " take in watt hours?";
         String[] choices = generateChoices(energyConsumption);
         return new MultipleChoiceQuestion(prompt, image, choices,
                 ArrayUtils.indexOf(choices, Long.toString(energyConsumption)));
@@ -88,7 +88,7 @@ public class Activity {
     }
 
     public FreeResponseQuestion getFreeResponseQuestion(final byte[] image) {
-        String prompt = "How much energy does " + title + " take in watt hours?";
+        String prompt = "How much energy does " + title.toLowerCase() + " take in watt hours?";
         return new FreeResponseQuestion(prompt, image, energyConsumption);
     }
 

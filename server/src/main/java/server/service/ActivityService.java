@@ -76,6 +76,7 @@ public class ActivityService {
                                             final int questionType,
                                             final List<Activity> options) {
         byte[] image = generateImageByteArray(activity.getPath());
+        byte[] optionImage = generateImageByteArray(options.get(1).getPath());
         if (activity == null) {
             String[] ops = new String[] {"a", "b", "c"};
             return new MultipleChoiceQuestion("", image, ops, 0);
@@ -83,7 +84,7 @@ public class ActivityService {
         // question type of 0 means number multiple choice
         return switch (questionType) {
             case 0 -> activity.getNumberMultipleChoiceQuestion(image);
-            case 1 -> activity.getActivityMultipleChoiceQuestion(options, image);
+            case 1 -> activity.getActivityMultipleChoiceQuestion(options, optionImage);
             default -> activity.getFreeResponseQuestion(image);
         };
     }
