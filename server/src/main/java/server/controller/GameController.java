@@ -274,11 +274,8 @@ public class GameController {
     }
 
     /**
-     * A Websocket endpoint for starting the lobby.
-     *
-     * @param lobby The message to be sent to all the players in the lobby
-     * 
-     * @return The Game object
+     * WS endpoint to start the game for multiplayers.
+     * @return GameUpdate to start the game
      */
     @MessageMapping("/lobby/start") // /app/lobby/start
     @SendTo("/topic/lobby/start")

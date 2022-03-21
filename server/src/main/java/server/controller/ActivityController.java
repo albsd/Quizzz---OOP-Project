@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import server.service.ActivityService;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -35,7 +35,7 @@ public class ActivityController {
      * @return all activities
      */
     @GetMapping(path = {"", "/"})
-    public List<Activity> getAllActivity() throws FileNotFoundException, ParseException {
+    public List<Activity> getAllActivity() throws IOException, ParseException {
         return activityService.getAllActivities();
     }
 

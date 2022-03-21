@@ -29,7 +29,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import server.repository.LeaderboardRepository;
@@ -38,10 +37,9 @@ import server.repository.ActivityRepository;
 import server.repository.GameRepository;
 import server.service.GameService;
 import server.service.LeaderboardService;
-
-
 import java.util.List;
 import java.util.Comparator;
+
 @DataJpaTest
 public class GameControllerTest {
 
@@ -54,36 +52,18 @@ public class GameControllerTest {
     @Mock
     private ActivityRepository activityRepository;
 
-    private List<Activity> activities = List.of(
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity(),
-            new Activity());
+    private final List<Activity> activities = List.of(
+            new Activity(), new Activity(), new Activity(), new Activity(),
+            new Activity(), new Activity(), new Activity(), new Activity(),
+            new Activity(), new Activity(), new Activity(), new Activity(),
+            new Activity(), new Activity(), new Activity(), new Activity(),
+            new Activity(), new Activity(), new Activity(), new Activity(),
+            new Activity(), new Activity(), new Activity(), new Activity());
 
     @Mock
     LeaderboardRepository leaderboardRepository;
 
-    private List<GameResult> gameResults = List.of(new GameResult("nick", 0));
+    private final List<GameResult> gameResults = List.of(new GameResult("nick", 0));
 
     private String nick;
 

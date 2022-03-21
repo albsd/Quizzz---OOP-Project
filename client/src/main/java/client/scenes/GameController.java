@@ -270,20 +270,21 @@ public class GameController implements Initializable, WebSocketSubscription {
                 ctrl.displayLeaderboard(singlePlayerLeaderboard);
             });
         }
-        Platform.runLater(() -> {
-            currentQuestion = game.getCurrentQuestion();
-//            question.setText(currentQuestion.getPrompt());
-            if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
-                fxml.changeToMultiMode(openAnswer, option1, option2, option3);
-                isOpenQuestion = false;
-            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
-                fxml.changeToFreeMode(openAnswer, option1, option2, option3);
-                isOpenQuestion = true;
-            }
-            displayQuestion();
 
-        });
-        game.start(this::setNextQuestion);
+        if (game.getCurrentQuestionNumber() != 21) {
+            Platform.runLater(() -> {
+                currentQuestion = game.getCurrentQuestion();
+                if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
+                    fxml.changeToMultiMode(openAnswer, option1, option2, option3);
+                    isOpenQuestion = false;
+                } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
+                    fxml.changeToFreeMode(openAnswer, option1, option2, option3);
+                    isOpenQuestion = true;
+                }
+                displayQuestion();
+            });
+            game.start(this::setNextQuestion);
+        }
     }
     @FXML
     private void displayQuestion() {

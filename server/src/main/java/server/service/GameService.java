@@ -43,7 +43,6 @@ public class GameService {
      * The previous lobby is propagated to the game that has just started.
      *
      * @param questions List of questions for the newly created lobby
-     * @return Game that has been created
      */
     public void newGame(final List<Question> questions) {
         repo.addGame(lobby);

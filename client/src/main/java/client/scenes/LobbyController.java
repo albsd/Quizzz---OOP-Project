@@ -3,7 +3,12 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
-import commons.*;
+
+import commons.Game;
+import commons.LobbyMessage;
+import commons.Player;
+import commons.PlayerUpdate;
+import commons.GameUpdate;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

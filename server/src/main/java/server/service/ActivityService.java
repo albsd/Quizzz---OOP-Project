@@ -10,18 +10,22 @@ import org.springframework.stereotype.Service;
 import server.repository.ActivityRepository;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 
 @Service
@@ -30,7 +34,9 @@ public class ActivityService {
     @Autowired
     private ActivityRepository activityRepository;
 
-    private String imagePath = "./server/src/main/resources/activities";
+    private final String activitiesPath = "./server/src/main/resources/activities";
+
+    private final String resourcesPath = "./server/src/main/resources";
 
     public ActivityService(final ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
@@ -72,7 +78,7 @@ public class ActivityService {
         byte[] image = generateImageByteArray(activity.getPath());
         if (activity == null) {
             String[] ops = new String[] {"a", "b", "c"};
-            return new MultipleChoiceQuestion("", new byte[0], ops, 0);
+            return new MultipleChoiceQuestion("", image, ops, 0);
         }
         // question type of 0 means number multiple choice
         return switch (questionType) {
@@ -102,9 +108,10 @@ public class ActivityService {
         }
     }
 
-    public List<Activity> getAllActivities() throws FileNotFoundException, ParseException {
+    public List<Activity> getAllActivities() throws IOException, ParseException {
         List<Activity> activities = new ArrayList<>(activityRepository.findAll());
         if (activities.isEmpty()) {
+//            unzipFolder();
             activities = populateRepo();
         }
         return activities;
@@ -112,7 +119,7 @@ public class ActivityService {
 
     public List<Activity> populateRepo() throws FileNotFoundException, ParseException {
         List<Activity> activities = new ArrayList<>();
-        List<File> files = getFiles(".json", new File(imagePath));
+        List<File> files = getFiles(".json", new File(activitiesPath));
         for (File jsonFile : files) {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(jsonFile));
             JSONParser jsonParser = new JSONParser(bufferedReader);
@@ -122,12 +129,12 @@ public class ActivityService {
             String source = list.get("source").toString();
 
             String str = jsonFile.getName();
-            File file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".png");
+            File file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".png");
             if (file == null) {
-                file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+                file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
             }
             if (file == null) {
-                file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
+                file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
             }
             String path = file.getPath().replaceAll("\\\\", "/");
             String realPath = path.substring(path.lastIndexOf("./server"));
@@ -135,6 +142,38 @@ public class ActivityService {
         }
         activityRepository.saveAllAndFlush(activities);
         return activities;
+    }
+
+    private void unzipFolder() throws IOException {
+        String fileZip = activitiesPath + ".zip";
+        File destDir = new File(resourcesPath);
+        byte[] buffer = new byte[1024];
+        ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+        ZipEntry zipEntry = zis.getNextEntry();
+        while (zipEntry != null) {
+            File newFile = new File(destDir, zipEntry.getName());
+            if (zipEntry.isDirectory()) {
+                if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                    throw new IOException("Failed to create directory " + newFile);
+                }
+            } else {
+                // fix for Windows-created archives
+                File parent = newFile.getParentFile();
+                if (!parent.isDirectory() && !parent.mkdirs()) {
+                    throw new IOException("Failed to create directory " + parent);
+                }
+                // write file content
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
+            }
+            zipEntry = zis.getNextEntry();
+        }
+        zis.closeEntry();
+        zis.close();
     }
 
     private byte[] generateImageByteArray(final String imagePath) {
@@ -152,8 +191,6 @@ public class ActivityService {
             }
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ImageIO.write(bImage, extension, bos);
-            var t = bos.toByteArray();
-            System.out.println(t.length);
             return bos.toByteArray();
         } catch (IOException e) {
             System.err.println("IndexOutOfBoundsException: " + e.getMessage());
