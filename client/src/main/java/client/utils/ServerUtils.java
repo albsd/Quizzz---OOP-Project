@@ -179,16 +179,14 @@ public class ServerUtils {
      *
      * @return List of players in a lobby
      */
-    public List<Player> getLobbyPlayers() {
+    public Game getLobby() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/current"))
                 .header("accept", "application/json")
                 .GET()
                 .build();
 
-        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
-        if (game == null) return null;
-        return game.getPlayers();
+        return parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
     /**
@@ -227,20 +225,10 @@ public class ServerUtils {
      *
      * @return The game that has just started
      */
-    public Game startMultiPlayer() {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/start"))
-                .header("accept", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(""))
-                .build();
-
-        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
-        if (game != null) {
-            send("/app/lobby/start", game);
-        }
-        return game;
+    public void startMultiPlayer() {
+        send("/app/lobby/start", null);
     }
-    /**
+    /*
      * Updates player score.
      * @param id game id to find game
      * @param nick name of player

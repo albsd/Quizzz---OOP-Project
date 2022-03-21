@@ -30,6 +30,9 @@ public class Activity {
     private String path;
 
     public Activity() {
+        this.title = "Default title";
+        this.energyConsumption = 100;
+        this.source = "google.com";
     }
 
     @JsonCreator

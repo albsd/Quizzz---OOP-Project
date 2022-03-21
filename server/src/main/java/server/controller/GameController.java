@@ -256,19 +256,6 @@ public class GameController {
         return message;
     }
 
-    /**
-     * Starts the current game.
-     * Do not allow starting a game with less than 2 players.
-     *
-     * @return The new game that is an active lobby now
-     */
-    @PostMapping("/start")
-    public ResponseEntity<Game> startCurrentGame() {
-        Game lobby = gameService.getCurrentGame();
-        gameService.newGame(activityService.getQuestionList());
-        return ResponseEntity.ok(lobby);
-    }
-
     @PostMapping("/leaderboard/{nick}/{score}")
     public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
                                                                      final @PathVariable("score") int score) {
@@ -295,8 +282,9 @@ public class GameController {
      */
     @MessageMapping("/lobby/start") // /app/lobby/start
     @SendTo("/topic/lobby/start")
-    private Game sendLobbyStart(final Game lobby) {
-        return lobby;
+    public GameUpdate startLobby() {
+        gameService.newGame(activityService.getQuestionList());
+        return GameUpdate.start;
     }
 
 

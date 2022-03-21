@@ -29,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import server.repository.LeaderboardRepository;
@@ -53,7 +54,31 @@ public class GameControllerTest {
     @Mock
     private ActivityRepository activityRepository;
 
-    private List<Activity> activities = List.of(new Activity());
+    private List<Activity> activities = List.of(
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity(),
+            new Activity());
 
     @Mock
     LeaderboardRepository leaderboardRepository;
@@ -67,10 +92,8 @@ public class GameControllerTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        when(activityRepository.count()).thenReturn(100L);
+        when(activityRepository.count()).thenReturn(20L);
         when(activityRepository.findAll()).thenReturn(activities);
-
-        MockitoAnnotations.openMocks(this);
         when(leaderboardRepository.findAll()).thenReturn(gameResults);
 
         GameService service =  new GameService(new GameRepository());
@@ -87,7 +110,8 @@ public class GameControllerTest {
         ctrl.joinCurrentGame("babe");
         nick = "johny";
         score = 50;
-        lobby = ctrl.startCurrentGame().getBody();
+        ctrl.startLobby();
+        lobby = ctrl.getCurrentGame();
     }
 
     @Test
@@ -128,11 +152,11 @@ public class GameControllerTest {
         ctrl.joinCurrentGame("niko");
         ctrl.joinCurrentGame("babe");
 
-        var newLobby = ctrl.startCurrentGame();
+        ctrl.startLobby();
 
         assertEquals(ctrl.getAll().size(), 2);
         assertEquals(lobby.getPlayers().size(), 3);
-        assertNotEquals(lobby, newLobby.getBody());
+        assertNotEquals(lobby, ctrl.getCurrentGame());
     }
 
     @Test

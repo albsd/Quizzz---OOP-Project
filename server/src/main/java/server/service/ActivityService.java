@@ -46,11 +46,11 @@ public class ActivityService {
     }
 
     public Activity randomActivity() {
-        Long qty = activityRepository.count();
+        int qty = (int) activityRepository.count();
         int idx = (int) (Math.random() * qty);
         var all = activityRepository.findAll();
-        if (all.size() == 0) return null;
-        return all.get(idx % all.size());
+        if (qty == 0) return null;
+        return all.get(idx % qty);
     }
 
     public List<Question> getQuestionList() {
@@ -69,7 +69,7 @@ public class ActivityService {
     public Question turnActivityIntoQuestion(final Activity activity, 
                                             final int questionType,
                                             final List<Activity> options) {
-        byte[] image = generateImageByteArray(activity.getPath());        
+        byte[] image = generateImageByteArray(activity.getPath());
         if (activity == null) {
             String[] ops = new String[] {"a", "b", "c"};
             return new MultipleChoiceQuestion("", new byte[0], ops, 0);
@@ -140,12 +140,20 @@ public class ActivityService {
     private byte[] generateImageByteArray(final String imagePath) {
         //example of image path
         ///server/src/main/resources/activities/00/fridge.png
+        if (imagePath == null) {
+            return new byte[0];
+        }
         File file = new File(imagePath);
         String extension = imagePath.substring(imagePath.lastIndexOf('.') + 1);
         try {
             BufferedImage bImage = ImageIO.read(file);
+            if (bImage == null) {
+                return new byte[0];
+            }
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ImageIO.write(bImage, extension, bos);
+            var t = bos.toByteArray();
+            System.out.println(t.length);
             return bos.toByteArray();
         } catch (IOException e) {
             System.err.println("IndexOutOfBoundsException: " + e.getMessage());
