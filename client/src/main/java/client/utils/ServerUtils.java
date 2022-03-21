@@ -174,7 +174,7 @@ public class ServerUtils {
     }
 
     /**
-     * Calls the REST endpoint to get list of all players in the lobby.
+     * Calls the REST endpoint to get current lobby game object.
      *
      * @return List of players in a lobby
      */
@@ -222,7 +222,7 @@ public class ServerUtils {
     /**
      * Calls the REST endpoint to start the current lobby.
      * Nothing to return as all players already have instance
-     * of Game object
+     * of Game object.
      */
     public void startMultiPlayer() {
         send("/app/lobby/start", null);

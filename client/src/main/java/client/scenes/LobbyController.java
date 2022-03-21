@@ -22,6 +22,7 @@ import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -110,6 +111,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
         subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, game -> {
             Platform.runLater(() -> {
+                //sets lobby with recent list of players
+                this.lobby = server.getLobby();
                 fxml.showMultiPlayer(me, lobby);
             });
         });
@@ -136,6 +139,9 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         // GUI Updates must be run later
         // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
         Platform.runLater(() -> {
+            for (String player: players) {
+                System.out.println(player);
+            }
             playerCount.setText("Number of players: " + players.size());
 
             List<String> nicks = players.stream().map(nick -> {
@@ -144,6 +150,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
                 }
                 return nick;
             }).toList();
+            System.out.println(nicks);
 
             String leftText = IntStream.range(0, players.size())
                     .filter(i -> i % 2 == 0)
@@ -170,7 +177,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void start(final ActionEvent event) {
+        //don't start game immediately cause invoker starts game faster
+        //than other players in lobby
         server.startMultiPlayer();
-        fxml.showMultiPlayer(me, lobby);
     }
 }
