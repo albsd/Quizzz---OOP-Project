@@ -105,29 +105,35 @@ public class ActivityService {
     public List<Activity> getAllActivities() throws FileNotFoundException, ParseException {
         List<Activity> activities = new ArrayList<>(activityRepository.findAll());
         if (activities.isEmpty()) {
-            List<File> files = getFiles(".json", new File(imagePath));
-            for (int i = 0; i < files.size(); i++) {
-                File jsonFile = files.get(i);
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(jsonFile));
-                JSONParser jsonParser = new JSONParser(bufferedReader);
-                LinkedHashMap list = (LinkedHashMap) jsonParser.parse();
-                String title = list.get("title").toString();
-                long wattHours = ((BigInteger) list.get("consumption_in_wh")).longValue();
-                String source = list.get("source").toString();
-
-                String str = jsonFile.getName();
-                File file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".png");
-                if (file == null) {
-                    file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
-                }
-                if (file == null) {
-                    file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
-                }
-                String path = file.getPath().replaceAll("\\\\", "/");
-                String realPath = path.substring(path.lastIndexOf("/resources"));
-                activities.add(new Activity(title, wattHours, source, realPath));
-            }
+            activities = populateRepo();
         }
+        return activities;
+    }
+
+    public List<Activity> populateRepo() throws FileNotFoundException, ParseException {
+        List<Activity> activities = new ArrayList<>();
+        List<File> files = getFiles(".json", new File(imagePath));
+        for (File jsonFile : files) {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(jsonFile));
+            JSONParser jsonParser = new JSONParser(bufferedReader);
+            LinkedHashMap<String, ?> list = (LinkedHashMap<String, ?>) jsonParser.parse();
+            String title = list.get("title").toString();
+            long wattHours = ((BigInteger) list.get("consumption_in_wh")).longValue();
+            String source = list.get("source").toString();
+
+            String str = jsonFile.getName();
+            File file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".png");
+            if (file == null) {
+                file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+            }
+            if (file == null) {
+                file = find(imagePath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
+            }
+            String path = file.getPath().replaceAll("\\\\", "/");
+            String realPath = path.substring(path.lastIndexOf("./server"));
+            activities.add(new Activity(title, wattHours, source, realPath));
+        }
+        activityRepository.saveAllAndFlush(activities);
         return activities;
     }
 
