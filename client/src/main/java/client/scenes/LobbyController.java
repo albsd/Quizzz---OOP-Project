@@ -138,9 +138,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         // GUI Updates must be run later
         // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
         Platform.runLater(() -> {
-            for (String player: players) {
-                System.out.println(player);
-            }
             playerCount.setText("Number of players: " + players.size());
 
             List<String> nicks = players.stream().map(nick -> {

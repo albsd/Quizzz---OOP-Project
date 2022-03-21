@@ -288,7 +288,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
     @FXML
     private void displayQuestion() {
-        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
+        questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
         question.setText(currentQuestion.getPrompt());
         InputStream is = new ByteArrayInputStream(currentQuestion.getImage());
         Image img = new Image(is);
