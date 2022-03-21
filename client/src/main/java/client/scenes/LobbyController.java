@@ -17,7 +17,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,8 +116,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         chatInput.setText("");
 
-        final LocalTime time = LocalTime.now();
-        final LobbyMessage message = new LobbyMessage(me.getNick(), time.format(timeFormat), content);
+        final ZonedDateTime time = ZonedDateTime.now();
+        final LobbyMessage message = new LobbyMessage(me.getNick(), time.toString(), content);
         
         server.send("/app/lobby/chat", message);
         chatArea.setVvalue(1.0);
