@@ -150,8 +150,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
                 }
                 return nick;
             }).toList();
-            System.out.println(nicks);
-
             String leftText = IntStream.range(0, players.size())
                     .filter(i -> i % 2 == 0)
                     .mapToObj(nicks::get)
