@@ -12,14 +12,12 @@ import client.scenes.IPPromptController;
 import client.scenes.LeaderboardController;
 import client.scenes.LobbyController;
 import client.scenes.SplashController;
-import javafx.animation.PauseTransition;
 import commons.Game;
 import commons.Player;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.util.Pair;
 
 public class FXMLController {
