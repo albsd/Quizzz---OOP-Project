@@ -9,7 +9,6 @@ import commons.Player;
 import commons.Question;
 import commons.MultipleChoiceQuestion;
 import commons.FreeResponseQuestion;
-import commons.Leaderboard;
 import commons.Emote;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -248,32 +247,44 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void setNextQuestion() {
         game.nextQuestion();
 
-        if (game.shouldShowSingleplayerLeaderboard()) {
-            server.addScore(game.getId(), me.getNick(), me.getScore());
+        // Displays leaderboard at end of game
+        if (game.isOver()) {
             Platform.runLater(() -> {
-                Leaderboard singlePlayerLeaderboard = server.sendSinglePlayerLeaderboardInfo(this.me.getNick(),
-                        this.me.getScore());
-                var root = fxml.displayLeaderboardMomentarily();
+                var root = fxml.showLeaderboard();
                 LeaderboardController leaderboardController = root.getKey();
-                leaderboardController.displayLeaderboard(this.game.getId(), me);
+                if (!game.isMultiplayer()) {
+                    server.sendGameResult(this.me.getNick(), this.me.getScore());
+                    leaderboardController.displayLeaderboard(server.getSinglePlayerLeaderboard(), me);
+                } else {
+                    leaderboardController.displayLeaderboard(server.getLeaderboard(game.getId()), me);
+                }
             });
         }
 
-        Platform.runLater(this::displayCurrentQuestion);
-        game.start(this::setNextQuestion);
+        // Displays leaderboard every 10 questions in multiplayer
+        if (game.isMultiplayer() && game.shouldShowMultiplayerLeaderboard()) {
+            var root = fxml.displayLeaderboardMomentarily();
+            LeaderboardController leaderboardController = root.getKey();
+            leaderboardController.displayLeaderboard(server.getLeaderboard(game.getId()), me);
+        }
+
+        if (!game.isOver()) {
+            Platform.runLater(this::displayCurrentQuestion);
+            game.start(this::setNextQuestion);
+        }
     }
 
     private void displayCurrentQuestion() {
         Question currentQuestion = game.getCurrentQuestion();
         if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
-            fxml.changeToMultiMode(openAnswer, option1, option2, option3);
+            changeToMultiMode();
             isOpenQuestion = false;
         } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
-            fxml.changeToFreeMode(openAnswer, option1, option2, option3);
+            changeToFreeMode();
             isOpenQuestion = true;
         }
 
-        questionNumber.setText("#" + (game.getCurrentQuestionIndex() + 1));
+        questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
         question.setText(currentQuestion.getPrompt());
         if (currentQuestion instanceof MultipleChoiceQuestion) {
             String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
@@ -284,6 +295,22 @@ public class GameController implements Initializable, WebSocketSubscription {
             option2.setText(options[1]);
             option3.setText(options[2]);
         }
+    }
+
+    private void changeToMultiMode() {
+        openAnswer.toFront();
+        openAnswer.setVisible(false);
+        option1.setVisible(true);
+        option2.setVisible(true);
+        option3.setVisible(true);
+    }
+
+    private void changeToFreeMode() {
+        openAnswer.toBack();
+        openAnswer.setVisible(true);
+        option1.setVisible(false);
+        option2.setVisible(false);
+        option3.setVisible(false);
     }
     
     @FXML

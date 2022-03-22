@@ -140,22 +140,4 @@ public class FXMLController {
         delay.setOnFinished(event -> stage1.close());
         return root;
     }
-
-    public void changeToMultiMode(final TextField openAnswer, final Button option1,
-                                  final Button option2, final Button option3) {
-        openAnswer.toFront();
-        openAnswer.setVisible(false);
-        option1.setVisible(true);
-        option2.setVisible(true);
-        option3.setVisible(true);
-    }
-
-    public void changeToFreeMode(final TextField openAnswer, final Button option1,
-                                 final Button option2, final Button option3) {
-        openAnswer.toBack();
-        openAnswer.setVisible(true);
-        option1.setVisible(false);
-        option2.setVisible(false);
-        option3.setVisible(false);
-    }
 }

@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.Leaderboard;
 import commons.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -62,11 +63,11 @@ public class LeaderboardController implements Initializable {
         fxml.showSplash();
     }
 
-    public void displayLeaderboard(final UUID id, final Player me) {
+    public void displayLeaderboard(final Leaderboard leaderboard, final Player me) {
         nick.setText(me.getNick());
         score.setText(Integer.toString(me.getScore()));
 
-        List<Player> ranking = server.getLeaderboard(id).getRanking();
+        List<Player> ranking = leaderboard.getRanking();
         for (int i = 0; i < ranking.size(); i++) {
             Player player = ranking.get(i);
 
