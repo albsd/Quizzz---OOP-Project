@@ -3,13 +3,7 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
-import commons.EmoteMessage;
-import commons.Game;
-import commons.Player;
-import commons.Question;
-import commons.MultipleChoiceQuestion;
-import commons.FreeResponseQuestion;
-import commons.Emote;
+import commons.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,6 +18,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -53,6 +48,9 @@ public class GameController implements Initializable, WebSocketSubscription {
     private VBox emoteChat, leftBox, optionBox;
 
     @FXML
+    private AnchorPane menu;
+
+    @FXML
     private HBox mainHorizontalBox;
 
     @FXML
@@ -67,8 +65,14 @@ public class GameController implements Initializable, WebSocketSubscription {
     private Parent popup;
 
     @FXML
-    private PopupController popupController; 
-    
+    private PopupController popupController;
+
+    @FXML
+    private Parent leaderboard;
+
+    @FXML
+    private LeaderboardController leaderboardController;
+
     private final ServerUtils server;
     
     private final FXMLController fxml;
@@ -249,26 +253,38 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         // Displays leaderboard at end of game
         if (game.isOver()) {
-            Platform.runLater(() -> {
-                var root = fxml.showLeaderboard();
-                LeaderboardController leaderboardController = root.getKey();
-                if (!game.isMultiplayer()) {
-                    server.sendGameResult(this.me.getNick(), this.me.getScore());
-                    leaderboardController.displayLeaderboard(server.getSinglePlayerLeaderboard(), me);
-                } else {
-                    leaderboardController.displayLeaderboard(server.getLeaderboard(game.getId()), me);
-                }
-            });
+            if (!game.isMultiplayer()) {
+                server.sendGameResult(this.me.getNick(), this.me.getScore());
+                displayLeaderboardMomentarily(server.getSinglePlayerLeaderboard());
+            } else {
+                displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
+            }
         }
 
         // Displays leaderboard every 10 questions in multiplayer
         if (game.isMultiplayer() && game.shouldShowMultiplayerLeaderboard()) {
-            var root = fxml.displayLeaderboardMomentarily();
-            LeaderboardController leaderboardController = root.getKey();
-            leaderboardController.displayLeaderboard(server.getLeaderboard(game.getId()), me);
+            displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
+        } else if (!game.isOver()) {
+            Platform.runLater(this::displayCurrentQuestion);
+            game.start(this::setNextQuestion);
+        }
+    }
+
+    private void displayLeaderboardMomentarily(final Leaderboard leaderboard) {
+        Platform.runLater(() -> {
+            leaderboardController.displayLeaderboard(leaderboard, me);
+        });
+        menu.setVisible(false);
+        leaderboardController.show();
+        try {
+            Thread.sleep(5000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         if (!game.isOver()) {
+            leaderboardController.hide();
+            menu.setVisible(true);
             Platform.runLater(this::displayCurrentQuestion);
             game.start(this::setNextQuestion);
         }

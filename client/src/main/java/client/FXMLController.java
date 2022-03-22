@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 import client.scenes.GameController;
@@ -127,17 +125,6 @@ public class FXMLController {
         var ctrl = root.getKey();
         ctrl.setSinglePlayer(game);
         subscribe(GameController.class);
-        return root;
-    }
-    
-    public Pair<LeaderboardController, Parent> displayLeaderboardMomentarily() {
-        var root = myFXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
-        Stage stage1 = new Stage();
-        Scene scene = new Scene(root.getValue());
-        stage1.setScene(scene);
-        stage1.show();
-        PauseTransition delay = new PauseTransition(Duration.seconds(5));
-        delay.setOnFinished(event -> stage1.close());
         return root;
     }
 }

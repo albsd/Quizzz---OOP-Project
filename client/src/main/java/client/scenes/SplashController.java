@@ -120,6 +120,9 @@ public class SplashController {
 
     @FXML
     public void leaderBoard(final ActionEvent event) {
-        fxml.showLeaderboard();
+        var root = fxml.showLeaderboard();
+        LeaderboardController leaderboardController = root.getKey();
+        leaderboardController.show();
+        leaderboardController.displayLeaderboard(server.getSinglePlayerLeaderboard(), new Player("you"));
     }
 }

@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.utils.ServerUtils;
 import commons.Leaderboard;
 import commons.Player;
 import javafx.event.ActionEvent;
@@ -12,13 +11,13 @@ import javafx.geometry.Pos;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
 import client.FXMLController;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -37,16 +36,13 @@ public class LeaderboardController implements Initializable {
     private Label title, rank, nick, score;
 
     @FXML
-    private VBox playerRanking;
-
-    private final ServerUtils server;
+    private VBox menu, playerRanking;
 
     private final FXMLController fxml;
 
     @Inject
-    public LeaderboardController(final ServerUtils server, final FXMLController fxml) {
+    public LeaderboardController(final FXMLController fxml) {
         this.fxml = fxml;
-        this.server = server;
     }
 
     @Override
@@ -56,6 +52,7 @@ public class LeaderboardController implements Initializable {
         rank.setFont(font);
         nick.setFont(font);
         score.setFont(font);
+        menu.setVisible(false);
     }
 
     @FXML
@@ -63,10 +60,19 @@ public class LeaderboardController implements Initializable {
         fxml.showSplash();
     }
 
+    public void show() {
+        menu.setVisible(true);
+    }
+
+    public void hide() {
+        menu.setVisible(false);
+    }
+
     public void displayLeaderboard(final Leaderboard leaderboard, final Player me) {
         nick.setText(me.getNick());
         score.setText(Integer.toString(me.getScore()));
 
+        playerRanking.getChildren().removeAll();
         List<Player> ranking = leaderboard.getRanking();
         for (int i = 0; i < ranking.size(); i++) {
             Player player = ranking.get(i);
