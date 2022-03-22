@@ -26,12 +26,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
@@ -103,9 +105,9 @@ public class GameController implements Initializable, WebSocketSubscription {
     
     private String leavePath;
 
-    private boolean doubleScore = false;
+    private boolean doubleScore;
 
-    private boolean submittedAnswer = false;
+    private boolean submittedAnswer;
 
     private final String green = "#E0FCCF";
 
@@ -116,6 +118,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private final String darkGreen = "#009a19";
 
     private final String darkRed = "#A00000";
+
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
@@ -139,6 +142,16 @@ public class GameController implements Initializable, WebSocketSubscription {
         timer1.setFont(font);
         timer2.setFont(font);
         warning.setFont(font);
+        submittedAnswer = false;
+        doubleScore = false;
+        openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0,
+                change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("-?([1-9][0-9]*)?")) {
+                return change;
+            }
+            return null;
+        }));
     }
 
     @Override
@@ -249,14 +262,18 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
     }
 
+    /**
+     * Displays and validates the answer for open question.
+     *
+     * @param event triggered by a button click
+     */
     @FXML
     public void onEnter(final ActionEvent event) {
-        String answer = openAnswer.getText();
-        checkAnswer(Long.parseLong(answer), clientTimer.getCurrentTime());
+        String optionStr = openAnswer.getText();
         if (!submittedAnswer) {
             submittedAnswer = true;
-            long option = Long.parseLong(answer);
-            checkAnswer(option, clientTimer.getCurrentTime());;
+            long option = Long.parseLong(optionStr);
+            checkAnswer(option, clientTimer.getCurrentTime());
         } else {
             warning.setVisible(true);
         }
@@ -295,8 +312,8 @@ public class GameController implements Initializable, WebSocketSubscription {
                 }
             }
         } else{
-            answerBox.setText("Answer is: " + answer);
-            answerBox.setVisible(true);
+            openAnswer.setText("Answer is: " + answer);
+            openAnswer.setVisible(true);
         }
         try {
             Thread.sleep(5000);
@@ -321,17 +338,13 @@ public class GameController implements Initializable, WebSocketSubscription {
                 displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
             }
         }
-
-        // Displays leaderboard every 10 questions in multiplayer
-        if (game.isMultiplayer() && game.shouldShowMultiplayerLeaderboard()) {
-            displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
+       // Displays leaderboard every 10 questions in multiplayer
+       if (game.isMultiplayer() && game.shouldShowMultiplayerLeaderboard()) {
+        displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
         }
 
         if (!game.isOver()) {
-            submittedAnswer = false;
             warning.setVisible(false);
-            answerBox.setText("");
-            openAnswer.setText("");
             game.nextQuestion();
             displayCurrentQuestion();
             clientTimer.start(0);
