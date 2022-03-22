@@ -105,6 +105,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
             Platform.runLater(() -> {
                 String chatBox = chatText.getText() + message.toString();
                 chatText.setText(chatBox);
+                chatArea.layout();
+                chatArea.setVvalue(1.0);
             });
         });
 
@@ -127,7 +129,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         final LobbyMessage message = new LobbyMessage(me.getNick(), time.toString(), content);
         
         server.send("/app/lobby/chat", message);
-        chatArea.setVvalue(1.0);
     }
 
     public void setMe(final Player me) {

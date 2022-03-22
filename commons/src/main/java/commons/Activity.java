@@ -53,12 +53,13 @@ public class Activity {
 
     public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(
             final List<Activity> answerOptions, final byte[] image) {
-        String prompt = "Which of the following activities take the most energy";
+        String prompt = "Which of the following activities take the most energy?";
         String[] options = this.getMultipleActivitiesOptions(answerOptions);
 
         return new MultipleChoiceQuestion(prompt, image, options,
                  this.getMultipleActivitiesAnswerIndex(answerOptions));
     }
+
 
     public int getMultipleActivitiesAnswerIndex(final List<Activity> answerOptions) {
         long max = 0;

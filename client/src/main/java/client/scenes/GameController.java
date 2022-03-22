@@ -43,7 +43,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             timeButton, scoreButton, removeButton;
     
     @FXML
-    private Label question, questionNumber, points, timer1, timer2;
+    private Label question, questionNumber, points, timer1, timer2, warning, answerBox;
 
     @FXML
     private ProgressBar timer;
@@ -62,9 +62,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private TextField openAnswer;
-
-    @FXML
-    private Label warning;
 
     private ProgressBarController progressBar;
     
@@ -94,6 +91,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private boolean doubleScore = false;
 
+    private boolean submittedAnswer = false;
+
     private final String green = "#E0FCCF";
 
     private final String red = "#FE6F5B";
@@ -116,12 +115,14 @@ public class GameController implements Initializable, WebSocketSubscription {
         option1.setFont(font);
         option2.setFont(font);
         option3.setFont(font);
-
+        answerBox.setFont(font);
         question.setFont(font);
         questionNumber.setFont(font);
         points.setFont(font);
         timer1.setFont(font);
         timer2.setFont(font);
+        warning.setFont(font);
+        warning.setStyle("-fx-text-fill:" + red + ";");
     }
 
     @Override
@@ -166,8 +167,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         emoteBox.setAlignment(Pos.CENTER_RIGHT);
         emoteBox.getChildren().addAll(nickname, emoteImage);
         emoteChat.getChildren().add(emoteBox);
-        
-        // update scrollpane's layout before scrolling to the bottom
         emoteScroll.layout();
         emoteScroll.setVvalue(1);
     }
@@ -190,7 +189,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         currentQuestion = game.getCurrentQuestion();
         isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
         if (isOpenQuestion) {
-            fxml.changeToFreeMode(openAnswer, option1, option2, option3);
+            changeToFreeMode();
         }
         displayQuestion();
         
@@ -213,20 +212,19 @@ public class GameController implements Initializable, WebSocketSubscription {
         optionBox.setSpacing(55);
     }
 
-
     /**
-     * Validates the answer for the multiple choice question and open question
-     * Updates the user's score given in what time frame he/she has answered.
+     * Validates and displays the answer for the multiple choice question.
      *
      * @param event triggered by a button click
      */
     @FXML
-    public void checkAnswer(final ActionEvent event) {
-        long correctAnswer = currentQuestion.getAnswer();
-        Button[] options = {option1, option2, option3};
-        int option = ArrayUtils.indexOf(options, ((Button) event.getSource()));
-        int score = 0;
-        if (currentQuestion instanceof MultipleChoiceQuestion) {
+    public void checkMultipleQuestion(final ActionEvent event) {
+        if (!submittedAnswer) {
+            submittedAnswer = true;
+            long correctAnswer = currentQuestion.getAnswer();
+            Button[] options = {option1, option2, option3};
+            int option = ArrayUtils.indexOf(options, ((Button) event.getSource()));
+            int score = 0;
             Button chosenOption = (Button) event.getSource();
             chosenOption.setStyle("-fx-border-color: black;");
             for (int i = 0; i < options.length; i++) {
@@ -239,17 +237,52 @@ public class GameController implements Initializable, WebSocketSubscription {
             if (option == correctAnswer) {
                 score = me.calculateMulChoicePoints(progressBar.getClientTime());
             }
-        } else if (currentQuestion instanceof FreeResponseQuestion) {
-            //assume the player always inputs a number
-            score = me.calculateOpenPoints(correctAnswer, option, progressBar.getClientTime());
+            checkForDoubleAndSend(score);
+        } else {
+            warning.setText("Already submitted answer");
         }
-        //check for doublescore
-        if (doubleScore) {
-            score *= 2;
+    }
+
+    /**
+     * Displays and validates the answer for open question.
+     *
+     * @param event triggered by a button click
+     */
+    @FXML
+    public void onEnter(final ActionEvent event) {
+        String optionStr = openAnswer.getText();
+        if (!validateAnswer(optionStr)) {
+            warning.setText("Type in only numbers");
+            return;
+        }
+        warning.setText("");
+        if (!submittedAnswer) {
+            submittedAnswer = true;
+            long correctAnswer = currentQuestion.getAnswer();
+            answerBox.setText("Correct answer: " + correctAnswer);
+            long option = Long.parseLong(optionStr);
+            int score = me.calculateOpenPoints(correctAnswer, option, progressBar.getClientTime());
+            checkForDoubleAndSend(score);
+        } else {
+            warning.setText("Already submitted answer");
+        }
+    }
+
+    private boolean validateAnswer(final String answer) {
+        return answer.matches("[0-9]*");
+    }
+
+    /**
+     * Checks for double power up and send score.
+     * @param score score of player for this question
+     */
+    private void checkForDoubleAndSend(final int score) {
+        if (!doubleScore) {
+            server.addScore(game.getId(), me.getNick(), score);
+        } else {
             doubleScore = false;
+            server.addScore(game.getId(), me.getNick(), score * 2);
         }
-        server.addScore(game.getId(), me.getNick(), score);
-        //TODO: Display correct answer for free response
     }
 
     /**
@@ -259,7 +292,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void setNextQuestion() {
         game.nextQuestion();
-
         if (game.shouldShowSingleplayerLeaderboard()) {
             server.addScore(game.getId(), me.getNick(), me.getScore());
             Platform.runLater(() -> {
@@ -270,15 +302,18 @@ public class GameController implements Initializable, WebSocketSubscription {
                 ctrl.displayLeaderboard(singlePlayerLeaderboard);
             });
         }
-
         if (game.getCurrentQuestionNumber() != 21) {
             Platform.runLater(() -> {
+                submittedAnswer = false;
+                warning.setText("");
+                answerBox.setText("");
+                openAnswer.setText("");
                 currentQuestion = game.getCurrentQuestion();
                 if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
-                    fxml.changeToMultiMode(openAnswer, option1, option2, option3);
+                    changeToMultiMode();
                     isOpenQuestion = false;
                 } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
-                    fxml.changeToFreeMode(openAnswer, option1, option2, option3);
+                    changeToFreeMode();
                     isOpenQuestion = true;
                 }
                 displayQuestion();
@@ -286,6 +321,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             game.start(this::setNextQuestion);
         }
     }
+
     @FXML
     private void displayQuestion() {
         questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
@@ -349,5 +385,25 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private void sendEmote(final Emote emote) {
         server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
+    }
+
+    @FXML
+    private void changeToMultiMode() {
+        answerBox.toFront();
+        openAnswer.toFront();
+        openAnswer.setVisible(false);
+        option1.setVisible(true);
+        option2.setVisible(true);
+        option3.setVisible(true);
+    }
+
+    @FXML
+    private void changeToFreeMode() {
+        answerBox.toBack();
+        openAnswer.toBack();
+        openAnswer.setVisible(true);
+        option1.setVisible(false);
+        option2.setVisible(false);
+        option3.setVisible(false);
     }
 }
