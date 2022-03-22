@@ -196,15 +196,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game.initialiseTimer();
         this.chatPath = "/game/" + game.getId() + "/chat";
         this.leavePath = "/game/" + game.getId() + "/leave";
-
-        //by default game.fxml set to multiple question mode
-        currentQuestion = game.getCurrentQuestion();
-        isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
-        if (isOpenQuestion) {
-            changeToFreeMode();
-        }
         displayQuestion();
-        
         game.start(this::setNextQuestion);
     }
 
@@ -220,11 +212,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         optionBox.setPadding(Insets.EMPTY);
         optionBox.setSpacing(55);
 
-        currentQuestion = game.getCurrentQuestion();
-        isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
-        if (isOpenQuestion) {
-            changeToFreeMode();
-        }
         displayQuestion();
         game.start(this::setNextQuestion);
     }
@@ -317,12 +304,10 @@ public class GameController implements Initializable, WebSocketSubscription {
                 openAnswer.setText("");
                 answerBox.setText("");
                 currentQuestion = game.getCurrentQuestion();
-                if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
+                if (currentQuestion instanceof MultipleChoiceQuestion) {
                     changeToMultiMode();
-                    isOpenQuestion = false;
-                } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
+                } else {
                     changeToFreeMode();
-                    isOpenQuestion = true;
                 }
                 displayQuestion();
             });
@@ -333,6 +318,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private void displayQuestion() {
+        currentQuestion = game.getCurrentQuestion();
+
         questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
         question.setText(currentQuestion.getPrompt());
         InputStream is = new ByteArrayInputStream(currentQuestion.getImage());
@@ -346,6 +333,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             option1.setText(options[0]);
             option2.setText(options[1]);
             option3.setText(options[2]);
+        } else {
+            changeToFreeMode();
         }
     }
     
