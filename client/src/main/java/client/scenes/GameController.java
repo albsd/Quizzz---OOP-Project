@@ -270,6 +270,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void onEnter(final ActionEvent event) {
         String optionStr = openAnswer.getText();
+        openAnswer.setText("");
         if (!submittedAnswer) {
             submittedAnswer = true;
             long option = Long.parseLong(optionStr);
@@ -344,6 +345,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
 
         if (!game.isOver()) {
+            submittedAnswer = false;
+            answerBox.setText("");
             warning.setVisible(false);
             game.nextQuestion();
             displayCurrentQuestion();

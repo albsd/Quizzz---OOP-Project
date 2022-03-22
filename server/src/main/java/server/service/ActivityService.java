@@ -33,9 +33,9 @@ public class ActivityService {
 
     private ActivityRepository activityRepository;
 
-    private final String activitiesPath = "./server/src/main/resources/activities";
+    private final String activitiesPath = "./src/main/resources/activities";
 
-    private final String resourcesPath = "./server/src/main/resources";
+    private final String resourcesPath = "./src/main/resources";
 
     @Autowired
     public ActivityService(final ActivityRepository activityRepository) {
@@ -76,7 +76,6 @@ public class ActivityService {
                                             final int questionType,
                                             final List<Activity> options) {
         byte[] image = generateImageByteArray(activity.getPath());
-        byte[] optionImage = generateImageByteArray(options.get(1).getPath());
         if (activity == null) {
             String[] ops = new String[] {"a", "b", "c"};
             return new MultipleChoiceQuestion("", image, ops, 0);
@@ -84,7 +83,7 @@ public class ActivityService {
         // question type of 0 means number multiple choice
         return switch (questionType) {
             case 0 -> activity.getNumberMultipleChoiceQuestion(image);
-            case 1 -> activity.getActivityMultipleChoiceQuestion(options, optionImage);
+            case 1 -> activity.getActivityMultipleChoiceQuestion(options, image);
             default -> activity.getFreeResponseQuestion(image);
         };
     }
@@ -138,7 +137,7 @@ public class ActivityService {
                 file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
             }
             String path = file.getPath().replaceAll("\\\\", "/");
-            String realPath = path.substring(path.lastIndexOf("./server"));
+            String realPath = path.substring(path.lastIndexOf("./src"));
             activities.add(new Activity(title, wattHours, source, realPath));
         }
         activityRepository.saveAllAndFlush(activities);

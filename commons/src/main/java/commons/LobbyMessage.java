@@ -3,6 +3,7 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.text.ParseException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -26,8 +27,12 @@ public class LobbyMessage extends Message<String> {
 
     @Override
     public String toString() {
-        ZonedDateTime time = ZonedDateTime.parse(timestamp).withZoneSameInstant(ZonedDateTime.now().getZone());
-        return  super.getNick() + " (" + time.format(timeFormat) + ") - " + super.getContent() + "\n";
+        try {
+            ZonedDateTime time = ZonedDateTime.parse(timestamp).withZoneSameInstant(ZonedDateTime.now().getZone());
+            return  super.getNick() + " (" + time.format(timeFormat) + ") - " + super.getContent() + "\n";
+        } catch (Exception e) {
+            return super.getNick() + " - " + super.getContent() + "\n";
+        }
     }
 
     @Override
