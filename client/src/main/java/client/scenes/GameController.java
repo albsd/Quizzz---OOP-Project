@@ -212,9 +212,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.me = game.getPlayers().get(0); // only 1 player
         this.game = game;
         this.game.initialiseTimer();
-        
-        questionNumber.setText("#" + game.getCurrentQuestionNumber());
-        game.start(this::setNextQuestion);
 
         leftBox.getChildren().remove(1);
         mainHorizontalBox.getChildren().remove(3, 5);
@@ -222,6 +219,14 @@ public class GameController implements Initializable, WebSocketSubscription {
         optionBox.setPrefWidth(600);
         optionBox.setPadding(Insets.EMPTY);
         optionBox.setSpacing(55);
+
+        currentQuestion = game.getCurrentQuestion();
+        isOpenQuestion = !(currentQuestion instanceof MultipleChoiceQuestion);
+        if (isOpenQuestion) {
+            changeToFreeMode();
+        }
+        displayQuestion();
+        game.start(this::setNextQuestion);
     }
 
     /**
