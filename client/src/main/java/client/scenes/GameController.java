@@ -250,9 +250,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         if (!submittedAnswer) {
             submittedAnswer = true;
             Button chosenOption = (Button) e.getSource();
-            Platform.runLater(() -> {
-                chosenOption.setStyle("-fx-background-color:" + green + ";");
-            });
+            chosenOption.setStyle("-fx-background-color:" + green);
             Button[] options = {option1, option2, option3};
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
@@ -295,7 +293,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         me.addScore(score);
         server.addScore(game.getId(), me.getNick(), score);
     }
-
 
     private void displayAnswerMomentarily() {
         Platform.runLater(() -> {
@@ -348,6 +345,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                 openAnswer.setText("");
                 answerBox.setText("");
             });
+            submittedAnswer = false;
             warning.setVisible(false);
             game.nextQuestion();
             displayCurrentQuestion();

@@ -211,7 +211,7 @@
                </Label>
             </children>
          </AnchorPane>
-<!--         &lt;!&ndash; Include the popup at top of everything &ndash;&gt;-->
+         <!-- Include the popup at top of everything -->
          <fx:include fx:id="popup" source="/client/scenes/Popup.fxml" />
          <fx:include fx:id="leaderboard" source="/client/scenes/Leaderboard.fxml" />
       </children>
