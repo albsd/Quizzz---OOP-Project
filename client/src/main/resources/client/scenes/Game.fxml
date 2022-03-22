@@ -21,8 +21,8 @@
    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
       <children>
          <!-- Include the popup at top of everything -->
-         <fx:include fx:id="popup" source="../../client/scenes/Popup.fxml" />
-         <fx:include fx:id="leaderboard" layoutX="-20.0" layoutY="-20.0" source="../../client/scenes/Leaderboard.fxml" />
+         <fx:include fx:id="popup" source="/client/scenes/Popup.fxml" />
+         <fx:include fx:id="leaderboard" layoutX="-20.0" layoutY="-20.0" source="/client/scenes/Leaderboard.fxml" />
           <AnchorPane fx:id="menu" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
             <children>
                  <Label fx:id="points" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0" text="0 pts">
