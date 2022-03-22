@@ -18,6 +18,10 @@ public class GameResult {
 
     private int score;
 
+    public GameResult() {
+        
+    }
+
     public GameResult(final String nick, final int score) {
         this.nick = nick;
         this.score = score;

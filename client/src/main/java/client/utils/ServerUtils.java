@@ -267,10 +267,10 @@ public class ServerUtils {
 
     public Leaderboard getSinglePlayerLeaderboard() {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/leaderboard/"))
+                .uri(URI.create(kGameUrl + "/leaderboard"))
+                .header("accept", "application/json")
                 .GET()
                 .build();
-
         return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
 

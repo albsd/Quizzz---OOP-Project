@@ -282,8 +282,8 @@ public class GameController {
     }
 
     @GetMapping("/leaderboard")
-    public ResponseEntity<Leaderboard> getSinglePlayerLeaderboard() {
-        return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
+    public Leaderboard getSinglePlayerLeaderboard() {
+        return leaderboardService.getAllPlayerInfo();
     }
 
     /**
