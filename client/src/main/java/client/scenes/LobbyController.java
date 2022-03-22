@@ -37,20 +37,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private ScrollPane chatArea;
 
     @FXML
-    private Label chatText;
+    private Label chatText, playersLeft, playersRight, playerCount;
 
     @FXML
     private TextField chatInput;
 
-    @FXML
-    private Label playersLeft;
-
-    @FXML
-    private Label playersRight;
-
-    @FXML
-    private Label playerCount;
-    
     @FXML
     private Parent popup;
 
@@ -174,6 +165,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void start(final ActionEvent event) {
         //don't start game immediately cause invoker starts game faster
         //than other players in lobby
+        server.send("/app/lobby/chat",
+                new LobbyMessage("Server", "", "Game is about to start. Have fun!"));
         server.startMultiPlayer();
     }
 }
