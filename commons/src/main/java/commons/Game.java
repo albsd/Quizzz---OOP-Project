@@ -61,7 +61,7 @@ public class Game {
 
     @JsonIgnore
     public boolean shouldShowMultiplayerLeaderboard() {
-        return (isMultiplayer && currentQuestion % 10 == 0);
+        return (isMultiplayer && getCurrentQuestionNumber() % 10 == 0);
     }
 
     @JsonIgnore
@@ -94,7 +94,7 @@ public class Game {
 
     @JsonIgnore
     public boolean isOver() {
-        return this.currentQuestion >= 20;
+        return getCurrentQuestionNumber() >= 20;
     }
     
     @JsonIgnore

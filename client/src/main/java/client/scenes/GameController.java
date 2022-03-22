@@ -11,6 +11,7 @@ import commons.Game;
 import commons.Emote;
 import commons.EmoteMessage;
 import commons.Question;
+import commons.FreeResponseQuestion;
 import commons.MultipleChoiceQuestion;
 import commons.Leaderboard;
 import javafx.application.Platform;
@@ -98,8 +99,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private String chatPath;
 
-    private Question currentQuestion;
-
     private boolean isOpenQuestion = false;
     
     private String leavePath;
@@ -135,11 +134,11 @@ public class GameController implements Initializable, WebSocketSubscription {
         option2.setFont(font);
         option3.setFont(font);
         questionPrompt.setFont(font);
-        answerBox.setFont(font);
         questionNumber.setFont(font);
         points.setFont(font);
         timer1.setFont(font);
         timer2.setFont(font);
+        answerBox.setFont(font);
         warning.setFont(font);
         submittedAnswer = false;
         doubleScore = false;
@@ -228,8 +227,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
-        
-        // game.start(this::setNextQuestion);
     }
 
     public void setSinglePlayer(final Game game) {
@@ -253,6 +250,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         if (!submittedAnswer) {
             submittedAnswer = true;
             Button chosenOption = (Button) e.getSource();
+            Platform.runLater(() -> {
+                chosenOption.setStyle("-fx-background-color:" + green + ";");
+            });
             Button[] options = {option1, option2, option3};
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
@@ -294,12 +294,15 @@ public class GameController implements Initializable, WebSocketSubscription {
         System.out.println("Received " + score + " points from question");
         me.addScore(score);
         server.addScore(game.getId(), me.getNick(), score);
-        Platform.runLater(() -> points.setText(Integer.toString(me.getScore())));
     }
 
 
     private void displayAnswerMomentarily() {
-        Platform.runLater(() -> timer.setProgress(0.0));
+        Platform.runLater(() -> {
+            timer.setProgress(0.0);
+            points.setText("Total points: " + me.getScore());
+        });
+        warning.setVisible(false);
         long answer = game.getCurrentQuestion().getAnswer();
         if (!isOpenQuestion) {
             Button[] options = {option1, option2, option3};
@@ -310,9 +313,8 @@ public class GameController implements Initializable, WebSocketSubscription {
                     options[i].setStyle("-fx-background-color:" + red + ";\n-fx-text-fill:" + darkRed + ";");
                 }
             }
-        } else{
-            openAnswer.setText("Answer is: " + answer);
-            openAnswer.setVisible(true);
+        } else {
+            Platform.runLater(() -> answerBox.setText("Answer is: " + answer));
         }
         try {
             Thread.sleep(5000);
@@ -337,14 +339,15 @@ public class GameController implements Initializable, WebSocketSubscription {
                 displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
             }
         }
-       // Displays leaderboard every 10 questions in multiplayer
-       if (game.isMultiplayer() && game.shouldShowMultiplayerLeaderboard()) {
-        displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
+        // Displays leaderboard every 10 questions in multiplayer
+        if (game.isMultiplayer() && game.shouldShowMultiplayerLeaderboard()) {
+            displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
         }
-
         if (!game.isOver()) {
-            submittedAnswer = false;
-            answerBox.setText("");
+            Platform.runLater(() -> {
+                openAnswer.setText("");
+                answerBox.setText("");
+            });
             warning.setVisible(false);
             game.nextQuestion();
             displayCurrentQuestion();
