@@ -93,7 +93,7 @@ public class FXMLController {
         return displayScene(SplashController.class);
     }
 
-    public Pair<LeaderboardController, Parent> showLeaderboard(Leaderboard leaderboard) {
+    public Pair<LeaderboardController, Parent> showLeaderboard(final Leaderboard leaderboard) {
         subscribe(LeaderboardController.class);
         var root = displayScene(LeaderboardController.class);
         LeaderboardController leaderboardController = root.getKey();
