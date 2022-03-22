@@ -23,6 +23,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import commons.Activity;
 import commons.Game;
+import commons.GameResult;
 import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,14 +31,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import server.repository.LeaderboardRepository;
 import server.service.ActivityService;
 import server.repository.ActivityRepository;
 import server.repository.GameRepository;
 import server.service.GameService;
-
-
+import server.service.LeaderboardService;
 import java.util.List;
 import java.util.Comparator;
+
 @DataJpaTest
 public class GameControllerTest {
 
@@ -50,7 +52,18 @@ public class GameControllerTest {
     @Mock
     private ActivityRepository activityRepository;
 
-    private List<Activity> activities = List.of(new Activity());
+    private final List<Activity> activities = List.of(
+            new Activity(), new Activity(), new Activity(), new Activity(),
+            new Activity(), new Activity(), new Activity(), new Activity(),
+            new Activity(), new Activity(), new Activity(), new Activity(),
+            new Activity(), new Activity(), new Activity(), new Activity(),
+            new Activity(), new Activity(), new Activity(), new Activity(),
+            new Activity(), new Activity(), new Activity(), new Activity());
+
+    @Mock
+    LeaderboardRepository leaderboardRepository;
+
+    private final List<GameResult> gameResults = List.of(new GameResult("nick", 0));
 
     private String nick;
 
@@ -59,14 +72,16 @@ public class GameControllerTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        when(activityRepository.count()).thenReturn(100L);
+        when(activityRepository.count()).thenReturn(20L);
         when(activityRepository.findAll()).thenReturn(activities);
+        when(leaderboardRepository.findAll()).thenReturn(gameResults);
 
         GameService service =  new GameService(new GameRepository());
         ActivityService activityService = new ActivityService(activityRepository);
+        LeaderboardService leaderboardService = new LeaderboardService(leaderboardRepository);
         service.initializeLobby(activityService.getQuestionList());
 
-        ctrl = new GameController(service, activityService);
+        ctrl = new GameController(service, activityService, leaderboardService);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
         game = service.getCurrentGame();
@@ -75,7 +90,8 @@ public class GameControllerTest {
         ctrl.joinCurrentGame("babe");
         nick = "johny";
         score = 50;
-        lobby = ctrl.startCurrentGame().getBody();
+        ctrl.startLobby();
+        lobby = ctrl.getCurrentGame();
     }
 
     @Test
@@ -116,18 +132,18 @@ public class GameControllerTest {
         ctrl.joinCurrentGame("niko");
         ctrl.joinCurrentGame("babe");
 
-        var newLobby = ctrl.startCurrentGame();
+        ctrl.startLobby();
 
         assertEquals(ctrl.getAll().size(), 2);
         assertEquals(lobby.getPlayers().size(), 3);
-        assertNotEquals(lobby, newLobby.getBody());
+        assertNotEquals(lobby, ctrl.getCurrentGame());
     }
 
     @Test
     public void leaderboardSorted() {
         List<Player> players = game.getPlayers();
         for (int i = 0; i < players.size(); i++) {
-            players.get(0).setScore(4 * i + 2);
+            players.get(i).addScore(4 * i + 2);
         }
 
         List<Player> expected = players.stream()
@@ -138,7 +154,7 @@ public class GameControllerTest {
 
     @Test
     public void updatePoints() {
-        Game current = ctrl.updatePlayerPoints(game.getId(), nick, Integer.toString(score)).getBody();
+        Game current = ctrl.addPlayerPoints(game.getId(), nick, Integer.toString(score)).getBody();
         assertEquals(score, current.getPlayerByNick(nick).getScore());
     }
 

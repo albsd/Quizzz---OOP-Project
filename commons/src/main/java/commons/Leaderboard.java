@@ -2,20 +2,23 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Leaderboard {
     @JsonProperty("ranking")
-    private List<Player> ranking = new ArrayList<>();
+    private List<Player> ranking;
+
+    public Leaderboard(final @JsonProperty("ranking") List<Player> ranking) {
+        this.ranking = ranking.stream().
+                sorted(Comparator.comparingInt(Player::getScore).reversed())
+                .collect(Collectors.toList());
+    }
 
     public List<Player> getRanking() {
         return ranking;
-    }
-
-    public void setRanking(final List<Player> ranking) {
-        this.ranking = ranking;
     }
 
     @Override

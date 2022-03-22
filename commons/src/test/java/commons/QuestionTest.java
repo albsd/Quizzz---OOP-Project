@@ -34,13 +34,13 @@ public class QuestionTest {
             }
         }
         q1 = new MultipleChoiceQuestion("test_prompt", bytes,
-                new String[]{"Option1", "Option2", "Option3"}, "Option2");
+                new String[]{"Option1", "Option2", "Option3"}, 1);
     }
 
     @Test
     void testLoadImage() {
-        assertNotNull(q1.getImageBytes());
-        assertNotEquals(0, q1.getImageBytes().length);
+        assertNotNull(q1.getImage());
+        assertNotEquals(0, q1.getImage().length);
     }
 
     @Test

@@ -1,219 +1,223 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
-        <children>
-            <Label fx:id="points" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0" text="0 pts">
-                <font>
-                    <Font name="System Bold" size="30.0" />
-                </font>
-            </Label>
-         <VBox layoutY="100.0">
+   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
+      <children>
+          <AnchorPane fx:id="menu" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
             <children>
-               <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" text="What is the expected energy consumption of an average personal gaming computer system per hour?" wrapText="true">
+                 <Label fx:id="points" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0" text="0 pts">
+                     <font>
+                         <Font name="System Bold" size="30.0" />
+                     </font>
+                 </Label>
+               <VBox layoutY="100.0">
+                  <children>
+                     <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" text="What is the expected energy consumption of an average personal gaming computer system per hour?" wrapText="true">
+                        <font>
+                           <Font size="24.0" />
+                        </font>
+                        <padding>
+                           <Insets left="50.0" />
+                        </padding>
+                     </Label>
+                     <HBox fx:id="mainHorizontalBox" prefHeight="400.0" prefWidth="1240.0">
+                        <children>
+                           <VBox fx:id="leftBox" alignment="CENTER" prefHeight="400.0">
+                              <children>
+                                 <ImageView fx:id="questionImage" fitHeight="315.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                                    <image>
+                                       <Image url="@/images/placeholderQuestion.png" />
+                                    </image>
+                                 </ImageView>
+                                 <HBox fx:id="powerupBox" prefHeight="85.0" prefWidth="311.0">
+                                    <children>
+                                       <Button fx:id="timeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#timePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                          <graphic>
+                                             <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@/images/time.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                       <Button fx:id="scoreButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#scorePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                          <graphic>
+                                             <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@/images/score.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                       <Button fx:id="removeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#removePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                          <graphic>
+                                             <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@/images/remove.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                    </children>
+                                 </HBox>
+                              </children>
+                           </VBox>
+                           <Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+                           <VBox fx:id="optionBox" prefHeight="400.0" prefWidth="300.0" spacing="45.0">
+                              <children>
+                                 <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="200 Watts / hour" textFill="#a07400" VBox.vgrow="ALWAYS">
+                                    <font>
+                                       <Font size="24.0" />
+                                    </font>
+                                 </Button>
+                                 <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="100 Watts / hour" textFill="#a07400">
+                                    <font>
+                                       <Font size="24.0" />
+                                    </font>
+                                 </Button>
+                                 <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="50 Watts / hour" textFill="#a07400">
+                                    <font>
+                                       <Font size="24.0" />
+                                    </font>
+                                 </Button>
+                                 <TextField fx:id="openAnswer" alignment="CENTER" onAction="#checkFreeResponseQuestion" prefHeight="53.0" prefWidth="196.0" promptText="Type in only numbers" visible="false">
+                                    <font>
+                                       <Font size="24.0" />
+                                    </font>
+                                 </TextField>
+                              </children>
+                              <padding>
+                                 <Insets top="25.0" />
+                              </padding>
+                              <HBox.margin>
+                                 <Insets />
+                              </HBox.margin>
+                           </VBox>
+                           <Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+                           <VBox fx:id="chatBox" prefHeight="400.0" prefWidth="350.0">
+                              <children>
+                                 <ScrollPane fx:id="emoteScroll" fitToWidth="true" hbarPolicy="NEVER" prefHeight="315.0" prefWidth="350.0" style="-fx-background: white;" VBox.vgrow="ALWAYS">
+                                    <content>
+                                       <VBox fx:id="emoteChat" alignment="BOTTOM_RIGHT" minHeight="315.0" minWidth="300.0" spacing="20.0">
+                                          <padding>
+                                             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                          </padding>
+                                       </VBox>
+                                    </content>
+                                 </ScrollPane>
+                                 <HBox prefHeight="85.0" prefWidth="356.0">
+                                    <children>
+                                       <Button fx:id="frown" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#frown" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                          <font>
+                                             <Font size="10.0" />
+                                          </font>
+                                          <graphic>
+                                             <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@/images/face-frown.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                       <Button fx:id="cry" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cry" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                          <font>
+                                             <Font size="10.0" />
+                                          </font>
+                                          <graphic>
+                                             <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@/images/face-sad.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                       <Button fx:id="smile" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#smile" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                          <font>
+                                             <Font size="10.0" />
+                                          </font>
+                                          <graphic>
+                                             <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@/images/face-smile.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                       <Button fx:id="surprised" layoutX="222.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#surprised" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                          <font>
+                                             <Font size="10.0" />
+                                          </font>
+                                          <graphic>
+                                             <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@/images/face-surprise.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                    </children>
+                                 </HBox>
+                              </children>
+                           </VBox>
+                        </children>
+                        <padding>
+                           <Insets left="50.0" right="50.0" />
+                        </padding>
+                     </HBox>
+                  </children>
+               </VBox>
+               <ProgressBar fx:id="timer" layoutY="627.0" maxWidth="1280.0" prefHeight="53.0" prefWidth="1240.0" progress="0.53" style="-fx-accent: #FE6F5B;" />
+               <Label fx:id="timer1" layoutX="14.0" layoutY="629.0" prefHeight="48.0" prefWidth="38.0" text="0s">
                   <font>
                      <Font size="24.0" />
                   </font>
-                  <padding>
-                     <Insets left="50.0" />
-                  </padding>
                </Label>
-               <HBox fx:id="mainHorizontalBox" prefHeight="400.0" prefWidth="1240.0">
-                  <children>
-                     <VBox fx:id="leftBox" alignment="CENTER" prefHeight="400.0">
-                        <children>
-                           <ImageView fx:id="questionImage" fitHeight="315.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+               <Label fx:id="timer2" layoutX="1186.0" layoutY="627.0" prefHeight="53.0" prefWidth="54.0" text="20s">
+                  <font>
+                     <Font size="24.0" />
+                  </font>
+               </Label>
+                  <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;" styleClass="iconButton" textAlignment="CENTER">
+                      <graphic>
+                          <ImageView pickOnBounds="true" preserveRatio="true">
                               <image>
-                                 <Image url="@/images/placeholderQuestion.png" />
+                                  <Image url="@/images/back.png" />
                               </image>
-                           </ImageView>
-                           <HBox fx:id="powerupBox" prefHeight="85.0" prefWidth="311.0">
-                              <children>
-                                 <Button fx:id="timeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#timePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
-                                    <graphic>
-                                       <ImageView pickOnBounds="true" preserveRatio="true">
-                                          <image>
-                                             <Image url="@/images/time.png" />
-                                          </image>
-                                       </ImageView>
-                                    </graphic>
-                                 </Button>
-                                 <Button fx:id="scoreButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#scorePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
-                                    <graphic>
-                                       <ImageView pickOnBounds="true" preserveRatio="true">
-                                          <image>
-                                             <Image url="@/images/score.png" />
-                                          </image>
-                                       </ImageView>
-                                    </graphic>
-                                 </Button>
-                                 <Button fx:id="removeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#removePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
-                                    <graphic>
-                                       <ImageView pickOnBounds="true" preserveRatio="true">
-                                          <image>
-                                             <Image url="@/images/remove.png" />
-                                          </image>
-                                       </ImageView>
-                                    </graphic>
-                                 </Button>
-                              </children>
-                           </HBox>
-                        </children>
-                     </VBox>
-                     <Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
-                     <VBox fx:id="optionBox" prefHeight="400.0" prefWidth="300.0" spacing="45.0">
-                        <children>
-                           <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkAnswer" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="200 Watts / hour" textFill="#a07400" VBox.vgrow="ALWAYS">
-                              <font>
-                                 <Font size="24.0" />
-                              </font>
-                           </Button>
-                           <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkAnswer" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="100 Watts / hour" textFill="#a07400">
-                              <font>
-                                 <Font size="24.0" />
-                              </font>
-                           </Button>
-                           <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkAnswer" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="50 Watts / hour" textFill="#a07400">
-                              <font>
-                                 <Font size="24.0" />
-                              </font>
-                           </Button>
-                        </children>
-                        <padding>
-                           <Insets top="25.0" />
-                        </padding>
-                        <HBox.margin>
-                           <Insets />
-                        </HBox.margin>
-                     </VBox>
-                     <Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
-                     <VBox fx:id="chatBox" prefHeight="400.0" prefWidth="350.0">
-                        <children>
-                           <ScrollPane fx:id="emoteScroll" fitToWidth="true" hbarPolicy="NEVER" prefHeight="315.0" prefWidth="350.0" style="-fx-background: white;" VBox.vgrow="ALWAYS">
-                              <content>
-                                 <VBox fx:id="emoteChat" alignment="BOTTOM_RIGHT" minHeight="315.0" minWidth="300.0" spacing="20.0">
-                                    <padding>
-                                       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                                    </padding>
-                                 </VBox>
-                              </content>
-                           </ScrollPane>
-                           <HBox prefHeight="85.0" prefWidth="356.0">
-                              <children>
-                                 <Button fx:id="frown" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#frown" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
-                                    <font>
-                                       <Font size="10.0" />
-                                    </font>
-                                    <graphic>
-                                       <ImageView pickOnBounds="true" preserveRatio="true">
-                                          <image>
-                                             <Image url="@/images/face-frown.png" />
-                                          </image>
-                                       </ImageView>
-                                    </graphic>
-                                 </Button>
-                                 <Button fx:id="cry" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cry" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
-                                    <font>
-                                       <Font size="10.0" />
-                                    </font>
-                                    <graphic>
-                                       <ImageView pickOnBounds="true" preserveRatio="true">
-                                          <image>
-                                             <Image url="@/images/face-sad.png" />
-                                          </image>
-                                       </ImageView>
-                                    </graphic>
-                                 </Button>
-                                 <Button fx:id="smile" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#smile" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
-                                    <font>
-                                       <Font size="10.0" />
-                                    </font>
-                                    <graphic>
-                                       <ImageView pickOnBounds="true" preserveRatio="true">
-                                          <image>
-                                             <Image url="@/images/face-smile.png" />
-                                          </image>
-                                       </ImageView>
-                                    </graphic>
-                                 </Button>
-                                 <Button fx:id="surprised" layoutX="222.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#surprised" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
-                                    <font>
-                                       <Font size="10.0" />
-                                    </font>
-                                    <graphic>
-                                       <ImageView pickOnBounds="true" preserveRatio="true">
-                                          <image>
-                                             <Image url="@/images/face-surprise.png" />
-                                          </image>
-                                       </ImageView>
-                                    </graphic>
-                                 </Button>
-                              </children>
-                           </HBox>
-                        </children>
-                     </VBox>
-                  </children>
-                  <padding>
-                     <Insets left="50.0" right="50.0" />
-                  </padding>
-               </HBox>
-            </children>
-         </VBox>
-         <ProgressBar fx:id="timer" layoutY="627.0" maxWidth="1280.0" prefHeight="53.0" prefWidth="1240.0" progress="0.53" style="-fx-accent: #FE6F5B;" />
-         <Pane fx:id="popupMenu" prefHeight="680.0" prefWidth="1280.0" visible="false">
-            <children>
-               <AnchorPane layoutX="231.0" layoutY="250.0" prefHeight="171.0" prefWidth="804.0" styleClass="returnPopup">
-                  <children>
-                     <Button fx:id="cancelButton" layoutX="14.0" layoutY="114.0" mnemonicParsing="false" onAction="#closePopup" prefHeight="53.0" prefWidth="356.0" styleClass="cancelButton" text="Cancel" textFill="#740000">
-                        <font>
-                           <Font size="24.0" />
-                        </font>
-                     </Button>
-                     <Button fx:id="confirmButton" layoutX="448.0" layoutY="114.0" mnemonicParsing="false" onAction="#returnToMenu" prefHeight="27.0" prefWidth="356.0" styleClass="confirmButton" text="Confirm" textFill="#009a19">
-                        <font>
-                           <Font size="24.0" />
-                        </font>
-                     </Button>
-                     <Label fx:id="popupText" alignment="CENTER" layoutY="27.0" prefHeight="35.0" prefWidth="804.0" text="Do you really want to leave the lobby?" wrapText="true">
-                        <font>
-                           <Font size="24.0" />
-                        </font>
-                     </Label>
-                  </children>
-               </AnchorPane>
-            </children></Pane>
-         <Label fx:id="timer1" layoutX="14.0" layoutY="629.0" prefHeight="48.0" prefWidth="38.0" text="0s">
-            <font>
-               <Font size="24.0" />
-            </font>
-         </Label>
-         <Label fx:id="timer2" layoutX="1186.0" layoutY="627.0" prefHeight="53.0" prefWidth="54.0" text="20s">
-            <font>
-               <Font size="24.0" />
-            </font>
-         </Label>
-            <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;" styleClass="iconButton" textAlignment="CENTER">
-                <graphic>
-                    <ImageView pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@/images/back.png" />
-                        </image>
-                    </ImageView>
-                </graphic></Button>
-         <Label fx:id="questionNumber" alignment="TOP_LEFT" layoutX="7.0" layoutY="124.0" text="#">
-            <font>
-               <Font name="System Bold" size="24.0" />
-            </font>
-         </Label>
-        </children>
-    </AnchorPane>
+                          </ImageView>
+                      </graphic>
+               </Button>
+               <Label fx:id="questionNumber" alignment="TOP_LEFT" layoutX="7.0" layoutY="124.0" text="#">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
+                  </font>
+               </Label>
+               <Label fx:id="warning" alignment="CENTER" layoutX="485.0" layoutY="82.0" prefHeight="36.0" prefWidth="228.0" text="You can only input numbers" textFill="#e90b0b" visible="false">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Label>
+              </children>
+          </AnchorPane>
+         <!-- Include the popup at top of everything -->
+         <fx:include fx:id="popup" source="/client/scenes/Popup.fxml" />
+         <fx:include fx:id="leaderboard" layoutX="-20.0" layoutY="-20.0" source="/client/scenes/Leaderboard.fxml" />
+      </children>
+   </AnchorPane>
 </VBox>

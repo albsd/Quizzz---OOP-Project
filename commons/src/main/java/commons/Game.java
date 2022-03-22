@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-enum GameState { waiting, playing }
-
 public class Game {
 
     @JsonProperty("id")
@@ -19,33 +17,33 @@ public class Game {
     private List<Player> players;
 
     @JsonProperty("questions")
-    private List<Question<?>> questions;
+    private List<Question> questions;
 
     @JsonProperty("currentQuestion")
     private int currentQuestion;
 
-    @JsonProperty("gameState")
-    private GameState gameState;
+    @JsonProperty("isMultiplayer")
+    private boolean isMultiplayer;
 
-    public Game(final UUID id, final List<Question<?>> questions) {
+    public Game(final UUID id, final List<Question> questions, final boolean isMultiplayer) {
         this.id = id;
         this.players = new ArrayList<>();
         this.questions = questions;
         this.currentQuestion = 0;
-        this.gameState = GameState.waiting;
+        this.isMultiplayer = isMultiplayer;
     }
 
     @JsonCreator
     public Game(final @JsonProperty("id") UUID id,
                 final @JsonProperty("players") List<Player> players,
-                final @JsonProperty("questions") List<Question<?>> questions,
+                final @JsonProperty("questions") List<Question> questions,
                 final @JsonProperty("currentQuestion") int currentQuestion,
-                final @JsonProperty("gameState") GameState gameState) {
+                final @JsonProperty("isMultiplayer") boolean isMultiplayer) {
         this.id = id;
         this.players = players;
         this.questions = questions;
         this.currentQuestion = currentQuestion;
-        this.gameState = gameState;
+        this.isMultiplayer = isMultiplayer;
     }
 
     public UUID getId() {
@@ -56,8 +54,19 @@ public class Game {
         return players;
     }
 
-    public GameState getGameState() {
-        return gameState;
+    @JsonIgnore
+    public boolean isMultiplayer() {
+        return this.isMultiplayer;
+    }
+
+    @JsonIgnore
+    public boolean shouldShowMultiplayerLeaderboard() {
+        return (isMultiplayer && currentQuestion % 10 == 0);
+    }
+
+    @JsonIgnore
+    public int getCurrentQuestionNumber() {
+        return currentQuestion + 1;
     }
 
     public boolean addPlayer(final Player p) {
@@ -77,30 +86,29 @@ public class Game {
     }
 
     public Player getPlayerByNick(final String nick) {
-        for (Player p : players) {
-            if (p.getNick().equals(nick)) {
-                return p;
-            }
-        }
-        return null;
+        return players.stream()
+            .filter((p) -> p.getNick().equals(nick))
+            .findFirst()
+            .orElse(null);
     }
 
+    @JsonIgnore
+    public boolean isOver() {
+        return this.currentQuestion >= 20;
+    }
+    
+    @JsonIgnore
     public void nextQuestion() {
-        this.currentQuestion++;
+        currentQuestion++;
     }
 
     @JsonIgnore
-    public int getCurrentQuestionIndex() {
-        return currentQuestion;
-    }
-
-    @JsonIgnore
-    public List<Question<?>> getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 
     @JsonIgnore
-    public Question<?> getCurrentQuestion() {
+    public Question getCurrentQuestion() {
         return questions.get(currentQuestion);
     }
 }

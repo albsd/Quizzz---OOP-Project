@@ -3,11 +3,14 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class LobbyMessage extends Message<String> {
     @JsonProperty("timestamp")
     private final String timestamp;
+    private final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
 
     @JsonCreator
     public LobbyMessage(final @JsonProperty("nick") String nick,
@@ -23,7 +26,8 @@ public class LobbyMessage extends Message<String> {
 
     @Override
     public String toString() {
-        return  super.getNick() + " (" + timestamp + ") - " + super.getContent() + "\n";
+        ZonedDateTime time = ZonedDateTime.parse(timestamp).withZoneSameInstant(ZonedDateTime.now().getZone());
+        return  super.getNick() + " (" + time.format(timeFormat) + ") - " + super.getContent() + "\n";
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import commons.Leaderboard;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 import client.scenes.GameController;
@@ -12,14 +13,12 @@ import client.scenes.IPPromptController;
 import client.scenes.LeaderboardController;
 import client.scenes.LobbyController;
 import client.scenes.SplashController;
-import javafx.animation.PauseTransition;
 import commons.Game;
 import commons.Player;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.util.Pair;
 
 public class FXMLController {
@@ -94,9 +93,13 @@ public class FXMLController {
         return displayScene(SplashController.class);
     }
 
-    public Pair<LeaderboardController, Parent> showLeaderboard() {
+    public Pair<LeaderboardController, Parent> showLeaderboard(final Leaderboard leaderboard) {
         subscribe(LeaderboardController.class);
-        return displayScene(LeaderboardController.class);
+        var root = displayScene(LeaderboardController.class);
+        LeaderboardController leaderboardController = root.getKey();
+        leaderboardController.show();
+        leaderboardController.displayLeaderboard(leaderboard, new Player("you"));
+        return root;
     }
 
     public Pair<HelpController, Parent> showHelp() {
@@ -120,22 +123,11 @@ public class FXMLController {
         return root;
     }
 
-    public Pair<GameController, Parent> showSinglePlayer(final Player me) {
+    public Pair<GameController, Parent> showSinglePlayer(final Game game) {
         var root = displayScene(GameController.class);
         var ctrl = root.getKey();
-        ctrl.setSinglePlayer(me);
+        ctrl.setSinglePlayer(game);
         subscribe(GameController.class);
-        return root;
-    }
-    
-    public Pair<LeaderboardController, Parent> displayLeaderboardMomentarily() {
-        var root = myFXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
-        Stage stage1 = new Stage();
-        Scene scene = new Scene(root.getValue());
-        stage1.setScene(scene);
-        stage1.show();
-        PauseTransition delay = new PauseTransition(Duration.seconds(5));
-        delay.setOnFinished(event -> stage1.close());
         return root;
     }
 }

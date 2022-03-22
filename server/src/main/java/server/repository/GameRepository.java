@@ -19,13 +19,13 @@ package server.repository;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
+import commons.Question;
+
 import org.springframework.stereotype.Repository;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.Comparator;
 import java.util.List;
 @Repository
 public class GameRepository {
@@ -50,6 +50,12 @@ public class GameRepository {
         }
         return optional.get();
     }
+    
+    public Game createSingleplayer(final String nick, final List<Question> questions) {
+        Game game = new Game(UUID.randomUUID(), questions, false);
+        game.addPlayer(new Player(nick));
+        return game;
+    }
 
     public UUID addGame(final Game game) {
         games.add(game);
@@ -66,17 +72,11 @@ public class GameRepository {
 
     public Leaderboard getLeaderboard(final UUID id) {
         Game game = this.findById(id);
-        List<Player> players = game.getPlayers();
-        Leaderboard leaderboard = new Leaderboard();
-        List<Player> rank = players.stream().
-                sorted(Comparator.comparingInt(Player::getScore).reversed())
-                .collect(Collectors.toList());
-        leaderboard.setRanking(rank);
-        return leaderboard;
+        return new Leaderboard(game.getPlayers());
     }
 
-    public void updatePlayerScore(final Game game, final String nick, final int score) {
+    public void addPlayerScore(final Game game, final String nick, final int score) {
         Player player = game.getPlayerByNick(nick);
-        player.setScore(score);
+        player.addScore(score);
     }
 }

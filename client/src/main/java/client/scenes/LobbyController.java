@@ -3,24 +3,24 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
+
 import commons.Game;
 import commons.LobbyMessage;
 import commons.Player;
 import commons.PlayerUpdate;
+import commons.GameUpdate;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ButtonType;
 
 import java.net.URL;
-import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -50,12 +50,20 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     private Label playerCount;
+    
+    @FXML
+    private Parent popup;
+
+    @FXML
+    private PopupController popupController; 
 
     private final ServerUtils server;
     
     private final FXMLController fxml;
 
     private final DateTimeFormatter timeFormat;
+
+    private Game lobby;
     
     private Player me;
     
@@ -73,7 +81,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void initialize(final URL location, final ResourceBundle resources) {
         // We DON'T use the shorthand .toList() here, because that returns an immutable
         // list and causes player updates to get ignored silently
-        this.players = server.getPlayers().stream()
+        this.lobby = server.getLobby();
+        this.players = this.lobby.getPlayers().stream()
                 .map(Player::getNick)
                 .collect(Collectors.toList());
 
@@ -99,9 +108,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
             });
         });
 
-        subscriptions[2] = server.registerForMessages("/topic/lobby/start", Game.class, game -> {
-            Platform.runLater(() -> { 
-                fxml.showMultiPlayer(me, game); 
+        subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, game -> {
+            Platform.runLater(() -> {
+                //sets lobby with recent list of players
+                this.lobby = server.getLobby();
+                fxml.showMultiPlayer(me, lobby);
             });
         });
         return subscriptions;
@@ -112,8 +123,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         chatInput.setText("");
 
-        final LocalTime time = LocalTime.now();
-        final LobbyMessage message = new LobbyMessage(me.getNick(), time.format(timeFormat), content);
+        final ZonedDateTime time = ZonedDateTime.now();
+        final LobbyMessage message = new LobbyMessage(me.getNick(), time.toString(), content);
         
         server.send("/app/lobby/chat", message);
         chatArea.setVvalue(1.0);
@@ -135,7 +146,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
                 }
                 return nick;
             }).toList();
-
             String leftText = IntStream.range(0, players.size())
                     .filter(i -> i % 2 == 0)
                     .mapToObj(nicks::get)
@@ -152,26 +162,17 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     }
 
     @FXML
-    public void onReturnButtonClick(final ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Confirmation Screen");
-        alert.setHeaderText("Confirmation needed!");
-        alert.setContentText("You are about to leave the lobby. Are you sure?");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.YES) {
-            returnToMenu(event);
-        }
-    }
-
-    @FXML
-    public void returnToMenu(final ActionEvent event) {
-        server.leaveGame(me.getNick());
-        fxml.showSplash();
+    public void openPopup(final ActionEvent event) {
+        popupController.open("lobby", () -> {
+            server.leaveLobby(me.getNick());
+            fxml.showSplash();
+        });
     }
 
     @FXML
     public void start(final ActionEvent event) {
-        Game game = server.startGame();
-        fxml.showMultiPlayer(me, game);
+        //don't start game immediately cause invoker starts game faster
+        //than other players in lobby
+        server.startMultiPlayer();
     }
 }

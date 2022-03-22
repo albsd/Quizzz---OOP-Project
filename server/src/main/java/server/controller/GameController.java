@@ -16,13 +16,14 @@
 package server.controller;
 
 import commons.Game;
-import commons.EmoteMessage;
-import commons.GameUpdate;
 import commons.Leaderboard;
 import commons.Player;
+import commons.Question;
 import commons.PlayerUpdate;
 import commons.LobbyMessage;
-import commons.Question;
+import commons.GameResult;
+import commons.GameUpdate;
+import commons.EmoteMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import server.service.ActivityService;
 import server.service.GameService;
+import server.service.LeaderboardService;
 
 import java.util.List;
 import java.util.UUID;
@@ -53,10 +55,14 @@ public class GameController {
 
     private final ActivityService activityService;
 
+    private final LeaderboardService leaderboardService;
+
     @Autowired
-    public GameController(final GameService gameService, final ActivityService activityService) {
+    public GameController(final GameService gameService, final ActivityService activityService,
+                          final LeaderboardService leaderboardService) {
         this.gameService = gameService;
         this.activityService = activityService;
+        this.leaderboardService = leaderboardService;
         gameService.initializeLobby(activityService.getQuestionList());
     }
 
@@ -68,6 +74,17 @@ public class GameController {
     @GetMapping(path = { "", "/" })
     public List<Game> getAll() {
         return gameService.getAll();
+    }
+
+    /**
+     * Creates a game for a singleplayer game.
+     *
+     * @param nick Name of the player who started a singleplayer game
+     * @return Game object for singleplayer
+     */
+    @PostMapping("/single/{nick}")
+    public Game createGame(final @PathVariable String nick) {
+        return gameService.createSingleplayer(nick, activityService.getQuestionList());
     }
 
     /**
@@ -106,7 +123,7 @@ public class GameController {
     }
 
     @GetMapping("/{id}/question")
-    public ResponseEntity<List<Question<?>>> getQuestions(@PathVariable final UUID id) {
+    public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
         Game game = gameService.findById(id); 
         if (game == null) {
             return ResponseEntity.badRequest().build();
@@ -147,7 +164,7 @@ public class GameController {
      * @return Player
      */
     @DeleteMapping("/leave/{nick}")
-    public ResponseEntity<Player> leaveCurrentGame(final @PathVariable("nick") String nick) {
+    public ResponseEntity<Player> leaveLobby(final @PathVariable("nick") String nick) {
         if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
@@ -161,7 +178,32 @@ public class GameController {
             return ResponseEntity.status(errorCode).build();
         }
         boolean success = lobby.removePlayer(p);
-        System.out.println(success);
+
+        if (!success) {
+            return ResponseEntity.status(errorCode).build();
+        }
+
+        return ResponseEntity.ok(p);
+    }
+
+    /**
+     * Leave the active game lobby as a Player with id "nick".
+     *
+     * @param nick User's nickname which identifies a given player in a game
+     * @param id   UUID of the game that the player has left
+     * @return Player
+     */
+    @DeleteMapping("/{id}/player/{nick}")
+    public ResponseEntity<Player> leaveGame(final @PathVariable UUID id, final @PathVariable("nick") String nick) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game game = gameService.findById(id);
+        final int errorCode = 403; // FORBIDDEN
+
+        Player p = game.getPlayerByNick(nick);
+        boolean success = game.removePlayer(p);
 
         if (!success) {
             return ResponseEntity.status(errorCode).build();
@@ -214,41 +256,43 @@ public class GameController {
         return message;
     }
 
-    /**
-     * Starts the current game.
-     * Do not allow starting a game with less than 2 players.
-     *
-     * @return The new game that is an active lobby now
-     */
-    @PostMapping("/start")
-    public ResponseEntity<Game> startCurrentGame() {
-        Game lobby = gameService.getCurrentGame();
-        gameService.newGame(activityService.getQuestionList());
-        return ResponseEntity.ok(lobby);
+    @PostMapping("/leaderboard/{nick}/{score}")
+    public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
+                                                                     final @PathVariable("score") int score) {
+        if (nick == null || nick.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        GameResult gameResult = new GameResult(nick, score);
+        leaderboardService.addPlayerToLeaderboard(gameResult);
+        return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
+    }
+
+    @GetMapping("/leaderboard")
+    public Leaderboard getSinglePlayerLeaderboard() {
+        return leaderboardService.getAllPlayerInfo();
     }
 
     /**
-     * A Websocket endpoint for starting the lobby.
-     *
-     * @param lobby The message to be sent to all the players in the lobby
-     * 
-     * @return The Game object
+     * WS endpoint to start the game for multiplayers.
+     * @return GameUpdate to start the game
      */
     @MessageMapping("/lobby/start") // /app/lobby/start
     @SendTo("/topic/lobby/start")
-    private Game sendLobbyStart(final Game lobby) {
-        return lobby;
+    public GameUpdate startLobby() {
+        gameService.newGame(activityService.getQuestionList());
+        return GameUpdate.start;
     }
 
 
     @PostMapping("/{id}/score/{nick}")
-    public ResponseEntity<Game> updatePlayerPoints(final @PathVariable UUID id,
+    public ResponseEntity<Game> addPlayerPoints(final @PathVariable UUID id,
             final @PathVariable String nick, final @RequestBody String score) {
         Game game = gameService.findById(id);
         if (game == null) {
             return ResponseEntity.badRequest().build();
         }
-        gameService.updatePlayerScore(game, nick, Integer.parseInt(score));
+        gameService.addPlayerScore(game, nick, Integer.parseInt(score));
         return ResponseEntity.ok(game);
     }
 
@@ -273,5 +317,19 @@ public class GameController {
     @SendTo("/topic/game/{id}/update")
     public GameUpdate halveTimeWebsocket() {
         return GameUpdate.halveTimer;
+    }
+
+    /**
+     * A Websocket endpoint for sending updates about the game's player' status.
+     * Namely, updates the active players in the game for all clients.
+     *
+     * @param player The player who has left
+     * 
+     * @return The player object
+     */
+    @MessageMapping("/game/{id}/leave") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/leave
+    @SendTo("/topic/game/{id}/leave")
+    private Player sendPlayerLeft(final Player player) {
+        return player;
     }
 }

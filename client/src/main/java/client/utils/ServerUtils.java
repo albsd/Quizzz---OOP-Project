@@ -38,7 +38,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -141,7 +140,7 @@ public class ServerUtils {
      * @param nick  String of the user nickname
      * @return      Player that has left the game
      */
-    public Player leaveGame(final String nick) {
+    public Player leaveLobby(final String nick) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/leave/" + nick))
                 .DELETE()
@@ -155,23 +154,47 @@ public class ServerUtils {
     }
 
     /**
-     * Calls the REST endpoint to get list of all players in the lobby.
+     * Calls the REST endpoint to leave the current active lobby.
+     *
+     * @param nick  String of the user nickname
+     * @param id    UUID of the game as a String
+     * @return      Player that has left the game
+     */
+    public Player leaveGame(final String nick, final UUID id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/" + id + "/player/" + nick))
+                .DELETE()
+                .build();
+
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player != null) {
+            send("/app/game/" + id  + "/leave", player);
+        }
+        return player;
+    }
+
+    /**
+     * Calls the REST endpoint to get current lobby game object.
      *
      * @return List of players in a lobby
      */
-    public List<Player> getPlayers() {
+    public Game getLobby() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/current"))
                 .header("accept", "application/json")
                 .GET()
                 .build();
 
-        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
-        if (game == null) return null;
-        return game.getPlayers();
+        return parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
-    public Leaderboard getLeaderboard(final String id) {
+    /**
+     * Fetch a leaderboard for a given Game with the id.
+     * 
+     * @param id UUID of the game
+     * @return Leaderboard of players for the game
+     */
+    public Leaderboard getLeaderboard(final UUID id) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/" + id + "/leaderboard"))
                 .header("accept", "application/json")
@@ -180,41 +203,62 @@ public class ServerUtils {
 
         return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
-
+    
     /**
-     * Calls the REST endpoint to start the current lobby.
+     * Calls the REST endpoint to create and start a singleplayer game.
      *
-     * @return The game that has just started
+     * @param nick  String of the user nickname
+     * @return      Player that has started the game
      */
-    public Game startGame() {
+    public Game startSinglePlayer(final String nick) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/start"))
-                .header("accept", "application/json")
+                .uri(URI.create(kGameUrl + "/single/" + nick))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
-        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
-        if (game != null) {
-            send("/app/lobby/start", game);
-        }
-        return game;
+       return parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
     /**
-     * Updates player score on server side every 10 questions for leaderboard.
-     * @param id game id to find game
-     * @param nick name of player
-     * @param score score of player
-     * @return The game that was used to update with
+     * Calls the REST endpoint to start the current lobby.
+     * Nothing to return as all players already have instance
+     * of Game object.
      */
-    public Game updateScore(final UUID id, final String nick, final String score) {
+    public void startMultiPlayer() {
+        send("/app/lobby/start", null);
+    }
+
+    /**
+     * Updates player score every question.
+     * @param id game object
+     * @param nick name of user
+     * @param score score of user
+     */
+    public void addScore(final UUID id, final String nick, final int score) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/" + id + "/score/" + nick))
                 .header("accept", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(score))
+                .POST(HttpRequest.BodyPublishers.ofString(Integer.toString(score)))
                 .build();
-        Game game = parseResponseToObject(request, new TypeReference<Game>() { });
-        return game;
+        parseResponseToObject(request, new TypeReference<Game>() { });
+    }
+
+    public void sendGameResult(final String nick, final int score) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/leaderboard/" + nick + "/" + score))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        parseResponseToObject(request, new TypeReference<Leaderboard>() { });
+    }
+
+    public Leaderboard getSinglePlayerLeaderboard() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/leaderboard"))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
 
     /**

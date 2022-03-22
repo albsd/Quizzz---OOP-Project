@@ -17,42 +17,38 @@ class ActivityTest {
     @BeforeEach
     void setup() {
         activityChoices = new ArrayList<>();
-        activity = new Activity("title", 123123, "source", new byte[1]);
+        activity = new Activity("title", 123123, "source", "path1");
         activityChoices.add(activity);
-        activityChoices.add(new Activity("title1", 12, "source1", new byte[1]));
-        activityChoices.add(new Activity("title2", 123, "source2", new byte[1]));
+        activityChoices.add(new Activity("title1", 12, "source1", "path2"));
+        activityChoices.add(new Activity("title2", 123, "source2", "path3"));
 
         choices = activity.generateChoices(123123);
-        activity.setImageBytes(new byte[1]);
     }
     @Test
     void getNumberMultipleChoiceQuestion() {
-        MultipleChoiceQuestion actual = activity.getNumberMultipleChoiceQuestion();
+        MultipleChoiceQuestion actual = activity.getNumberMultipleChoiceQuestion(new byte[2]);
         actual.setOptions(choices);
         MultipleChoiceQuestion expected = new MultipleChoiceQuestion("How much energy does "
-                + activity.getTitle() + " take in watt hours?",
-                activity.getImageBytes(), choices, actual.getAnswer());
+                + activity.getTitle() + " take in watt hours?", new byte[2], choices, actual.getAnswer());
         assertEquals(actual, expected);
     }
 
     @Test
     void getActivityMultipleChoiceQuestion() {
-        MultipleChoiceQuestion actual = activity.getActivityMultipleChoiceQuestion(activityChoices);
+        MultipleChoiceQuestion actual = activity.getActivityMultipleChoiceQuestion(activityChoices, new byte[2]);
         MultipleChoiceQuestion expected = new MultipleChoiceQuestion(
                 "Which of the following activities take the most energy",
-                activity.getImageBytes(), activity.getMultipleActivitiesOptions(activityChoices),
-                activity.getMultipleActivitiesAnswer(activityChoices));
+                new byte[2], (String[]) activity.getMultipleActivitiesOptions(activityChoices),
+                activity.getMultipleActivitiesAnswerIndex(activityChoices));
         assertEquals(actual, expected);
     }
 
     @Test
     void getFreeResponseQuestion() {
-        FreeResponseQuestion actual = activity.getFreeResponseQuestion();
-        FreeResponseQuestion expected = new FreeResponseQuestion("How much energy does " + activity.getTitle()
-                + " take in watt hours?",
-                activity.getImageBytes(), activity.getEnergyConsumption());
+        FreeResponseQuestion actual = activity.getFreeResponseQuestion(new byte[2]);
+        FreeResponseQuestion expected = new FreeResponseQuestion(
+                "How much energy does " + activity.getTitle() + " take in watt hours?",
+                new byte[2], activity.getEnergyConsumption());
         assertEquals(actual, expected);
     }
-
-
 }
