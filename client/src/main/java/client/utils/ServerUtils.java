@@ -17,10 +17,7 @@ package client.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import commons.Player;
-import commons.PlayerUpdate;
-import commons.Game;
-import commons.Leaderboard;
+import commons.*;
 
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -203,6 +200,21 @@ public class ServerUtils {
 
         return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
+
+    /**
+     * Fetch a leaderboard for a given Game with the id.
+     *
+     * @param id UUID of the game
+     * @return Leaderboard of players for the game
+     */
+    public Game getGameById(final UUID id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/" + id))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        return parseResponseToObject(request, new TypeReference<Game>() { });
+    }
     
     /**
      * Calls the REST endpoint to create and start a singleplayer game.
@@ -225,6 +237,8 @@ public class ServerUtils {
      * of Game object.
      */
     public void startMultiPlayer() {
+        send("/app/lobby/chat",
+                new LobbyMessage("Server", "", "Game is about to start. Have fun!"));
         send("/app/lobby/start", null);
     }
 

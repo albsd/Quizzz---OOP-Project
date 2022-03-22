@@ -101,11 +101,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
             });
         });
 
-        subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, game -> {
+        subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, update -> {
             Platform.runLater(() -> {
                 //sets lobby with recent list of players
-                this.lobby = server.getLobby();
-                fxml.showMultiPlayer(me, lobby);
+                Game game = server.getGameById(lobby.getId());
+                fxml.showMultiPlayer(me, game);
             });
         });
         return subscriptions;
@@ -165,8 +165,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void start(final ActionEvent event) {
         //don't start game immediately cause invoker starts game faster
         //than other players in lobby
-        server.send("/app/lobby/chat",
-                new LobbyMessage("Server", "", "Game is about to start. Have fun!"));
         server.startMultiPlayer();
     }
 }
