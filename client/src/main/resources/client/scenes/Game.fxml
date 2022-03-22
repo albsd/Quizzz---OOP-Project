@@ -201,7 +201,7 @@
                <Font name="System Bold" size="24.0" />
             </font>
          </Label>
-         <Label fx:id="warning" alignment="CENTER" layoutX="458.0" layoutY="68.0" prefHeight="37.0" prefWidth="323.0" textFill="#e90b0b">
+         <Label fx:id="warning" alignment="CENTER" layoutX="458.0" layoutY="68.0" prefHeight="37.0" prefWidth="323.0" text="Already submitted answer" textFill="#f10303" visible="false">
             <font>
                <Font size="24.0" />
             </font></Label>

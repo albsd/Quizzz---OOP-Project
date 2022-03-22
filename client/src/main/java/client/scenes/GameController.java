@@ -23,11 +23,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
@@ -89,9 +91,9 @@ public class GameController implements Initializable, WebSocketSubscription {
     
     private String leavePath;
 
-    private boolean doubleScore = false;
+    private boolean doubleScore;
 
-    private boolean submittedAnswer = false;
+    private boolean submittedAnswer;
 
     private final String green = "#E0FCCF";
 
@@ -102,6 +104,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private final String darkGreen = "#009a19";
 
     private final String darkRed = "#A00000";
+
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
@@ -122,7 +125,16 @@ public class GameController implements Initializable, WebSocketSubscription {
         timer1.setFont(font);
         timer2.setFont(font);
         warning.setFont(font);
-        warning.setStyle("-fx-text-fill:" + red + ";");
+        submittedAnswer = false;
+        doubleScore = false;
+        openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0,
+                change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("-?([1-9][0-9]*)?")) {
+                return change;
+            }
+            return null;
+        }));
     }
 
     @Override
@@ -239,7 +251,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             checkForDoubleAndSend(score);
         } else {
-            warning.setText("Already submitted answer");
+            warning.setVisible(true);
         }
     }
 
@@ -251,25 +263,16 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void onEnter(final ActionEvent event) {
         String optionStr = openAnswer.getText();
-        if (!validateAnswer(optionStr)) {
-            warning.setText("Type in only numbers");
-            return;
-        }
-        warning.setText("");
         if (!submittedAnswer) {
             submittedAnswer = true;
             long correctAnswer = currentQuestion.getAnswer();
-            answerBox.setText("Correct answer: " + correctAnswer);
+            answerBox.setText("Answer is: " + correctAnswer);
             long option = Long.parseLong(optionStr);
             int score = me.calculateOpenPoints(correctAnswer, option, progressBar.getClientTime());
             checkForDoubleAndSend(score);
         } else {
-            warning.setText("Already submitted answer");
+            warning.setVisible(true);
         }
-    }
-
-    private boolean validateAnswer(final String answer) {
-        return answer.matches("[0-9]*");
     }
 
     /**
@@ -305,7 +308,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         if (game.getCurrentQuestionNumber() != 21) {
             Platform.runLater(() -> {
                 submittedAnswer = false;
-                warning.setText("");
+                warning.setVisible(false);
                 answerBox.setText("");
                 openAnswer.setText("");
                 currentQuestion = game.getCurrentQuestion();
@@ -320,6 +323,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             });
             game.start(this::setNextQuestion);
         }
+        //TODO: Display leaderboard
     }
 
     @FXML
