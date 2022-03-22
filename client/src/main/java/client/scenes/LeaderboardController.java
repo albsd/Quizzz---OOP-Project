@@ -71,7 +71,7 @@ public class LeaderboardController implements Initializable {
         nick.setText(me.getNick());
         score.setText(Integer.toString(me.getScore()));
 
-        playerRanking.getChildren().removeAll();
+        playerRanking.getChildren().clear();
         List<Player> ranking = leaderboard.getRanking();
         for (int i = 0; i < ranking.size(); i++) {
             Player player = ranking.get(i);
