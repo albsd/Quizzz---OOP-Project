@@ -243,6 +243,24 @@ public class ServerUtils {
         parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
+    public void sendGameResult(final String nick, final int score) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/leaderboard/" + nick + "/" + score))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        parseResponseToObject(request, new TypeReference<Leaderboard>() { });
+    }
+
+    public Leaderboard getSinglePlayerLeaderboard() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/leaderboard"))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
+    }
+
     /**
      * Utility method to parse HttpResponse to a given object type.
      *
@@ -265,16 +283,5 @@ public class ServerUtils {
             e.printStackTrace();
         }
         return null;
-    }
-
-    //TODO: Call this method when single player game ends
-    public Leaderboard sendSinglePlayerLeaderboardInfo(final String nick, final int score) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/leaderboard/" + nick + "/" + score))
-                .POST(HttpRequest.BodyPublishers.ofString(""))
-                .build();
-
-        Leaderboard leaderboard = parseResponseToObject(request, new TypeReference<Leaderboard>() { });
-        return leaderboard;
     }
 }

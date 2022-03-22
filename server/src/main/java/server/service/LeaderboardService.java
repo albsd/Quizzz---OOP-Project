@@ -29,8 +29,6 @@ public class LeaderboardService {
             GameResult sl = allSinglePlayers.get(i);
             players.add(new Player(sl.getNick(), sl.getScore()));
         }
-        Leaderboard leaderboard = new Leaderboard();
-        leaderboard.setRanking(players);
-        return leaderboard;
+        return new Leaderboard(players);
     }
 }

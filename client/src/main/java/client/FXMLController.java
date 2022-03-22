@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import commons.Leaderboard;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 import client.scenes.GameController;
@@ -14,14 +13,12 @@ import client.scenes.IPPromptController;
 import client.scenes.LeaderboardController;
 import client.scenes.LobbyController;
 import client.scenes.SplashController;
-import javafx.animation.PauseTransition;
 import commons.Game;
 import commons.Player;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.util.Pair;
 
 public class FXMLController {
@@ -96,9 +93,13 @@ public class FXMLController {
         return displayScene(SplashController.class);
     }
 
-    public Pair<LeaderboardController, Parent> showLeaderboard() {
+    public Pair<LeaderboardController, Parent> showLeaderboard(final Leaderboard leaderboard) {
         subscribe(LeaderboardController.class);
-        return displayScene(LeaderboardController.class);
+        var root = displayScene(LeaderboardController.class);
+        LeaderboardController leaderboardController = root.getKey();
+        leaderboardController.show();
+        leaderboardController.displayLeaderboard(leaderboard, new Player("you"));
+        return root;
     }
 
     public Pair<HelpController, Parent> showHelp() {
@@ -128,34 +129,5 @@ public class FXMLController {
         ctrl.setSinglePlayer(game);
         subscribe(GameController.class);
         return root;
-    }
-    
-    public Pair<LeaderboardController, Parent> displayLeaderboardMomentarily() {
-        var root = myFXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
-        Stage stage1 = new Stage();
-        Scene scene = new Scene(root.getValue());
-        stage1.setScene(scene);
-        stage1.show();
-        PauseTransition delay = new PauseTransition(Duration.seconds(5));
-        delay.setOnFinished(event -> stage1.close());
-        return root;
-    }
-
-    public void changeToMultiMode(final TextField openAnswer, final Button option1,
-                                  final Button option2, final Button option3) {
-        openAnswer.toFront();
-        openAnswer.setVisible(false);
-        option1.setVisible(true);
-        option2.setVisible(true);
-        option3.setVisible(true);
-    }
-
-    public void changeToFreeMode(final TextField openAnswer, final Button option1,
-                                 final Button option2, final Button option3) {
-        openAnswer.toBack();
-        openAnswer.setVisible(true);
-        option1.setVisible(false);
-        option2.setVisible(false);
-        option3.setVisible(false);
     }
 }

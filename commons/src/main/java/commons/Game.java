@@ -68,11 +68,6 @@ public class Game {
     }
 
     @JsonIgnore
-    public boolean shouldShowSingleplayerLeaderboard() {
-        return (!isMultiplayer && currentQuestion == 20);
-    }
-
-    @JsonIgnore
     public int getCurrentQuestionNumber() {
         return currentQuestion + 1;
     }
@@ -109,15 +104,14 @@ public class Game {
             .get();
     }
 
+    @JsonIgnore
+    public boolean isOver() {
+        return this.currentQuestion >= 20;
+    }
     
     @JsonIgnore
-    public int nextQuestion() {
-        return currentQuestion++;
-    }
-
-    @JsonIgnore
-    public int getCurrentQuestionIndex() {
-        return currentQuestion;
+    public void nextQuestion() {
+        currentQuestion++;
     }
 
     @JsonIgnore
