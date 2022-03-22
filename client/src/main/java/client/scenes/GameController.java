@@ -12,7 +12,6 @@ import commons.Emote;
 import commons.EmoteMessage;
 import commons.Question;
 import commons.MultipleChoiceQuestion;
-import commons.FreeResponseQuestion;
 import commons.Leaderboard;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
