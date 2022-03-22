@@ -31,8 +31,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
-
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -59,6 +60,9 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private HBox mainHorizontalBox;
+
+    @FXML
+    private ImageView questionImage;
 
     @FXML
     private TextField openAnswer;
@@ -309,6 +313,9 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
         question.setText(currentQuestion.getPrompt());
+        InputStream is = new ByteArrayInputStream(currentQuestion.getImage());
+        Image img = new Image(is);
+        questionImage.setImage(img);
         if (currentQuestion instanceof MultipleChoiceQuestion) {
             String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
             option1.setStyle("-fx-background-color:" + orange + ";");

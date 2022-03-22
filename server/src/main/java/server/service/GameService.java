@@ -30,14 +30,6 @@ public class GameService {
         return repo.createSingleplayer(nick, questions);
     }
 
-    public UUID addGame(final Game game) {
-        return repo.addGame(game);
-    }
-
-    public boolean deleteGame(final UUID id) {
-        return repo.removeGame(id);
-    }
-
     public Game getCurrentGame() {
         return lobby;
     }
@@ -51,12 +43,10 @@ public class GameService {
      * The previous lobby is propagated to the game that has just started.
      *
      * @param questions List of questions for the newly created lobby
-     * @return Game that has been created
      */
-    public Game newGame(final List<Question> questions) {
+    public void newGame(final List<Question> questions) {
         repo.addGame(lobby);
         lobby = new Game(UUID.randomUUID(), questions, true);
-        return lobby;
     }
 
     public Game findById(final UUID id) {

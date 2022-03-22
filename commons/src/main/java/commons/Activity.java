@@ -3,9 +3,11 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.ArrayUtils;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -13,50 +15,52 @@ import java.util.Random;
 @Entity
 public class Activity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    @JsonProperty("id")
+    private long id;
     @JsonProperty("title")
     private String title;
     @JsonProperty("consumption_in_wh")
     private long energyConsumption;
+    @Column(length = 500)
     @JsonProperty("source")
     private String source;
-//TODO: make this a json property?
-    @JsonProperty
-    private byte[] imageBytes;
+    @JsonProperty("image_path")
+    private String path;
 
     public Activity() {
-
+        this.title = "Default title";
+        this.energyConsumption = 100;
+        this.source = "google.com";
     }
-    //TODO: add @JsonCreator
+
     @JsonCreator
     public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption,
-                    @JsonProperty final String source, @JsonProperty final byte[] imageBytes) {
+                    @JsonProperty final String source, @JsonProperty final String path) {
         this.title = title;
         this.energyConsumption = energyConsumption;
         this.source = source;
-        this.imageBytes = imageBytes;
+        this.path = path;
     }
 
-    //TODO: Implement the getActivityMultipleChoiceQuestion() where the options are other activities in another class
-    public MultipleChoiceQuestion getNumberMultipleChoiceQuestion() {
+    public MultipleChoiceQuestion getNumberMultipleChoiceQuestion(final byte[] image) {
         String prompt = "How much energy does " + title + " take in watt hours?";
         String[] choices = generateChoices(energyConsumption);
-
-        return new MultipleChoiceQuestion(prompt, imageBytes, choices,
+        return new MultipleChoiceQuestion(prompt, image, choices,
                 ArrayUtils.indexOf(choices, Long.toString(energyConsumption)));
     }
 
-    public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(final List<Activity> answerOptions) {
-        //TODO:We need to decide what image (if any) to display on this type of question
-        byte[] imgBytes = new byte[1];
+    public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(
+            final List<Activity> answerOptions, final byte[] image) {
         String prompt = "Which of the following activities take the most energy";
         String[] options = this.getMultipleActivitiesOptions(answerOptions);
 
-        return new MultipleChoiceQuestion(prompt, imgBytes, options,
+        return new MultipleChoiceQuestion(prompt, image, options,
                  this.getMultipleActivitiesAnswerIndex(answerOptions));
     }
 
     public int getMultipleActivitiesAnswerIndex(final List<Activity> answerOptions) {
-
         long max = 0;
         int maxIndex = 0;
         for (int i = 0; i < answerOptions.size(); i++) {
@@ -67,11 +71,9 @@ public class Activity {
             }
         }
         return maxIndex;
-
     }
 
     public String[] getMultipleActivitiesOptions(final List<Activity> answerOptions) {
-
         String[] options = answerOptions.stream().map(Activity::getTitle).toArray(String[]::new);
         long max = 0;
         for (int i = 0; i < answerOptions.size(); i++) {
@@ -84,9 +86,9 @@ public class Activity {
 
     }
 
-    public FreeResponseQuestion getFreeResponseQuestion() {
+    public FreeResponseQuestion getFreeResponseQuestion(final byte[] image) {
         String prompt = "How much energy does " + title + " take in watt hours?";
-        return new FreeResponseQuestion(prompt, imageBytes, energyConsumption);
+        return new FreeResponseQuestion(prompt, image, energyConsumption);
     }
 
     @Override
@@ -95,13 +97,13 @@ public class Activity {
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
         return energyConsumption == activity.energyConsumption && Objects.equals(title, activity.title)
-                && Objects.equals(source, activity.source) && Arrays.equals(imageBytes, activity.imageBytes);
+                && Objects.equals(source, activity.source);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(title, energyConsumption, source);
-        result = 31 * result + Arrays.hashCode(imageBytes);
+        result = 31 * result;
         return result;
     }
 
@@ -118,35 +120,23 @@ public class Activity {
         return choices;
     }
 
-    public String getTitle() {
-        return title;
+    public long getId() {
+        return id;
     }
 
-    public void setTitle(final String title) {
-        this.title = title;
+    public String getTitle() {
+        return title;
     }
 
     public long getEnergyConsumption() {
         return energyConsumption;
     }
 
-    public void setEnergyConsumption(final long energyConsumption) {
-        this.energyConsumption = energyConsumption;
-    }
-
     public String getSource() {
         return source;
     }
 
-    public void setSource(final String source) {
-        this.source = source;
-    }
-
-    public byte[] getImageBytes() {
-        return imageBytes;
-    }
-
-    public void setImageBytes(final byte[] imageBytes) {
-        this.imageBytes = imageBytes;
+    public String getPath() {
+        return path;
     }
 }

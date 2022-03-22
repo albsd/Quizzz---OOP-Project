@@ -76,6 +76,7 @@ public class Game {
      * Since the QuestionTimer cannot be serialised over HTTP, 
      * we can call this method in the client to create a new timer. 
      */
+    @JsonIgnore
     public void initialiseTimer() {
         this.timer = new QuestionTimer();
     }

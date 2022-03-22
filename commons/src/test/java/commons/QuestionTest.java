@@ -39,8 +39,8 @@ public class QuestionTest {
 
     @Test
     void testLoadImage() {
-        assertNotNull(q1.getImageBytes());
-        assertNotEquals(0, q1.getImageBytes().length);
+        assertNotNull(q1.getImage());
+        assertNotEquals(0, q1.getImage().length);
     }
 
     @Test

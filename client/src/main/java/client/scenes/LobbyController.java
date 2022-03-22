@@ -3,10 +3,12 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
+
 import commons.Game;
 import commons.LobbyMessage;
 import commons.Player;
 import commons.PlayerUpdate;
+import commons.GameUpdate;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +19,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private final FXMLController fxml;
 
     private final DateTimeFormatter timeFormat;
+
+    private Game lobby;
     
     private Player me;
     
@@ -77,7 +81,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void initialize(final URL location, final ResourceBundle resources) {
         // We DON'T use the shorthand .toList() here, because that returns an immutable
         // list and causes player updates to get ignored silently
-        this.players = server.getLobbyPlayers().stream()
+        this.lobby = server.getLobby();
+        this.players = this.lobby.getPlayers().stream()
                 .map(Player::getNick)
                 .collect(Collectors.toList());
 
@@ -103,9 +108,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
             });
         });
 
-        subscriptions[2] = server.registerForMessages("/topic/lobby/start", Game.class, game -> {
-            Platform.runLater(() -> { 
-                fxml.showMultiPlayer(me, game); 
+        subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, game -> {
+            Platform.runLater(() -> {
+                //sets lobby with recent list of players
+                this.lobby = server.getLobby();
+                fxml.showMultiPlayer(me, lobby);
             });
         });
         return subscriptions;
@@ -116,8 +123,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         chatInput.setText("");
 
-        final LocalTime time = LocalTime.now();
-        final LobbyMessage message = new LobbyMessage(me.getNick(), time.format(timeFormat), content);
+        final ZonedDateTime time = ZonedDateTime.now();
+        final LobbyMessage message = new LobbyMessage(me.getNick(), time.toString(), content);
         
         server.send("/app/lobby/chat", message);
         chatArea.setVvalue(1.0);
@@ -139,7 +146,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
                 }
                 return nick;
             }).toList();
-
             String leftText = IntStream.range(0, players.size())
                     .filter(i -> i % 2 == 0)
                     .mapToObj(nicks::get)
@@ -165,7 +171,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void start(final ActionEvent event) {
-        Game game = server.startMultiPlayer();
-        fxml.showMultiPlayer(me, game);
+        //don't start game immediately cause invoker starts game faster
+        //than other players in lobby
+        server.startMultiPlayer();
     }
 }
