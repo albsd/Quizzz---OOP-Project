@@ -29,7 +29,7 @@ public class Game {
         this.id = id;
         this.players = new ArrayList<>();
         this.questions = questions;
-        this.currentQuestion = 18;
+        this.currentQuestion = 0;
         this.isMultiplayer = isMultiplayer;
     }
 
