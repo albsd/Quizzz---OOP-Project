@@ -46,7 +46,7 @@ public class QuestionTest {
     @Test
     void testGetters() {
         assertEquals("test_prompt", q1.getPrompt());
-        assertEquals("Option2", q1.getAnswer());
+        assertEquals(1, q1.getAnswer());
         assertArrayEquals(new String[]{"Option1", "Option2", "Option3"}, q1.getOptions());
     }
 }
