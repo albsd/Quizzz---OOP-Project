@@ -8,7 +8,6 @@ import commons.Game;
 import commons.Player;
 import commons.Question;
 import commons.MultipleChoiceQuestion;
-import commons.FreeResponseQuestion;
 import commons.Leaderboard;
 import commons.Emote;
 import javafx.application.Platform;
