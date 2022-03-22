@@ -34,9 +34,9 @@ public class ActivityService {
     @Autowired
     private ActivityRepository activityRepository;
 
-    private final String activitiesPath = "./server/src/main/resources/activities";
+    private final String activitiesPath = "./src/main/resources/activities";
 
-    private final String resourcesPath = "./server/src/main/resources";
+    private final String resourcesPath = "./src/main/resources";
 
     public ActivityService(final ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
@@ -138,7 +138,7 @@ public class ActivityService {
                 file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
             }
             String path = file.getPath().replaceAll("\\\\", "/");
-            String realPath = path.substring(path.lastIndexOf("./server"));
+            String realPath = path.substring(path.lastIndexOf("./src"));
             activities.add(new Activity(title, wattHours, source, realPath));
         }
         activityRepository.saveAllAndFlush(activities);
