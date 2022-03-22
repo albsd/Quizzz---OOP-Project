@@ -118,6 +118,7 @@ public GameController(final ServerUtils server, final FXMLController fxml) {
                     case frown -> "/images/face-frown.png";
                     case smile -> "/images/face-smile.png";
                     case surprised -> "/images/face-surprise.png";
+                    case reducedTime -> "/images/reduced-time.png";
                 };
                 ImageView emoteImage = new ImageView();
                 emoteImage.setImage(new Image(emotePath));
@@ -269,7 +270,7 @@ public GameController(final ServerUtils server, final FXMLController fxml) {
     @FXML
     public void timePowerup(final ActionEvent e) {
         server.send("/app/game/" + this.game.getId() + "/halve", GameUpdate.halveTimer);
-
+        reducedTime();
         // Solution to ensure that the initiator's timer is not halved
         clientTimer.setCurrentTime(clientTimer.getCurrentTime() * 2);
         timeButton.setDisable(true);
@@ -304,6 +305,11 @@ public GameController(final ServerUtils server, final FXMLController fxml) {
     @FXML
     public void surprised(final ActionEvent e) {
         sendEmote(Emote.surprised);
+    }
+
+    @FXML
+    public void reducedTime() {
+        sendEmote(Emote.reducedTime);
     }
 
     private void sendEmote(final Emote emote) {
