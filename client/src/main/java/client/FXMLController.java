@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import commons.Leaderboard;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 import client.scenes.GameController;
@@ -92,9 +93,13 @@ public class FXMLController {
         return displayScene(SplashController.class);
     }
 
-    public Pair<LeaderboardController, Parent> showLeaderboard() {
+    public Pair<LeaderboardController, Parent> showLeaderboard(Leaderboard leaderboard) {
         subscribe(LeaderboardController.class);
-        return displayScene(LeaderboardController.class);
+        var root = displayScene(LeaderboardController.class);
+        LeaderboardController leaderboardController = root.getKey();
+        leaderboardController.show();
+        leaderboardController.displayLeaderboard(leaderboard, new Player("you"));
+        return root;
     }
 
     public Pair<HelpController, Parent> showHelp() {
