@@ -31,13 +31,13 @@ import java.util.zip.ZipInputStream;
 @Service
 public class ActivityService {
 
-    @Autowired
     private ActivityRepository activityRepository;
 
     private final String activitiesPath = "./server/src/main/resources/activities";
 
     private final String resourcesPath = "./server/src/main/resources";
 
+    @Autowired
     public ActivityService(final ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
@@ -72,7 +72,7 @@ public class ActivityService {
         return questionList;
     }
 
-    public Question turnActivityIntoQuestion(final Activity activity, 
+    public Question turnActivityIntoQuestion(final Activity activity,
                                             final int questionType,
                                             final List<Activity> options) {
         byte[] image = generateImageByteArray(activity.getPath());

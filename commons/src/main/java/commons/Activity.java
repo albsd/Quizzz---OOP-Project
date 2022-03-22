@@ -26,6 +26,7 @@ public class Activity {
     @Column(length = 500)
     @JsonProperty("source")
     private String source;
+
     @JsonProperty("image_path")
     private String path;
 
@@ -53,7 +54,7 @@ public class Activity {
 
     public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(
             final List<Activity> answerOptions, final byte[] image) {
-        String prompt = "Which of the following activities take the most energy";
+        String prompt = "Which of the following activities take the most energy?";
         String[] options = this.getMultipleActivitiesOptions(answerOptions);
 
         return new MultipleChoiceQuestion(prompt, image, options,

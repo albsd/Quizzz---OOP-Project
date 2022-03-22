@@ -3,14 +3,17 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
+
+import commons.GameUpdate;
+import commons.QuestionTimer;
 import commons.Player;
 import commons.Game;
+import commons.Emote;
 import commons.EmoteMessage;
 import commons.Question;
 import commons.MultipleChoiceQuestion;
 import commons.FreeResponseQuestion;
 import commons.Leaderboard;
-import commons.Emote;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,7 +36,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -41,10 +43,10 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private Button option1, option2, option3,
-            timeButton, scoreButton, removeButton;
+            timeButton;
     
     @FXML
-    private Label question, questionNumber, points, timer1, timer2;
+    private Label questionPrompt, questionNumber, points, timer1, timer2;
 
     @FXML
     private ProgressBar timer;
@@ -70,8 +72,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     private Label warning;
 
-    private ProgressBarController progressBar;
-    
     @FXML
     private Parent popup;
 
@@ -87,7 +87,11 @@ public class GameController implements Initializable, WebSocketSubscription {
     private final ServerUtils server;
     
     private final FXMLController fxml;
-    
+
+    private final QuestionTimer gameTimer;
+
+    private final QuestionTimer clientTimer;
+
     private final Font font;
 
     private Player me;
@@ -114,6 +118,9 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
+        this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
+        this.clientTimer = new QuestionTimer(
+                time -> Platform.runLater(() -> timer.setProgress((double) time / QuestionTimer.MAX_TIME)), () -> { });
         this.server = server;
         this.fxml = fxml;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
@@ -125,7 +132,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         option2.setFont(font);
         option3.setFont(font);
 
-        question.setFont(font);
+        questionPrompt.setFont(font);
         questionNumber.setFont(font);
         points.setFont(font);
         timer1.setFont(font);
@@ -134,7 +141,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @Override
     public Subscription[] registerForMessages() {
-        Subscription[] subscriptions = new Subscription[2];
+        Subscription[] subscriptions = new Subscription[3];
         subscriptions[0] = server.registerForMessages("/topic" + chatPath, EmoteMessage.class, message -> {
             Platform.runLater(() -> {
                 String emotePath = switch (message.getContent()) {
@@ -142,6 +149,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                     case frown -> "/images/face-frown.png";
                     case smile -> "/images/face-smile.png";
                     case surprised -> "/images/face-surprise.png";
+                    case reducedTime -> "/images/reduced-time.png";
                 };
                 
                 updateEmoteBox(message.getNick(), emotePath);
@@ -154,11 +162,23 @@ public class GameController implements Initializable, WebSocketSubscription {
             });
         });
 
+        subscriptions[2] = server.registerForMessages("/topic/game/" + game.getId()
+                + "/update", GameUpdate.class, update -> {
+            System.out.println("Halve message received!");
+            Platform.runLater(() -> {
+                switch (update) {
+                    case halveTimer -> clientTimer.halve();
+                    case startTimer -> clientTimer.start(0);
+                    default -> { }
+                }
+            });
+        });
+
         return subscriptions;
     }
 
-    /**
-     * Updates the emotebox with the given event.
+/**
+ * Updates the emotebox with the given event.
      * 
      * @param nick Player who sends an event
      * @param imagePath Image to be displayed as result of the event
@@ -190,21 +210,17 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void setGame(final Player me, final Game game) {
         this.me = me;
         this.game = game;
-        this.game.initialiseTimer();
         this.chatPath = "/game/" + game.getId() + "/chat";
         this.leavePath = "/game/" + game.getId() + "/leave";
 
         displayCurrentQuestion();
-        game.start(this::setNextQuestion);
+        clientTimer.start(0);
+        gameTimer.start(0);
     }
 
     public void setSinglePlayer(final Game game) {
         this.me = game.getPlayers().get(0); // only 1 player
         this.game = game;
-        this.game.initialiseTimer();
-        
-        displayCurrentQuestion();
-        game.start(this::setNextQuestion);
 
         leftBox.getChildren().remove(1);
         mainHorizontalBox.getChildren().remove(3, 5);
@@ -212,46 +228,73 @@ public class GameController implements Initializable, WebSocketSubscription {
         optionBox.setPrefWidth(600);
         optionBox.setPadding(Insets.EMPTY);
         optionBox.setSpacing(55);
+
+        displayCurrentQuestion();
+        clientTimer.start(0);
+        gameTimer.start(0);
     }
 
+
+    @FXML
+    public void checkMulChoiceOption(final ActionEvent e) {
+        Button chosenOption = (Button) e.getSource();
+        chosenOption.setStyle("-fx-border-color: black;");
+
+        Button[] options = {option1, option2, option3};
+        long option = ArrayUtils.indexOf(options, chosenOption);
+        checkAnswer(option, clientTimer.getCurrentTime());
+    }
+
+    @FXML
+    public void checkFreeResponseQuestion(final ActionEvent event) {
+        String answer = openAnswer.getText();
+        try {
+            checkAnswer(Long.parseLong(answer), clientTimer.getCurrentTime());
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input for free response question: '" + answer + "'");
+        }
+    }
 
     /**
      * Validates the answer for the multiple choice question and open question
      * Updates the user's score given in what time frame he/she has answered.
      *
-     * @param event triggered by a button click
+     * @param option the chosen answer to the question
+     * @param time the time left in ms
      */
     @FXML
-    public void checkAnswer(final ActionEvent event) {
-        Question currentQuestion = game.getCurrentQuestion();
-        long correctAnswer = currentQuestion.getAnswer();
-        Button[] options = {option1, option2, option3};
-        int option = ArrayUtils.indexOf(options, event.getSource());
-        int score = 0;
-        if (currentQuestion instanceof MultipleChoiceQuestion) {
-            Button chosenOption = (Button) event.getSource();
-            chosenOption.setStyle("-fx-border-color: black;");
+    public void checkAnswer(final long option, final int time) {
+        int score = game.getCurrentQuestion().calculateScore(option, time);
+
+        if (doubleScore) {
+            score *= 2;
+            doubleScore = false;
+        }
+        System.out.println("Received " + score + " points from question");
+        me.addScore(score);
+        server.addScore(game.getId(), me.getNick(), score);
+        Platform.runLater(() -> points.setText(Integer.toString(me.getScore())));
+    }
+
+    private void displayAnswerMomentarily() {
+        Platform.runLater(() -> timer.setProgress(0.0));
+        if (!isOpenQuestion) {
+            Button[] options = {option1, option2, option3};
             for (int i = 0; i < options.length; i++) {
-                if (i == correctAnswer) {
+                if (i == game.getCurrentQuestion().getAnswer()) {
                     options[i].setStyle("-fx-background-color:" + green + ";\n-fx-text-fill:" + darkGreen + ";");
                 } else {
                     options[i].setStyle("-fx-background-color:" + red + ";\n-fx-text-fill:" + darkRed + ";");
                 }
             }
-            if (option == correctAnswer) {
-                score = me.calculateMulChoicePoints(progressBar.getClientTime());
-            }
-        } else if (currentQuestion instanceof FreeResponseQuestion) {
-            //assume the player always inputs a number
-            score = me.calculateOpenPoints(correctAnswer, option, progressBar.getClientTime());
         }
-        //check for doublescore
-        if (doubleScore) {
-            score *= 2;
-            doubleScore = false;
-        }
-        server.addScore(game.getId(), me.getNick(), score);
         //TODO: Display correct answer for free response
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -260,7 +303,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void setNextQuestion() {
-        game.nextQuestion();
+        displayAnswerMomentarily();
 
         // Displays leaderboard at end of game
         if (game.isOver()) {
@@ -275,16 +318,18 @@ public class GameController implements Initializable, WebSocketSubscription {
         // Displays leaderboard every 10 questions in multiplayer
         if (game.isMultiplayer() && game.shouldShowMultiplayerLeaderboard()) {
             displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
-        } else if (!game.isOver()) {
-            Platform.runLater(this::displayCurrentQuestion);
-            game.start(this::setNextQuestion);
+        }
+
+        if (!game.isOver()) {
+            game.nextQuestion();
+            displayCurrentQuestion();
+            clientTimer.start(0);
+            gameTimer.start(0);
         }
     }
 
     private void displayLeaderboardMomentarily(final Leaderboard leaderboard) {
-        Platform.runLater(() -> {
-            leaderboardController.displayLeaderboard(leaderboard, me);
-        });
+        Platform.runLater(() -> leaderboardController.displayLeaderboard(leaderboard, me));
         menu.setVisible(false);
         leaderboardController.show();
         try {
@@ -296,35 +341,34 @@ public class GameController implements Initializable, WebSocketSubscription {
         if (!game.isOver()) {
             leaderboardController.hide();
             menu.setVisible(true);
-            Platform.runLater(this::displayCurrentQuestion);
-            game.start(this::setNextQuestion);
         }
     }
 
     private void displayCurrentQuestion() {
-        Question currentQuestion = game.getCurrentQuestion();
-        if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
-            changeToMultiMode();
-            isOpenQuestion = false;
-        } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
-            changeToFreeMode();
-            isOpenQuestion = true;
-        }
+        Platform.runLater(() -> {
+            Question currentQuestion = game.getCurrentQuestion();
+            if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
+                changeToMultiMode();
+                isOpenQuestion = false;
+            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
+                changeToFreeMode();
+                isOpenQuestion = true;
+            }
 
-        questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
-        question.setText(currentQuestion.getPrompt());
-        InputStream is = new ByteArrayInputStream(currentQuestion.getImage());
-        Image img = new Image(is);
-        questionImage.setImage(img);
-        if (currentQuestion instanceof MultipleChoiceQuestion) {
-            String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
-            option1.setStyle("-fx-background-color:" + orange + ";");
-            option2.setStyle("-fx-background-color:" + orange + ";");
-            option3.setStyle("-fx-background-color:" + orange + ";");
-            option1.setText(options[0]);
-            option2.setText(options[1]);
-            option3.setText(options[2]);
-        }
+            questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
+            questionPrompt.setText(currentQuestion.getPrompt());
+            Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()));
+            questionImage.setImage(img);
+            if (currentQuestion instanceof MultipleChoiceQuestion) {
+                String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+                option1.setStyle("-fx-background-color:" + orange + ";");
+                option2.setStyle("-fx-background-color:" + orange + ";");
+                option3.setStyle("-fx-background-color:" + orange + ";");
+                option1.setText(options[0]);
+                option2.setText(options[1]);
+                option3.setText(options[2]);
+            }
+        });
     }
 
     private void changeToMultiMode() {
@@ -352,7 +396,11 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void timePowerup(final ActionEvent e) {
-
+        server.send("/app/game/" + this.game.getId() + "/halve", GameUpdate.halveTimer);
+        reducedTime();
+        // Solution to ensure that the initiator's timer is not halved
+        clientTimer.setCurrentTime(clientTimer.getCurrentTime() * 2);
+        timeButton.setDisable(true);
     }
 
     @FXML
@@ -384,6 +432,11 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void surprised(final ActionEvent e) {
         sendEmote(Emote.surprised);
+    }
+
+    @FXML
+    public void reducedTime() {
+        sendEmote(Emote.reducedTime);
     }
 
     private void sendEmote(final Emote emote) {

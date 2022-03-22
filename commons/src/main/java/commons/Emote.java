@@ -1,5 +1,5 @@
 package commons;
 
 public enum Emote {
-    cry, frown, smile, surprised
+    cry, frown, smile, surprised, reducedTime
 }

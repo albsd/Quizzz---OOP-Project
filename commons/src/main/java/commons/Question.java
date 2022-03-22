@@ -9,13 +9,15 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.Objects;
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MultipleChoiceQuestion.class, name = "MultipleChoiceQuestion"),
         @JsonSubTypes.Type(value = FreeResponseQuestion.class, name = "FreeResponseQuestion")
 })
+
 @Entity
 public abstract class Question {
+
     @Id
     @JsonProperty("prompt")
     private String prompt;
@@ -46,12 +48,14 @@ public abstract class Question {
         return answer;
     }
 
-    public void setAnswer(final long answer) {
-        this.answer = answer;
-    }
-
     public byte[] getImage() {
         return image;
+    }
+
+    public abstract int calculateScore(long option, int time);
+
+    protected int calculateBonusPoints(final int time) {
+        return (time / 1000) * 2;
     }
 
     @Override

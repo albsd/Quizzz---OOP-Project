@@ -37,7 +37,7 @@ class ActivityTest {
     void getActivityMultipleChoiceQuestion() {
         MultipleChoiceQuestion actual = activity.getActivityMultipleChoiceQuestion(activityChoices, new byte[2]);
         MultipleChoiceQuestion expected = new MultipleChoiceQuestion(
-                "Which of the following activities take the most energy",
+                "Which of the following activities take the most energy?",
                 new byte[2], (String[]) activity.getMultipleActivitiesOptions(activityChoices),
                 activity.getMultipleActivitiesAnswerIndex(activityChoices));
         assertEquals(actual, expected);
