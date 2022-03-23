@@ -3,13 +3,15 @@ package client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.messaging.simp.stomp.StompSession.Subscription;
+
 import client.scenes.GameController;
-import client.scenes.HelpController;
 import client.scenes.IPPromptController;
-import client.scenes.LeaderboardController;
 import client.scenes.LobbyController;
 import client.scenes.SplashController;
+import client.scenes.LeaderboardController;
+import client.scenes.HelpController;
+import client.scenes.AdminPanelController;
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
@@ -105,6 +107,11 @@ public class FXMLController {
     public Pair<HelpController, Parent> showHelp() {
         subscribe(HelpController.class);
         return displayScene(HelpController.class);
+    }
+
+    public Pair<AdminPanelController, Parent> showAdminPanel() {
+        subscribe(AdminPanelController.class);
+        return displayScene(AdminPanelController.class);
     }
 
     public Pair<LobbyController, Parent> showLobby(final Player me) {

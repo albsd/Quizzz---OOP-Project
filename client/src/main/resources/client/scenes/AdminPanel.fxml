@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminPanelController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0">
+        <VBox.margin>
+            <Insets />
+        </VBox.margin>
+      <children>
+         <TabPane prefHeight="600.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
+           <tabs>
+             <Tab text="Inspect">
+               <content>
+                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <children>
+                           <TableView fx:id="table" prefHeight="300.0" prefWidth="500.0">
+                             <columns>
+                                 <TableColumn fx:id="id" prefWidth="75.0" text="ID" />
+                               <TableColumn fx:id="title" prefWidth="75.0" text="Title" />
+                               <TableColumn fx:id="source" prefWidth="75.0" text="Source" />
+                                 <TableColumn fx:id="consumption" prefWidth="101.0" text="Consumption" />
+                                 <TableColumn fx:id="image" prefWidth="99.0" text="Image" />
+                             </columns>
+                           </TableView>
+                           <Button layoutX="374.0" layoutY="357.0" mnemonicParsing="false" onAction="#loadTable" text="Button" />
+                        </children>
+                     </AnchorPane>
+               </content>
+             </Tab>
+             <Tab text="Add/Update">
+               <content>
+                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <children>
+                           <TextField fx:id="titleInput" layoutX="98.0" layoutY="109.0" promptText="Title" />
+                           <TextField fx:id="powerInput" layoutX="98.0" layoutY="153.0" promptText="Power Consumption" />
+                           <TextField fx:id="sourceInput" layoutX="98.0" layoutY="203.0" promptText="Source" />
+                           <TextField fx:id="imageInput" layoutX="98.0" layoutY="254.0" promptText="Image Path" />
+                           <Button layoutX="147.0" layoutY="349.0" mnemonicParsing="false" onAction="#submit" text="Submit" />
+                        </children></AnchorPane>
+               </content>
+             </Tab>
+           </tabs>
+         </TabPane>
+      </children>
+    </AnchorPane>
+</VBox>

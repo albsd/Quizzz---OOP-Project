@@ -17,11 +17,13 @@ package client.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import commons.Leaderboard;
-import commons.LobbyMessage;
+
 import commons.Game;
+import commons.Leaderboard;
 import commons.Player;
 import commons.PlayerUpdate;
+import commons.Activity;
+import commons.LobbyMessage;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -38,6 +40,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -48,6 +51,8 @@ public class ServerUtils {
     private final HttpClient client;
 
     private String kGameUrl;
+
+    private String activityUrl;
 
     private StompSession session;
 
@@ -66,6 +71,7 @@ public class ServerUtils {
             client.send(request, HttpResponse.BodyHandlers.ofString());
             // if the above code does not throw -> we can set the urls
             this.kGameUrl = uri + "/game";
+            this.activityUrl = uri + "/activity";
             this.session = connect("ws://" + host + ":" + port + "/websocket");
             return null;
         } catch (IllegalArgumentException e) {
@@ -278,6 +284,33 @@ public class ServerUtils {
         return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
 
+    public List<Activity> getAllActivity() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(activityUrl))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        return parseResponseToObject(request, new TypeReference<List<Activity>>() { });
+    }
+
+    public Activity addActivity(final Activity activity) {
+        ObjectMapper mapper = new ObjectMapper();
+        String activityString = "";
+        try {
+            activityString = mapper.writeValueAsString(activity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(activityUrl))
+                .header("accept", "application/json")
+
+                .POST(HttpRequest.BodyPublishers.ofString(activityString))
+                .build();
+
+        return parseResponseToObject(request, new TypeReference<Activity>() { });
+    }
+
     /**
      * Utility method to parse HttpResponse to a given object type.
      *
@@ -291,7 +324,9 @@ public class ServerUtils {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() != 200) return null;
+            if (response.statusCode() != 200) {
+                return null;
+            }
 
             ObjectMapper mapper = new ObjectMapper();
             T obj = mapper.readValue(response.body(), type);
