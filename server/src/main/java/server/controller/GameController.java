@@ -227,6 +227,7 @@ public class GameController {
     private void handleSessionDisconnect(final SessionDisconnectEvent event) {
         System.out.println("Client disconnected");
         System.out.println(event.getSessionId());
+        //here invoke
     }
 
     /**
