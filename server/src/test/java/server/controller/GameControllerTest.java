@@ -158,4 +158,9 @@ public class GameControllerTest {
         assertEquals(score, current.getPlayerByNick(nick).getScore());
     }
 
+    @Test
+    public void updateGameStatus() {
+        ctrl.markGameOver(game.getId());
+        assertEquals(true, game.isOver());
+    }
 }

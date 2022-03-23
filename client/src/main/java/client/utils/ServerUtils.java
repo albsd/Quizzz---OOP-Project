@@ -32,6 +32,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
+import client.scenes.GameController;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -154,7 +156,7 @@ public class ServerUtils {
     }
 
     /**
-     * Calls the REST endpoint to leave the current active lobby.
+     * Calls the REST endpoint to leave the active game.
      *
      * @param nick  String of the user nickname
      * @param id    UUID of the game as a String
@@ -277,6 +279,21 @@ public class ServerUtils {
                 .build();
         return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
+
+    /**
+     * Calls the REST endpoint to mark game as finished
+     *
+     * @param id    UUID of the game as a String
+     * @return      Game that was removed
+     */
+    public Game markGameOver(final UUID id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/" + id))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+        return parseResponseToObject(request, new TypeReference<Game>() {});
+    }
+
 
     /**
      * Utility method to parse HttpResponse to a given object type.

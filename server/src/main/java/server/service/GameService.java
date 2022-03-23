@@ -60,4 +60,10 @@ public class GameService {
     public void addPlayerScore(final Game game, final String nick, final int score) {
         repo.addPlayerScore(game, nick, score);
     }
+
+    public Game markGameOver(final UUID id) {
+        Game game = repo.findById(id);
+        game.setCurrentQuestionIndex(20);
+        return game;
+    }
 }

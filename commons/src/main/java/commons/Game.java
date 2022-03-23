@@ -111,4 +111,9 @@ public class Game {
     public Question getCurrentQuestion() {
         return questions.get(currentQuestion);
     }
+
+    @JsonIgnore
+    public void setCurrentQuestionIndex(final int number) {
+        this.currentQuestion = number;
+    }
 }

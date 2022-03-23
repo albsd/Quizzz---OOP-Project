@@ -335,6 +335,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             } else {
                 displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
             }
+            server.markGameOver(game.getId());
         }
         // Displays leaderboard every 10 questions in multiplayer
         if (game.isMultiplayer() && game.shouldShowMultiplayerLeaderboard()) {
