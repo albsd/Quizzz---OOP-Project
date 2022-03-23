@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -31,7 +31,7 @@
                      </Label>
                      <HBox fx:id="mainHorizontalBox" prefHeight="400.0" prefWidth="1240.0">
                         <children>
-                           <VBox fx:id="leftBox" alignment="CENTER" prefHeight="268.0" prefWidth="282.0">
+                           <VBox fx:id="leftBox" alignment="CENTER" prefHeight="268.0" prefWidth="343.0">
                               <children>
                                  <ImageView fx:id="questionImage" fitHeight="340.0" fitWidth="372.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                                     <image>
@@ -71,30 +71,31 @@
                                  </HBox>
                               </children>
                            </VBox>
-                           <Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
-                           <VBox fx:id="optionBox" prefHeight="400.0" prefWidth="300.0" spacing="25.0">
+                           <Region prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
+                           <VBox fx:id="optionBox" prefHeight="414.0" prefWidth="395.0" spacing="25.0">
                               <children>
-                                 <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="200 Watts / hour" textFill="#a07400" VBox.vgrow="ALWAYS">
+                                 <Region fx:id="bufferRegion" prefHeight="0.0" prefWidth="395.0" />
+                                 <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" text="200 Watts / hour" textAlignment="CENTER" textFill="#a07400" wrapText="true" VBox.vgrow="ALWAYS">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
                                  </Button>
-                                 <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="100 Watts / hour" textFill="#a07400">
+                                 <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" text="100 Watts / hour" textAlignment="CENTER" textFill="#a07400" wrapText="true">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
                                  </Button>
-                                 <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="50 Watts / hour" textFill="#a07400">
+                                 <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" text="50 Watts / hour" textAlignment="CENTER" textFill="#a07400" wrapText="true">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
                                  </Button>
-                                 <TextField fx:id="openAnswer" alignment="CENTER" onAction="#onEnter" prefHeight="53.0" prefWidth="300.0" promptText="Type in only numbers" visible="false">
+                                 <TextField fx:id="openAnswer" alignment="CENTER" onAction="#onEnter" prefHeight="52.0" prefWidth="421.0" promptText="Type in only numbers" visible="false">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
                                  </TextField>
-                                 <Label fx:id="answerBox" alignment="CENTER" prefHeight="53.0" prefWidth="300.0" textAlignment="CENTER" textFill="#31ce16">
+                                 <Label fx:id="answerBox" alignment="CENTER" prefHeight="35.0" prefWidth="424.0" textAlignment="CENTER" textFill="#31ce16">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
@@ -107,7 +108,7 @@
                                  <Insets />
                               </HBox.margin>
                            </VBox>
-                           <Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+                           <Region prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
                            <VBox fx:id="chatBox" prefHeight="400.0" prefWidth="350.0">
                               <children>
                                  <ScrollPane fx:id="emoteScroll" fitToWidth="true" hbarPolicy="NEVER" prefHeight="315.0" prefWidth="350.0" style="-fx-background: white;" VBox.vgrow="ALWAYS">
@@ -175,7 +176,7 @@
                            </VBox>
                         </children>
                         <padding>
-                           <Insets left="50.0" right="50.0" />
+                           <Insets left="15.0" right="15.0" />
                         </padding>
                      </HBox>
                   </children>
