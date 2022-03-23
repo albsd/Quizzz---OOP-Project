@@ -1,32 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
       <children>
-          <AnchorPane fx:id="menu" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
+         <AnchorPane fx:id="menu" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
             <children>
-                 <Label fx:id="points" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0" text="0 pts">
-                     <font>
-                         <Font name="System Bold" size="30.0" />
-                     </font>
-                 </Label>
+            <Label fx:id="points" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0" text="Total points: 0">
+                  <font>
+                     <Font name="System Bold" size="30.0" />
+                  </font>
+               </Label>
                <VBox layoutY="100.0">
                   <children>
                      <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" text="What is the expected energy consumption of an average personal gaming computer system per hour?" wrapText="true">
@@ -39,9 +31,9 @@
                      </Label>
                      <HBox fx:id="mainHorizontalBox" prefHeight="400.0" prefWidth="1240.0">
                         <children>
-                           <VBox fx:id="leftBox" alignment="CENTER" prefHeight="400.0">
+                           <VBox fx:id="leftBox" alignment="CENTER" prefHeight="268.0" prefWidth="282.0">
                               <children>
-                                 <ImageView fx:id="questionImage" fitHeight="315.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                                 <ImageView fx:id="questionImage" fitHeight="340.0" fitWidth="372.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                                     <image>
                                        <Image url="@/images/placeholderQuestion.png" />
                                     </image>
@@ -80,7 +72,7 @@
                               </children>
                            </VBox>
                            <Region prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
-                           <VBox fx:id="optionBox" prefHeight="400.0" prefWidth="300.0" spacing="45.0">
+                           <VBox fx:id="optionBox" prefHeight="400.0" prefWidth="300.0" spacing="25.0">
                               <children>
                                  <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="53.0" prefWidth="300.0" styleClass="optionButton" text="200 Watts / hour" textFill="#a07400" VBox.vgrow="ALWAYS">
                                     <font>
@@ -97,11 +89,16 @@
                                        <Font size="24.0" />
                                     </font>
                                  </Button>
-                                 <TextField fx:id="openAnswer" alignment="CENTER" onAction="#checkFreeResponseQuestion" prefHeight="53.0" prefWidth="196.0" promptText="Type in only numbers" visible="false">
+                                 <TextField fx:id="openAnswer" alignment="CENTER" onAction="#onEnter" prefHeight="53.0" prefWidth="300.0" promptText="Type in only numbers" visible="false">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
                                  </TextField>
+                                 <Label fx:id="answerBox" alignment="CENTER" prefHeight="53.0" prefWidth="300.0" textAlignment="CENTER" textFill="#31ce16">
+                                    <font>
+                                       <Font size="24.0" />
+                                    </font>
+                                 </Label>
                               </children>
                               <padding>
                                  <Insets top="25.0" />
@@ -115,7 +112,7 @@
                               <children>
                                  <ScrollPane fx:id="emoteScroll" fitToWidth="true" hbarPolicy="NEVER" prefHeight="315.0" prefWidth="350.0" style="-fx-background: white;" VBox.vgrow="ALWAYS">
                                     <content>
-                                       <VBox fx:id="emoteChat" alignment="BOTTOM_RIGHT" minHeight="315.0" minWidth="300.0" spacing="20.0">
+                                       <VBox fx:id="emoteChat" alignment="BOTTOM_RIGHT" minHeight="307.0" minWidth="300.0" prefHeight="315.0" prefWidth="555.0" spacing="20.0">
                                           <padding>
                                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                           </padding>
@@ -194,30 +191,29 @@
                      <Font size="24.0" />
                   </font>
                </Label>
-                  <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;" styleClass="iconButton" textAlignment="CENTER">
-                      <graphic>
-                          <ImageView pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                  <Image url="@/images/back.png" />
-                              </image>
-                          </ImageView>
-                      </graphic>
-               </Button>
+               <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;" styleClass="iconButton" textAlignment="CENTER">
+                  <graphic>
+                     <ImageView pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@/images/back.png" />
+                        </image>
+                     </ImageView>
+                  </graphic></Button>
                <Label fx:id="questionNumber" alignment="TOP_LEFT" layoutX="7.0" layoutY="124.0" text="#">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="warning" alignment="CENTER" layoutX="485.0" layoutY="82.0" prefHeight="36.0" prefWidth="228.0" text="You can only input numbers" textFill="#e90b0b" visible="false">
+               <Label fx:id="warning" alignment="CENTER" layoutX="458.0" layoutY="68.0" prefHeight="37.0" prefWidth="323.0" text="Already submitted answer" textFill="#f10303" visible="false">
                   <font>
-                     <Font size="14.0" />
+                     <Font size="24.0" />
                   </font>
                </Label>
-              </children>
-          </AnchorPane>
+            </children>
+         </AnchorPane>
          <!-- Include the popup at top of everything -->
          <fx:include fx:id="popup" source="/client/scenes/Popup.fxml" />
-         <fx:include fx:id="leaderboard" layoutX="-20.0" layoutY="-20.0" source="/client/scenes/Leaderboard.fxml" />
+         <fx:include fx:id="leaderboard" source="/client/scenes/Leaderboard.fxml" />
       </children>
    </AnchorPane>
 </VBox>

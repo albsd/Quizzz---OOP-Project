@@ -20,7 +20,6 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -37,20 +36,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private ScrollPane chatArea;
 
     @FXML
-    private Label chatText;
+    private Label chatText, playersLeft, playersRight, playerCount;
 
     @FXML
     private TextField chatInput;
 
-    @FXML
-    private Label playersLeft;
-
-    @FXML
-    private Label playersRight;
-
-    @FXML
-    private Label playerCount;
-    
     @FXML
     private Parent popup;
 
@@ -60,8 +50,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private final ServerUtils server;
     
     private final FXMLController fxml;
-
-    private final DateTimeFormatter timeFormat;
 
     private Game lobby;
     
@@ -74,7 +62,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         this.server = server;
         this.fxml = fxml;
         this.players = new ArrayList<>();
-        this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
     }
 
     @Override
@@ -105,14 +92,16 @@ public class LobbyController implements Initializable, WebSocketSubscription {
             Platform.runLater(() -> {
                 String chatBox = chatText.getText() + message.toString();
                 chatText.setText(chatBox);
+                chatArea.layout();
+                chatArea.setVvalue(1.0);
             });
         });
 
-        subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, game -> {
+        subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, update -> {
             Platform.runLater(() -> {
                 //sets lobby with recent list of players
-                this.lobby = server.getLobby();
-                fxml.showMultiPlayer(me, lobby);
+                Game game = server.getGameById(lobby.getId());
+                fxml.showMultiPlayer(me, game);
             });
         });
         return subscriptions;
@@ -127,7 +116,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         final LobbyMessage message = new LobbyMessage(me.getNick(), time.toString(), content);
         
         server.send("/app/lobby/chat", message);
-        chatArea.setVvalue(1.0);
     }
 
     public void setMe(final Player me) {
