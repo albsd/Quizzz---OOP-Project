@@ -31,7 +31,6 @@ public class AppController {
      */
     @GetMapping("/{nick}")
     public Player updateLobbyPlayerTime(final @PathVariable String nick) {
-        System.out.println("Received at game controller");
         return gameService.updateLobbyPlayerHeartbeat(nick);
     }
 

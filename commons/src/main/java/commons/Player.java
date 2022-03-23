@@ -41,6 +41,7 @@ public class Player {
     public Date getTimestamp() {
         return this.time;
     }
+
     @JsonIgnore
     public void updateTimestamp(final Date newTime) {
         this.time = newTime;

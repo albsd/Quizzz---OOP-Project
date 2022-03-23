@@ -131,6 +131,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.server = server;
         this.fxml = fxml;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
+        this.playerTimer = new Timer();
     }
 
     @Override
@@ -155,15 +156,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             return null;
         }));
-        this.playerTimer = new Timer();
-        heartBeat = new TimerTask() {
-            @Override
-            public void run() {
-                server.updateGamePlayer(game.getId(), me.getNick());
-                System.out.println("Sending heartbeat to server.");
-            }
-        };
-        startTask();
     }
 
     @Override
@@ -241,6 +233,14 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
+
+        heartBeat = new TimerTask() {
+            @Override
+            public void run() {
+                server.updateGamePlayer(game.getId(), me.getNick());
+            }
+        };
+        startTask();
     }
 
     public void setSinglePlayer(final Game game) {
@@ -413,6 +413,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void openPopup(final ActionEvent e) {
         popupController.open("game", () -> {
+            heartBeat.cancel();
             server.leaveGame(me.getNick(), game.getId());
         });
     }

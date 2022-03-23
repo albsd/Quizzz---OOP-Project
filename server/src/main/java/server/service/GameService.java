@@ -69,14 +69,13 @@ public class GameService {
     }
 
     public Player updateLobbyPlayerHeartbeat(final String nick) {
-        //        System.out.println("Received at gameService");
         Player player = lobby.getPlayerByNick(nick);
         player.updateTimestamp(new Date());
         return player;
     }
 
     public Player updateGamePlayerHeartbeat(final UUID id, final String nick) {
-//        System.out.println("Received at gameService");
+        System.out.println("Received game heart beat at server");
         Player player = repo.findById(id).getPlayerByNick(nick);
         player.updateTimestamp(new Date());
         return player;
