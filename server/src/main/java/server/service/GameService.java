@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.GameRepository;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,10 +16,6 @@ public class GameService {
     private final GameRepository repo;
 
     private Game lobby;
-
-    private String time;
-
-    private final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
 
     @Autowired
     public GameService(final GameRepository repo) {
@@ -73,12 +68,10 @@ public class GameService {
     }
 
     public void updateLobbyPlayerHeartbeat(final String nick) {
-        time = ZonedDateTime.now().format(timeFormat);
-        lobby.getPlayerByNick(nick).updateTimestamp(time);
+        lobby.getPlayerByNick(nick).updateTimestamp(new Date());
     }
 
     public void updateGamePlayerHeartbeat(final UUID id, final String nick) {
-        time = ZonedDateTime.now().format(timeFormat);
-        repo.findById(id).getPlayerByNick(nick).updateTimestamp(time);
+        repo.findById(id).getPlayerByNick(nick).updateTimestamp(new Date());
     }
 }
