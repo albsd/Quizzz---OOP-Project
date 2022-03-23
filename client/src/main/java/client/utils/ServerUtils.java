@@ -32,8 +32,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
-import client.scenes.GameController;
-
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -51,6 +49,8 @@ public class ServerUtils {
 
     private String kGameUrl;
 
+    private String kAppUrl;
+
     private StompSession session;
 
     public ServerUtils() {
@@ -67,6 +67,7 @@ public class ServerUtils {
 
             client.send(request, HttpResponse.BodyHandlers.ofString());
             // if the above code does not throw -> we can set the urls
+            this.kAppUrl = uri + "/program";
             this.kGameUrl = uri + "/game";
             this.session = connect("ws://" + host + ":" + port + "/websocket");
             return null;
@@ -284,14 +285,13 @@ public class ServerUtils {
      * Calls the REST endpoint to mark game as finished.
      *
      * @param id    UUID of the game as a String
-     * @return      Game that was removed
      */
-    public Game markGameOver(final UUID id) {
+    public void markGameOver(final UUID id) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/" + id))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
-        return parseResponseToObject(request, new TypeReference<Game>() {});
+        parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
     /**
@@ -302,11 +302,11 @@ public class ServerUtils {
     public void updateLobbyPlayer(final String nick) {
         //catch in AppController
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("/" + nick))
+                .uri(URI.create(kAppUrl + "/" + nick))
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        parseResponseToObject(request, new TypeReference<Game>() { });
+        parseResponseToObject(request, new TypeReference<Player>() { });
     }
 
     /**
@@ -318,11 +318,11 @@ public class ServerUtils {
     public void updateGamePlayer(final UUID id, final String nick) {
         //catch in AppController
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("/" + id + "/" + nick))
+                .uri(URI.create(kAppUrl + "/" + id + "/" + nick))
                 .header("accept", "application/json")
                 .GET()
                 .build();
-        parseResponseToObject(request, new TypeReference<Game>() { });
+        parseResponseToObject(request, new TypeReference<Player>() { });
     }
 
 

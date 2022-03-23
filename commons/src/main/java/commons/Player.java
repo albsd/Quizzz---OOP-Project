@@ -1,10 +1,8 @@
 package commons;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
 
@@ -16,6 +14,7 @@ public class Player {
     private int score;
 
     //time based on systems default time
+    @JsonIgnore
     private Date time = new Date();
 
     public Player(final String nick) {
@@ -38,10 +37,11 @@ public class Player {
         return this.score;
     }
 
+    @JsonIgnore
     public Date getTimestamp() {
         return this.time;
     }
-
+    @JsonIgnore
     public void updateTimestamp(final Date newTime) {
         this.time = newTime;
     }

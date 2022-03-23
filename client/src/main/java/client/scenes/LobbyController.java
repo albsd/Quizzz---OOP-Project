@@ -20,8 +20,11 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -56,7 +59,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     
     private List<String> players;
 
-    private Timer timer;
+    private final Timer timer;
 
     private TimerTask heartBeat;
 
@@ -65,6 +68,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         this.server = server;
         this.fxml = fxml;
         this.players = new ArrayList<>();
+        this.timer = new Timer();
     }
 
     @Override
@@ -77,15 +81,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
                 .collect(Collectors.toList());
 
         updatePlayerList();
-        this.timer = new Timer();
-        heartBeat = new TimerTask() {
-            @Override
-            public void run() {
-                server.updateLobbyPlayer(me.getNick());
-                System.out.println("Sending heartbeat to server.");
-            }
-        };
-        startTask();
     }
 
     @Override
@@ -130,8 +125,16 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         server.send("/app/lobby/chat", message);
     }
 
-    public void setMe(final Player me) {
+    public void setMeAndTask(final Player me) {
         this.me = me;
+        heartBeat = new TimerTask() {
+            @Override
+            public void run() {
+                server.updateLobbyPlayer(me.getNick());
+                System.out.println("Sending heartbeat to server.");
+            }
+        };
+        startTask();
     }
 
     private void updatePlayerList() {

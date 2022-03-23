@@ -212,12 +212,6 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
-
-    @PostMapping("/{id}}")
-    public void markGameOver(final @PathVariable("id") UUID id) {
-        gameService.markGameOver(id);
-    }
-
     // TODO: send generated session id to client so that it can send it back when
     // joining lobby after nickname
     @EventListener
@@ -337,5 +331,10 @@ public class GameController {
     @SendTo("/topic/game/{id}/leave")
     private Player sendPlayerLeft(final Player player) {
         return player;
+    }
+
+    @PostMapping("/{id}")
+    public Game markGameOver(final @PathVariable("id") UUID id) {
+        return gameService.markGameOver(id);
     }
 }

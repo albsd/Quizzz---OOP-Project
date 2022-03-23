@@ -7,12 +7,14 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import server.service.GameService;
 
 import java.util.UUID;
 
-@RestController("")
+@RestController
+@RequestMapping("/program")
 public class AppController {
 
     private final GameService gameService;
@@ -24,32 +26,37 @@ public class AppController {
 
     /**
      * Endpoint to check the lobby players' heartbeat.
+     *
      * @param nick name of player
      */
-    @GetMapping(path = { "", "/{nick}" })
-    public void updatePlayerTime(final @PathVariable String nick) {
-        gameService.updateLobbyPlayerHeartbeat(nick);
+    @GetMapping("/{nick}")
+    public Player updateLobbyPlayerTime(final @PathVariable String nick) {
+        System.out.println("Received at game controller");
+        return gameService.updateLobbyPlayerHeartbeat(nick);
     }
 
     /**
-     * Endpoint to check the lobby players' heartbeat.
+     * Endpoint to check the game players' heartbeat.
+     *
      * @param nick name of player
-     * @param id id of game
+     * @param id   id of game
      */
-    @GetMapping(path = { "", "/{id}/{nick}" })
-    public void updatePlayerTime(final @PathVariable UUID id, final @PathVariable String nick) {
-        gameService.updateGamePlayerHeartbeat(id, nick);
+    @GetMapping({"/{id}/{nick}"})
+    public Player updateGamePlayerTime(final @PathVariable UUID id, final @PathVariable String nick) {
+        System.out.println("Received at game controller");
+        return gameService.updateGamePlayerHeartbeat(id, nick);
     }
+}
 
-    @SendTo("/topic/game/{id}/leave")
-    public Player sendPlayerLeft(@DestinationVariable final UUID id, final Player player) {
-        return player;
-    }
-
-    @SendTo("/topic/update/player")
-    public PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
-        return update;
-    }
+//    @SendTo("/topic/game/{id}/leave")
+//    public Player sendPlayerLeft(@DestinationVariable final UUID id, final Player player) {
+//        return player;
+//    }
+//
+//    @SendTo("/topic/update/player")
+//    public PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
+//        return update;
+//    }
 
     //TODO: check whether server is also active
-}
+

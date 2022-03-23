@@ -1,6 +1,7 @@
 package server.service;
 import commons.Game;
 import commons.Leaderboard;
+import commons.Player;
 import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,11 +68,17 @@ public class GameService {
         return game;
     }
 
-    public void updateLobbyPlayerHeartbeat(final String nick) {
-        lobby.getPlayerByNick(nick).updateTimestamp(new Date());
+    public Player updateLobbyPlayerHeartbeat(final String nick) {
+        //        System.out.println("Received at gameService");
+        Player player = lobby.getPlayerByNick(nick);
+        player.updateTimestamp(new Date());
+        return player;
     }
 
-    public void updateGamePlayerHeartbeat(final UUID id, final String nick) {
-        repo.findById(id).getPlayerByNick(nick).updateTimestamp(new Date());
+    public Player updateGamePlayerHeartbeat(final UUID id, final String nick) {
+//        System.out.println("Received at gameService");
+        Player player = repo.findById(id).getPlayerByNick(nick);
+        player.updateTimestamp(new Date());
+        return player;
     }
 }
