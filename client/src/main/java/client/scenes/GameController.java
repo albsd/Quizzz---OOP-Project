@@ -171,7 +171,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         subscriptions[1] = server.registerForMessages("/topic" + leavePath, Player.class, player -> {
             Platform.runLater(() -> {
-                updateEmoteBox(player.getNick(), "/images/disconnected.png");
+                updateEmoteBox(player.getNick(), "/images/disconnect.png");
             });
         });
 
