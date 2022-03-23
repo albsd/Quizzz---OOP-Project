@@ -150,7 +150,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             return null;
         }));
-        System.out.println("You should only get this once");
     }
 
     @Override

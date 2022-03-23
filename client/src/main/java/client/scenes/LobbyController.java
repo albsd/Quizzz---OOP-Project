@@ -161,8 +161,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void start(final ActionEvent event) {
         //don't start game immediately cause invoker starts game faster
         //than other players in lobby
-        server.send("/app/lobby/chat",
-                new LobbyMessage("Server", "", "Game is about to start. Have fun!"));
         server.startMultiPlayer();
     }
 }
