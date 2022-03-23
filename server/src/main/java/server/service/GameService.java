@@ -1,5 +1,5 @@
 package server.service;
-
+import commons.Player;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Question;
@@ -65,5 +65,15 @@ public class GameService {
         Game game = repo.findById(id);
         game.setCurrentQuestionIndex(20);
         return game;
+    }
+
+    public Player updateGamePlayerHeartbeat(final UUID id, final String nick) {
+        Game game = repo.findById(id);
+        game.setCurrentQuestionIndex(20);
+        return game;
+    }
+
+    public void updateLobbyPlayerHeartbeat(final String nick) {
+        lobby.getPlayerByNick(nick).
     }
 }

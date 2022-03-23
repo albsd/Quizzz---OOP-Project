@@ -212,12 +212,7 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
-    /**
-     * Mark game based on ID as over to be deleted by Spring scan
-     *
-     * @param nick User's nickname which identifies a given player in a game
-     * @return Player
-     */
+
     @PostMapping("/{id}}")
     public Game markGameOver(final @PathVariable("id") UUID id) {
         return gameService.markGameOver(id);

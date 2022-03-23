@@ -281,7 +281,7 @@ public class ServerUtils {
     }
 
     /**
-     * Calls the REST endpoint to mark game as finished
+     * Calls the REST endpoint to mark game as finished.
      *
      * @param id    UUID of the game as a String
      * @return      Game that was removed
@@ -292,6 +292,21 @@ public class ServerUtils {
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
         return parseResponseToObject(request, new TypeReference<Game>() {});
+    }
+
+    /**
+     * Request to update lobby player's heartbeat.
+     *
+     * @param nick name of plyaer
+     */
+    public void updateLobbyPlayer(final String nick) {
+        //catch in AppController
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("/" + nick))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
 

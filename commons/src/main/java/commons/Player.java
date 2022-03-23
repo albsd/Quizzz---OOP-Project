@@ -3,6 +3,8 @@ package commons;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Player {
@@ -12,9 +14,15 @@ public class Player {
     @JsonProperty("score")
     private int score;
 
+    @JsonProperty("time")
+    private String timestamp;
+
+    private final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
+
     public Player(final String nick) {
         this.nick = nick;
         this.score = 0;
+        this.timestamp = ZonedDateTime.now().format(timeFormat);
     }
 
     @JsonCreator
@@ -22,6 +30,7 @@ public class Player {
             final @JsonProperty("score") int score) {
         this.nick = nick;
         this.score = score;
+        this.timestamp = ZonedDateTime.now().format(timeFormat);
     }
 
     public String getNick() {
@@ -30,6 +39,14 @@ public class Player {
 
     public int getScore() {
         return this.score;
+    }
+
+    public String getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void updateTimestamp(final String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public void addScore(final int score) {

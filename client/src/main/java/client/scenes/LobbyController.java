@@ -20,9 +20,8 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -57,6 +56,10 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     
     private List<String> players;
 
+    private Timer timer;
+
+    private TimerTask currentTask;
+
     @Inject
     public LobbyController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
@@ -74,6 +77,15 @@ public class LobbyController implements Initializable, WebSocketSubscription {
                 .collect(Collectors.toList());
 
         updatePlayerList();
+        this.timer = new Timer();
+        currentTask = new TimerTask() {
+            @Override
+            public void run() {
+                server.updateLobbyPlayer(me.getNick());
+                System.out.println("Sending heartbeat to server.");
+            }
+        };
+        startTask();
     }
 
     @Override
@@ -162,5 +174,10 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         //don't start game immediately cause invoker starts game faster
         //than other players in lobby
         server.startMultiPlayer();
+    }
+
+    private void startTask() {
+        //timer invokes currentTask (sending heartbeat to server) every 5 seconds
+        timer.scheduleAtFixedRate(currentTask, 0, 5000);
     }
 }
