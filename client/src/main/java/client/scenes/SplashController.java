@@ -92,9 +92,6 @@ public class SplashController {
         }
 
         Game single = server.startSinglePlayer(nick);
-
-        //game starts
-
         fxml.showSinglePlayer(single);
     }
 

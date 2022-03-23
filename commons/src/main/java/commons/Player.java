@@ -55,10 +55,7 @@ public class Player {
     public boolean isAlive() {
         Date now = new Date();
         long timerDifference = Math.abs(now.getTime() - this.time.getTime());
-        if (timerDifference > 5000L) {
-            return true;
-        }
-        return false;
+        return timerDifference > 5000L;
     }
 
 

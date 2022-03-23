@@ -47,7 +47,7 @@ public class GameConfig {
                 } else {
                     for (int j = 0; j < players.size(); j++) {
                         Player player = players.get(j);
-                        if (player.isAlive()) {
+                        if (!player.isAlive()) {
                             game.removePlayer(player);
                             appCtrl.sendPlayerLeft(player, game.getId());
                         }
@@ -63,7 +63,7 @@ public class GameConfig {
         List<Player> players = lobby.getPlayers();
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
-            if (player.isAlive()) {
+            if (!player.isAlive()) {
                 lobby.removePlayer(player);
                 appCtrl.sendPlayerUpdate(new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
             }
