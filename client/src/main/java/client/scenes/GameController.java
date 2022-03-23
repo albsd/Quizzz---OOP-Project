@@ -247,7 +247,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void checkMulChoiceOption(final ActionEvent e) {
-        if (!submittedAnswer && !clientTimer.isOver()) {
+        if (!submittedAnswer) {
             submittedAnswer = true;
             Button chosenOption = (Button) e.getSource();
             chosenOption.setStyle("-fx-border-color:black; -fx-border-width: 3; -fx-border-style: solid;");
@@ -300,14 +300,19 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void checkAnswer(final long option, final int time) {
-        int score = game.getCurrentQuestion().calculateScore(option, time);
-        if (doubleScore) {
-            score *= 2;
-            doubleScore = false;
+        if (clientTimer.isOver()) {
+            updateWarning();
+            warning.setVisible(true);
+        } else {
+            int score = game.getCurrentQuestion().calculateScore(option, time);
+            if (doubleScore) {
+                score *= 2;
+                doubleScore = false;
+            }
+            System.out.println("Received " + score + " points from question");
+            me.addScore(score);
+            server.addScore(game.getId(), me.getNick(), score);
         }
-        System.out.println("Received " + score + " points from question");
-        me.addScore(score);
-        server.addScore(game.getId(), me.getNick(), score);
     }
 
     private void displayAnswerMomentarily() {
