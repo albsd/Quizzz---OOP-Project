@@ -214,8 +214,8 @@ public class GameController {
 
 
     @PostMapping("/{id}}")
-    public Game markGameOver(final @PathVariable("id") UUID id) {
-        return gameService.markGameOver(id);
+    public void markGameOver(final @PathVariable("id") UUID id) {
+        gameService.markGameOver(id);
     }
 
     // TODO: send generated session id to client so that it can send it back when

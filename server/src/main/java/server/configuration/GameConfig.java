@@ -2,10 +2,12 @@ package server.configuration;
 
 import commons.Game;
 import commons.Player;
+import commons.PlayerUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import server.controller.AppController;
 import server.repository.GameRepository;
 import server.service.GameService;
 
@@ -22,6 +24,9 @@ public class GameConfig {
     @Autowired
     private GameService gameService;
 
+    @Autowired
+    private AppController appController;
+
 
     @Scheduled(fixedRate = 10000)
     public void checkGameAndPlayers() {
@@ -34,6 +39,7 @@ public class GameConfig {
                 for (Player player : players) {
                     if (timeDifference(player) > 5000L) {
                         game.removePlayer(player);
+                        appController.sendPlayerLeft(game.getId(), player);
                     }
                 }
             }
@@ -47,6 +53,7 @@ public class GameConfig {
         for (Player player : players) {
             if (timeDifference(player) > 5000L) {
                 lobby.removePlayer(player);
+                appController.sendPlayerUpdate(new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
             }
         }
     }
