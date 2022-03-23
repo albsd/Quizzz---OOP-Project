@@ -12,7 +12,6 @@ import server.controller.GameController;
 import server.repository.GameRepository;
 import server.service.GameService;
 
-import java.util.Date;
 import java.util.List;
 
 @Configuration
@@ -44,11 +43,12 @@ public class GameConfig {
                 List<Player> players = game.getPlayers();
                 if (players.isEmpty()) {
                     gameRepo.removeGame(game.getId());
-                    System.out.println("Removed game");
+                    System.out.println("Removed empty game");
                 } else {
                     for (int j = 0; j < players.size(); j++) {
                         Player player = players.get(j);
-                        if (removePlayer(player, game)) {
+                        if (player.isAlive()) {
+                            game.removePlayer(player);
                             appCtrl.sendPlayerLeft(player, game.getId());
                         }
                     }
@@ -63,20 +63,10 @@ public class GameConfig {
         List<Player> players = lobby.getPlayers();
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
-            if (removePlayer(player, lobby)) {
+            if (player.isAlive()) {
+                lobby.removePlayer(player);
                 appCtrl.sendPlayerUpdate(new PlayerUpdate(player.getNick(), PlayerUpdate.Type.leave));
             }
         }
-    }
-//don't use while loops
-    private boolean removePlayer(final Player player, final Game game) {
-        //getTime returns miliseconds
-        Date now = new Date();
-        long timerDifference = Math.abs(now.getTime() - player.getTimestamp().getTime());
-        if (timerDifference > 5000L) {
-            game.removePlayer(player);
-            return true;
-        }
-        return false;
     }
 }

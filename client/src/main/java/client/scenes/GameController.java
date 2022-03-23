@@ -40,7 +40,6 @@ import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameController implements Initializable, WebSocketSubscription {
@@ -119,11 +118,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
-    private final Timer playerTimer;
-
-    private TimerTask heartBeat;
-
-
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
         this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
@@ -132,7 +126,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.server = server;
         this.fxml = fxml;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
-        this.playerTimer = new Timer();
     }
 
     @Override
@@ -236,7 +229,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         clientTimer.start(0);
         gameTimer.start(0);
 
-        startHeartBeat();
+        server.startTimerTask(new TimerTask() {
+            @Override
+            public void run() {
+                server.updateGamePlayer(game.getId(), me.getNick());
+                System.out.println("Game player heartbeat sent");
+            }
+        });
     }
 
     public void setSinglePlayer(final Game game) {
@@ -254,7 +253,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         clientTimer.start(0);
         gameTimer.start(0);
 
-        startHeartBeat();
+        server.startTimerTask(new TimerTask() {
+            @Override
+            public void run() {
+                server.updateGamePlayer(game.getId(), me.getNick());
+                System.out.println("Game player heartbeat sent");
+            }
+        });
     }
 
     @FXML
@@ -347,7 +352,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             } else {
                 displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
             }
-            heartBeat.cancel();
+            server.stopTimerTask();
             server.markGameOver(game.getId());
         }
         // Displays leaderboard every 10 questions in multiplayer
@@ -412,7 +417,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void openPopup(final ActionEvent e) {
         popupController.open("game", () -> {
-            heartBeat.cancel();
+            server.stopTimerTask();
             server.leaveGame(me.getNick(), game.getId());
         });
     }
@@ -484,17 +489,5 @@ public class GameController implements Initializable, WebSocketSubscription {
         option1.setVisible(false);
         option2.setVisible(false);
         option3.setVisible(false);
-    }
-
-    private void startHeartBeat() {
-        heartBeat = new TimerTask() {
-            @Override
-            public void run() {
-                server.updateGamePlayer(game.getId(), me.getNick());
-                System.out.println("Game player heartbeat sent");
-            }
-        };
-        //timer invokes heartbeat (sending heartbeat to server) every 5 seconds
-        playerTimer.scheduleAtFixedRate(heartBeat, 0, 5000);
     }
 }

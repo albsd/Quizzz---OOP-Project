@@ -21,10 +21,21 @@ public class AppController {
 
     private final SimpMessagingTemplate smt;
 
+
     @Autowired
     public AppController(final GameService gameService, final SimpMessagingTemplate smt) {
         this.gameService = gameService;
         this.smt = smt;
+    }
+
+    /**
+     * Endpoint to test whether server is still running.
+     *
+     * @return true if connected.
+     */
+    @GetMapping(path = { "", "/" })
+    public boolean identity() {
+        return true;
     }
 
     /**
@@ -50,15 +61,21 @@ public class AppController {
         return gameService.updateGamePlayerHeartbeat(id, nick);
     }
 
+    /**
+     * WS message to send player update in the lobby.
+     * @param update status of the player
+     */
     public void sendPlayerUpdate(@Payload final PlayerUpdate update) {
         this.smt.convertAndSend("/topic/update/player", update);
     }
 
+    /**
+     * WS message to notify players that have left a certain game.
+     * @param player object of player that left
+     * @param id id of the game
+     */
     public void sendPlayerLeft(@Payload final Player player, final UUID id) {
         this.smt.convertAndSend("/topic/game/" + id + "/leave", player);
         System.out.println("sent update");
     }
 }
-
-    //TODO: check whether server is also active
-

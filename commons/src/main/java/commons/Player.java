@@ -51,6 +51,17 @@ public class Player {
         this.score += score;
     }
 
+    @JsonIgnore
+    public boolean isAlive() {
+        Date now = new Date();
+        long timerDifference = Math.abs(now.getTime() - this.time.getTime());
+        if (timerDifference > 5000L) {
+            return true;
+        }
+        return false;
+    }
+
+
     @Override
     public int hashCode() {
         return Objects.hash(nick, score);

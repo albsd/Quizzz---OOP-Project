@@ -20,7 +20,6 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,16 +58,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     
     private List<String> players;
 
-    private final Timer timer;
-
-    private TimerTask heartBeat;
-
     @Inject
     public LobbyController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
         this.fxml = fxml;
         this.players = new ArrayList<>();
-        this.timer = new Timer();
     }
 
     @Override
@@ -106,8 +100,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
         subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, update -> {
             Platform.runLater(() -> {
+                server.stopTimerTask();
                 //sets lobby with recent list of players
-                timer.cancel();
                 Game game = server.getGameById(lobby.getId());
                 fxml.showMultiPlayer(me, game);
             });
@@ -128,14 +122,13 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     public void setMeAndTask(final Player me) {
         this.me = me;
-        heartBeat = new TimerTask() {
+        server.startTimerTask(new TimerTask() {
             @Override
             public void run() {
                 server.updateLobbyPlayer(me.getNick());
                 System.out.println("Lobby player heartbeat sent");
             }
-        };
-        startTask();
+        });
     }
 
     private void updatePlayerList() {
@@ -169,7 +162,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void openPopup(final ActionEvent event) {
         popupController.open("lobby", () -> {
             server.leaveLobby(me.getNick());
-            timer.cancel();
+            server.stopTimerTask();
             fxml.showSplash();
         });
     }
@@ -179,10 +172,5 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         //don't start game immediately cause invoker starts game faster
         //than other players in lobby
         server.startMultiPlayer();
-    }
-
-    private void startTask() {
-        //timer invokes currentTask (sending heartbeat to server) every 5 seconds
-        timer.scheduleAtFixedRate(heartBeat, 0, 5000);
     }
 }

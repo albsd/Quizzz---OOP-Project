@@ -38,6 +38,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -53,8 +55,13 @@ public class ServerUtils {
 
     private StompSession session;
 
+    private Timer playerTimer;
+
+    private TimerTask heartBeat;
+
     public ServerUtils() {
         this.client = HttpClient.newHttpClient();
+        this.playerTimer = new Timer();
     }
 
     public String isRunning(final String host, final String port) {
@@ -348,5 +355,19 @@ public class ServerUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Timer getPlayerTimer() {
+        return this.playerTimer;
+    }
+
+    public void startTimerTask(final TimerTask heartBeat) {
+        this.heartBeat = heartBeat;
+        //timer invokes currentTask (sending heartbeat to server) every 5 seconds
+        playerTimer.scheduleAtFixedRate(heartBeat, 0, 5000);
+    }
+
+    public void stopTimerTask() {
+        this.heartBeat.cancel();
     }
 }
