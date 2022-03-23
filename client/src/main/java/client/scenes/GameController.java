@@ -247,17 +247,32 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void checkMulChoiceOption(final ActionEvent e) {
-        if (!submittedAnswer) {
+        if (!submittedAnswer && !clientTimer.isOver()) {
             submittedAnswer = true;
             Button chosenOption = (Button) e.getSource();
-            chosenOption.setStyle("-fx-background-color:" + green);
+            chosenOption.setStyle("-fx-border-color:black; -fx-border-width: 3; -fx-border-style: solid;");
             Button[] options = {option1, option2, option3};
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
         } else {
+            updateWarning();
             warning.setVisible(true);
         }
     }
+
+    /**
+     * Updates the text in the warning label based on the state of the client's timer.
+     */
+
+    @FXML
+    public void updateWarning() {
+        if (clientTimer.isOver()) {
+            warning.setText("Too late! Time's over!");
+        } else {
+          warning.setText("Already submitted answer!");
+        }
+    }
+
 
     /**
      * Displays and validates the answer for open question.
@@ -272,6 +287,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             long option = Long.parseLong(optionStr);
             checkAnswer(option, clientTimer.getCurrentTime());
         } else {
+            updateWarning();
             warning.setVisible(true);
         }
     }
