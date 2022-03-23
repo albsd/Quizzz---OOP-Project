@@ -119,9 +119,10 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
-    private Timer playerTimer;
+    private final Timer playerTimer;
 
     private TimerTask heartBeat;
+
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
@@ -177,6 +178,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         subscriptions[1] = server.registerForMessages("/topic" + leavePath, Player.class, player -> {
             Platform.runLater(() -> {
+                System.out.println("Removed player from game");
                 updateEmoteBox(player.getNick(), "/images/disconnected.png");
             });
         });
@@ -234,13 +236,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         clientTimer.start(0);
         gameTimer.start(0);
 
-        heartBeat = new TimerTask() {
-            @Override
-            public void run() {
-                server.updateGamePlayer(game.getId(), me.getNick());
-            }
-        };
-        startTask();
+        startHeartBeat();
     }
 
     public void setSinglePlayer(final Game game) {
@@ -257,6 +253,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
+
+        startHeartBeat();
     }
 
     @FXML
@@ -349,6 +347,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             } else {
                 displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
             }
+            heartBeat.cancel();
             server.markGameOver(game.getId());
         }
         // Displays leaderboard every 10 questions in multiplayer
@@ -487,8 +486,15 @@ public class GameController implements Initializable, WebSocketSubscription {
         option3.setVisible(false);
     }
 
-    private void startTask() {
-        //timer invokes heartBeat (sending heartbeat to server) every 5 seconds
+    private void startHeartBeat() {
+        heartBeat = new TimerTask() {
+            @Override
+            public void run() {
+                server.updateGamePlayer(game.getId(), me.getNick());
+                System.out.println("Game player heartbeat sent");
+            }
+        };
+        //timer invokes heartbeat (sending heartbeat to server) every 5 seconds
         playerTimer.scheduleAtFixedRate(heartBeat, 0, 5000);
     }
 }

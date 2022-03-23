@@ -127,6 +127,7 @@ public class FXMLController {
         var root = displayScene(GameController.class);
         var ctrl = root.getKey();
         ctrl.setSinglePlayer(game);
+
         subscribe(GameController.class);
         return root;
     }

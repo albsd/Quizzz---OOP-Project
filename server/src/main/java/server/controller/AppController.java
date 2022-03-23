@@ -3,8 +3,8 @@ package server.controller;
 import commons.Player;
 import commons.PlayerUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,15 +19,19 @@ public class AppController {
 
     private final GameService gameService;
 
+    private final SimpMessagingTemplate smt;
+
     @Autowired
-    public AppController(final GameService gameService) {
+    public AppController(final GameService gameService, final SimpMessagingTemplate smt) {
         this.gameService = gameService;
+        this.smt = smt;
     }
 
     /**
      * Endpoint to check the lobby players' heartbeat.
      *
      * @param nick name of player
+     * @return player
      */
     @GetMapping("/{nick}")
     public Player updateLobbyPlayerTime(final @PathVariable String nick) {
@@ -37,25 +41,24 @@ public class AppController {
     /**
      * Endpoint to check the game players' heartbeat.
      *
-     * @param nick name of player
      * @param id   id of game
+     * @param nick name of player
+     * @return player
      */
     @GetMapping({"/{id}/{nick}"})
     public Player updateGamePlayerTime(final @PathVariable UUID id, final @PathVariable String nick) {
-        System.out.println("Received at game controller");
         return gameService.updateGamePlayerHeartbeat(id, nick);
     }
-}
 
-//    @SendTo("/topic/game/{id}/leave")
-//    public Player sendPlayerLeft(@DestinationVariable final UUID id, final Player player) {
-//        return player;
-//    }
-//
-//    @SendTo("/topic/update/player")
-//    public PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
-//        return update;
-//    }
+    public void sendPlayerUpdate(@Payload final PlayerUpdate update) {
+        this.smt.convertAndSend("/topic/update/player", update);
+    }
+
+    public void sendPlayerLeft(@Payload final Player player, final UUID id) {
+        this.smt.convertAndSend("/topic/game/" + id + "/leave", player);
+        System.out.println("sent update");
+    }
+}
 
     //TODO: check whether server is also active
 
