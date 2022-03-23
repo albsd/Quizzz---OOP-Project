@@ -20,7 +20,6 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -52,8 +51,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     
     private final FXMLController fxml;
 
-    private final DateTimeFormatter timeFormat;
-
     private Game lobby;
     
     private Player me;
@@ -65,7 +62,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         this.server = server;
         this.fxml = fxml;
         this.players = new ArrayList<>();
-        this.timeFormat = DateTimeFormatter.ofPattern("hh:mm:ss");
     }
 
     @Override
@@ -165,6 +161,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void start(final ActionEvent event) {
         //don't start game immediately cause invoker starts game faster
         //than other players in lobby
+        server.send("/app/lobby/chat",
+                new LobbyMessage("Server", "", "Game is about to start. Have fun!"));
         server.startMultiPlayer();
     }
 }
