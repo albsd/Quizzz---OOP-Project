@@ -385,6 +385,9 @@ public class GameController implements Initializable, WebSocketSubscription {
             questionImage.setImage(img);
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+                option1.setVisible(true);
+                option2.setVisible(true);
+                option3.setVisible(true);
                 option1.setStyle("-fx-background-color:" + orange + ";");
                 option2.setStyle("-fx-background-color:" + orange + ";");
                 option3.setStyle("-fx-background-color:" + orange + ";");
@@ -419,7 +422,34 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void removePowerup(final ActionEvent e) {
+        if (!isOpenQuestion) {
+            System.out.println("Remove incorrect answer power-up used!");
 
+            long answer = game.getCurrentQuestion().getAnswer();
+            ((Button) e.getSource()).setDisable(true);
+            Button[] options = {option1, option2, option3};
+
+            boolean done = false;
+            int firstIndex = 0;
+            int secondIndex = 0;
+
+            if (answer != 1) {
+                firstIndex = 1;
+            }
+            if (answer != 2) {
+                secondIndex = firstIndex;
+                firstIndex = 2;
+            }
+
+            int randomValue = (int) Math.floor(Math.random() * 2);
+
+            if (randomValue == 0) {
+                options[firstIndex].setVisible(false);
+            } else {
+                options[secondIndex].setVisible(false);
+            }
+
+        }
     }
 
     @FXML
