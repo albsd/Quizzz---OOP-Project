@@ -40,6 +40,8 @@ import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameController implements Initializable, WebSocketSubscription {
 
@@ -117,6 +119,9 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
+    private Timer playerTimer;
+
+    private TimerTask heartBeat;
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
@@ -150,6 +155,15 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             return null;
         }));
+        this.playerTimer = new Timer();
+        heartBeat = new TimerTask() {
+            @Override
+            public void run() {
+                server.updateGamePlayer(game.getId(), me.getNick());
+                System.out.println("Sending heartbeat to server.");
+            }
+        };
+        startTask();
     }
 
     @Override
@@ -470,5 +484,10 @@ public class GameController implements Initializable, WebSocketSubscription {
         option1.setVisible(false);
         option2.setVisible(false);
         option3.setVisible(false);
+    }
+
+    private void startTask() {
+        //timer invokes heartBeat (sending heartbeat to server) every 5 seconds
+        playerTimer.scheduleAtFixedRate(heartBeat, 0, 5000);
     }
 }

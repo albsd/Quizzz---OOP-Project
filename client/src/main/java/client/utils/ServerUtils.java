@@ -297,12 +297,28 @@ public class ServerUtils {
     /**
      * Request to update lobby player's heartbeat.
      *
-     * @param nick name of plyaer
+     * @param nick name of player
      */
     public void updateLobbyPlayer(final String nick) {
         //catch in AppController
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("/" + nick))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        parseResponseToObject(request, new TypeReference<Game>() { });
+    }
+
+    /**
+     * Request to update game player's heartbeat.
+     *
+     * @param id id of game
+     * @param nick name of player
+     */
+    public void updateGamePlayer(final UUID id, final String nick) {
+        //catch in AppController
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("/" + id + "/" + nick))
                 .header("accept", "application/json")
                 .GET()
                 .build();

@@ -58,7 +58,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     private Timer timer;
 
-    private TimerTask currentTask;
+    private TimerTask heartBeat;
 
     @Inject
     public LobbyController(final ServerUtils server, final FXMLController fxml) {
@@ -78,7 +78,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
         updatePlayerList();
         this.timer = new Timer();
-        currentTask = new TimerTask() {
+        heartBeat = new TimerTask() {
             @Override
             public void run() {
                 server.updateLobbyPlayer(me.getNick());
@@ -178,6 +178,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     private void startTask() {
         //timer invokes currentTask (sending heartbeat to server) every 5 seconds
-        timer.scheduleAtFixedRate(currentTask, 0, 5000);
+        timer.scheduleAtFixedRate(heartBeat, 0, 5000);
     }
 }
