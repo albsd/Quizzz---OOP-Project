@@ -259,10 +259,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         bufferRegion.setPrefHeight(50);
 
-        option1.setWrapText(true);
-        option2.setWrapText(true);
-        option3.setWrapText(true);
-
         option1.setPrefHeight(145);
         option2.setPrefHeight(145);
         option3.setPrefHeight(145);
