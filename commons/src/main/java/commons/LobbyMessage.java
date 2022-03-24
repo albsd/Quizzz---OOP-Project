@@ -26,8 +26,12 @@ public class LobbyMessage extends Message<String> {
 
     @Override
     public String toString() {
-        ZonedDateTime time = ZonedDateTime.parse(timestamp).withZoneSameInstant(ZonedDateTime.now().getZone());
-        return  super.getNick() + " (" + time.format(timeFormat) + ") - " + super.getContent() + "\n";
+        try {
+            ZonedDateTime time = ZonedDateTime.parse(timestamp).withZoneSameInstant(ZonedDateTime.now().getZone());
+            return  super.getNick() + " (" + time.format(timeFormat) + ") - " + super.getContent() + "\n";
+        } catch (Exception e) {
+            return super.getNick() + " - " + super.getContent() + "\n";
+        }
     }
 
     @Override

@@ -6,8 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 
 public class MultipleChoiceQuestion extends Question {
-//TODO: correctAnswer is convoluted, maybe use an enum here
-//0 -> top, 1 -> middle, 2-> bottom
+
     @JsonProperty("options")
     private String[] options;
 
@@ -19,7 +18,16 @@ public class MultipleChoiceQuestion extends Question {
         super(prompt, answer, imageBytes);
         this.options = options;
     }
-    
+
+    public int calculateScore(final long option, final int time) {
+        if (option == getAnswer()) {
+            int base = 50;
+            int bonusScore = calculateBonusPoints(time);
+            return base + bonusScore;
+        }
+        return 0;
+    }
+
     public String[] getOptions() {
         return options;
     }

@@ -10,9 +10,6 @@ import java.util.UUID;
 
 public class Game {
 
-    @JsonIgnore
-    private QuestionTimer timer;
-
     @JsonProperty("id")
     private UUID id;
 
@@ -64,21 +61,12 @@ public class Game {
 
     @JsonIgnore
     public boolean shouldShowMultiplayerLeaderboard() {
-        return (isMultiplayer && currentQuestion % 10 == 0);
+        return (isMultiplayer && getCurrentQuestionNumber() % 10 == 0);
     }
 
     @JsonIgnore
     public int getCurrentQuestionNumber() {
         return currentQuestion + 1;
-    }
-
-    /**
-     * Since the QuestionTimer cannot be serialised over HTTP, 
-     * we can call this method in the client to create a new timer. 
-     */
-    @JsonIgnore
-    public void initialiseTimer() {
-        this.timer = new QuestionTimer();
     }
 
     public boolean addPlayer(final Player p) {
@@ -101,12 +89,12 @@ public class Game {
         return players.stream()
             .filter((p) -> p.getNick().equals(nick))
             .findFirst()
-            .get();
+            .orElse(null);
     }
 
     @JsonIgnore
     public boolean isOver() {
-        return this.currentQuestion >= 20;
+        return getCurrentQuestionNumber() >= 20;
     }
     
     @JsonIgnore
@@ -122,10 +110,5 @@ public class Game {
     @JsonIgnore
     public Question getCurrentQuestion() {
         return questions.get(currentQuestion);
-    }
-
-    @JsonIgnore
-    public void start(final Runnable callback) {
-        timer.startGameTimer(callback);
     }
 }

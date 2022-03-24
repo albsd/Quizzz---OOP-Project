@@ -1,8 +1,8 @@
 package server.service;
 
 import commons.Activity;
-import commons.MultipleChoiceQuestion;
 import commons.Question;
+
 import org.apache.tomcat.util.json.JSONParser;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,68 +22,57 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-
 @Service
 public class ActivityService {
 
-    @Autowired
     private ActivityRepository activityRepository;
 
-    private final String activitiesPath = "./server/src/main/resources/activities";
+    private final String activitiesPath = "./src/main/resources/activities";
 
-    private final String resourcesPath = "./server/src/main/resources";
+    private final String resourcesPath = "./src/main/resources";
 
+    @Autowired
     public ActivityService(final ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
 
+    // Assumes 20 is the number of questions in the game
     public List<Activity> getActivities() {
-        // Assumes 20 is the number of questions in the game
-        List<Activity> activities = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            activities.add(this.randomActivity());
-        }
-        return activities;
-    }
+        long count = activityRepository.count();
+        List<Long> ids = ThreadLocalRandom.current().longs(1L, count + 1L)
+                .distinct()
+                .limit(20)
+                .boxed()
+                .collect(Collectors.toList());
 
-    public Activity randomActivity() {
-        int qty = (int) activityRepository.count();
-        int idx = (int) (Math.random() * qty);
-        var all = activityRepository.findAll();
-        if (qty == 0) return null;
-        return all.get(idx % qty);
+        return activityRepository.findAllById(ids);
     }
 
     public List<Question> getQuestionList() {
-        List<Activity> activityList = this.getActivities();
-        List<Question> questionList = new ArrayList<>();
-
-        for (int i = 0; i < 20; i++) {
-            int questionType = (int) ((Math.random() * (3)));
-            Question question = this.turnActivityIntoQuestion(activityList.get(i),
-                    questionType, this.generateOptions(activityList, 3));
-            questionList.add(question);
-        }
-        return questionList;
+        List<Activity> activityList = getActivities();
+        return activityList.stream()
+            .map((activity) -> {
+                int questionType = (int) ((Math.random() * (3)));
+                return  turnActivityIntoQuestion(activity, questionType, generateOptions(activityList, 3));
+            })
+            .collect(Collectors.toList());
     }
 
-    public Question turnActivityIntoQuestion(final Activity activity, 
-                                            final int questionType,
-                                            final List<Activity> options) {
+    // question type of 0 means number multiple choice
+    public Question turnActivityIntoQuestion(final Activity activity, final int questionType,
+            final List<Activity> options) {
         byte[] image = generateImageByteArray(activity.getPath());
-        if (activity == null) {
-            String[] ops = new String[] {"a", "b", "c"};
-            return new MultipleChoiceQuestion("", image, ops, 0);
-        }
-        // question type of 0 means number multiple choice
+        byte[] optionImage = generateImageByteArray(options.get(1).getPath());
         return switch (questionType) {
             case 0 -> activity.getNumberMultipleChoiceQuestion(image);
-            case 1 -> activity.getActivityMultipleChoiceQuestion(options, image);
+            case 1 -> activity.getActivityMultipleChoiceQuestion(options, optionImage);
             default -> activity.getFreeResponseQuestion(image);
         };
     }
@@ -111,12 +100,13 @@ public class ActivityService {
     public List<Activity> getAllActivities() throws IOException, ParseException {
         List<Activity> activities = new ArrayList<>(activityRepository.findAll());
         if (activities.isEmpty()) {
-//            unzipFolder();
+            // unzipFolder();
             activities = populateRepo();
         }
         return activities;
     }
 
+    @SuppressWarnings("unchecked")
     public List<Activity> populateRepo() throws FileNotFoundException, ParseException {
         List<Activity> activities = new ArrayList<>();
         List<File> files = getFiles(".json", new File(activitiesPath));
@@ -137,51 +127,50 @@ public class ActivityService {
                 file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
             }
             String path = file.getPath().replaceAll("\\\\", "/");
-            String realPath = path.substring(path.lastIndexOf("./server"));
+            String realPath = path.substring(path.lastIndexOf("./src"));
             activities.add(new Activity(title, wattHours, source, realPath));
         }
         activityRepository.saveAllAndFlush(activities);
         return activities;
     }
 
+    @SuppressWarnings("unused")
     private void unzipFolder() throws IOException {
         String fileZip = activitiesPath + ".zip";
         File destDir = new File(resourcesPath);
         byte[] buffer = new byte[1024];
-        ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
-        ZipEntry zipEntry = zis.getNextEntry();
-        while (zipEntry != null) {
-            File newFile = new File(destDir, zipEntry.getName());
-            if (zipEntry.isDirectory()) {
-                if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                    throw new IOException("Failed to create directory " + newFile);
+        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip))) {
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                File newFile = new File(destDir, zipEntry.getName());
+                if (zipEntry.isDirectory()) {
+                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                        throw new IOException("Failed to create directory " + newFile);
+                    }
+                } else {
+                    // fix for Windows-created archives
+                    File parent = newFile.getParentFile();
+                    if (!parent.isDirectory() && !parent.mkdirs()) {
+                        throw new IOException("Failed to create directory " + parent);
+                    }
+                    // write file content
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.close();
                 }
-            } else {
-                // fix for Windows-created archives
-                File parent = newFile.getParentFile();
-                if (!parent.isDirectory() && !parent.mkdirs()) {
-                    throw new IOException("Failed to create directory " + parent);
-                }
-                // write file content
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-                fos.close();
+                zipEntry = zis.getNextEntry();
             }
-            zipEntry = zis.getNextEntry();
+            zis.closeEntry();
+            zis.close();
         }
-        zis.closeEntry();
-        zis.close();
     }
 
     private byte[] generateImageByteArray(final String imagePath) {
-        //example of image path
-        ///server/src/main/resources/activities/00/fridge.png
-        if (imagePath == null) {
-            return new byte[0];
-        }
+        // TODO: add the path to the default image
+        if (imagePath == null) return new byte[0];
         File file = new File(imagePath);
         String extension = imagePath.substring(imagePath.lastIndexOf('.') + 1);
         try {

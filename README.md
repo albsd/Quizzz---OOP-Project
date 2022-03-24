@@ -33,7 +33,11 @@ The app consists of three subprojects.
 ```
 4. Specify the host and port of the server you want to connect to, in the UI.
 
-## How to contribute to it
+## For any developers who contributes to it
+To the developers, as of now the server and client Main classes can only be run as 
+specified in the "How to run it" section. The build will fail if you run the classes 
+from IDE like Intellij as the Intellij configs to run the classes is very different 
+from Gradle configs
 
 ## License
 MIT License
