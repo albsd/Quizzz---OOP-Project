@@ -34,7 +34,10 @@
                      <Font size="24.0" />
                   </font>
                </Button>
-               <Button fx:id="adminButton" mnemonicParsing="false" onAction="#admin" prefHeight="200.0" prefWidth="200.0" text="Admin" />
+               <Button fx:id="adminButton" mnemonicParsing="false" onAction="#admin" prefHeight="200.0" prefWidth="200.0" text="Admin Panel">
+                  <font>
+                     <Font size="24.0" />
+                  </font></Button>
             </children>
             <opaqueInsets>
                <Insets />

@@ -145,4 +145,20 @@ public class Activity {
     public String getPath() {
         return path;
     }
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+    public void setEnergyConsumption(final long energyConsumption) {
+        this.energyConsumption = energyConsumption;
+    }
+
+    public void setSource(final String source) {
+        this.source = source;
+    }
+
+    public void setPath(final String path) {
+        this.path = path;
+    }
 }
