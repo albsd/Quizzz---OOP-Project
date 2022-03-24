@@ -160,7 +160,7 @@ public class GameControllerTest {
 
     @Test
     public void updateGameStatus() {
-        ctrl.markGameOver(game.getId());
+        ctrl.markGameDone(game.getId());
         assertEquals(true, game.isOver());
     }
 }
