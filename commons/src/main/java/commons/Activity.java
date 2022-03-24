@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * This class is used to represent an energy related activity.
+ */
+
 @Entity
 public class Activity {
     @Id
