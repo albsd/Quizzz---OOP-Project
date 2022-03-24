@@ -39,7 +39,10 @@ import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Collections;
 import java.util.TimerTask;
 
 public class GameController implements Initializable, WebSocketSubscription {
@@ -392,6 +395,12 @@ public class GameController implements Initializable, WebSocketSubscription {
             questionImage.setImage(img);
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+                option1.setDisable(false);
+                option2.setDisable(false);
+                option3.setDisable(false);
+                option1.setOpacity(1);
+                option2.setOpacity(1);
+                option3.setOpacity(1);
                 option1.setStyle("-fx-background-color:" + orange + ";");
                 option2.setStyle("-fx-background-color:" + orange + ";");
                 option3.setStyle("-fx-background-color:" + orange + ";");
@@ -410,6 +419,12 @@ public class GameController implements Initializable, WebSocketSubscription {
         });
     }
 
+    /**
+     * Send a message to the server to cut everyone's remaining time in half
+     * then double the sender's time so that it remains unaffected
+     * then disable the button so that it cannot be used again.
+     * @param e On button click for the halving time power-up
+     */
     @FXML
     public void timePowerup(final ActionEvent e) {
         server.send("/app/game/" + this.game.getId() + "/halve", GameUpdate.halveTimer);
@@ -419,15 +434,41 @@ public class GameController implements Initializable, WebSocketSubscription {
         timeButton.setDisable(true);
     }
 
+    /**
+     * Double the player's score at the end of the round
+     * then disable the button so that it cannot be used again.
+     * @param e On button click for the double score power-up
+     */
     @FXML
     public void scorePowerup(final ActionEvent e) {
         doubleScore = true;
         ((Button) e.getSource()).setDisable(true);
     }
 
+    /**
+     * Remove one of the incorrect answers for the player
+     * then disable the button so that it cannot be used again.
+     * @param e On button click for the remove incorrect answer power-up
+     */
     @FXML
     public void removePowerup(final ActionEvent e) {
+        if (!isOpenQuestion) {
+            System.out.println("Remove incorrect answer power-up used!");
+            ((Button) e.getSource()).setDisable(true);
+            Button[] options = {option1, option2, option3};
 
+            List<Integer> removeIndices = Arrays.asList(0, 1, 2);
+            long answerIndex = game.getCurrentQuestion().getAnswer();
+            removeIndices.remove(answerIndex);
+            Collections.shuffle(removeIndices);
+
+            int finalIndex = removeIndices.get(0);
+            options[finalIndex].setDisable(true);
+            options[finalIndex].setOpacity(0.25);
+        } else {
+            warning.setText("Power-up not available!");
+            warning.setVisible(true);
+        }
     }
 
     @FXML
