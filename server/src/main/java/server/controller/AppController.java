@@ -21,7 +21,6 @@ public class AppController {
 
     private final SimpMessagingTemplate smt;
 
-
     @Autowired
     public AppController(final GameService gameService, final SimpMessagingTemplate smt) {
         this.gameService = gameService;
@@ -76,6 +75,5 @@ public class AppController {
      */
     public void sendPlayerLeft(@Payload final Player player, final UUID id) {
         this.smt.convertAndSend("/topic/game/" + id + "/leave", player);
-        System.out.println("sent update");
     }
 }
