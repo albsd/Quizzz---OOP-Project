@@ -469,8 +469,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void removePowerup(final ActionEvent e) {
-        if (!isOpenQuestion) {
-            System.out.println("Remove incorrect answer power-up used!");
+        if (!isOpenQuestion && validateAnswerSubmission()) {
             ((Button) e.getSource()).setDisable(true);
             Button[] options = {option1, option2, option3};
 
