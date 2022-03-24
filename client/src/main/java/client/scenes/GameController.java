@@ -142,7 +142,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         warning.setFont(font);
         submittedAnswer = false;
         doubleScore = false;
-        openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0,
+        final Integer defaultValue = null;
+        openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), defaultValue,
                 change -> {
             String newText = change.getControlNewText();
             if (newText.matches("-?([1-9][0-9]*)?")) {
