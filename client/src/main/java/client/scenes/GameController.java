@@ -388,9 +388,12 @@ public class GameController implements Initializable, WebSocketSubscription {
             questionImage.setImage(img);
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
-                option1.setVisible(true);
-                option2.setVisible(true);
-                option3.setVisible(true);
+                option1.setDisable(false);
+                option2.setDisable(false);
+                option3.setDisable(false);
+                option1.setOpacity(1);
+                option2.setOpacity(1);
+                option3.setOpacity(1);
                 option1.setStyle("-fx-background-color:" + orange + ";");
                 option2.setStyle("-fx-background-color:" + orange + ";");
                 option3.setStyle("-fx-background-color:" + orange + ";");
