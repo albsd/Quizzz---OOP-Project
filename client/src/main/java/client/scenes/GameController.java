@@ -39,7 +39,10 @@ import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Collections;
 
 public class GameController implements Initializable, WebSocketSubscription {
 
@@ -424,31 +427,17 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void removePowerup(final ActionEvent e) {
         if (!isOpenQuestion) {
             System.out.println("Remove incorrect answer power-up used!");
-
-            long answer = game.getCurrentQuestion().getAnswer();
             ((Button) e.getSource()).setDisable(true);
             Button[] options = {option1, option2, option3};
 
-            boolean done = false;
-            int firstIndex = 0;
-            int secondIndex = 0;
+            List<Integer> removeIndices = Arrays.asList(0, 1, 2);
+            long answerIndex = game.getCurrentQuestion().getAnswer();
+            removeIndices.remove(answerIndex);
+            Collections.shuffle(removeIndices);
 
-            if (answer != 1) {
-                firstIndex = 1;
-            }
-            if (answer != 2) {
-                secondIndex = firstIndex;
-                firstIndex = 2;
-            }
-
-            int randomValue = (int) Math.floor(Math.random() * 2);
-
-            if (randomValue == 0) {
-                options[firstIndex].setVisible(false);
-            } else {
-                options[secondIndex].setVisible(false);
-            }
-
+            int finalIndex = removeIndices.get(0);
+            options[finalIndex].setDisable(true);
+            options[finalIndex].setOpacity(0.25);
         }
     }
 
