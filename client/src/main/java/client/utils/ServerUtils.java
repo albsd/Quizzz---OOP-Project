@@ -293,10 +293,10 @@ public class ServerUtils {
      *
      * @param id    UUID of the game as a String
      */
-    public void markGameOver(final UUID id) {
+    public void removeGame(final UUID id) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/" + id))
-                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .DELETE()
                 .build();
         parseResponseToObject(request, new TypeReference<Game>() { });
     }

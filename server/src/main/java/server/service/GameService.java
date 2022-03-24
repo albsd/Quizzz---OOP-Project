@@ -62,12 +62,6 @@ public class GameService {
         repo.addPlayerScore(game, nick, score);
     }
 
-    public Game markGameOver(final UUID id) {
-        Game game = repo.findById(id);
-        game.setCurrentQuestionIndex(20);
-        return game;
-    }
-
     public Player updateLobbyPlayerHeartbeat(final String nick) {
         Player player = lobby.getPlayerByNick(nick);
         player.updateTimestamp(new Date());
@@ -78,5 +72,9 @@ public class GameService {
         Player player = repo.findById(id).getPlayerByNick(nick);
         player.updateTimestamp(new Date());
         return player;
+    }
+
+    public boolean removeGame(final UUID id) {
+        return repo.removeGame(id);
     }
 }

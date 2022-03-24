@@ -322,8 +322,8 @@ public class GameController {
         return player;
     }
 
-    @PostMapping("/{id}")
-    public Game markGameOver(final @PathVariable("id") UUID id) {
-        return gameService.markGameOver(id);
+    @DeleteMapping("/{id}")
+    public void removeGame(final @PathVariable("id") UUID id) {
+        gameService.removeGame(id);
     }
 }

@@ -30,27 +30,20 @@ public class GameConfig {
     @Autowired
     private GameController gameCtrl;
 
-
-    @Scheduled(fixedRate = 5000)
-    private void checkGameAndPlayers() {
+    @Scheduled(fixedRate = 60000)
+    private void checkGamePlayers() {
         List<Game> games = gameRepo.getGames();
-        for (int i = 0; i < games.size(); i++) {
-            Game game = games.get(i);
-            if (game.isOver()) {
-                gameRepo.removeGame(game.getId());
-            } else {
-                List<Player> players = game.getPlayers();
-                if (players.isEmpty()) {
-                    gameRepo.removeGame(game.getId());
-                } else {
-                    for (int j = 0; j < players.size(); j++) {
-                        Player player = players.get(j);
-                        if (!player.isAlive()) {
-                            game.removePlayer(player);
-                            appCtrl.sendPlayerLeft(player, game.getId());
-                        }
-                    }
+        for (Game game : games) {
+            List<Player> players = game.getPlayers();
+            for (int j = 0; j < players.size(); j++) {
+                Player player = players.get(j);
+                if (!player.isAlive()) {
+                    game.removePlayer(player);
+                    appCtrl.sendPlayerLeft(player, game.getId());
                 }
+            }
+            if (players.isEmpty()) {
+                gameRepo.removeGame(game.getId());
             }
         }
     }

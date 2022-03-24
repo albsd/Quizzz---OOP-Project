@@ -249,13 +249,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
-
-        server.startTimerTask(new TimerTask() {
-            @Override
-            public void run() {
-                server.updateGamePlayer(game.getId(), me.getNick());
-            }
-        });
     }
 
     @FXML
@@ -345,10 +338,10 @@ public class GameController implements Initializable, WebSocketSubscription {
                 server.sendGameResult(this.me.getNick(), this.me.getScore());
                 displayLeaderboardMomentarily(server.getSinglePlayerLeaderboard());
             } else {
+                server.stopTimerTask();
                 displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
+                server.removeGame(game.getId());
             }
-            server.stopTimerTask();
-            server.markGameOver(game.getId());
         }
         // Displays leaderboard every 10 questions in multiplayer
         if (game.isMultiplayer() && game.shouldShowMultiplayerLeaderboard()) {
