@@ -13,7 +13,6 @@ public class Player {
     @JsonProperty("score")
     private int score;
 
-    //time based on systems default time
     @JsonIgnore
     private Date time = new Date();
 
@@ -57,7 +56,6 @@ public class Player {
         int timerDifference = (int) now.getTime() - (int) this.time.getTime();
         return timerDifference < 5000;
     }
-
 
     @Override
     public int hashCode() {

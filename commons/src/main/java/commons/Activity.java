@@ -55,6 +55,26 @@ public class Activity {
         this.path = path;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public long getEnergyConsumption() {
+        return energyConsumption;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
     /**
      * Forms a question that only has numbers as options from the current activity.
      * @param image image associated with activity
@@ -131,22 +151,6 @@ public class Activity {
         return new FreeResponseQuestion(prompt, image, energyConsumption);
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Activity activity = (Activity) o;
-        return energyConsumption == activity.energyConsumption && Objects.equals(title, activity.title)
-                && Objects.equals(source, activity.source);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(title, energyConsumption, source);
-        result = 31 * result;
-        return result;
-    }
-
     /**
      * Generates choices for a question whose answer is the specified number.
      * @param energyConsumption energy consumption of activity
@@ -165,23 +169,19 @@ public class Activity {
         return choices;
     }
 
-    public long getId() {
-        return id;
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Activity activity = (Activity) o;
+        return energyConsumption == activity.energyConsumption && Objects.equals(title, activity.title)
+                && Objects.equals(source, activity.source);
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public long getEnergyConsumption() {
-        return energyConsumption;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public String getPath() {
-        return path;
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(title, energyConsumption, source);
+        result = 31 * result;
+        return result;
     }
 }
