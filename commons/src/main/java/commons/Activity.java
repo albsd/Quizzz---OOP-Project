@@ -122,7 +122,7 @@ public class Activity {
                     tempChoice = (long) (energyConsumption + energyConsumption / 2
                             * r.nextGaussian());
                 } else {
-                    tempChoice =Math.abs((long) (energyConsumption + energyConsumption / 2
+                    tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
                             * r.nextGaussian()));
                     tempChoice = (long) Math.round(tempChoice / 10) * 10;
                 }
