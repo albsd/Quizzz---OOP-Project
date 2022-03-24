@@ -3,6 +3,7 @@ package client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import client.scenes.GameController;
 import client.scenes.HelpController;
@@ -50,6 +51,8 @@ public class FXMLController {
         primaryStage.setResizable(false);
 
         displayScene(IPPromptController.class);
+        primaryStage.setOnCloseRequest(event -> System.exit(1));
+
     }
 
     /**
