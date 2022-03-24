@@ -411,6 +411,12 @@ public class GameController implements Initializable, WebSocketSubscription {
         });
     }
 
+    /**
+     * Send a message to the server to cut everyone's remaining time in half
+     * then double the sender's time so that it remains unaffected
+     * then disable the button so that it cannot be used again.
+     * @param e On button click for the halving time power-up
+     */
     @FXML
     public void timePowerup(final ActionEvent e) {
         server.send("/app/game/" + this.game.getId() + "/halve", GameUpdate.halveTimer);
@@ -420,12 +426,22 @@ public class GameController implements Initializable, WebSocketSubscription {
         timeButton.setDisable(true);
     }
 
+    /**
+     * Double the player's score at the end of the round
+     * then disable the button so that it cannot be used again.
+     * @param e On button click for the double score power-up
+     */
     @FXML
     public void scorePowerup(final ActionEvent e) {
         doubleScore = true;
         ((Button) e.getSource()).setDisable(true);
     }
 
+    /**
+     * Remove one of the incorrect answers for the player
+     * then disable the button so that it cannot be used again.
+     * @param e On button click for the remove incorrect answer power-up
+     */
     @FXML
     public void removePowerup(final ActionEvent e) {
         if (!isOpenQuestion) {
