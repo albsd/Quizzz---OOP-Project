@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * This class deals with both the single-player
+ * and the multi-player leaderboards
+ * and the players are ordered by score.
+ */
+
 public class Leaderboard {
     @JsonProperty("ranking")
     private List<Player> ranking;

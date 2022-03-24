@@ -10,7 +10,7 @@ import java.util.function.Consumer;
  * By default, it's supposed to run for 20 seconds and
  * it "updates" once every 7ms and changing this
  * will reflect itself on not only the time the players have
- * but also on how its consumers behave 
+ * but also on how its consumers behave
  * (such as the progress bar,
  * which may move by higher or lower increments).
  * The timer may also execute code when it's over
