@@ -114,7 +114,6 @@ public class Activity {
 
     public String[] generateChoices(final long energyConsumption) {
         Long[] choices = new Long[3];
-        int[] ds = new int[4];
         Random r = new Random();
         Long tempChoice;
         for (int i = 0; i < choices.length; i++) {
