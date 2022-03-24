@@ -171,14 +171,12 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         subscriptions[1] = server.registerForMessages("/topic" + leavePath, Player.class, player -> {
             Platform.runLater(() -> {
-                System.out.println("Removed player from game");
                 updateEmoteBox(player.getNick(), "/images/disconnected.png");
             });
         });
 
         subscriptions[2] = server.registerForMessages("/topic/game/" + game.getId()
                 + "/update", GameUpdate.class, update -> {
-            System.out.println("Halve message received!");
             Platform.runLater(() -> {
                 switch (update) {
                     case halveTimer -> clientTimer.halve();
@@ -233,7 +231,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             @Override
             public void run() {
                 server.updateGamePlayer(game.getId(), me.getNick());
-                System.out.println("Game player heartbeat sent");
             }
         });
     }
@@ -257,7 +254,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             @Override
             public void run() {
                 server.updateGamePlayer(game.getId(), me.getNick());
-                System.out.println("Game player heartbeat sent");
             }
         });
     }
@@ -306,7 +302,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             score *= 2;
             doubleScore = false;
         }
-        System.out.println("Received " + score + " points from question");
         me.addScore(score);
         server.addScore(game.getId(), me.getNick(), score);
     }

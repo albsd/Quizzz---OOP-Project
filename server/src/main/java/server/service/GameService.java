@@ -69,6 +69,9 @@ public class GameService {
     }
 
     public Player updateLobbyPlayerHeartbeat(final String nick) {
+        System.out.println("\n");
+        System.out.println(lobby.getPlayers());
+        System.out.println("\n");
         Player player = lobby.getPlayerByNick(nick);
         player.updateTimestamp(new Date());
         return player;

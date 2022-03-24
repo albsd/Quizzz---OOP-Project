@@ -54,8 +54,8 @@ public class Player {
     @JsonIgnore
     public boolean isAlive() {
         Date now = new Date();
-        long timerDifference = Math.abs(now.getTime() - this.time.getTime());
-        return timerDifference > 5000L;
+        int timerDifference = (int) now.getTime() - (int) this.time.getTime();
+        return timerDifference < 5000;
     }
 
 

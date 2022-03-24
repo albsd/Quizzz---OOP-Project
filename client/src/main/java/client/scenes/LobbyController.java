@@ -126,7 +126,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
             @Override
             public void run() {
                 server.updateLobbyPlayer(me.getNick());
-                System.out.println("Lobby player heartbeat sent");
             }
         });
     }

@@ -38,12 +38,10 @@ public class GameConfig {
             Game game = games.get(i);
             if (game.isOver()) {
                 gameRepo.removeGame(game.getId());
-                System.out.println("Game finished, removed it");
             } else {
                 List<Player> players = game.getPlayers();
                 if (players.isEmpty()) {
                     gameRepo.removeGame(game.getId());
-                    System.out.println("Removed empty game");
                 } else {
                     for (int j = 0; j < players.size(); j++) {
                         Player player = players.get(j);
