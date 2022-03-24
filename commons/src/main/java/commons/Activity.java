@@ -146,6 +146,11 @@ public class Activity {
         return new FreeResponseQuestion(prompt, image, energyConsumption);
     }
 
+    /**
+     * Generates choices for a question whose answer is the specified number.
+     * @param energyConsumption energy consumption of activity
+     * @return choices similar to specified energy consumption
+     */
     public String[] generateChoices(final long energyConsumption) {
         String[] choices = new String[3];
         for (int i = 0; i < choices.length; i++) {
