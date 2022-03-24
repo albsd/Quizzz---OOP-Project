@@ -52,7 +52,7 @@ public class ServerUtils {
 
     private String kGameUrl;
 
-    private String activityUrl;
+    private String kActivityUrl;
 
     private StompSession session;
 
@@ -71,7 +71,7 @@ public class ServerUtils {
             client.send(request, HttpResponse.BodyHandlers.ofString());
             // if the above code does not throw -> we can set the urls
             this.kGameUrl = uri + "/game";
-            this.activityUrl = uri + "/activity";
+            this.kActivityUrl = uri + "/activity";
             this.session = connect("ws://" + host + ":" + port + "/websocket");
             return null;
         } catch (IllegalArgumentException e) {
@@ -236,7 +236,6 @@ public class ServerUtils {
                 .uri(URI.create(kGameUrl + "/single/" + nick))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
-
        return parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
@@ -286,7 +285,7 @@ public class ServerUtils {
 
     public List<Activity> getAllActivity() {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(activityUrl))
+                .uri(URI.create(kActivityUrl))
                 .header("accept", "application/json")
                 .GET()
                 .build();
@@ -297,17 +296,15 @@ public class ServerUtils {
         ObjectMapper mapper = new ObjectMapper();
         String activityString = "";
         try {
-            activityString = mapper.writeValueAsString(activity);
+            activityString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(activity);
         } catch (Exception e) {
             e.printStackTrace();
         }
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(activityUrl))
-                .header("accept", "application/json")
-
+                .uri(URI.create(kActivityUrl + "/add"))
+                .headers("accept", "application/json", "content-type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(activityString))
                 .build();
-
         return parseResponseToObject(request, new TypeReference<Activity>() { });
     }
 
@@ -323,8 +320,9 @@ public class ServerUtils {
         try {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
-
+            System.out.println("status code: " + response.statusCode());
             if (response.statusCode() != 200) {
+
                 return null;
             }
 

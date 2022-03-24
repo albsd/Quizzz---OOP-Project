@@ -37,8 +37,10 @@ public class Activity {
     }
 
     @JsonCreator
-    public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption,
-                    @JsonProperty final String source, @JsonProperty final String path) {
+    public Activity(@JsonProperty("title") final String title,
+                    @JsonProperty("consumption_in_wh") final long energyConsumption,
+                    @JsonProperty("source") final String source,
+                    @JsonProperty("image_path") final String path) {
         this.title = title;
         this.energyConsumption = energyConsumption;
         this.source = source;

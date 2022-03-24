@@ -19,16 +19,16 @@
                <content>
                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
-                           <TableView fx:id="table" prefHeight="300.0" prefWidth="500.0">
+                           <TableView fx:id="table" prefHeight="447.0" prefWidth="800.0">
                              <columns>
-                                 <TableColumn fx:id="id" prefWidth="75.0" text="ID" />
-                               <TableColumn fx:id="title" prefWidth="75.0" text="Title" />
-                               <TableColumn fx:id="source" prefWidth="75.0" text="Source" />
-                                 <TableColumn fx:id="consumption" prefWidth="101.0" text="Consumption" />
-                                 <TableColumn fx:id="image" prefWidth="99.0" text="Image" />
+                                 <TableColumn fx:id="id" prefWidth="75.0" resizable="false" text="ID" />
+                               <TableColumn fx:id="title" minWidth="0.0" prefWidth="160.0" resizable="false" text="Title" />
+                               <TableColumn fx:id="source" prefWidth="160.0" resizable="false" text="Source" />
+                                 <TableColumn fx:id="consumption" prefWidth="100.0" resizable="false" text="Consumption" />
+                                 <TableColumn fx:id="image" prefWidth="305.0" resizable="false" text="Image" />
                              </columns>
                            </TableView>
-                           <Button layoutX="374.0" layoutY="357.0" mnemonicParsing="false" onAction="#loadTable" text="Button" />
+                           <Button layoutX="373.0" layoutY="501.0" mnemonicParsing="false" onAction="#loadTable" text="Refresh" />
                         </children>
                      </AnchorPane>
                </content>
@@ -37,11 +37,12 @@
                <content>
                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
-                           <TextField fx:id="titleInput" layoutX="98.0" layoutY="109.0" promptText="Title" />
-                           <TextField fx:id="powerInput" layoutX="98.0" layoutY="153.0" promptText="Power Consumption" />
-                           <TextField fx:id="sourceInput" layoutX="98.0" layoutY="203.0" promptText="Source" />
-                           <TextField fx:id="imageInput" layoutX="98.0" layoutY="254.0" promptText="Image Path" />
-                           <Button layoutX="147.0" layoutY="349.0" mnemonicParsing="false" onAction="#submit" text="Submit" />
+                           <TextField fx:id="titleInput" layoutX="250.0" layoutY="96.0" prefWidth="300.0" promptText="Title" />
+                           <TextField fx:id="powerInput" layoutX="250.0" layoutY="148.0" prefWidth="300.0" promptText="Power Consumption" />
+                           <TextField fx:id="sourceInput" layoutX="250.0" layoutY="200.0" prefWidth="300.0" promptText="Source" />
+                           <TextField fx:id="imageInput" layoutX="250.0" layoutY="261.0" prefWidth="300.0" promptText="Image Path" />
+                           <Button layoutX="372.0" layoutY="340.0" mnemonicParsing="false" onAction="#submit" text="Submit" />
+                           <Label fx:id="infoText" alignment="CENTER" layoutY="445.0" prefHeight="25.0" prefWidth="800.0" textFill="#22ab03" visible="false" />
                         </children></AnchorPane>
                </content>
              </Tab>
