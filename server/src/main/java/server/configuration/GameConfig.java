@@ -60,7 +60,7 @@ public class GameConfig {
      * Otherwise, removed and game update transmitted to other
      * players in lobby.
      */
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 1000)
     private void checkLobbyPlayers() {
         Game lobby = gameService.getCurrentGame();
         List<Player> players = lobby.getPlayers();

@@ -38,7 +38,6 @@ public class QuestionTimer {
         over = false;
         currentTask = newTimerTask();
         timer.scheduleAtFixedRate(currentTask, delay, decrement);
-        System.out.println("Timer started.");
     }
 
     public void stop() {
@@ -49,15 +48,8 @@ public class QuestionTimer {
     }
 
     public void halve() {
-        if (started) {
-            if (over) {
-                System.out.println("Timer already finished!");
-            } else {
-                System.out.println("Time halved.");
-                currentTime /= 2;
-            }
-        } else {
-            System.out.println("Timer not started yet!");
+        if (started && !over) {
+            currentTime /= 2;
         }
     }
 
