@@ -67,7 +67,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private AnchorPane menu;
 
     @FXML
-    private HBox mainHorizontalBox;
+    private HBox mainHorizontalBox, powerupBox;
 
     @FXML
     private ImageView questionImage;
@@ -250,14 +250,14 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game = game;
 
         leftBox.getChildren().remove(1);
-        mainHorizontalBox.getChildren().remove(3, 5);
+        mainHorizontalBox.getChildren().remove(4, 5);
         optionBox.setAlignment(Pos.CENTER);
         optionBox.setPrefWidth(600);
         //optionBox.setPrefHeight(600);
         optionBox.setPadding(Insets.EMPTY);
         //optionBox.setSpacing(55);
-
-        bufferRegion.setPrefHeight(50);
+        powerupBox.getChildren().remove(1, 3);
+        VBox.setMargin(optionBox, new Insets(75, 0, 0, 0));
 
         option1.setPrefHeight(145);
         option2.setPrefHeight(145);
@@ -404,7 +404,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
             questionPrompt.setText(currentQuestion.getPrompt());
-            Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()));
+            Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()), 340, 340, false, true);
             questionImage.setImage(img);
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
