@@ -13,12 +13,16 @@ import java.util.Optional;
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
 
     /**
-     * Retries all activity records in the database.
+     * Finds all the records in database.
+     *
+     * @return Page object wrapping all activites;
      */
     Page<Activity> findAll(Pageable pageable);
 
     /**
      * Finds the latest record in the database.
+     *
+     * @return Optional object wrapping Activity or null;
      */
     Optional<Activity> findTopByOrderByIdDesc();
 }

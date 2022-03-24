@@ -72,7 +72,7 @@ public class GameRepository {
      * 
      * @param nick name of player.
      * @param questions list of questiosn to add to game object
-     * @return 
+     * @return Game object
      */
     public Game createSingleplayer(final String nick, final List<Question> questions) {
         Game game = new Game(UUID.randomUUID(), questions, false);
@@ -80,24 +80,54 @@ public class GameRepository {
         return game;
     }
 
+    /**
+     * Adds the passed game object into the game repo.
+     *
+     * @param game the game object to add
+     * @return id of game that was added
+     */
     public UUID addGame(final Game game) {
         games.add(game);
         return game.getId();
     }
 
+    /**
+     * Removes all the games in the repo.
+     */
     public void removeAllGames() {
         games = new HashSet<>();
     }
 
+    /**
+     * Remove specific game in game repo.
+     *
+     * @param id id of the game object
+     * @return boolean whether game was successfully removed
+     */
     public boolean removeGame(final UUID id) {
         return games.removeIf(g -> g.getId().equals(id));
     }
 
+    /**
+     * Creates and returns the leaderboard object based on
+     * the Player list in the specified game.
+     *
+     * @param id id of the game object
+     * @return leaderboard object
+     */
     public Leaderboard getLeaderboard(final UUID id) {
         Game game = this.findById(id);
         return new Leaderboard(game.getPlayers());
     }
 
+    /**
+     * Updates the player's score on the server after every
+     * question of the multiplayer game.
+     *
+     * @param game game object where player is in.
+     * @param nick
+     * @param score
+     */
     public void addPlayerScore(final Game game, final String nick, final int score) {
         Player player = game.getPlayerByNick(nick);
         player.addScore(score);
