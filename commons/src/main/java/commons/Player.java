@@ -50,6 +50,13 @@ public class Player {
         this.score += score;
     }
 
+    /**
+     * Takes the current time of the player and compares it with
+     * the last time they sent an update to the server.
+     * If the difference is low enough then the player is
+     * considered to be still connected to the server.
+     * @return whether the player is still connected
+     */
     @JsonIgnore
     public boolean isAlive() {
         Date now = new Date();
