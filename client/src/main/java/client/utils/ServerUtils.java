@@ -38,6 +38,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -49,10 +51,17 @@ public class ServerUtils {
 
     private String kGameUrl;
 
+    private String kAppUrl;
+
     private StompSession session;
+
+    private Timer playerTimer;
+
+    private TimerTask heartBeat;
 
     public ServerUtils() {
         this.client = HttpClient.newHttpClient();
+        this.playerTimer = new Timer();
     }
 
     public String isRunning(final String host, final String port) {
@@ -65,6 +74,7 @@ public class ServerUtils {
 
             client.send(request, HttpResponse.BodyHandlers.ofString());
             // if the above code does not throw -> we can set the urls
+            this.kAppUrl = uri + "/app";
             this.kGameUrl = uri + "/game";
             this.session = connect("ws://" + host + ":" + port + "/websocket");
             return null;
@@ -154,7 +164,7 @@ public class ServerUtils {
     }
 
     /**
-     * Calls the REST endpoint to leave the current active lobby.
+     * Calls the REST endpoint to leave the active game.
      *
      * @param nick  String of the user nickname
      * @param id    UUID of the game as a String
@@ -279,6 +289,51 @@ public class ServerUtils {
     }
 
     /**
+     * Calls the REST endpoint to mark game as finished.
+     *
+     * @param id    UUID of the game as a String
+     */
+    public void markGameOver(final UUID id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kGameUrl + "/" + id))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+        parseResponseToObject(request, new TypeReference<Game>() { });
+    }
+
+    /**
+     * Request to update lobby player's heartbeat.
+     *
+     * @param nick name of player
+     */
+    public void updateLobbyPlayer(final String nick) {
+        //catch in AppController
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kAppUrl + "/" + nick))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        parseResponseToObject(request, new TypeReference<Player>() { });
+    }
+
+    /**
+     * Request to update game player's heartbeat.
+     *
+     * @param id id of game
+     * @param nick name of player
+     */
+    public void updateGamePlayer(final UUID id, final String nick) {
+        //catch in AppController
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kAppUrl + "/" + id + "/" + nick))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        parseResponseToObject(request, new TypeReference<Player>() { });
+    }
+
+
+    /**
      * Utility method to parse HttpResponse to a given object type.
      *
      * @param <T>     Type the response shall get parsed to
@@ -300,5 +355,26 @@ public class ServerUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Timer getPlayerTimer() {
+        return this.playerTimer;
+    }
+
+    /**
+     * Starts the Timer task of transmiting the time to server.
+     * @param heartBeat timer task to send heart beat to server.
+     */
+    public void startHeartbeat(final TimerTask heartBeat) {
+        this.heartBeat = heartBeat;
+        //timer invokes currentTask (sending heartbeat to server) every 5 seconds
+        playerTimer.scheduleAtFixedRate(heartBeat, 0, 5000);
+    }
+
+    /**
+     * Stops sending the heartbeat of player.
+     */
+    public void cancelHeartbeat() {
+        this.heartBeat.cancel();
     }
 }

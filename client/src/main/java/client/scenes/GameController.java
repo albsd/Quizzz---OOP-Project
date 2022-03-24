@@ -39,7 +39,11 @@ import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Collections;
+import java.util.TimerTask;
 
 public class GameController implements Initializable, WebSocketSubscription {
 
@@ -117,7 +121,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
-
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
         this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
@@ -142,8 +145,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         warning.setFont(font);
         submittedAnswer = false;
         doubleScore = false;
-        final Integer defaultValue = null;
-        openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), defaultValue,
+        openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), null,
                 change -> {
             String newText = change.getControlNewText();
             if (newText.matches("-?([1-9][0-9]*)?")) {
@@ -172,13 +174,12 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         subscriptions[1] = server.registerForMessages("/topic" + leavePath, Player.class, player -> {
             Platform.runLater(() -> {
-                updateEmoteBox(player.getNick(), "/images/disconnected.png");
+                updateEmoteBox(player.getNick(), "/images/disconnect.png");
             });
         });
 
         subscriptions[2] = server.registerForMessages("/topic/game/" + game.getId()
                 + "/update", GameUpdate.class, update -> {
-            System.out.println("Halve message received!");
             Platform.runLater(() -> {
                 switch (update) {
                     case halveTimer -> clientTimer.halve();
@@ -228,6 +229,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
+
+        server.startHeartbeat(new TimerTask() {
+            @Override
+            public void run() {
+                server.updateGamePlayer(game.getId(), me.getNick());
+            }
+        });
     }
 
     public void setSinglePlayer(final Game game) {
@@ -307,7 +315,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             score *= 2;
             doubleScore = false;
         }
-        System.out.println("Received " + score + " points from question");
         me.addScore(score);
         server.addScore(game.getId(), me.getNick(), score);
     }
@@ -347,11 +354,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayAnswerMomentarily();
         // Displays leaderboard at end of game
         if (game.isOver()) {
-            if (!game.isMultiplayer()) {
+            if (game.isMultiplayer()) {
+                server.cancelHeartbeat();
+                displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
+                server.markGameOver(game.getId());
+            } else {
                 server.sendGameResult(this.me.getNick(), this.me.getScore());
                 displayLeaderboardMomentarily(server.getSinglePlayerLeaderboard());
-            } else {
-                displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
             }
         }
         // Displays leaderboard every 10 questions in multiplayer
@@ -403,6 +412,12 @@ public class GameController implements Initializable, WebSocketSubscription {
             questionImage.setImage(img);
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+                option1.setDisable(false);
+                option2.setDisable(false);
+                option3.setDisable(false);
+                option1.setOpacity(1);
+                option2.setOpacity(1);
+                option3.setOpacity(1);
                 option1.setStyle("-fx-background-color:" + orange + ";");
                 option2.setStyle("-fx-background-color:" + orange + ";");
                 option3.setStyle("-fx-background-color:" + orange + ";");
@@ -416,10 +431,17 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void openPopup(final ActionEvent e) {
         popupController.open("game", () -> {
+            server.cancelHeartbeat();
             server.leaveGame(me.getNick(), game.getId());
         });
     }
 
+    /**
+     * Send a message to the server to cut everyone's remaining time in half
+     * then double the sender's time so that it remains unaffected
+     * then disable the button so that it cannot be used again.
+     * @param e On button click for the halving time power-up
+     */
     @FXML
     public void timePowerup(final ActionEvent e) {
         server.send("/app/game/" + this.game.getId() + "/halve", GameUpdate.halveTimer);
@@ -429,15 +451,41 @@ public class GameController implements Initializable, WebSocketSubscription {
         timeButton.setDisable(true);
     }
 
+    /**
+     * Double the player's score at the end of the round
+     * then disable the button so that it cannot be used again.
+     * @param e On button click for the double score power-up
+     */
     @FXML
     public void scorePowerup(final ActionEvent e) {
         doubleScore = true;
         ((Button) e.getSource()).setDisable(true);
     }
 
+    /**
+     * Remove one of the incorrect answers for the player
+     * then disable the button so that it cannot be used again.
+     * @param e On button click for the remove incorrect answer power-up
+     */
     @FXML
     public void removePowerup(final ActionEvent e) {
+        if (!isOpenQuestion) {
+            System.out.println("Remove incorrect answer power-up used!");
+            ((Button) e.getSource()).setDisable(true);
+            Button[] options = {option1, option2, option3};
 
+            List<Integer> removeIndices = Arrays.asList(0, 1, 2);
+            long answerIndex = game.getCurrentQuestion().getAnswer();
+            removeIndices.remove(answerIndex);
+            Collections.shuffle(removeIndices);
+
+            int finalIndex = removeIndices.get(0);
+            options[finalIndex].setDisable(true);
+            options[finalIndex].setOpacity(0.25);
+        } else {
+            warning.setText("Power-up not available!");
+            warning.setVisible(true);
+        }
     }
 
     @FXML

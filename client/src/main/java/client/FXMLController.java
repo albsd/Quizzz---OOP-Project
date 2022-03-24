@@ -3,6 +3,7 @@ package client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import client.scenes.GameController;
 import client.scenes.HelpController;
@@ -50,6 +51,8 @@ public class FXMLController {
         primaryStage.setResizable(false);
 
         displayScene(IPPromptController.class);
+        primaryStage.setOnCloseRequest(event -> System.exit(1));
+
     }
 
     /**
@@ -110,7 +113,7 @@ public class FXMLController {
     public Pair<LobbyController, Parent> showLobby(final Player me) {
         var root = displayScene(LobbyController.class);
         var ctrl = root.getKey(); 
-        ctrl.setMe(me);
+        ctrl.setMeAndTask(me);
         subscribe(LobbyController.class, ctrl.registerForMessages());
         return root;
     }
@@ -127,6 +130,7 @@ public class FXMLController {
         var root = displayScene(GameController.class);
         var ctrl = root.getKey();
         ctrl.setSinglePlayer(game);
+
         subscribe(GameController.class);
         return root;
     }
