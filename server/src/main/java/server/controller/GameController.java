@@ -17,28 +17,24 @@ package server.controller;
 
 import commons.Game;
 import commons.Leaderboard;
-import commons.Player;
 import commons.Question;
-import commons.PlayerUpdate;
+import commons.Player;
 import commons.LobbyMessage;
-import commons.GameResult;
 import commons.GameUpdate;
 import commons.EmoteMessage;
+import commons.GameResult;
+import commons.PlayerUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import server.service.ActivityService;
 import server.service.GameService;
@@ -187,7 +183,7 @@ public class GameController {
     }
 
     /**
-     * Leave the active game lobby as a Player with id "nick".
+     * Leave the active game as a Player with id "nick".
      *
      * @param nick User's nickname which identifies a given player in a game
      * @param id   UUID of the game that the player has left
@@ -210,23 +206,6 @@ public class GameController {
         }
 
         return ResponseEntity.ok(p);
-    }
-
-    // TODO: send generated session id to client so that it can send it back when
-    // joining lobby after nickname
-    @EventListener
-    @SendTo
-    private void handleSessionConnected(final SessionConnectEvent event) {
-        System.out.println("Client connection");
-        System.out.println(event);
-        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        System.out.println(headers.getSessionId());
-    }
-
-    @EventListener
-    private void handleSessionDisconnect(final SessionDisconnectEvent event) {
-        System.out.println("Client disconnected");
-        System.out.println(event.getSessionId());
     }
 
     /**
@@ -331,5 +310,16 @@ public class GameController {
     @SendTo("/topic/game/{id}/leave")
     private Player sendPlayerLeft(final Player player) {
         return player;
+    }
+
+    /**
+     * Marks the game as finished which will be deleted later in the
+     * scheduled task of server.
+     * @param id the id of game
+     * @return Game object that was marked finished
+     */
+    @PostMapping("/{id}")
+    public Game markGameDone(final @PathVariable("id") UUID id) {
+        return gameService.markGameDone(id);
     }
 }

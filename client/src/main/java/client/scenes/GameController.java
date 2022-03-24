@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.TimerTask;
 
 public class GameController implements Initializable, WebSocketSubscription {
 
@@ -117,7 +118,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
-
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
         this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
@@ -142,7 +142,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         warning.setFont(font);
         submittedAnswer = false;
         doubleScore = false;
-        openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0,
+        openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), null,
                 change -> {
             String newText = change.getControlNewText();
             if (newText.matches("-?([1-9][0-9]*)?")) {
@@ -177,7 +177,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         subscriptions[2] = server.registerForMessages("/topic/game/" + game.getId()
                 + "/update", GameUpdate.class, update -> {
-            System.out.println("Halve message received!");
             Platform.runLater(() -> {
                 switch (update) {
                     case halveTimer -> clientTimer.halve();
@@ -227,6 +226,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
+
+        server.startHeartbeat(new TimerTask() {
+            @Override
+            public void run() {
+                server.updateGamePlayer(game.getId(), me.getNick());
+            }
+        });
     }
 
     public void setSinglePlayer(final Game game) {
@@ -289,7 +295,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             score *= 2;
             doubleScore = false;
         }
-        System.out.println("Received " + score + " points from question");
         me.addScore(score);
         server.addScore(game.getId(), me.getNick(), score);
     }
@@ -329,11 +334,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayAnswerMomentarily();
         // Displays leaderboard at end of game
         if (game.isOver()) {
-            if (!game.isMultiplayer()) {
+            if (game.isMultiplayer()) {
+                server.cancelHeartbeat();
+                displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
+                server.markGameOver(game.getId());
+            } else {
                 server.sendGameResult(this.me.getNick(), this.me.getScore());
                 displayLeaderboardMomentarily(server.getSinglePlayerLeaderboard());
-            } else {
-                displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
             }
         }
         // Displays leaderboard every 10 questions in multiplayer
@@ -398,6 +405,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void openPopup(final ActionEvent e) {
         popupController.open("game", () -> {
+            server.cancelHeartbeat();
             server.leaveGame(me.getNick(), game.getId());
         });
     }
