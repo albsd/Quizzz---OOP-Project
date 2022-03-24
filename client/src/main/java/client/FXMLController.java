@@ -51,8 +51,7 @@ public class FXMLController {
         primaryStage.setResizable(false);
 
         displayScene(IPPromptController.class);
-        primaryStage.setOnCloseRequest(event -> System.exit(1));
-
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
     }
 
     /**
