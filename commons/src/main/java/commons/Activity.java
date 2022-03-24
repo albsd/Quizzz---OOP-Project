@@ -45,6 +45,26 @@ public class Activity {
         this.path = path;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public long getEnergyConsumption() {
+        return energyConsumption;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
     public MultipleChoiceQuestion getNumberMultipleChoiceQuestion(final byte[] image) {
         String prompt = "How much energy does " + title.substring(0, 1).toLowerCase() 
                         + title.substring(1) + " take in watt hours?";
@@ -61,7 +81,6 @@ public class Activity {
         return new MultipleChoiceQuestion(prompt, image, options,
                  this.getMultipleActivitiesAnswerIndex(answerOptions));
     }
-
 
     public int getMultipleActivitiesAnswerIndex(final List<Activity> answerOptions) {
         long max = 0;
@@ -95,6 +114,19 @@ public class Activity {
         return new FreeResponseQuestion(prompt, image, energyConsumption);
     }
 
+    public String[] generateChoices(final long energyConsumption) {
+        String[] choices = new String[3];
+        for (int i = 0; i < choices.length; i++) {
+            Random r = new Random();
+            choices[i] = Integer.toString((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()));
+        }
+        Random r  = new Random();
+        int correctAnswerIndex = r.nextInt(choices.length);
+
+        choices[correctAnswerIndex] = Long.toString(energyConsumption);
+        return choices;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -109,38 +141,5 @@ public class Activity {
         int result = Objects.hash(title, energyConsumption, source);
         result = 31 * result;
         return result;
-    }
-
-    public String[] generateChoices(final long energyConsumption) {
-        String[] choices = new String[3];
-        for (int i = 0; i < choices.length; i++) {
-            Random r = new Random();
-            choices[i] = Integer.toString((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()));
-        }
-        Random r  = new Random();
-        int correctAnswerIndex = r.nextInt(choices.length);
-
-        choices[correctAnswerIndex] = Long.toString(energyConsumption);
-        return choices;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public long getEnergyConsumption() {
-        return energyConsumption;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public String getPath() {
-        return path;
     }
 }
