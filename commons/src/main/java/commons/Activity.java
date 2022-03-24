@@ -111,7 +111,7 @@ public class Activity {
         String[] choices = new String[3];
         for (int i = 0; i < choices.length; i++) {
             Random r = new Random();
-            choices[i] = Integer.toString((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()));
+            choices[i] = Integer.toString((((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()))/10)*10);
         }
         Random r  = new Random();
         int correctAnswerIndex = r.nextInt(choices.length);
