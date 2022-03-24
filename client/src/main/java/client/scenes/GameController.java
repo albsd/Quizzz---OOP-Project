@@ -442,8 +442,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         popupController.open("game", () -> {
             if (game.isMultiplayer()) {
                 server.cancelHeartbeat();
+                server.leaveGame(me.getNick(), game.getId());
             }
-            server.leaveGame(me.getNick(), game.getId());
         });
     }
 
