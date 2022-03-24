@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -112,16 +113,19 @@ public class Activity {
     }
 
     public String[] generateChoices(final long energyConsumption) {
-        String[] choices = new String[3];
+        Long[] choices = new Long[3];
+        int[] ds = new int[4];
+        Random r = new Random();
         for (int i = 0; i < choices.length; i++) {
-            Random r = new Random();
-            choices[i] = Integer.toString((((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()))/10)*10);
+            do {
+                choices[i] = (((long) (energyConsumption + energyConsumption / 2 *
+                        r.nextGaussian())) / 10) * 10;
+            } while(Arrays.stream(choices).anyMatch(choices[i]::equals));
         }
-        Random r  = new Random();
         int correctAnswerIndex = r.nextInt(choices.length);
+        choices[correctAnswerIndex] = energyConsumption;
 
-        choices[correctAnswerIndex] = Long.toString(energyConsumption);
-        return choices;
+        return Arrays.stream(choices).map(String::valueOf).toArray(String[]::new);
     }
 
     public long getId() {
