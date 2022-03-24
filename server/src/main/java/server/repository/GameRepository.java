@@ -27,6 +27,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.List;
+
+/**
+ * Game repository that stores all multiplayer game objects.
+ */
 @Repository
 public class GameRepository {
 
@@ -36,10 +40,21 @@ public class GameRepository {
         games = new HashSet<>();
     }
 
+    /**
+     * Gets all games in the repository.
+     * 
+     * @return list of all games
+     */
     public List<Game> getGames() {
         return games.stream().toList();
     }
 
+    /**
+     * Searches for a specific game with game id.
+     * 
+     * @param id id of the game
+     * @return game object or null if specific game not found
+     */
     public Game findById(final UUID id) {
         Optional<Game> optional = games.stream()
                 .filter(g -> g.getId().equals(id))
@@ -51,6 +66,14 @@ public class GameRepository {
         return optional.get();
     }
     
+    /**
+     * Creates a game object for singleplayer. Games created here
+     * will not be added to the game repository.
+     * 
+     * @param nick name of player.
+     * @param questions list of questiosn to add to game object
+     * @return 
+     */
     public Game createSingleplayer(final String nick, final List<Question> questions) {
         Game game = new Game(UUID.randomUUID(), questions, false);
         game.addPlayer(new Player(nick));
