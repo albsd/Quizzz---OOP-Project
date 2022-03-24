@@ -128,16 +128,7 @@ public class Activity {
      * @return the options to a multiple choice question as strings
      */
     public String[] getMultipleActivitiesOptions(final List<Activity> answerOptions) {
-        String[] options = answerOptions.stream().map(Activity::getTitle).toArray(String[]::new);
-        long max = 0;
-        for (int i = 0; i < answerOptions.size(); i++) {
-            long energy = answerOptions.get(i).getEnergyConsumption();
-            if (energy > max) {
-                max = energy;
-            }
-        }
-        return options;
-
+        return answerOptions.stream().map(Activity::getTitle).toArray(String[]::new);
     }
 
     /**
