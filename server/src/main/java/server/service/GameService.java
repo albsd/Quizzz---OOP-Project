@@ -1,12 +1,13 @@
 package server.service;
-
 import commons.Game;
 import commons.Leaderboard;
+import commons.Player;
 import commons.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.GameRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,5 +60,23 @@ public class GameService {
 
     public void addPlayerScore(final Game game, final String nick, final int score) {
         repo.addPlayerScore(game, nick, score);
+    }
+
+    public Player updateLobbyPlayerHeartbeat(final String nick) {
+        Player player = lobby.getPlayerByNick(nick);
+        player.updateTimestamp(new Date());
+        return player;
+    }
+
+    public Player updateGamePlayerHeartbeat(final UUID id, final String nick) {
+        Player player = repo.findById(id).getPlayerByNick(nick);
+        player.updateTimestamp(new Date());
+        return player;
+    }
+
+    public Game markGameDone(final UUID id) {
+        Game game = repo.findById(id);
+        game.setCurrentQuestionIndex(19);
+        return game;
     }
 }
