@@ -248,29 +248,35 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void checkMulChoiceOption(final ActionEvent e) {
-        if (!submittedAnswer) {
+        if (validateAnswerSubmission()) {
             submittedAnswer = true;
             Button chosenOption = (Button) e.getSource();
             chosenOption.setStyle("-fx-border-color:black; -fx-border-width: 3; -fx-border-style: solid;");
             Button[] options = {option1, option2, option3};
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
-        } else {
-            updateWarning();
         }
     }
 
     /**
-     * Updates the text in the warning label based on the state of the client's timer.
+     * Updates the text in the warning label based on the state of the client's timer
+     * and based on whether they already submitted an answer.
+     *
+     * @return true if the answer submission is valid, false otherwise
      */
     @FXML
-    public void updateWarning() {
+    public boolean validateAnswerSubmission() {
+        if (submittedAnswer) {
+            warning.setText("Already submitted answer!");
+            warning.setVisible(true);
+            return false;
+        }
         if (clientTimer.isOver()) {
             warning.setText("Too late! Time's over!");
-        } else {
-          warning.setText("Already submitted answer!");
+            warning.setVisible(true);
+            return false;
         }
-        warning.setVisible(true);
+        return true;
     }
 
     /**
@@ -281,12 +287,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void onEnter(final ActionEvent event) {
         String optionStr = openAnswer.getText();
-        if (!submittedAnswer) {
+        if (validateAnswerSubmission()) {
             submittedAnswer = true;
             long option = Long.parseLong(optionStr);
             checkAnswer(option, clientTimer.getCurrentTime());
-        } else {
-            updateWarning();
         }
     }
 
@@ -298,18 +302,14 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void checkAnswer(final long option, final int time) {
-        if (clientTimer.isOver()) {
-            updateWarning();
-        } else {
-            int score = game.getCurrentQuestion().calculateScore(option, time);
-            if (doubleScore) {
-                score *= 2;
-                doubleScore = false;
-            }
-            System.out.println("Received " + score + " points from question");
-            me.addScore(score);
-            server.addScore(game.getId(), me.getNick(), score);
+        int score = game.getCurrentQuestion().calculateScore(option, time);
+        if (doubleScore) {
+            score *= 2;
+            doubleScore = false;
         }
+        System.out.println("Received " + score + " points from question");
+        me.addScore(score);
+        server.addScore(game.getId(), me.getNick(), score);
     }
 
     private void displayAnswerMomentarily() {
