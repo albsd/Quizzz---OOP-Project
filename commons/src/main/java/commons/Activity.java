@@ -122,8 +122,8 @@ public class Activity {
                     tempChoice = (long) (energyConsumption + energyConsumption / 2
                             * r.nextGaussian());
                 } else {
-                    tempChoice = (long) (energyConsumption + energyConsumption / 2
-                            * r.nextGaussian());
+                    tempChoice =Math.abs((long) (energyConsumption + energyConsumption / 2
+                            * r.nextGaussian()));
                     tempChoice = (long) Math.round(tempChoice / 10) * 10;
                 }
             } while (Arrays.stream(choices).anyMatch(tempChoice::equals) || tempChoice.equals(energyConsumption));
