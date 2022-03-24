@@ -32,7 +32,7 @@ public class GameConfig {
     private AppController appCtrl;
 
     /**
-     * Every 5 seconds checks the multiplaeyr games is repo.
+     * Every 5 seconds checks the multiplayer games is repo.
      * If player list is empty or game is marked over, the game
      * is deleted.
      */
@@ -56,7 +56,7 @@ public class GameConfig {
     }
 
     /**
-     * Every 2 seconds checks whether player in lobby is active.
+     * Every second checks whether player in lobby is active.
      * Otherwise, removed and game update transmitted to other
      * players in lobby.
      */
