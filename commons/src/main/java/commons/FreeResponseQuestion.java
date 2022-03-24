@@ -39,7 +39,7 @@ public class FreeResponseQuestion extends Question {
             accuracyPercentage = 0;
             bonusScore = 0;
         }
-        
-        return (maxScore * accuracyPercentage) / 100 + bonusScore;
+
+        return (maxScore * accuracyPercentage) / 100 + bonusScore / (1 + ((100 - accuracyPercentage) / 100));
     }
 }
