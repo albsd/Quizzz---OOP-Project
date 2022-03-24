@@ -441,6 +441,9 @@ public class GameController implements Initializable, WebSocketSubscription {
             int finalIndex = removeIndices.get(0);
             options[finalIndex].setDisable(true);
             options[finalIndex].setOpacity(0.25);
+        } else {
+            warning.setText("Power-up not available!");
+            warning.setVisible(true);
         }
     }
 
