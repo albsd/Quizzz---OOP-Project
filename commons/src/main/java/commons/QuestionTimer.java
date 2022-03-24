@@ -4,15 +4,28 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
+/**
+ * This is the class used to time the questions during
+ * both the single-player and multi-player modes.
+ * By default, it's supposed to run for 20 seconds and
+ * it "updates" once every 7ms and changing this
+ * will reflect itself on not only the time the players have
+ * but also on how its consumers behave
+ * (such as the progress bar,
+ * which may move by higher or lower increments).
+ * The timer may also execute code when it's over
+ * through the runnable in the constructor.
+ */
+
 public class QuestionTimer {
-    public static final int MAX_TIME = 20000;
+    public static final int MAX_TIME = 20000; // 20s
     private final int decrement = 7;    // 7ms
     private int currentTime = MAX_TIME;
     private boolean started = false;
     private boolean over = false;
     private final Timer timer;
     private TimerTask currentTask;
-    private final Consumer<Integer> timeDisplayer;
+    private final Consumer<Integer> timeDisplayer; // object updated with current time value
     private final Runnable finishCallback;
 
     public QuestionTimer(final Consumer<Integer> timeDisplayer, final Runnable finishCallback) {

@@ -7,6 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.GenerationType;
 import java.util.Objects;
 
+/**
+ * This class is used to store a specific player's score in the leaderboard.
+ */
+
 @Entity
 public class GameResult {
     @Id
