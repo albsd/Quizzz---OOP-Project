@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 
 /**
- * This class is used for multiple choice questions, 
+ * This class is used for multiple choice questions,
  * which can have either
  * number only answers or
  * activity text only answers.
