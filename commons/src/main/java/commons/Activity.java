@@ -118,12 +118,9 @@ public class Activity {
         Long tempChoice;
         for (int i = 0; i < choices.length; i++) {
             do {
-                if (energyConsumption < 10) {
-                    tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
-                            * r.nextGaussian()));
-                } else {
-                    tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
-                            * r.nextGaussian()));
+                tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
+                        * r.nextGaussian()));
+                if (tempChoice >= 10) {
                     tempChoice = (long) Math.round(tempChoice / 10) * 10;
                 }
             } while (Arrays.stream(choices).anyMatch(tempChoice::equals) || tempChoice.equals(energyConsumption));
