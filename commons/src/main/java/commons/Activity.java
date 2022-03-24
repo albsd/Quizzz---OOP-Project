@@ -119,8 +119,8 @@ public class Activity {
         for (int i = 0; i < choices.length; i++) {
             do {
                 if (energyConsumption < 6) {
-                    tempChoice = (long) (energyConsumption + energyConsumption / 2
-                            * r.nextGaussian());
+                    tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
+                            * r.nextGaussian()));
                 } else {
                     tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
                             * r.nextGaussian()));
