@@ -119,16 +119,15 @@ public class Activity {
         Long tempChoice;
         for (int i = 0; i < choices.length; i++) {
             do {
-                if(energyConsumption < 6) {
-                    tempChoice = (long) (energyConsumption + energyConsumption / 2 *
-                            r.nextGaussian());
-                }
-                else {
-                    tempChoice = (long) (energyConsumption + energyConsumption / 2 *
-                            r.nextGaussian());
+                if (energyConsumption < 6) {
+                    tempChoice = (long) (energyConsumption + energyConsumption / 2
+                            * r.nextGaussian());
+                } else {
+                    tempChoice = (long) (energyConsumption + energyConsumption / 2
+                            * r.nextGaussian());
                     tempChoice = (long) Math.round(tempChoice / 10) * 10;
                 }
-            } while(Arrays.stream(choices).anyMatch(tempChoice::equals) || tempChoice.equals(energyConsumption));
+            } while (Arrays.stream(choices).anyMatch(tempChoice::equals) || tempChoice.equals(energyConsumption));
             choices[i] = tempChoice;
         }
         int correctAnswerIndex = r.nextInt(choices.length);
