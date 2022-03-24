@@ -1,22 +1,19 @@
 package server.controller;
 
-import commons.*;
+import commons.Game;
+import commons.MultipleChoiceQuestion;
+import commons.Player;
+import commons.Question;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import server.repository.ActivityRepository;
 import server.repository.GameRepository;
-import server.repository.LeaderboardRepository;
-import server.service.ActivityService;
 import server.service.GameService;
-import server.service.LeaderboardService;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AppControllerTest {
 

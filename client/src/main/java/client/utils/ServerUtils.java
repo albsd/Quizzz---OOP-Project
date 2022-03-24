@@ -74,7 +74,7 @@ public class ServerUtils {
 
             client.send(request, HttpResponse.BodyHandlers.ofString());
             // if the above code does not throw -> we can set the urls
-            this.kAppUrl = uri + "/program";
+            this.kAppUrl = uri + "/app";
             this.kGameUrl = uri + "/game";
             this.session = connect("ws://" + host + ":" + port + "/websocket");
             return null;

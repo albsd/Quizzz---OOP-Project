@@ -14,7 +14,7 @@ import server.service.GameService;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/program")
+@RequestMapping("/app")
 public class AppController {
 
     private final GameService gameService;

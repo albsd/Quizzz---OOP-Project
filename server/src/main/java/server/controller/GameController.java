@@ -212,22 +212,11 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
-    // TODO: send generated session id to client so that it can send it back when
-    // joining lobby after nickname
     @EventListener
     @SendTo
     private void handleSessionConnected(final SessionConnectEvent event) {
         System.out.println("Client connection");
-        System.out.println(event);
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        System.out.println(headers.getSessionId());
-    }
-
-    @EventListener
-    private void handleSessionDisconnect(final SessionDisconnectEvent event) {
-        System.out.println("Client disconnected");
-        System.out.println(event.getSessionId());
-        //here invoke
     }
 
     /**
