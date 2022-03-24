@@ -19,6 +19,14 @@ public class MultipleChoiceQuestion extends Question {
         this.options = options;
     }
 
+    /**
+     * Calculates the score of a multiple choice question.
+     * Maximum points: 100 (50 for a correct answer and 50 for 100% speed).
+     * @param option the option chosen by the player
+     * @param time how long it took the player to answer
+     * @return the player's points
+     */
+
     public int calculateScore(final long option, final int time) {
         if (option == getAnswer()) {
             int base = 50;
