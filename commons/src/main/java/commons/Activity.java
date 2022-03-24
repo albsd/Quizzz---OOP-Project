@@ -112,15 +112,24 @@ public class Activity {
         return result;
     }
 
-    public String[] generateChoices(final long energyConsumption) {
+    public static String[] generateChoices(final long energyConsumption) {
         Long[] choices = new Long[3];
         int[] ds = new int[4];
         Random r = new Random();
+        Long tempChoice;
         for (int i = 0; i < choices.length; i++) {
             do {
-                choices[i] = (((long) (energyConsumption + energyConsumption / 2 *
-                        r.nextGaussian())) / 10) * 10;
-            } while(Arrays.stream(choices).anyMatch(choices[i]::equals));
+                if(energyConsumption < 6) {
+                    tempChoice = (long) (energyConsumption + energyConsumption / 2 *
+                            r.nextGaussian());
+                }
+                else {
+                    tempChoice = (long) (energyConsumption + energyConsumption / 2 *
+                            r.nextGaussian());
+                    tempChoice = (long) Math.round(tempChoice / 10) * 10;
+                }
+            } while(Arrays.stream(choices).anyMatch(tempChoice::equals) || tempChoice.equals(energyConsumption));
+            choices[i] = tempChoice;
         }
         int correctAnswerIndex = r.nextInt(choices.length);
         choices[correctAnswerIndex] = energyConsumption;
