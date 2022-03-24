@@ -34,7 +34,6 @@ class QuestionTimerTest {
         questionTimer.setCurrentTime(500);
         try {
             Thread.sleep(550);
-            System.out.println(questionTimer.getCurrentTime());
             assertTrue(questionTimer.isOver());
         } catch (InterruptedException e) {
             e.printStackTrace();

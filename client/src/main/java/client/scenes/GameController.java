@@ -256,14 +256,12 @@ public class GameController implements Initializable, WebSocketSubscription {
             checkAnswer(option, clientTimer.getCurrentTime());
         } else {
             updateWarning();
-            warning.setVisible(true);
         }
     }
 
     /**
      * Updates the text in the warning label based on the state of the client's timer.
      */
-
     @FXML
     public void updateWarning() {
         if (clientTimer.isOver()) {
@@ -271,8 +269,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         } else {
           warning.setText("Already submitted answer!");
         }
+        warning.setVisible(true);
     }
-
 
     /**
      * Displays and validates the answer for open question.
@@ -288,7 +286,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             checkAnswer(option, clientTimer.getCurrentTime());
         } else {
             updateWarning();
-            warning.setVisible(true);
         }
     }
 
@@ -302,7 +299,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void checkAnswer(final long option, final int time) {
         if (clientTimer.isOver()) {
             updateWarning();
-            warning.setVisible(true);
         } else {
             int score = game.getCurrentQuestion().calculateScore(option, time);
             if (doubleScore) {
