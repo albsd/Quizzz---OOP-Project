@@ -88,7 +88,6 @@ public class AdminPanelController implements Initializable {
         activities = FXCollections.observableList(listActivities);
         table.setItems(activities);
         table.refresh();
-        isEditing = false;
     }
 
     //TODO: CHECK FIELDS ARE NOT EMPTY AND THEY HAVE THE CORRECT FORMAT
