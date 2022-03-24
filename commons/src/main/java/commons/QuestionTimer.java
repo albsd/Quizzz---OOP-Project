@@ -76,4 +76,8 @@ public class QuestionTimer {
             }
         };
     }
+
+    public boolean isOver() {
+        return over;
+    }
 }
