@@ -112,7 +112,7 @@ public class Activity {
         return result;
     }
 
-    public static String[] generateChoices(final long energyConsumption) {
+    public String[] generateChoices(final long energyConsumption) {
         Long[] choices = new Long[3];
         int[] ds = new int[4];
         Random r = new Random();
