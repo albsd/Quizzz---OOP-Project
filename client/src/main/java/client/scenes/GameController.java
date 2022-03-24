@@ -152,6 +152,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         }));
     }
 
+    /**
+     * Registers the player to the server's messages
+     * for chat messages from other players
+     * and disconnection updates in the chat
+     * and time halving updates.
+     * @return the subscriptions of the client
+     */
     @Override
     public Subscription[] registerForMessages() {
         Subscription[] subscriptions = new Subscription[3];
@@ -190,7 +197,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-    * Updates the emotebox with the given event.
+    * Updates the emote box with the given event.
      * 
      * @param nick Player who sends an event
      * @param imagePath Image to be displayed as result of the event
@@ -211,8 +218,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-     * Assign the currentGame and myself as a Player.
-     * Initialize the game's timer and start the game loop.
+     * Assigns the currentGame and myself as a Player.
+     * Initializes the game's timer and start the game loop.
      * 
      * @param me    Player of myself
      * @param game  Current game that I'm a part of
@@ -251,6 +258,12 @@ public class GameController implements Initializable, WebSocketSubscription {
         gameTimer.start(0);
     }
 
+    /**
+     * Checks the answer for a multiple-choice type of question
+     * and updates the style of the chosen button.
+     *
+     * @param e triggered by a button click
+     */
     @FXML
     public void checkMulChoiceOption(final ActionEvent e) {
         if (!submittedAnswer) {
@@ -299,6 +312,10 @@ public class GameController implements Initializable, WebSocketSubscription {
         server.addScore(game.getId(), me.getNick(), score);
     }
 
+    /**
+     * Displays the answer to a question in-between rounds.
+     * (for five seconds)
+     */
     private void displayAnswerMomentarily() {
         Platform.runLater(() -> {
             timer.setProgress(0.0);
@@ -326,7 +343,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-     * Set the next question, in case we are passed the 10th question
+     * Sets the next question, in case we are past the 10th question
      * sends the player score and displays the leaderboard above the current screen.
      */
     @FXML
@@ -361,6 +378,12 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
     }
 
+
+    /**
+     * Displays leaderboard for five seconds.
+     *
+     * @param leaderboard leaderboard to be displayed
+     */
     private void displayLeaderboardMomentarily(final Leaderboard leaderboard) {
         Platform.runLater(() -> leaderboardController.displayLeaderboard(leaderboard, me));
         menu.setVisible(false);
@@ -376,6 +399,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
     }
 
+    /**
+     * Displays the current question and updates visual elements accordingly.
+     */
     private void displayCurrentQuestion() {
         Platform.runLater(() -> {
             Question currentQuestion = game.getCurrentQuestion();
@@ -410,6 +436,10 @@ public class GameController implements Initializable, WebSocketSubscription {
         });
     }
 
+    /**
+     * Cuts every player's remaining time in half except that of who clicked the button.
+     * @param e triggered by a button click
+     */
     @FXML
     public void timePowerup(final ActionEvent e) {
         server.send("/app/game/" + this.game.getId() + "/halve", GameUpdate.halveTimer);
@@ -419,12 +449,20 @@ public class GameController implements Initializable, WebSocketSubscription {
         timeButton.setDisable(true);
     }
 
+    /**
+     * For a round, doubles the points of the player.
+     * @param e triggered by a button click
+     */
     @FXML
     public void scorePowerup(final ActionEvent e) {
         doubleScore = true;
         ((Button) e.getSource()).setDisable(true);
     }
 
+    /**
+     * For a round, removes an incorrect answer for the player.
+     * @param e triggered by a button click
+     */
     @FXML
     public void removePowerup(final ActionEvent e) {
 
@@ -459,6 +497,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
     }
 
+    /**
+     * Updates the interface to reflect a multiple-choice question.
+     */
     @FXML
     private void changeToMultiMode() {
         answerBox.toFront();
@@ -469,6 +510,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         option3.setVisible(true);
     }
 
+    /**
+     * Updates the interface to reflect an open-choice question.
+     */
     @FXML
     private void changeToFreeMode() {
         answerBox.toBack();
