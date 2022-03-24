@@ -99,4 +99,13 @@ public class AdminPanelController implements Initializable {
         powerInput.setText("");
         loadTable();
     }
+
+    public void delete() {
+        server.deleteActivity(getSelected().getId());
+        loadTable();
+    }
+
+    public Activity getSelected() {
+        return table.getSelectionModel().getSelectedItem();
+    }
 }

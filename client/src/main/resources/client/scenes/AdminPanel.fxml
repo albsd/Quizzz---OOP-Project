@@ -28,7 +28,8 @@
                                  <TableColumn fx:id="image" prefWidth="305.0" resizable="false" text="Image" />
                              </columns>
                            </TableView>
-                           <Button layoutX="373.0" layoutY="501.0" mnemonicParsing="false" onAction="#loadTable" text="Refresh" />
+                           <Button layoutX="306.0" layoutY="501.0" mnemonicParsing="false" onAction="#loadTable" text="Refresh" />
+                           <Button layoutX="417.0" layoutY="501.0" mnemonicParsing="false" onAction="#delete" text="Delete" />
                         </children>
                      </AnchorPane>
                </content>

@@ -308,6 +308,16 @@ public class ServerUtils {
         return parseResponseToObject(request, new TypeReference<Activity>() { });
     }
 
+    public Activity deleteActivity(final Long id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kActivityUrl + "/" + id))
+                .DELETE()
+                .build();
+
+        Activity deletedActivity = parseResponseToObject(request, new TypeReference<Activity>() { });
+        return deletedActivity;
+    }
+
     /**
      * Utility method to parse HttpResponse to a given object type.
      *
