@@ -440,7 +440,9 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void openPopup(final ActionEvent e) {
         popupController.open("game", () -> {
-            server.cancelHeartbeat();
+            if (game.isMultiplayer()) {
+                server.cancelHeartbeat();
+            }
             server.leaveGame(me.getNick(), game.getId());
         });
     }
