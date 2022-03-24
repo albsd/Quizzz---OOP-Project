@@ -301,7 +301,7 @@ public class ServerUtils {
             e.printStackTrace();
         }
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kActivityUrl + "/add"))
+                .uri(URI.create(kActivityUrl))
                 .headers("accept", "application/json", "content-type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(activityString))
                 .build();

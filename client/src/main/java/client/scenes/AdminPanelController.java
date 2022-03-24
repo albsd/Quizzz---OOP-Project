@@ -67,7 +67,7 @@ public class AdminPanelController implements Initializable {
         powerInput.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0,
                 change -> {
                     String newText = change.getControlNewText();
-                    if (newText.matches("-?([1-9][0-9]*)?")) {
+                    if (newText.matches("([1-9][0-9]*)?")) {
                         return change;
                     }
                     return null;

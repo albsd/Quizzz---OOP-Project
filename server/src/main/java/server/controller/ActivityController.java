@@ -42,10 +42,10 @@ public class ActivityController {
     /**
      * Adds the activity in the activity repo in the request body.
      *
-     * @param activity 0.activity to be added.
+     * @param activity activity to be added.
      * @return the activity that was added
      */
-    @PostMapping(value = "/add", consumes = {"application/json"})
+    @PostMapping(consumes = {"application/json"})
     public ResponseEntity<Activity> addActivity(final @RequestBody Activity activity) {
         return ResponseEntity.ok(activityService.addActivity(activity));
     }
