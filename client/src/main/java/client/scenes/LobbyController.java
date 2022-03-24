@@ -20,6 +20,7 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
+import java.util.TimerTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -99,6 +100,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
         subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, update -> {
             Platform.runLater(() -> {
+                server.cancelHeartbeat();
                 //sets lobby with recent list of players
                 Game game = server.getGameById(lobby.getId());
                 fxml.showMultiPlayer(me, game);
@@ -118,8 +120,14 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         server.send("/app/lobby/chat", message);
     }
 
-    public void setMe(final Player me) {
+    public void setMeAndTask(final Player me) {
         this.me = me;
+        server.startHeartbeat(new TimerTask() {
+            @Override
+            public void run() {
+                server.updateLobbyPlayer(me.getNick());
+            }
+        });
     }
 
     private void updatePlayerList() {
@@ -153,6 +161,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void openPopup(final ActionEvent event) {
         popupController.open("lobby", () -> {
             server.leaveLobby(me.getNick());
+            server.cancelHeartbeat();
             fxml.showSplash();
         });
     }
