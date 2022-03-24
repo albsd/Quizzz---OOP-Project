@@ -293,10 +293,10 @@ public class ServerUtils {
      *
      * @param id    UUID of the game as a String
      */
-    public void removeGame(final UUID id) {
+    public void markGameOver(final UUID id) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kGameUrl + "/" + id))
-                .DELETE()
+                .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
         parseResponseToObject(request, new TypeReference<Game>() { });
     }
@@ -361,13 +361,20 @@ public class ServerUtils {
         return this.playerTimer;
     }
 
-    public void startTimerTask(final TimerTask heartBeat) {
+    /**
+     * Starts the Timer task of transmiting the time to server.
+     * @param heartBeat timer task to send heart beat to server.
+     */
+    public void startHeartbeat(final TimerTask heartBeat) {
         this.heartBeat = heartBeat;
         //timer invokes currentTask (sending heartbeat to server) every 5 seconds
         playerTimer.scheduleAtFixedRate(heartBeat, 0, 5000);
     }
 
-    public void stopTimerTask() {
+    /**
+     * Stops sending the heartbeat of player.
+     */
+    public void cancelHeartbeat() {
         this.heartBeat.cancel();
     }
 }

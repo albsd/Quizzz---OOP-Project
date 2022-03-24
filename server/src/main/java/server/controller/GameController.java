@@ -15,30 +15,12 @@
  */
 package server.controller;
 
-import commons.Game;
-import commons.Leaderboard;
-import commons.Player;
-import commons.Question;
-import commons.PlayerUpdate;
-import commons.LobbyMessage;
-import commons.GameResult;
-import commons.GameUpdate;
-import commons.EmoteMessage;
+import commons.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
-
+import org.springframework.web.bind.annotation.*;
 import server.service.ActivityService;
 import server.service.GameService;
 import server.service.LeaderboardService;
@@ -211,13 +193,6 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
-    @EventListener
-    @SendTo
-    private void handleSessionConnected(final SessionConnectEvent event) {
-        System.out.println("Client connection");
-        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-    }
-
     /**
      * A Websocket endpoint for sending updates about the game's player' status.
      * Namely, updates the active players in the game for all clients.
@@ -322,8 +297,14 @@ public class GameController {
         return player;
     }
 
-    @DeleteMapping("/{id}")
-    public void removeGame(final @PathVariable("id") UUID id) {
-        gameService.removeGame(id);
+    /**
+     * Marks the game as finished which will be deleted later in the
+     * scheduled task of server.
+     * @param id the id of game
+     * @return Game object that was marked finished
+     */
+    @PostMapping("/{id}")
+    public Game markGameDone(final @PathVariable("id") UUID id) {
+        return gameService.markGameDone(id);
     }
 }

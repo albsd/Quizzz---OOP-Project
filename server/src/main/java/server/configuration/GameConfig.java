@@ -30,10 +30,16 @@ public class GameConfig {
     @Autowired
     private GameController gameCtrl;
 
-    @Scheduled(fixedRate = 60000)
-    private void checkGamePlayers() {
+    /**
+     * Every 5 seconds checks the multiplaeyr games is repo.
+     * If player list is empty or game is marked over, the game
+     * is deleted.
+     */
+    @Scheduled(fixedRate = 5000)
+    private void checkGameAndPlayers() {
         List<Game> games = gameRepo.getGames();
-        for (Game game : games) {
+        for (int i = 0; i < games.size(); i++) {
+            Game game = games.get(i);
             List<Player> players = game.getPlayers();
             for (int j = 0; j < players.size(); j++) {
                 Player player = players.get(j);
@@ -42,13 +48,18 @@ public class GameConfig {
                     appCtrl.sendPlayerLeft(player, game.getId());
                 }
             }
-            if (players.isEmpty()) {
+            if (players.isEmpty() || game.isOver()) {
                 gameRepo.removeGame(game.getId());
             }
         }
     }
 
-    @Scheduled(fixedRate = 5000)
+    /**
+     * Every 2 seconds checks whether player in lobby is active.
+     * Otherwise, removed and game update transmitted to other
+     * players in lobby.
+     */
+    @Scheduled(fixedRate = 2000)
     private void checkLobbyPlayers() {
         Game lobby = gameService.getCurrentGame();
         List<Player> players = lobby.getPlayers();

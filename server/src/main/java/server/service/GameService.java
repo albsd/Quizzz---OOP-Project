@@ -74,7 +74,9 @@ public class GameService {
         return player;
     }
 
-    public boolean removeGame(final UUID id) {
-        return repo.removeGame(id);
+    public Game markGameDone(final UUID id) {
+        Game game = repo.findById(id);
+        game.setCurrentQuestionIndex(19);
+        return game;
     }
 }

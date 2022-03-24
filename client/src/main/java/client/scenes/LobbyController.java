@@ -100,7 +100,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
         subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, update -> {
             Platform.runLater(() -> {
-                server.stopTimerTask();
+                server.cancelHeartbeat();
                 //sets lobby with recent list of players
                 Game game = server.getGameById(lobby.getId());
                 fxml.showMultiPlayer(me, game);
@@ -122,7 +122,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     public void setMeAndTask(final Player me) {
         this.me = me;
-        server.startTimerTask(new TimerTask() {
+        server.startHeartbeat(new TimerTask() {
             @Override
             public void run() {
                 server.updateLobbyPlayer(me.getNick());
@@ -161,7 +161,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void openPopup(final ActionEvent event) {
         popupController.open("lobby", () -> {
             server.leaveLobby(me.getNick());
-            server.stopTimerTask();
+            server.cancelHeartbeat();
             fxml.showSplash();
         });
     }

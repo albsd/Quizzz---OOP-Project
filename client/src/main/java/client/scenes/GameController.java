@@ -142,7 +142,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         warning.setFont(font);
         submittedAnswer = false;
         doubleScore = false;
-        openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), 0,
+        openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), null,
                 change -> {
             String newText = change.getControlNewText();
             if (newText.matches("-?([1-9][0-9]*)?")) {
@@ -227,7 +227,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         clientTimer.start(0);
         gameTimer.start(0);
 
-        server.startTimerTask(new TimerTask() {
+        server.startHeartbeat(new TimerTask() {
             @Override
             public void run() {
                 server.updateGamePlayer(game.getId(), me.getNick());
@@ -334,13 +334,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayAnswerMomentarily();
         // Displays leaderboard at end of game
         if (game.isOver()) {
-            if (!game.isMultiplayer()) {
+            if (game.isMultiplayer()) {
+                server.cancelHeartbeat();
+                displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
+                server.markGameOver(game.getId());
+            } else {
                 server.sendGameResult(this.me.getNick(), this.me.getScore());
                 displayLeaderboardMomentarily(server.getSinglePlayerLeaderboard());
-            } else {
-                server.stopTimerTask();
-                displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
-                server.removeGame(game.getId());
             }
         }
         // Displays leaderboard every 10 questions in multiplayer
@@ -405,7 +405,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void openPopup(final ActionEvent e) {
         popupController.open("game", () -> {
-            server.stopTimerTask();
+            server.cancelHeartbeat();
             server.leaveGame(me.getNick(), game.getId());
         });
     }
