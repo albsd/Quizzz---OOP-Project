@@ -202,7 +202,8 @@ public class AdminPanelController implements Initializable {
         fileChooser.getExtensionFilters().add(extensionFilter);
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            image = new commons.Image(generateImageByteArray(file.getPath()), file.getName());
+            image = new commons.Image(generateImageByteArray(file.getPath()),
+                    file.getName().replaceAll("\\s", "_"));
             imageShow.setImage(new Image(new ByteArrayInputStream(image.getData())));
         }
     }
