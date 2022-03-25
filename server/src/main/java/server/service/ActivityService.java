@@ -1,6 +1,7 @@
 package server.service;
 
 import commons.Activity;
+import commons.Image;
 import commons.Question;
 
 import org.apache.tomcat.util.json.JSONParser;
@@ -18,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,6 +86,7 @@ public class ActivityService {
     }
 
     public Activity addActivity(final Activity activity) {
+        activity.setPath(resourcesPath + "/images/" + activity.getPath());
         return activityRepository.saveAndFlush(activity);
     }
 
@@ -92,9 +95,29 @@ public class ActivityService {
         if (activity.isEmpty()) {
             return null;
         } else {
-            activityRepository.delete(activity.get());
+            Activity activityReal = activity.get();
+            (new File(activityReal.getPath())).delete();
+            activityRepository.delete(activityReal);
             return activity.get();
         }
+    }
+
+    public Image saveImage(final Image image) throws IOException {
+        byte[] data = image.getData();
+        String name = image.getName();
+        File file = new File(resourcesPath + "/images/" + name);
+        try {
+            OutputStream os = new FileOutputStream(file);
+            os.write(data);
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
+
+    public Image getImage(final String path) {
+        return new Image(generateImageByteArray(path), path.substring(path.lastIndexOf('/') + 1));
     }
 
     public List<Activity> getAllActivities() throws IOException, ParseException {

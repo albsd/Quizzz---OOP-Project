@@ -24,6 +24,7 @@ import commons.Player;
 import commons.PlayerUpdate;
 import commons.Activity;
 import commons.LobbyMessage;
+import commons.Image;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -306,6 +307,31 @@ public class ServerUtils {
                 .POST(HttpRequest.BodyPublishers.ofString(activityString))
                 .build();
         return parseResponseToObject(request, new TypeReference<Activity>() { });
+    }
+
+    public Image sendImage(final Image image) {
+        ObjectMapper mapper = new ObjectMapper();
+        String imageString = "";
+        try {
+            imageString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(image);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+                    HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(kActivityUrl + "/img"))
+                    .headers("accept", "application/json", "content-type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(imageString))
+                    .build();
+        return parseResponseToObject(request, new TypeReference<Image>() { });
+    }
+
+    public Image getImage(final String path) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kActivityUrl + "/img?path=" + path))
+                .headers("accept", "application/json")
+                .GET()
+                .build();
+        return parseResponseToObject(request, new TypeReference<Image>() { });
     }
 
     public Activity deleteActivity(final Long id) {
