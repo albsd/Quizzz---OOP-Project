@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Game {
@@ -110,5 +111,24 @@ public class Game {
     @JsonIgnore
     public Question getCurrentQuestion() {
         return questions.get(currentQuestion);
+    }
+
+    @JsonIgnore
+    public void setCurrentQuestionIndex(final int number) {
+        this.currentQuestion = number;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        return currentQuestion == game.currentQuestion && isMultiplayer == game.isMultiplayer
+                && id.equals(game.id) && players.equals(game.players) && questions.equals(game.questions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, players, questions, currentQuestion, isMultiplayer);
     }
 }
