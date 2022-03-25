@@ -61,12 +61,14 @@ public class AdminPanelController implements Initializable {
     private boolean isEditing;
     private Activity activityEdit;
     private commons.Image image;
+    private final FileChooser.ExtensionFilter extensionFilter;
 
     @Inject
     public AdminPanelController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
         this.fxml = fxml;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
+        this.extensionFilter = new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png");
     }
 
     @Override
@@ -107,6 +109,7 @@ public class AdminPanelController implements Initializable {
             if (activityEdit == null) {
                 infoText.setText("You have to select an activity to edit.");
             } else {
+                if (!checkInput()) return;
                 activityEdit.setTitle(titleInput.getText());
                 activityEdit.setEnergyConsumption(Long.parseLong(powerInput.getText()));
                 activityEdit.setSource(sourceInput.getText());
@@ -119,6 +122,7 @@ public class AdminPanelController implements Initializable {
             if (image == null) {
                 infoText.setText("You need to select an image before adding an activity.");
             } else {
+                if (!checkInput()) return;
                 Activity newActivity = new Activity(titleInput.getText(), Long.parseLong(powerInput.getText()),
                         sourceInput.getText(), image.getName());
                 Activity added = server.addActivity(newActivity);
@@ -132,6 +136,21 @@ public class AdminPanelController implements Initializable {
             }
         }
         loadTable();
+    }
+
+    private boolean checkInput() {
+        if (titleInput.getText().equals("")) {
+            infoText.setText("Title cannot be empty.");
+            return false;
+        } else if (powerInput.getText().equals("")) {
+            infoText.setText("Power consumption cannot be empty.");
+            return false;
+        } else if (sourceInput.getText().equals("")) {
+            infoText.setText("Source cannot be empty.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void add() {
@@ -176,15 +195,16 @@ public class AdminPanelController implements Initializable {
         loadTable();
     }
 
-    //TODO: FILTER FILE TYPES
     public void chooseImage() {
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose an Image");
+        fileChooser.getExtensionFilters().add(extensionFilter);
         File file = fileChooser.showOpenDialog(stage);
-        image = new commons.Image(generateImageByteArray(file.getPath()), file.getName());
-        String imagePath = file.getPath();
-        imageShow.setImage(new Image(new ByteArrayInputStream(image.getData())));
+        if (file != null) {
+            image = new commons.Image(generateImageByteArray(file.getPath()), file.getName());
+            imageShow.setImage(new Image(new ByteArrayInputStream(image.getData())));
+        }
     }
 
     private byte[] generateImageByteArray(final String imagePath) {
