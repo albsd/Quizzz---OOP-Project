@@ -246,11 +246,11 @@ public class AdminPanelController implements Initializable {
             image = new commons.Image(generateImageByteArray(file.getPath()),
                     file.getName().replaceAll("\\s", "_"));
             Image img = new Image(new ByteArrayInputStream(image.getData()));
-            if (img.getHeight() > 200) {
-                infoText.setText("Image height must be smaller than 200px.");
+            if (img.getHeight() < 200) {
+                infoText.setText("Image height must be greater than 200px.");
                 image = null;
-            } else if (img.getWidth() > 200) {
-                infoText.setText("Image width must be smaller than 200px.");
+            } else if (img.getWidth() < 200) {
+                infoText.setText("Image width must be greater than 200px.");
                 image = null;
             } else {
                 imageShow.setImage(img);
