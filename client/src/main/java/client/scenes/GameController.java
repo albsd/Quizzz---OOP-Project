@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.FXMLController;
+import client.sounds.Sound;
+import client.sounds.SoundName;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
 
@@ -14,8 +16,6 @@ import commons.Question;
 import commons.FreeResponseQuestion;
 import commons.MultipleChoiceQuestion;
 import commons.Leaderboard;
-import commons.Sound;
-import commons.SoundName;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

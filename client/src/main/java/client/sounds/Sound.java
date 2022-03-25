@@ -1,4 +1,4 @@
-package commons;
+package client.sounds;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioSystem;
