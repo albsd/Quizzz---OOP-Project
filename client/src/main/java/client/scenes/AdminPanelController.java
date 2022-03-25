@@ -93,7 +93,7 @@ public class AdminPanelController implements Initializable {
                 }));
         powerInput.setText("");
         isEditing = false;
-        loadTable();
+        loadTable(false);
     }
 
     /**
@@ -108,13 +108,22 @@ public class AdminPanelController implements Initializable {
     /**
      * Gets activities from the server/database.
      * and refreshes the table.
+     * @param scroll Scrolls to the bottom if true
      */
-    @FXML
-    public void loadTable() {
+    public void loadTable(final boolean scroll) {
         List<Activity> listActivities = server.getAllActivities();
         activities = FXCollections.observableList(listActivities);
         table.setItems(activities);
         table.refresh();
+
+        if (scroll) {
+            table.scrollTo(table.getItems().size() - 1);
+        }
+    }
+
+    @FXML
+    public void refresh() {
+        loadTable(false);
     }
 
     /**
@@ -136,6 +145,7 @@ public class AdminPanelController implements Initializable {
                 server.addActivity(activityEdit);
                 server.sendImage(image);
                 infoText.setText(String.format("Activity with the id %d is edited.", activityEdit.getId()));
+                loadTable(false);
             }
         } else {
             if (image == null) {
@@ -152,9 +162,9 @@ public class AdminPanelController implements Initializable {
                 sourceInput.setText("");
                 imageShow.setImage(null);
                 image = null;
+                loadTable(true);
             }
         }
-        loadTable();
     }
 
     /**
@@ -228,7 +238,7 @@ public class AdminPanelController implements Initializable {
         sourceInput.setText("");
         imageShow.setImage(null);
         image = null;
-        loadTable();
+        loadTable(false);
     }
 
     /**

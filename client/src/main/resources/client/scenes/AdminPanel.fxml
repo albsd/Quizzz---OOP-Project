@@ -30,7 +30,7 @@
             <ImageView fx:id="imageShow" fitHeight="200.0" fitWidth="200.0" layoutX="975.0" layoutY="360.0" pickOnBounds="true" />
             <Button layoutX="1169.0" layoutY="286.0" mnemonicParsing="false" onAction="#submit" text="Submit" />
             <Button fx:id="imageButton" layoutX="925.0" layoutY="286.0" mnemonicParsing="false" onAction="#chooseImage" text="Choose Image" />
-            <Button layoutX="45.0" layoutY="665.0" mnemonicParsing="false" onAction="#loadTable" prefHeight="27.0" prefWidth="90.0" text="Refresh" />
+            <Button layoutX="45.0" layoutY="665.0" mnemonicParsing="false" onAction="#refresh" prefHeight="27.0" prefWidth="90.0" text="Refresh" />
             <Button layoutX="215.0" layoutY="665.0" mnemonicParsing="false" onAction="#edit" prefHeight="27.0" prefWidth="90.0" text="Edit Mode" />
             <Button layoutX="395.0" layoutY="665.0" mnemonicParsing="false" onAction="#add" prefHeight="27.0" prefWidth="90.0" text="Add Mode" />
             <Button layoutX="575.0" layoutY="665.0" mnemonicParsing="false" onAction="#select" prefHeight="27.0" prefWidth="90.0" text="Select" />
