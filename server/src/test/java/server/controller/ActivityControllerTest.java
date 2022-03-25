@@ -1,7 +1,6 @@
 package server.controller;
 
 import commons.Activity;
-import commons.Image;
 import org.apache.tomcat.util.json.ParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
