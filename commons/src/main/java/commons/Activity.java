@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -146,22 +147,27 @@ public class Activity {
         return new FreeResponseQuestion(prompt, image, energyConsumption);
     }
 
-    /**
-     * Generates choices for a question whose answer is the specified number.
-     * @param energyConsumption energy consumption of activity
-     * @return choices similar to specified energy consumption
-     */
     public String[] generateChoices(final long energyConsumption) {
-        String[] choices = new String[3];
+        Long[] choices = new Long[3];
+        Random r = new Random();
+        Long tempChoice;
         for (int i = 0; i < choices.length; i++) {
-            Random r = new Random();
-            choices[i] = Integer.toString((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()));
+            do {
+                tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
+                        * r.nextGaussian()));
+                if (energyConsumption == 0) {
+                    tempChoice = Math.abs((long) (5 * r.nextGaussian()));
+                }
+                if (tempChoice >= 10) {
+                    tempChoice = (long) Math.round(tempChoice / 10) * 10;
+                }
+            } while (Arrays.stream(choices).anyMatch(tempChoice::equals) || tempChoice.equals(energyConsumption));
+            choices[i] = tempChoice;
         }
-        Random r  = new Random();
         int correctAnswerIndex = r.nextInt(choices.length);
+        choices[correctAnswerIndex] = energyConsumption;
 
-        choices[correctAnswerIndex] = Long.toString(energyConsumption);
-        return choices;
+        return Arrays.stream(choices).map(String::valueOf).toArray(String[]::new);
     }
 
     @Override
