@@ -14,7 +14,7 @@
             <Insets />
         </VBox.margin>
       <children>
-         <TableView fx:id="table" layoutX="1.0" layoutY="2.0" prefHeight="447.0" prefWidth="800.0">
+         <TableView fx:id="table" layoutX="1.0" layoutY="2.0" prefHeight="635.0" prefWidth="900.0">
            <columns>
                <TableColumn fx:id="id" prefWidth="75.0" resizable="false" text="ID" />
              <TableColumn fx:id="title" minWidth="0.0" prefWidth="465.0" resizable="false" text="Title" />
@@ -22,20 +22,20 @@
              <TableColumn fx:id="source" prefWidth="160.0" resizable="false" text="Source" />
            </columns>
          </TableView>
-         <ImageView fx:id="imageShow" fitHeight="215.0" fitWidth="300.0" layoutX="878.0" layoutY="360.0" pickOnBounds="true" preserveRatio="true" />
-         <Label fx:id="modeText" alignment="CENTER" layoutX="978.0" layoutY="43.0" prefHeight="25.0" prefWidth="100.0" text="ADD MODE" textFill="#22ab03" />
-         <TextField fx:id="titleInput" layoutX="878.0" layoutY="150.0" prefWidth="300.0" promptText="Title" />
-         <TextField fx:id="powerInput" layoutX="878.0" layoutY="200.0" prefWidth="300.0" promptText="Power Consumption" />
-         <TextField fx:id="sourceInput" layoutX="878.0" layoutY="246.0" prefWidth="300.0" promptText="Source" />
-         <Button layoutX="88.0" layoutY="498.0" mnemonicParsing="false" onAction="#loadTable" prefHeight="27.0" prefWidth="83.0" text="Refresh" />
-         <Button layoutX="190.0" layoutY="498.0" mnemonicParsing="false" onAction="#edit" prefHeight="27.0" prefWidth="83.0" text="Edit Mode" />
-         <Button layoutX="294.0" layoutY="498.0" mnemonicParsing="false" onAction="#add" prefHeight="27.0" prefWidth="83.0" text="Add Mode" />
-         <Button layoutX="401.0" layoutY="498.0" mnemonicParsing="false" onAction="#select" prefHeight="27.0" prefWidth="83.0" text="Select" />
-         <Button layoutX="500.0" layoutY="498.0" mnemonicParsing="false" onAction="#delete" prefHeight="27.0" prefWidth="83.0" text="Delete" />
-         <Button layoutX="1123.0" layoutY="286.0" mnemonicParsing="false" onAction="#submit" text="Submit" />
-         <Label fx:id="infoText" alignment="CENTER" layoutX="878.0" layoutY="103.0" prefHeight="25.0" prefWidth="300.0" />
-         <Button layoutX="1137.0" layoutY="662.0" mnemonicParsing="false" onAction="#splash" prefHeight="27.0" prefWidth="83.0" text="Main Menu" />
-         <Button fx:id="imageButton" layoutX="878.0" layoutY="286.0" mnemonicParsing="false" onAction="#chooseImage" text="Choose Image" />
+         <Label fx:id="modeText" alignment="CENTER" layoutX="1025.0" layoutY="78.0" prefHeight="25.0" prefWidth="100.0" text="ADD MODE" textFill="#22ab03" />
+         <Label fx:id="infoText" alignment="CENTER" layoutX="925.0" layoutY="112.0" prefHeight="25.0" prefWidth="300.0" />
+         <TextField fx:id="titleInput" layoutX="925.0" layoutY="150.0" prefWidth="300.0" promptText="Title" />
+         <TextField fx:id="powerInput" layoutX="925.0" layoutY="200.0" prefWidth="300.0" promptText="Power Consumption" />
+         <TextField fx:id="sourceInput" layoutX="925.0" layoutY="246.0" prefWidth="300.0" promptText="Source" />
+         <ImageView fx:id="imageShow" fitHeight="200.0" fitWidth="200.0" layoutX="975.0" layoutY="360.0" pickOnBounds="true" />
+         <Button layoutX="1169.0" layoutY="286.0" mnemonicParsing="false" onAction="#submit" text="Submit" />
+         <Button fx:id="imageButton" layoutX="925.0" layoutY="286.0" mnemonicParsing="false" onAction="#chooseImage" text="Choose Image" />
+         <Button layoutX="45.0" layoutY="665.0" mnemonicParsing="false" onAction="#loadTable" prefHeight="27.0" prefWidth="90.0" text="Refresh" />
+         <Button layoutX="215.0" layoutY="665.0" mnemonicParsing="false" onAction="#edit" prefHeight="27.0" prefWidth="90.0" text="Edit Mode" />
+         <Button layoutX="395.0" layoutY="665.0" mnemonicParsing="false" onAction="#add" prefHeight="27.0" prefWidth="90.0" text="Add Mode" />
+         <Button layoutX="575.0" layoutY="665.0" mnemonicParsing="false" onAction="#select" prefHeight="27.0" prefWidth="90.0" text="Select" />
+         <Button layoutX="755.0" layoutY="665.0" mnemonicParsing="false" onAction="#delete" prefHeight="27.0" prefWidth="90.0" text="Delete" />
+         <Button layoutX="1142.0" layoutY="665.0" mnemonicParsing="false" onAction="#splash" prefHeight="27.0" prefWidth="83.0" text="Main Menu" />
       </children>
     </AnchorPane>
 </VBox>
