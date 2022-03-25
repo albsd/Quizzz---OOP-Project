@@ -5,10 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
+/**
+ * Activity repository connected to the database.
+ */
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
+
     Page<Activity> findAll(Pageable pageable);
 
-    Optional<Activity> findTopByOrderByIdDesc();
 }

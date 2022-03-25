@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import server.service.GameService;
 
 import java.util.UUID;
-
+/**
+ * Controller class to receive and update clients' heartbeats.
+ */
 @RestController
 @RequestMapping("/app")
 public class AppController {

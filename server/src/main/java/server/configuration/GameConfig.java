@@ -8,12 +8,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import server.controller.AppController;
-import server.controller.GameController;
 import server.repository.GameRepository;
 import server.service.GameService;
 
 import java.util.List;
 
+/**
+ * Configuration class that runs scheduled methods.
+ * Used to clean up finished or unused game objects
+ * in game repository.
+ */
 @Configuration
 @EnableScheduling
 public class GameConfig {
@@ -27,11 +31,8 @@ public class GameConfig {
     @Autowired
     private AppController appCtrl;
 
-    @Autowired
-    private GameController gameCtrl;
-
     /**
-     * Every 5 seconds checks the multiplaeyr games is repo.
+     * Every 5 seconds checks the multiplayer games is repo.
      * If player list is empty or game is marked over, the game
      * is deleted.
      */
@@ -55,11 +56,11 @@ public class GameConfig {
     }
 
     /**
-     * Every 2 seconds checks whether player in lobby is active.
+     * Every second checks whether player in lobby is active.
      * Otherwise, removed and game update transmitted to other
      * players in lobby.
      */
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 1000)
     private void checkLobbyPlayers() {
         Game lobby = gameService.getCurrentGame();
         List<Player> players = lobby.getPlayers();

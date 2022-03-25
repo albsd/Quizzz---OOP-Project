@@ -5,6 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Arrays;
 
+/**
+ * This class is used for multiple choice questions,
+ * which can have either
+ * number only answers or
+ * activity text only answers.
+ */
+
 public class MultipleChoiceQuestion extends Question {
 
     @JsonProperty("options")
@@ -18,6 +25,14 @@ public class MultipleChoiceQuestion extends Question {
         super(prompt, answer, imageBytes);
         this.options = options;
     }
+
+    /**
+     * Calculates the score of a multiple choice question.
+     * Maximum points: 100 (50 for a correct answer and 50 for 100% speed).
+     * @param option the option chosen by the player
+     * @param time how long it took the player to answer
+     * @return the player's points
+     */
 
     public int calculateScore(final long option, final int time) {
         if (option == getAnswer()) {

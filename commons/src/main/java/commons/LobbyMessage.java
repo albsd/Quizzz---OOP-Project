@@ -7,6 +7,10 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+/**
+ * This class is used for messages in the lobby.
+ */
+
 public class LobbyMessage extends Message<String> {
     @JsonProperty("timestamp")
     private final String timestamp;

@@ -27,6 +27,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.List;
+
+/**
+ * Game repository that stores all multiplayer game objects.
+ */
 @Repository
 public class GameRepository {
 
@@ -36,10 +40,21 @@ public class GameRepository {
         games = new HashSet<>();
     }
 
+    /**
+     * Gets all games in the repository.
+     * 
+     * @return list of all games
+     */
     public List<Game> getGames() {
         return games.stream().toList();
     }
 
+    /**
+     * Searches for a specific game with game id.
+     * 
+     * @param id id of the game
+     * @return game object or null if specific game not found
+     */
     public Game findById(final UUID id) {
         Optional<Game> optional = games.stream()
                 .filter(g -> g.getId().equals(id))
@@ -51,30 +66,68 @@ public class GameRepository {
         return optional.get();
     }
     
+    /**
+     * Creates a game object for singleplayer. Games created here
+     * will not be added to the game repository.
+     * 
+     * @param nick name of player.
+     * @param questions list of questiosn to add to game object
+     * @return Game object
+     */
     public Game createSingleplayer(final String nick, final List<Question> questions) {
         Game game = new Game(UUID.randomUUID(), questions, false);
         game.addPlayer(new Player(nick));
         return game;
     }
 
+    /**
+     * Adds the passed game object into the game repo.
+     *
+     * @param game the game object to add
+     * @return id of game that was added
+     */
     public UUID addGame(final Game game) {
         games.add(game);
         return game.getId();
     }
 
+    /**
+     * Removes all the games in the repo.
+     */
     public void removeAllGames() {
         games = new HashSet<>();
     }
 
+    /**
+     * Remove specific game in game repo.
+     *
+     * @param id id of the game object
+     * @return boolean whether game was successfully removed
+     */
     public boolean removeGame(final UUID id) {
         return games.removeIf(g -> g.getId().equals(id));
     }
 
+    /**
+     * Creates and returns the leaderboard object based on
+     * the Player list in the specified game.
+     *
+     * @param id id of the game object
+     * @return leaderboard object
+     */
     public Leaderboard getLeaderboard(final UUID id) {
         Game game = this.findById(id);
         return new Leaderboard(game.getPlayers());
     }
 
+    /**
+     * Updates the player's score on the server after every
+     * question of the multiplayer game.
+     *
+     * @param game game object where player is in.
+     * @param nick
+     * @param score
+     */
     public void addPlayerScore(final Game game, final String nick, final int score) {
         Player player = game.getPlayerByNick(nick);
         player.addScore(score);

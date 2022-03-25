@@ -13,7 +13,6 @@ public class Player {
     @JsonProperty("score")
     private int score;
 
-    //time based on systems default time
     @JsonIgnore
     private Date time = new Date();
 
@@ -51,13 +50,19 @@ public class Player {
         this.score += score;
     }
 
+    /**
+     * Takes the current time of the player and compares it with
+     * the last time they sent an update to the server.
+     * If the difference is low enough then the player is
+     * considered to be still connected to the server.
+     * @return whether the player is still connected
+     */
     @JsonIgnore
     public boolean isAlive() {
         Date now = new Date();
         int timerDifference = (int) now.getTime() - (int) this.time.getTime();
         return timerDifference < 5000;
     }
-
 
     @Override
     public int hashCode() {
