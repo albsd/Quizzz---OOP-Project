@@ -52,11 +52,22 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.addActivity(activity));
     }
 
+    /**
+     * Saves an image to the server.
+     * @param image Image to be saved
+     * @return Saved image
+     * @throws IOException
+     */
     @PostMapping("/img")
     public ResponseEntity<Image> sendImage(final @RequestBody Image image) throws IOException {
         return ResponseEntity.ok(activityService.saveImage(image));
     }
 
+    /**
+     * Gets an image from the server.
+     * @param path Path of the image to be collected
+     * @return Image to be collected
+     */
     @GetMapping("/img")
     public Image getImage(final @RequestParam String path) {
         return activityService.getImage(path);

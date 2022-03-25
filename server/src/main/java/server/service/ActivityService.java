@@ -85,11 +85,21 @@ public class ActivityService {
         return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
     }
 
+    /**
+     * Adds a new activity to the database.
+     * @param activity Activity to be added
+     * @return Activity added
+     */
     public Activity addActivity(final Activity activity) {
         activity.setPath(resourcesPath + "/images/" + activity.getPath());
         return activityRepository.saveAndFlush(activity);
     }
 
+    /**
+     * Deletes an activity from the database and its image.
+     * @param id ID of the activity to be deleted
+     * @return Deleted activity
+     */
     public Activity deleteActivity(final Long id) {
         Optional<Activity> activity = activityRepository.findById(id);
         if (activity.isEmpty()) {
@@ -102,6 +112,12 @@ public class ActivityService {
         }
     }
 
+    /**
+     * Saves the image to the server.
+     * @param image Image to be saved
+     * @return Image saved
+     * @throws IOException
+     */
     public Image saveImage(final Image image) throws IOException {
         byte[] data = image.getData();
         String name = image.getName();
@@ -118,6 +134,10 @@ public class ActivityService {
         return image;
     }
 
+    /**
+     * @param path Path of the image to be collected
+     * @return Returns the Image that exists in the path
+     */
     public Image getImage(final String path) {
         return new Image(generateImageByteArray(path), path.substring(path.lastIndexOf('/') + 1));
     }

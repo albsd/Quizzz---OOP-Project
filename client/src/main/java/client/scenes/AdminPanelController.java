@@ -72,6 +72,11 @@ public class AdminPanelController implements Initializable {
                 "*.png", "*.gif");
     }
 
+    /**
+     * Sets up the table and fields to view activities and loads activities.
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         id.setCellValueFactory(l -> new SimpleLongProperty(l.getValue().getId()).asObject());
@@ -91,11 +96,19 @@ public class AdminPanelController implements Initializable {
         loadTable();
     }
 
+    /**
+     * Loads the splash screen.
+     * @param e
+     */
     @FXML
     public void splash(final ActionEvent e) {
         fxml.showSplash();
     }
 
+    /**
+     * Gets activities from the server/database.
+     * and refreshes the table.
+     */
     @FXML
     public void loadTable() {
         List<Activity> listActivities = server.getAllActivity();
@@ -104,6 +117,11 @@ public class AdminPanelController implements Initializable {
         table.refresh();
     }
 
+    /**
+     * Submits the filled inputs to the server, either adding or editing an activity.
+     * Checks whether fields and image are entered properly
+     * Shows the user appropriate message in the info text
+     */
     @FXML
     public void submit() {
         if (isEditing) {
@@ -139,6 +157,10 @@ public class AdminPanelController implements Initializable {
         loadTable();
     }
 
+    /**
+     * Checks if the title, power consumption and source fields are entered properly and warns user.
+     * @return return false if any of the mentioned fields are empty and true otherwise
+     */
     private boolean checkInput() {
         if (titleInput.getText().equals("")) {
             infoText.setText("Title cannot be empty.");
@@ -154,6 +176,9 @@ public class AdminPanelController implements Initializable {
         }
     }
 
+    /**
+     * Changes current mode to ADD MODE.
+     */
     public void add() {
         modeText.setText("ADD MODE");
         isEditing = false;
@@ -161,6 +186,9 @@ public class AdminPanelController implements Initializable {
         infoText.setText("");
     }
 
+    /**
+     * Changes current mode to EDIT MODE.
+     */
     public void edit() {
         modeText.setText("EDIT MODE");
         isEditing = true;
@@ -169,6 +197,10 @@ public class AdminPanelController implements Initializable {
         }
     }
 
+    /**
+     * Selects an activity from the table.
+     * Fills required fields and uploads the image of the activity.
+     */
     public void select() {
         activityEdit = getSelected();
         titleInput.setText(activityEdit.getTitle());
@@ -184,6 +216,9 @@ public class AdminPanelController implements Initializable {
         }
     }
 
+    /**
+     * Deletes the selected activity from the database and the image of the activity.
+     */
     public void delete() {
         Activity toBeDeleted = getSelected();
         infoText.setText(String.format("Activity with the id %d is deleted.", toBeDeleted.getId()));
@@ -196,6 +231,10 @@ public class AdminPanelController implements Initializable {
         loadTable();
     }
 
+    /**
+     * Opens up the file chooser tab for image selection.
+     * Shows up the image if an appropriate image is selected.
+     */
     public void chooseImage() {
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
@@ -221,6 +260,11 @@ public class AdminPanelController implements Initializable {
         }
     }
 
+    /**
+     * Reads the image file and turns it into byte array.
+     * @param imagePath Path of the image to be read
+     * @return Data of the image to be read as byte array
+     */
     private byte[] generateImageByteArray(final String imagePath) {
         // TODO: add the path to the default image
         if (imagePath == null) return new byte[0];
@@ -240,6 +284,9 @@ public class AdminPanelController implements Initializable {
         }
     }
 
+    /**
+     * @return Currently selected activity in the table
+     */
     public Activity getSelected() {
         return table.getSelectionModel().getSelectedItem();
     }
