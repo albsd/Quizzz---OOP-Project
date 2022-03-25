@@ -313,15 +313,19 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void checkAnswer(final long option, final int time) {
         int score = game.getCurrentQuestion().calculateScore(option, time);
-        if (doubleScore) {
-            score *= 2;
-            doubleScore = false;
-        }
         me.addScore(score);
         server.addScore(game.getId(), me.getNick(), score);
     }
 
     private void displayAnswerMomentarily() {
+        int score = me.getScore();
+
+        if (doubleScore) {
+            me.addScore(score);
+            server.addScore(game.getId(), me.getNick(), score);
+            doubleScore = false;
+        }
+
         Platform.runLater(() -> {
             timer.setProgress(0.0);
             points.setText("Total points: " + me.getScore());
