@@ -127,6 +127,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
+    private int currentScore;
+
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
         this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
@@ -348,9 +350,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void checkAnswer(final long option, final int time) {
-        int score = game.getCurrentQuestion().calculateScore(option, time);
-        me.addScore(score);
-        server.addScore(game.getId(), me.getNick(), score);
+        currentScore = game.getCurrentQuestion().calculateScore(option, time);
     }
 
     /**
@@ -358,13 +358,15 @@ public class GameController implements Initializable, WebSocketSubscription {
      * (for five seconds)
      */
     private void displayAnswerMomentarily() {
-        int score = me.getScore();
-
         if (doubleScore) {
-            me.addScore(score);
-            server.addScore(game.getId(), me.getNick(), score);
+            currentScore *= 2;
             doubleScore = false;
         }
+
+        me.addScore(currentScore);
+        server.addScore(game.getId(), me.getNick(), currentScore);
+
+        currentScore = 0;
 
         Platform.runLater(() -> {
             timer.setProgress(0.0);
