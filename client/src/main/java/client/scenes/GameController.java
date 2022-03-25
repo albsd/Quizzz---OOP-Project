@@ -31,6 +31,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.converter.IntegerStringConverter;
@@ -55,6 +56,9 @@ public class GameController implements Initializable, WebSocketSubscription {
     private Label questionPrompt, questionNumber, points, timer1, timer2, warning, answerBox;
 
     @FXML
+    private Region bufferRegion;
+
+    @FXML
     private ProgressBar timer;
 
     @FXML
@@ -67,7 +71,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private AnchorPane menu;
 
     @FXML
-    private HBox mainHorizontalBox;
+    private HBox mainHorizontalBox, powerupBox;
 
     @FXML
     private ImageView questionImage;
@@ -96,6 +100,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     private final QuestionTimer clientTimer;
 
     private final Font font;
+
+    private final Font questionFont;
 
     private Player me;
 
@@ -129,13 +135,23 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.server = server;
         this.fxml = fxml;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
+        this.questionFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 17);
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        option1.setFont(font);
-        option2.setFont(font);
-        option3.setFont(font);
+        option1.setFont(questionFont);
+        option2.setFont(questionFont);
+        option3.setFont(questionFont);
+
+        option1.setWrapText(true);
+        option2.setWrapText(true);
+        option3.setWrapText(true);
+
+        option1.setPrefWidth(145);
+        option2.setPrefWidth(145);
+        option3.setPrefWidth(145);
+
         questionPrompt.setFont(font);
         questionNumber.setFont(font);
         points.setFont(font);
@@ -250,11 +266,18 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game = game;
 
         leftBox.getChildren().remove(1);
-        mainHorizontalBox.getChildren().remove(3, 5);
+        mainHorizontalBox.getChildren().remove(4, 5);
         optionBox.setAlignment(Pos.CENTER);
         optionBox.setPrefWidth(600);
+        //optionBox.setPrefHeight(600);
         optionBox.setPadding(Insets.EMPTY);
-        optionBox.setSpacing(55);
+        //optionBox.setSpacing(55);
+        powerupBox.getChildren().remove(1, 3);
+        VBox.setMargin(optionBox, new Insets(75, 0, 0, 0));
+
+        option1.setPrefHeight(145);
+        option2.setPrefHeight(145);
+        option3.setPrefHeight(145);
 
         displayCurrentQuestion();
         clientTimer.start(0);
@@ -417,7 +440,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
             questionPrompt.setText(currentQuestion.getPrompt());
-            Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()));
+            Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()), 340, 340, false, true);
             questionImage.setImage(img);
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
