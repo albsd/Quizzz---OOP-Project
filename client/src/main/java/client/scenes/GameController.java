@@ -53,7 +53,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             timeButton;
     
     @FXML
-    private Label questionPrompt, questionNumber, points, timer1, timer2, warning, answerBox;
+    private Label questionPrompt, questionNumber, points, timer1, timer2, warning, answerBox, questionPoint;
 
     @FXML
     private Region bufferRegion;
@@ -157,6 +157,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         questionPrompt.setFont(font);
         questionNumber.setFont(font);
         points.setFont(font);
+        questionPoint.setFont(font);
         timer1.setFont(font);
         timer2.setFont(font);
         answerBox.setFont(font);
@@ -366,11 +367,11 @@ public class GameController implements Initializable, WebSocketSubscription {
         me.addScore(currentScore);
         server.addScore(game.getId(), me.getNick(), currentScore);
 
-        currentScore = 0;
-
         Platform.runLater(() -> {
             timer.setProgress(0.0);
             points.setText("Total points: " + me.getScore());
+            questionPoint.setText("You got: " + currentScore + " points");
+            currentScore = 0;
         });
         warning.setVisible(false);
         long answer = game.getCurrentQuestion().getAnswer();
@@ -467,6 +468,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             questionPrompt.setText(currentQuestion.getPrompt());
             Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()), 340, 340, false, true);
             questionImage.setImage(img);
+            questionPoint.setText("");
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
                 option1.setDisable(false);

@@ -19,6 +19,11 @@
                      <Font name="System Bold" size="30.0" />
                   </font>
                </Label>
+               <Label fx:id="questionPoint" alignment="CENTER" contentDisplay="CENTER" layoutY="32.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0">
+                  <font>
+                     <Font name="System Bold" size="30.0" />
+                  </font>
+               </Label>
                <VBox layoutY="100.0">
                   <children>
                      <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" text="What is the expected energy consumption of an average personal gaming computer system per hour?" wrapText="true">
