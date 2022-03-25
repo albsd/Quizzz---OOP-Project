@@ -471,9 +471,9 @@ public class GameController implements Initializable, WebSocketSubscription {
                 option2.setDisable(false);
                 option3.setDisable(false);
 
-                option1.setStyle("-fx-background-color:" + orange + ";");
-                option2.setStyle("-fx-background-color:" + orange + ";");
-                option3.setStyle("-fx-background-color:" + orange + ";");
+                option1.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
+                option2.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
+                option3.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
 
                 option1.setStyle("-fx-opacity: 1");
                 option2.setStyle("-fx-opacity: 1");
