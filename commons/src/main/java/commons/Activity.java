@@ -62,26 +62,6 @@ public class Activity {
         this.path = path;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public long getEnergyConsumption() {
-        return energyConsumption;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
     /**
      * Forms a question that only has numbers as options from the current activity.
      * @param image image associated with activity
@@ -186,19 +166,6 @@ public class Activity {
         int result = Objects.hash(title, energyConsumption, source);
         result = 31 * result;
         return result;
-    }
-
-    public String[] generateChoices(final long energyConsumption) {
-        String[] choices = new String[3];
-        for (int i = 0; i < choices.length; i++) {
-            Random r = new Random();
-            choices[i] = Integer.toString((int) (energyConsumption + energyConsumption / 2 * r.nextGaussian()));
-        }
-        Random r  = new Random();
-        int correctAnswerIndex = r.nextInt(choices.length);
-
-        choices[correctAnswerIndex] = Long.toString(energyConsumption);
-        return choices;
     }
 
     public long getId() {

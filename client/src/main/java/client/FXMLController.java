@@ -12,7 +12,6 @@ import client.scenes.SplashController;
 import client.scenes.LeaderboardController;
 import client.scenes.HelpController;
 import client.scenes.AdminPanelController;
-import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
