@@ -68,7 +68,8 @@ public class AdminPanelController implements Initializable {
         this.server = server;
         this.fxml = fxml;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
-        this.extensionFilter = new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png");
+        this.extensionFilter = new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg",
+                "*.png", "*.gif");
     }
 
     @Override
@@ -201,10 +202,22 @@ public class AdminPanelController implements Initializable {
         fileChooser.setTitle("Choose an Image");
         fileChooser.getExtensionFilters().add(extensionFilter);
         File file = fileChooser.showOpenDialog(stage);
-        if (file != null) {
+        if (file != null && file.length() / 1024 <= 500) {
+
             image = new commons.Image(generateImageByteArray(file.getPath()),
                     file.getName().replaceAll("\\s", "_"));
-            imageShow.setImage(new Image(new ByteArrayInputStream(image.getData())));
+            Image img = new Image(new ByteArrayInputStream(image.getData()));
+            if (img.getHeight() > 200) {
+                infoText.setText("Image height must be smaller than 200px.");
+                image = null;
+            } else if (img.getWidth() > 200) {
+                infoText.setText("Image width must be smaller than 200px.");
+                image = null;
+            } else {
+                imageShow.setImage(img);
+            }
+        } else {
+            infoText.setText("File size must be smaller than 500KB.");
         }
     }
 
