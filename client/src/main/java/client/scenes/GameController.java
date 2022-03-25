@@ -53,7 +53,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             timeButton;
     
     @FXML
-    private Label questionPrompt, questionNumber, points, timer1, timer2, warning, answerBox, questionPoint;
+    private Label questionPrompt, questionNumber, points, timer1, timer2,
+            warning, answerBox, questionPoint, answeredCorrectlyText;
 
     @FXML
     private Region bufferRegion;
@@ -127,7 +128,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
-    private int currentScore;
+    private int currentScore, numberOfMultipleChoiceQuestions = 0, answeredCorrectly = 0;
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
@@ -162,6 +163,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         timer2.setFont(font);
         answerBox.setFont(font);
         warning.setFont(font);
+        answeredCorrectlyText.setFont(font);
         submittedAnswer = false;
         doubleScore = false;
         openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), null,
@@ -304,6 +306,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             Button[] options = {option1, option2, option3};
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
+            if (currentScore != 0) answeredCorrectly++;
         }
     }
 
@@ -370,6 +373,10 @@ public class GameController implements Initializable, WebSocketSubscription {
         Platform.runLater(() -> {
             timer.setProgress(0.0);
             points.setText("Total points: " + me.getScore());
+            if (numberOfMultipleChoiceQuestions != 0) {
+                answeredCorrectlyText.setText(String.format("Questions Answered Correctly: %d/%d",
+                        answeredCorrectly, numberOfMultipleChoiceQuestions));
+            }
             questionPoint.setText("You got: " + currentScore + " points");
             currentScore = 0;
         });
@@ -482,6 +489,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                 option1.setText(options[0]);
                 option2.setText(options[1]);
                 option3.setText(options[2]);
+                numberOfMultipleChoiceQuestions++;
             }
         });
     }
