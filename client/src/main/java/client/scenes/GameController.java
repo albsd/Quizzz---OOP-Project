@@ -259,7 +259,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         if (validateAnswerSubmission()) {
             submittedAnswer = true;
             Button chosenOption = (Button) e.getSource();
-            chosenOption.setStyle("-fx-border-color:black; -fx-border-width: 3; -fx-border-style: solid;");
+
+            chosenOption.setStyle("-fx-background-color:" + orange + ";"
+                    + "-fx-border-color:black; -fx-border-width: 3; -fx-border-style: solid;");
             Button[] options = {option1, option2, option3};
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
@@ -415,12 +417,15 @@ public class GameController implements Initializable, WebSocketSubscription {
                 option1.setDisable(false);
                 option2.setDisable(false);
                 option3.setDisable(false);
-                option1.setOpacity(1);
-                option2.setOpacity(1);
-                option3.setOpacity(1);
+
                 option1.setStyle("-fx-background-color:" + orange + ";");
                 option2.setStyle("-fx-background-color:" + orange + ";");
                 option3.setStyle("-fx-background-color:" + orange + ";");
+
+                option1.setStyle("-fx-opacity: 1");
+                option2.setStyle("-fx-opacity: 1");
+                option3.setStyle("-fx-opacity: 1");
+
                 option1.setText(options[0]);
                 option2.setText(options[1]);
                 option3.setText(options[2]);
