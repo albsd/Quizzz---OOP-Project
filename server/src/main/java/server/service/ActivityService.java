@@ -105,8 +105,10 @@ public class ActivityService {
     public Image saveImage(final Image image) throws IOException {
         byte[] data = image.getData();
         String name = image.getName();
-        File file = new File(resourcesPath + "/images/" + name);
+        File dir = new File(resourcesPath + "/images");
+        if (!dir.exists()) dir.mkdirs();
         try {
+            File file = new File(resourcesPath + "/images/" + name);
             OutputStream os = new FileOutputStream(file);
             os.write(data);
             os.close();
