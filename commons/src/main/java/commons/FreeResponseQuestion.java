@@ -28,13 +28,10 @@ public class FreeResponseQuestion extends Question {
         int bonusScore = calculateBonusPoints(time);
         int accuracyPercentage = 100
                 - (int) Math.round(((double) Math.abs((option - getAnswer())) / getAnswer()) * 100);
-        final int maxScore = 75;
-
         if (accuracyPercentage < 50) {
             accuracyPercentage = 0;
             bonusScore = 0;
         }
-
-        return (maxScore * accuracyPercentage) / 100 + bonusScore / (1 + ((100 - accuracyPercentage) / 100));
+        return (75 * accuracyPercentage) / 100 + bonusScore;
     }
 }
