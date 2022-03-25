@@ -111,7 +111,7 @@ public class AdminPanelController implements Initializable {
      */
     @FXML
     public void loadTable() {
-        List<Activity> listActivities = server.getAllActivity();
+        List<Activity> listActivities = server.getAllActivities();
         activities = FXCollections.observableList(listActivities);
         table.setItems(activities);
         table.refresh();

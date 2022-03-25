@@ -292,7 +292,7 @@ public class ServerUtils {
         return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
 
-    public List<Activity> getAllActivity() {
+    public List<Activity> getAllActivities() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(kActivityUrl))
                 .header("accept", "application/json")
