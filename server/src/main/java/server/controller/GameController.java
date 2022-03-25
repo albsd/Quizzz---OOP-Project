@@ -17,28 +17,24 @@ package server.controller;
 
 import commons.Game;
 import commons.Leaderboard;
-import commons.Player;
 import commons.Question;
-import commons.PlayerUpdate;
+import commons.Player;
 import commons.LobbyMessage;
-import commons.GameResult;
 import commons.GameUpdate;
 import commons.EmoteMessage;
+import commons.GameResult;
+import commons.PlayerUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import server.service.ActivityService;
 import server.service.GameService;
@@ -47,6 +43,10 @@ import server.service.LeaderboardService;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Controller class for handling lobby, players, game, score, 
+ * leaderboard, and chat related requests and WS messages.
+ */
 @RestController
 @RequestMapping("/game")
 public class GameController {
@@ -122,6 +122,12 @@ public class GameController {
         return ResponseEntity.ok(gameService.getLeaderboard(id));
     }
 
+    /**
+     * Fetches list of questions from server.controller.
+     * 
+     * @param id id of game
+     * @return List of questions
+     */
     @GetMapping("/{id}/question")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
         Game game = gameService.findById(id); 
@@ -187,7 +193,7 @@ public class GameController {
     }
 
     /**
-     * Leave the active game lobby as a Player with id "nick".
+     * Leave the active game as a Player with id "nick".
      *
      * @param nick User's nickname which identifies a given player in a game
      * @param id   UUID of the game that the player has left
@@ -212,29 +218,11 @@ public class GameController {
         return ResponseEntity.ok(p);
     }
 
-    // TODO: send generated session id to client so that it can send it back when
-    // joining lobby after nickname
-    @EventListener
-    @SendTo
-    private void handleSessionConnected(final SessionConnectEvent event) {
-        System.out.println("Client connection");
-        System.out.println(event);
-        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        System.out.println(headers.getSessionId());
-    }
-
-    @EventListener
-    private void handleSessionDisconnect(final SessionDisconnectEvent event) {
-        System.out.println("Client disconnected");
-        System.out.println(event.getSessionId());
-    }
-
     /**
      * A Websocket endpoint for sending updates about the game's player' status.
      * Namely, updates the active players in the game for all clients.
      *
      * @param update The object containing a player who has joined/left
-     * 
      * @return The PlayerUpdate object
      */
     @MessageMapping("/update/player") // /app/update/player
@@ -247,7 +235,6 @@ public class GameController {
      * A Websocket endpoint for sending chat messages in the lobby.
      *
      * @param message The message to be sent to all the players in the lobby
-     * 
      * @return The LobbyMessage object
      */
     @MessageMapping("/lobby/chat") // /app/lobby/chat
@@ -256,6 +243,13 @@ public class GameController {
         return message;
     }
 
+    /**
+     * Updates a client's score and nickname on server database.
+     * 
+     * @param nick name of player
+     * @param score score from latest singleplayer game
+     * @return leaderboard object
+     */
     @PostMapping("/leaderboard/{nick}/{score}")
     public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
                                                                      final @PathVariable("score") int score) {
@@ -268,6 +262,11 @@ public class GameController {
         return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
     }
 
+    /**
+     * Gets the leaderboard for singleplayer client.
+     * 
+     * @return leaderboard object
+     */
     @GetMapping("/leaderboard")
     public Leaderboard getSinglePlayerLeaderboard() {
         return leaderboardService.getAllPlayerInfo();
@@ -275,6 +274,7 @@ public class GameController {
 
     /**
      * WS endpoint to start the game for multiplayers.
+     * 
      * @return GameUpdate to start the game
      */
     @MessageMapping("/lobby/start") // /app/lobby/start
@@ -284,7 +284,14 @@ public class GameController {
         return GameUpdate.start;
     }
 
-
+    /**
+     * Updates the multiplayers' scores on game repo for specific games.
+     * 
+     * @param id id of game
+     * @param nick name of player
+     * @param score score received for the latest question
+     * @return Game object of the player
+     */
     @PostMapping("/{id}/score/{nick}")
     public ResponseEntity<Game> addPlayerPoints(final @PathVariable UUID id,
             final @PathVariable String nick, final @RequestBody String score) {
@@ -324,12 +331,23 @@ public class GameController {
      * Namely, updates the active players in the game for all clients.
      *
      * @param player The player who has left
-     * 
      * @return The player object
      */
     @MessageMapping("/game/{id}/leave") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/leave
     @SendTo("/topic/game/{id}/leave")
     private Player sendPlayerLeft(final Player player) {
         return player;
+    }
+
+    /**
+     * Marks the game as finished which will be deleted later in the
+     * scheduled task of server.
+     * 
+     * @param id the id of game
+     * @return Game object that was marked finished
+     */
+    @PostMapping("/{id}")
+    public Game markGameDone(final @PathVariable("id") UUID id) {
+        return gameService.markGameDone(id);
     }
 }

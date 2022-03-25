@@ -34,7 +34,7 @@ import java.util.zip.ZipInputStream;
 @Service
 public class ActivityService {
 
-    private ActivityRepository activityRepository;
+    private final ActivityRepository activityRepository;
 
     private final String activitiesPath = "./src/main/resources/activities";
 
