@@ -57,13 +57,13 @@ public class SplashController {
     }
 
     private boolean validateNickname(final String user) {
-        final int maxChrLimit = 8;
+        final int maxChrLimit = 12;
         final int minChrLimit = 3;
         int len = user.length();
 
         if (len < minChrLimit || len > maxChrLimit) {
             warning.setTextFill(red);
-            warning.setText("Nickname should be between 3 and 8 characters");
+            warning.setText("Nickname should be between 3 and 12 characters");
             return false;
         }
 

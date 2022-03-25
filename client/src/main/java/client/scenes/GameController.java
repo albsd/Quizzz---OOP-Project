@@ -127,6 +127,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
+    private int currentScore;
+
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
         this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
@@ -292,16 +294,37 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void checkMulChoiceOption(final ActionEvent e) {
-        if (!submittedAnswer) {
+        if (validateAnswerSubmission()) {
             submittedAnswer = true;
             Button chosenOption = (Button) e.getSource();
-            chosenOption.setStyle("-fx-background-color:" + green);
+
+            chosenOption.setStyle("-fx-background-color:" + orange + ";"
+                    + "-fx-border-color:black; -fx-border-width: 3; -fx-border-style: solid;");
             Button[] options = {option1, option2, option3};
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
-        } else {
-            warning.setVisible(true);
         }
+    }
+
+    /**
+     * Updates the text in the warning label based on the state of the client's timer
+     * and based on whether they already submitted an answer.
+     *
+     * @return true if the answer submission is valid, false otherwise
+     */
+    @FXML
+    public boolean validateAnswerSubmission() {
+        if (submittedAnswer) {
+            warning.setText("Already submitted answer!");
+            warning.setVisible(true);
+            return false;
+        }
+        if (clientTimer.isOver()) {
+            warning.setText("Too late! Time's over!");
+            warning.setVisible(true);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -312,12 +335,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void onEnter(final ActionEvent event) {
         String optionStr = openAnswer.getText();
-        if (!submittedAnswer) {
+        if (validateAnswerSubmission()) {
             submittedAnswer = true;
             long option = Long.parseLong(optionStr);
             checkAnswer(option, clientTimer.getCurrentTime());
-        } else {
-            warning.setVisible(true);
         }
     }
 
@@ -329,13 +350,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void checkAnswer(final long option, final int time) {
-        int score = game.getCurrentQuestion().calculateScore(option, time);
-        if (doubleScore) {
-            score *= 2;
-            doubleScore = false;
-        }
-        me.addScore(score);
-        server.addScore(game.getId(), me.getNick(), score);
+        currentScore = game.getCurrentQuestion().calculateScore(option, time);
     }
 
     /**
@@ -343,6 +358,16 @@ public class GameController implements Initializable, WebSocketSubscription {
      * (for five seconds)
      */
     private void displayAnswerMomentarily() {
+        if (doubleScore) {
+            currentScore *= 2;
+            doubleScore = false;
+        }
+
+        me.addScore(currentScore);
+        server.addScore(game.getId(), me.getNick(), currentScore);
+
+        currentScore = 0;
+
         Platform.runLater(() -> {
             timer.setProgress(0.0);
             points.setText("Total points: " + me.getScore());
@@ -447,12 +472,11 @@ public class GameController implements Initializable, WebSocketSubscription {
                 option1.setDisable(false);
                 option2.setDisable(false);
                 option3.setDisable(false);
-                option1.setOpacity(1);
-                option2.setOpacity(1);
-                option3.setOpacity(1);
-                option1.setStyle("-fx-background-color:" + orange + ";");
-                option2.setStyle("-fx-background-color:" + orange + ";");
-                option3.setStyle("-fx-background-color:" + orange + ";");
+
+                option1.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
+                option2.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
+                option3.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
+
                 option1.setText(options[0]);
                 option2.setText(options[1]);
                 option3.setText(options[2]);
@@ -499,8 +523,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void removePowerup(final ActionEvent e) {
-        if (!isOpenQuestion) {
-            System.out.println("Remove incorrect answer power-up used!");
+        if (!isOpenQuestion && validateAnswerSubmission()) {
             ((Button) e.getSource()).setDisable(true);
             Button[] options = {option1, option2, option3};
 

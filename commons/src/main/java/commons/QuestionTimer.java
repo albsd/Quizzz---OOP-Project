@@ -71,11 +71,6 @@ public class QuestionTimer {
             @Override
             public void run() {
                 currentTime -= decrement;
-                try {
-                    timeDisplayer.accept(currentTime);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 if (currentTime <= 0) {
                     over = true;
                     currentTime = 0;
@@ -86,6 +81,12 @@ public class QuestionTimer {
                     }
                     cancel();
                 }
+                try {
+                    timeDisplayer.accept(currentTime);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         };
     }
