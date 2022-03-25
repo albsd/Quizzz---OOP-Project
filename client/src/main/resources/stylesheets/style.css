@@ -51,6 +51,11 @@
     -fx-prompt-text-fill: #c6d9ba;
 }
 
+.scrollPane {
+    -fx-background: white;
+    -fx-border-width: 1px;
+}
+
 .returnPopup {
     -fx-background-color: white;
     -fx-border-color: black;
