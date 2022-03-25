@@ -78,16 +78,7 @@ public class Activity {
     }
 
     public String[] getMultipleActivitiesOptions(final List<Activity> answerOptions) {
-        String[] options = answerOptions.stream().map(Activity::getTitle).toArray(String[]::new);
-        long max = 0;
-        for (int i = 0; i < answerOptions.size(); i++) {
-            long energy = answerOptions.get(i).getEnergyConsumption();
-            if (energy > max) {
-                max = energy;
-            }
-        }
-        return options;
-
+        return answerOptions.stream().map(Activity::getTitle).toArray(String[]::new);
     }
 
     public FreeResponseQuestion getFreeResponseQuestion(final byte[] image) {
@@ -120,6 +111,9 @@ public class Activity {
             do {
                 tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
                         * r.nextGaussian()));
+                if(energyConsumption == 0) {
+                    tempChoice = Math.abs((long) (5 * r.nextGaussian()));
+                }
                 if (tempChoice >= 10) {
                     tempChoice = (long) Math.round(tempChoice / 10) * 10;
                 }
