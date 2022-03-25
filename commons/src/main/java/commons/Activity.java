@@ -42,6 +42,7 @@ public class Activity {
         this.title = "Default title";
         this.energyConsumption = 100;
         this.source = "google.com";
+        this.path = "./src/main/resources/default.jpg";
     }
 
     /**

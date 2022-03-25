@@ -1,6 +1,7 @@
 package server.controller;
 
 import commons.Activity;
+import commons.Image;
 import org.apache.tomcat.util.json.ParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,9 +50,8 @@ class ActivityControllerTest {
         assertEquals(activity, ctrl.addActivity(activity).getBody());
     }
 
-    //TODO: WRITE THE PROPER TEST - RIGHT KNOW IT IS PROBLEMATIC BECAUSE IT ASSUMES ACTIVITY DOES NOT HAVE AN IMAGE
-//    @Test
-//    void deleteActivity() {
-//        assertEquals(activity, ctrl.deleteActivity(10L).getBody());
-//    }
+    @Test
+    void deleteActivity() {
+        assertEquals(activity, ctrl.deleteActivity(10L).getBody());
+    }
 }
