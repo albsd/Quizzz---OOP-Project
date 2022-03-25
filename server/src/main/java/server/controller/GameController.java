@@ -43,6 +43,10 @@ import server.service.LeaderboardService;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Controller class for handling lobby, players, game, score, 
+ * leaderboard, and chat related requests and WS messages.
+ */
 @RestController
 @RequestMapping("/game")
 public class GameController {
@@ -118,6 +122,12 @@ public class GameController {
         return ResponseEntity.ok(gameService.getLeaderboard(id));
     }
 
+    /**
+     * Fetches list of questions from server.controller.
+     * 
+     * @param id id of game
+     * @return List of questions
+     */
     @GetMapping("/{id}/question")
     public ResponseEntity<List<Question>> getQuestions(@PathVariable final UUID id) {
         Game game = gameService.findById(id); 
@@ -213,7 +223,6 @@ public class GameController {
      * Namely, updates the active players in the game for all clients.
      *
      * @param update The object containing a player who has joined/left
-     * 
      * @return The PlayerUpdate object
      */
     @MessageMapping("/update/player") // /app/update/player
@@ -226,7 +235,6 @@ public class GameController {
      * A Websocket endpoint for sending chat messages in the lobby.
      *
      * @param message The message to be sent to all the players in the lobby
-     * 
      * @return The LobbyMessage object
      */
     @MessageMapping("/lobby/chat") // /app/lobby/chat
@@ -235,6 +243,13 @@ public class GameController {
         return message;
     }
 
+    /**
+     * Updates a client's score and nickname on server database.
+     * 
+     * @param nick name of player
+     * @param score score from latest singleplayer game
+     * @return leaderboard object
+     */
     @PostMapping("/leaderboard/{nick}/{score}")
     public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
                                                                      final @PathVariable("score") int score) {
@@ -247,6 +262,11 @@ public class GameController {
         return ResponseEntity.ok(leaderboardService.getAllPlayerInfo());
     }
 
+    /**
+     * Gets the leaderboard for singleplayer client.
+     * 
+     * @return leaderboard object
+     */
     @GetMapping("/leaderboard")
     public Leaderboard getSinglePlayerLeaderboard() {
         return leaderboardService.getAllPlayerInfo();
@@ -254,6 +274,7 @@ public class GameController {
 
     /**
      * WS endpoint to start the game for multiplayers.
+     * 
      * @return GameUpdate to start the game
      */
     @MessageMapping("/lobby/start") // /app/lobby/start
@@ -263,7 +284,14 @@ public class GameController {
         return GameUpdate.start;
     }
 
-
+    /**
+     * Updates the multiplayers' scores on game repo for specific games.
+     * 
+     * @param id id of game
+     * @param nick name of player
+     * @param score score received for the latest question
+     * @return Game object of the player
+     */
     @PostMapping("/{id}/score/{nick}")
     public ResponseEntity<Game> addPlayerPoints(final @PathVariable UUID id,
             final @PathVariable String nick, final @RequestBody String score) {
@@ -303,7 +331,6 @@ public class GameController {
      * Namely, updates the active players in the game for all clients.
      *
      * @param player The player who has left
-     * 
      * @return The player object
      */
     @MessageMapping("/game/{id}/leave") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/leave
@@ -315,6 +342,7 @@ public class GameController {
     /**
      * Marks the game as finished which will be deleted later in the
      * scheduled task of server.
+     * 
      * @param id the id of game
      * @return Game object that was marked finished
      */
