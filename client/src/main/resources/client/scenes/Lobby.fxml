@@ -53,12 +53,12 @@
                         <content>
                            <TextFlow focusTraversable="true" prefHeight="520.0" prefWidth="456.0">
                               <children>
-                                 <Label fx:id="playersLeft" alignment="TOP_CENTER" prefHeight="520.0" prefWidth="228.0" text="" textAlignment="CENTER">
+                                 <Label fx:id="playersLeft" alignment="TOP_CENTER" prefHeight="520.0" prefWidth="227.0" text="" textAlignment="CENTER">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
                                  </Label>
-                                 <Label fx:id="playersRight" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="520.0" prefWidth="228.0" text="" textAlignment="CENTER">
+                                 <Label fx:id="playersRight" alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="520.0" prefWidth="227.0" text="" textAlignment="CENTER">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
