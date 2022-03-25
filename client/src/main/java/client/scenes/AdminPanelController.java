@@ -101,35 +101,35 @@ public class AdminPanelController implements Initializable {
         table.refresh();
     }
 
-    //TODO: CHECK FIELDS ARE NOT EMPTY AND THEY HAVE THE CORRECT FORMAT
     @FXML
     public void submit() {
         if (isEditing) {
             if (activityEdit == null) {
                 infoText.setText("You have to select an activity to edit.");
             } else {
-                if (!image.getName().equals("")) {
-                    server.sendImage(image);
-                }
                 activityEdit.setTitle(titleInput.getText());
                 activityEdit.setEnergyConsumption(Long.parseLong(powerInput.getText()));
                 activityEdit.setSource(sourceInput.getText());
                 activityEdit.setPath(image.getName());
                 server.addActivity(activityEdit);
-
+                server.sendImage(image);
                 infoText.setText(String.format("Activity with the id %d is edited.", activityEdit.getId()));
             }
         } else {
-            Activity newActivity = new Activity(titleInput.getText(), Long.parseLong(powerInput.getText()),
-                    sourceInput.getText(), image.getName());
-            Activity added = server.addActivity(newActivity);
-            server.sendImage(image);
-            infoText.setText(String.format("New activity is added with the id %d.", added.getId()));
-            titleInput.setText("");
-            powerInput.setText("");
-            sourceInput.setText("");
-            imageShow.setImage(null);
-            image = null;
+            if (image == null) {
+                infoText.setText("You need to select an image before adding an activity.");
+            } else {
+                Activity newActivity = new Activity(titleInput.getText(), Long.parseLong(powerInput.getText()),
+                        sourceInput.getText(), image.getName());
+                Activity added = server.addActivity(newActivity);
+                server.sendImage(image);
+                infoText.setText(String.format("New activity is added with the id %d.", added.getId()));
+                titleInput.setText("");
+                powerInput.setText("");
+                sourceInput.setText("");
+                imageShow.setImage(null);
+                image = null;
+            }
         }
         loadTable();
     }
