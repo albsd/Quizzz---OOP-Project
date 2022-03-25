@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -209,6 +209,7 @@
                      <Font size="24.0" />
                   </font>
                </Label>
+               <Button fx:id="soundButton" layoutX="1145.0" layoutY="11.0" mnemonicParsing="false" onAction="#updateSoundButton" prefHeight="65.0" prefWidth="65.0" style="-fx-background-color: transparent;" styleClass="iconButton" />
             </children>
          </AnchorPane>
          <!-- Include the popup at top of everything -->
