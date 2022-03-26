@@ -409,7 +409,6 @@ public class ServerUtils {
         try {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
-            System.out.println("status code: " + response.statusCode());
             if (response.statusCode() != 200) {
 
                 return null;

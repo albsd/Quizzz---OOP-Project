@@ -175,15 +175,16 @@ public class AdminPanelController implements Initializable {
         if (titleInput.getText().equals("")) {
             infoText.setText("Title cannot be empty.");
             return false;
-        } else if (powerInput.getText().equals("")) {
+        }
+        if (powerInput.getText().equals("")) {
             infoText.setText("Power consumption cannot be empty.");
             return false;
-        } else if (sourceInput.getText().equals("")) {
+        }
+        if (sourceInput.getText().equals("")) {
             infoText.setText("Source cannot be empty.");
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**
