@@ -17,6 +17,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -94,6 +96,13 @@ public class AdminPanelController implements Initializable {
         powerInput.setText("");
         isEditing = false;
         loadTable(false);
+
+        //Activity selection with double-clicking
+        table.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                select();
+            }
+        });
     }
 
     /**
