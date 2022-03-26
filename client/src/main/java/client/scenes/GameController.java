@@ -33,6 +33,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.converter.IntegerStringConverter;
@@ -47,7 +48,6 @@ import java.util.ResourceBundle;
 import java.util.Collections;
 import java.util.TimerTask;
 
-
 public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
@@ -55,6 +55,9 @@ public class GameController implements Initializable, WebSocketSubscription {
     
     @FXML
     private Label questionPrompt, questionNumber, points, timer1, timer2, warning, answerBox;
+
+    @FXML
+    private Region bufferRegion;
 
     @FXML
     private ProgressBar timer;
@@ -69,7 +72,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private AnchorPane menu;
 
     @FXML
-    private HBox mainHorizontalBox;
+    private HBox mainHorizontalBox, powerupBox;
 
     @FXML
     private ImageView questionImage;
@@ -99,6 +102,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final Font font;
 
+    private final Font questionFont;
+
     private Player me;
 
     private Game game;
@@ -123,6 +128,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
+    private int currentScore;
+
     private boolean muted = false;
 
     @Inject
@@ -133,13 +140,23 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.server = server;
         this.fxml = fxml;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
+        this.questionFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 17);
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        option1.setFont(font);
-        option2.setFont(font);
-        option3.setFont(font);
+        option1.setFont(questionFont);
+        option2.setFont(questionFont);
+        option3.setFont(questionFont);
+
+        option1.setWrapText(true);
+        option2.setWrapText(true);
+        option3.setWrapText(true);
+
+        option1.setPrefWidth(145);
+        option2.setPrefWidth(145);
+        option3.setPrefWidth(145);
+
         questionPrompt.setFont(font);
         questionNumber.setFont(font);
         points.setFont(font);
@@ -163,6 +180,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         soundButton.setGraphic(image);
     }
 
+    /**
+     * Registers the player to the server's messages
+     * for chat messages from other players
+     * and disconnection updates in the chat
+     * and time halving updates.
+     * @return the subscriptions of the client
+     */
     @Override
     public Subscription[] registerForMessages() {
         Subscription[] subscriptions = new Subscription[3];
@@ -193,7 +217,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                     case halveTimer -> {
                         Sound boonSound = new Sound(SoundName.boon);
                         boonSound.play(muted);
-                        
+
                         clientTimer.halve();
                     }
                     case startTimer -> clientTimer.start(0);
@@ -206,7 +230,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-    * Updates the emotebox with the given event.
+    * Updates the emote box with the given event.
      * 
      * @param nick Player who sends an event
      * @param imagePath Image to be displayed as result of the event
@@ -227,8 +251,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-     * Assign the currentGame and myself as a Player.
-     * Initialize the game's timer and start the game loop.
+     * Assigns the currentGame and myself as a Player.
+     * Initializes the game's timer and start the game loop.
      * 
      * @param me    Player of myself
      * @param game  Current game that I'm a part of
@@ -256,29 +280,63 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.game = game;
 
         leftBox.getChildren().remove(1);
-        mainHorizontalBox.getChildren().remove(3, 5);
+        mainHorizontalBox.getChildren().remove(4, 5);
         optionBox.setAlignment(Pos.CENTER);
         optionBox.setPrefWidth(600);
+        //optionBox.setPrefHeight(600);
         optionBox.setPadding(Insets.EMPTY);
-        optionBox.setSpacing(55);
+        //optionBox.setSpacing(55);
+        powerupBox.getChildren().remove(1, 3);
+        VBox.setMargin(optionBox, new Insets(75, 0, 0, 0));
+
+        option1.setPrefHeight(145);
+        option2.setPrefHeight(145);
+        option3.setPrefHeight(145);
 
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
     }
 
+    /**
+     * Checks the answer for a multiple-choice type of question
+     * and updates the style of the chosen button.
+     *
+     * @param e triggered by a button click
+     */
     @FXML
     public void checkMulChoiceOption(final ActionEvent e) {
-        if (!submittedAnswer) {
+        if (validateAnswerSubmission()) {
             submittedAnswer = true;
             Button chosenOption = (Button) e.getSource();
-            chosenOption.setStyle("-fx-background-color:" + green);
+
+            chosenOption.setStyle("-fx-background-color:" + orange + ";"
+                    + "-fx-border-color:black; -fx-border-width: 3; -fx-border-style: solid;");
             Button[] options = {option1, option2, option3};
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
-        } else {
-            warning.setVisible(true);
         }
+    }
+
+    /**
+     * Updates the text in the warning label based on the state of the client's timer
+     * and based on whether they already submitted an answer.
+     *
+     * @return true if the answer submission is valid, false otherwise
+     */
+    @FXML
+    public boolean validateAnswerSubmission() {
+        if (submittedAnswer) {
+            warning.setText("Already submitted answer!");
+            warning.setVisible(true);
+            return false;
+        }
+        if (clientTimer.isOver()) {
+            warning.setText("Too late! Time's over!");
+            warning.setVisible(true);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -289,12 +347,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void onEnter(final ActionEvent event) {
         String optionStr = openAnswer.getText();
-        if (!submittedAnswer) {
+        if (validateAnswerSubmission()) {
             submittedAnswer = true;
             long option = Long.parseLong(optionStr);
             checkAnswer(option, clientTimer.getCurrentTime());
-        } else {
-            warning.setVisible(true);
         }
     }
 
@@ -309,18 +365,26 @@ public class GameController implements Initializable, WebSocketSubscription {
         Sound optionSound = new Sound(SoundName.option);
         optionSound.play(muted);
 
-        int score = game.getCurrentQuestion().calculateScore(option, time);
-        if (doubleScore) {
-            score *= 2;
-            doubleScore = false;
-        }
-        me.addScore(score);
-        server.addScore(game.getId(), me.getNick(), score);
+        currentScore = game.getCurrentQuestion().calculateScore(option, time);
     }
 
+    /**
+     * Displays the answer to a question in-between rounds.
+     * (for five seconds)
+     */
     private void displayAnswerMomentarily() {
         Sound suspenseSound = new Sound(SoundName.suspense);
         suspenseSound.play(muted);
+
+        if (doubleScore) {
+            currentScore *= 2;
+            doubleScore = false;
+        }
+
+        me.addScore(currentScore);
+        server.addScore(game.getId(), me.getNick(), currentScore);
+
+        currentScore = 0;
 
         Platform.runLater(() -> {
             timer.setProgress(0.0);
@@ -348,7 +412,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-     * Set the next question, in case we are passed the 10th question
+     * Sets the next question, in case we are past the 10th question
      * sends the player score and displays the leaderboard above the current screen.
      */
     @FXML
@@ -383,6 +447,12 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
     }
 
+
+    /**
+     * Displays leaderboard for five seconds.
+     *
+     * @param leaderboard leaderboard to be displayed
+     */
     private void displayLeaderboardMomentarily(final Leaderboard leaderboard) {
         Platform.runLater(() -> leaderboardController.displayLeaderboard(leaderboard, me));
         menu.setVisible(false);
@@ -398,6 +468,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
     }
 
+    /**
+     * Displays the current question and updates visual elements accordingly.
+     */
     private void displayCurrentQuestion() {
         Platform.runLater(() -> {
             Sound notificationSound = new Sound(SoundName.notification);
@@ -413,19 +486,18 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
             questionPrompt.setText(currentQuestion.getPrompt());
-            Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()));
+            Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()), 340, 340, false, true);
             questionImage.setImage(img);
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
                 option1.setDisable(false);
                 option2.setDisable(false);
                 option3.setDisable(false);
-                option1.setOpacity(1);
-                option2.setOpacity(1);
-                option3.setOpacity(1);
-                option1.setStyle("-fx-background-color:" + orange + ";");
-                option2.setStyle("-fx-background-color:" + orange + ";");
-                option3.setStyle("-fx-background-color:" + orange + ";");
+
+                option1.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
+                option2.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
+                option3.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
+
                 option1.setText(options[0]);
                 option2.setText(options[1]);
                 option3.setText(options[2]);
@@ -436,16 +508,16 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void openPopup(final ActionEvent e) {
         popupController.open("game", () -> {
-            server.cancelHeartbeat();
-            server.leaveGame(me.getNick(), game.getId());
+            if (game.isMultiplayer()) {
+                server.cancelHeartbeat();
+                server.leaveGame(me.getNick(), game.getId());
+            }
         });
     }
 
     /**
-     * Send a message to the server to cut everyone's remaining time in half
-     * then double the sender's time so that it remains unaffected
-     * then disable the button so that it cannot be used again.
-     * @param e On button click for the halving time power-up
+     * Cuts every player's remaining time in half except that of who clicked the button.
+     * @param e triggered by a button click
      */
     @FXML
     public void timePowerup(final ActionEvent e) {
@@ -457,9 +529,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-     * Double the player's score at the end of the round
-     * then disable the button so that it cannot be used again.
-     * @param e On button click for the double score power-up
+     * For a round, doubles the points of the player.
+     * @param e triggered by a button click
      */
     @FXML
     public void scorePowerup(final ActionEvent e) {
@@ -471,17 +542,15 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-     * Remove one of the incorrect answers for the player
-     * then disable the button so that it cannot be used again.
-     * @param e On button click for the remove incorrect answer power-up
+     * For a round, removes an incorrect answer for the player.
+     * @param e triggered by a button click
      */
     @FXML
     public void removePowerup(final ActionEvent e) {
-        if (!isOpenQuestion) {
+        if (!isOpenQuestion && validateAnswerSubmission()) {
             Sound popSound = new Sound(SoundName.pop);
             popSound.play(muted);
 
-            System.out.println("Remove incorrect answer power-up used!");
             ((Button) e.getSource()).setDisable(true);
             Button[] options = {option1, option2, option3};
 
@@ -531,6 +600,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
     }
 
+    /**
+     * Updates the interface to reflect a multiple-choice question.
+     */
     @FXML
     private void changeToMultiMode() {
         answerBox.toFront();
@@ -541,6 +613,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         option3.setVisible(true);
     }
 
+    /**
+     * Updates the interface to reflect an open-choice question.
+     */
     @FXML
     private void changeToFreeMode() {
         answerBox.toBack();

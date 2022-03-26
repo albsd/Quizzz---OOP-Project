@@ -33,12 +33,12 @@
     -fx-background-color: #7BD942;
 }
 
-.optionButton {
-    -fx-background-color: #FFD029;
-}
-
 .optionButton:hover{
     -fx-background-color: #E7BE2D;
+}
+
+.optionButton {
+    -fx-background-color: #FFD029;
 }
 
 .scene {
