@@ -191,9 +191,10 @@ public class GameController implements Initializable, WebSocketSubscription {
             Platform.runLater(() -> {
                 switch (update) {
                     case halveTimer -> {
-                        clientTimer.halve();
                         Sound boonSound = new Sound(SoundName.boon);
                         boonSound.play(muted);
+                        
+                        clientTimer.halve();
                     }
                     case startTimer -> clientTimer.start(0);
                     default -> { }
@@ -305,6 +306,9 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void checkAnswer(final long option, final int time) {
+        Sound optionSound = new Sound(SoundName.option);
+        optionSound.play(muted);
+
         int score = game.getCurrentQuestion().calculateScore(option, time);
         if (doubleScore) {
             score *= 2;
@@ -312,9 +316,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
         me.addScore(score);
         server.addScore(game.getId(), me.getNick(), score);
-
-        Sound optionSound = new Sound(SoundName.option);
-        optionSound.play(muted);
     }
 
     private void displayAnswerMomentarily() {
@@ -462,11 +463,11 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void scorePowerup(final ActionEvent e) {
-        doubleScore = true;
-        ((Button) e.getSource()).setDisable(true);
-
         Sound popSound = new Sound(SoundName.pop);
         popSound.play(muted);
+
+        doubleScore = true;
+        ((Button) e.getSource()).setDisable(true);
     }
 
     /**
@@ -477,6 +478,9 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void removePowerup(final ActionEvent e) {
         if (!isOpenQuestion) {
+            Sound popSound = new Sound(SoundName.pop);
+            popSound.play(muted);
+
             System.out.println("Remove incorrect answer power-up used!");
             ((Button) e.getSource()).setDisable(true);
             Button[] options = {option1, option2, option3};
@@ -489,9 +493,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             int finalIndex = removeIndices.get(0);
             options[finalIndex].setDisable(true);
             options[finalIndex].setOpacity(0.25);
-
-            Sound popSound = new Sound(SoundName.pop);
-            popSound.play(muted);
         } else {
             warning.setText("Power-up not available!");
             warning.setVisible(true);
@@ -524,10 +525,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     private void sendEmote(final Emote emote) {
-        server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
-
         Sound clickSound = new Sound(SoundName.click);
         clickSound.play(muted);
+
+        server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
     }
 
     @FXML
