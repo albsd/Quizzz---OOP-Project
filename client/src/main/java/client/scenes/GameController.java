@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Collections;
 import java.util.TimerTask;
+import java.util.Date;
 
 public class GameController implements Initializable, WebSocketSubscription {
 
@@ -270,6 +271,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         server.startHeartbeat(new TimerTask() {
             @Override
             public void run() {
+                me.updateTimestamp(new Date());
                 server.updateGamePlayer(game.getId(), me.getNick());
             }
         });
@@ -442,8 +444,10 @@ public class GameController implements Initializable, WebSocketSubscription {
             warning.setVisible(false);
             game.nextQuestion();
             displayCurrentQuestion();
-            clientTimer.start(0);
-            gameTimer.start(0);
+            if (me.isAlive()) {
+                clientTimer.start(0);
+                gameTimer.start(0);
+            }
         }
     }
 
