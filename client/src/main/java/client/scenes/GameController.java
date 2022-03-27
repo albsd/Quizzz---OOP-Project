@@ -217,7 +217,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                 switch (update) {
                     case halveTimer -> {
                         Sound boonSound = new Sound(SoundName.boon);
-                        boonSound.play(muted);
+                        boonSound.play(muted, false);
 
                         clientTimer.halve();
                     }
@@ -365,7 +365,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void checkAnswer(final long option, final int time) {
         Sound optionSound = new Sound(SoundName.option);
-        optionSound.play(muted);
+        optionSound.play(muted, false);
 
         currentScore = game.getCurrentQuestion().calculateScore(option, time);
     }
@@ -376,7 +376,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     private void displayAnswerMomentarily() {
         Sound suspenseSound = new Sound(SoundName.suspense);
-        suspenseSound.play(muted);
+        suspenseSound.play(muted, false);
 
         if (doubleScore) {
             currentScore *= 2;
@@ -478,7 +478,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private void displayCurrentQuestion() {
         Platform.runLater(() -> {
             Sound notificationSound = new Sound(SoundName.notification);
-            notificationSound.play(muted);
+            notificationSound.play(muted, false);
 
             Question currentQuestion = game.getCurrentQuestion();
             if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
@@ -539,7 +539,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void scorePowerup(final ActionEvent e) {
         Sound popSound = new Sound(SoundName.pop);
-        popSound.play(muted);
+        popSound.play(muted, false);
 
         doubleScore = true;
         ((Button) e.getSource()).setDisable(true);
@@ -553,7 +553,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void removePowerup(final ActionEvent e) {
         if (!isOpenQuestion && validateAnswerSubmission()) {
             Sound popSound = new Sound(SoundName.pop);
-            popSound.play(muted);
+            popSound.play(muted, false);
 
             ((Button) e.getSource()).setDisable(true);
             Button[] options = {option1, option2, option3};
@@ -599,7 +599,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private void sendEmote(final Emote emote) {
         Sound clickSound = new Sound(SoundName.click);
-        clickSound.play(muted);
+        clickSound.play(muted, false);
 
         server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
     }

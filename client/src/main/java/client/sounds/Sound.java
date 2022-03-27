@@ -52,7 +52,13 @@ public class Sound {
         }
     }
 
-    public void play(final boolean muted) {
+    /**
+     * Plays the sound if not muted.
+     * @param muted whether the sound is muted or not
+     * @param looped whether the sound is looped or not
+     */
+
+    public void play(final boolean muted, final boolean looped) {
         if (!muted) {
             try {
                 if (clip == null) {
@@ -63,6 +69,9 @@ public class Sound {
                 clip.open(audio);
                 clip.addLineListener(new CloseAudioOnFinish());
                 clip.start();
+                if (looped) {
+                    clip.loop(Clip.LOOP_CONTINUOUSLY);
+                }
             } catch (LineUnavailableException | IOException e) {
                 e.printStackTrace();
             }
