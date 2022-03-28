@@ -12,7 +12,7 @@ public class FreeResponseQuestion extends Question {
     public FreeResponseQuestion(@JsonProperty("prompt") final String prompt,
                                 @JsonProperty("image") final byte[] image,
                                 @JsonProperty("answer") final long answer) {
-        super(prompt, answer, image);
+        super(prompt, answer, image, null);
     }
 
     /**

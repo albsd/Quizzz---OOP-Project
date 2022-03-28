@@ -28,13 +28,18 @@ public abstract class Question {
     @JsonProperty("image")
     private byte[] image;
 
+    @JsonProperty("images")
+    private byte[][] images;
+
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
                     final @JsonProperty("answer") long answer,
-                    final @JsonProperty("image") byte[] image) {
+                    final @JsonProperty("image") byte[] image,
+                    final @JsonProperty("images") byte[][] images) {
         this.prompt = prompt;
         this.answer = answer;
         this.image = image;
+        this.images = images;
     }
 
     public Question() {
@@ -50,6 +55,10 @@ public abstract class Question {
 
     public byte[] getImage() {
         return image;
+    }
+    
+    public byte[][] getImages() {
+        return images;
     }
 
     public abstract int calculateScore(long option, int time);

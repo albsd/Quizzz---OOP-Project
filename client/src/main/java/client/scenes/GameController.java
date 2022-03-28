@@ -470,6 +470,9 @@ public class GameController implements Initializable, WebSocketSubscription {
                 changeToFreeMode();
                 isOpenQuestion = true;
             }
+            if (currentQuestion.getImages() != null) {
+                System.out.println("multiple images");
+            }
             questionNumber.setText(String.format("%d/%d", game.getCurrentQuestionNumber(), 20));
             questionPrompt.setText(currentQuestion.getPrompt());
             Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()), 340, 340, false, true);

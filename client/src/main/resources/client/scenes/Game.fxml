@@ -91,7 +91,7 @@
                                  </HBox>
                               </children>
                            </VBox>
-                           <Region prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
+                           <Region fx:id="region1" prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
                            <VBox fx:id="optionBox" prefHeight="414.0" prefWidth="395.0" spacing="25.0">
                               <children>
                                  <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" text="200 Watts / hour" textAlignment="CENTER" textFill="#a07400" wrapText="true" VBox.vgrow="ALWAYS">
@@ -130,7 +130,7 @@
                                  <Insets />
                               </HBox.margin>
                            </VBox>
-                           <Region prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
+                           <Region fx:id="region2" prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
                            <VBox fx:id="chatBox" prefHeight="400.0" prefWidth="350.0">
                               <children>
                                  <ScrollPane fx:id="emoteScroll" fitToWidth="true" hbarPolicy="NEVER" prefHeight="315.0" prefWidth="350.0" style="-fx-background: white;" VBox.vgrow="ALWAYS">

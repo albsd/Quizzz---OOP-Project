@@ -33,7 +33,7 @@ public class QuestionTest {
                 bytes = new byte[0];
             }
         }
-        q1 = new MultipleChoiceQuestion("test_prompt", bytes,
+        q1 = new MultipleChoiceQuestion("test_prompt", bytes, null,
                 new String[]{"Option1", "Option2", "Option3"}, 1);
     }
 
