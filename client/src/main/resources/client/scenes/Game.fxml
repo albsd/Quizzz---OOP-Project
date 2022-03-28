@@ -212,6 +212,7 @@
                      <Font size="24.0" />
                   </font>
                </Label>
+               <Button fx:id="soundButton" layoutX="1145.0" layoutY="11.0" mnemonicParsing="false" onAction="#updateSoundButton" prefHeight="65.0" prefWidth="65.0" style="-fx-background-color: transparent;" styleClass="iconButton" />
             </children>
          </AnchorPane>
          <!-- Include the popup at top of everything -->
