@@ -481,9 +481,13 @@ public class GameController implements Initializable, WebSocketSubscription {
                 option2.setDisable(false);
                 option3.setDisable(false);
 
-                option1.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
-                option2.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
-                option3.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
+                option1.setStyle("-fx-background-color:" + orange);
+                option2.setStyle("-fx-background-color:" + orange);
+                option3.setStyle("-fx-background-color:" + orange);
+
+                option1.setStyle("-fx-opacity: 1");
+                option2.setStyle("-fx-opacity: 1");
+                option3.setStyle("-fx-opacity: 1");
 
                 option1.setText(options[0]);
                 option2.setText(options[1]);
@@ -543,7 +547,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
             int finalIndex = removeIndices.get(0);
             options[finalIndex].setDisable(true);
-            options[finalIndex].setOpacity(0.25);
+            options[finalIndex].setStyle("-fx-opacity: 0.25");
         } else {
             warning.setText("Power-up not available!");
             warning.setVisible(true);
