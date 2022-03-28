@@ -42,6 +42,7 @@ public class Activity {
         this.title = "Default title";
         this.energyConsumption = 100;
         this.source = "google.com";
+        this.path = "./src/main/resources/default.jpg";
     }
 
     /**
@@ -52,32 +53,14 @@ public class Activity {
      * @param path path of the image to be used along with the activity
      */
     @JsonCreator
-    public Activity(@JsonProperty final String title, @JsonProperty final long energyConsumption,
-                    @JsonProperty final String source, @JsonProperty final String path) {
+    public Activity(@JsonProperty("title") final String title,
+                    @JsonProperty("consumption_in_wh") final long energyConsumption,
+                    @JsonProperty("source") final String source,
+                    @JsonProperty("image_path") final String path) {
         this.title = title;
         this.energyConsumption = energyConsumption;
         this.source = source;
         this.path = path;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public long getEnergyConsumption() {
-        return energyConsumption;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public String getPath() {
-        return path;
     }
 
     /**
@@ -184,5 +167,41 @@ public class Activity {
         int result = Objects.hash(title, energyConsumption, source);
         result = 31 * result;
         return result;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public long getEnergyConsumption() {
+        return energyConsumption;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+    public void setEnergyConsumption(final long energyConsumption) {
+        this.energyConsumption = energyConsumption;
+    }
+
+    public void setSource(final String source) {
+        this.source = source;
+    }
+
+    public void setPath(final String path) {
+        this.path = path;
     }
 }

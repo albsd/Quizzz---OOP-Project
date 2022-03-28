@@ -17,11 +17,14 @@ package client.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import commons.Leaderboard;
-import commons.LobbyMessage;
+
 import commons.Game;
+import commons.Leaderboard;
 import commons.Player;
 import commons.PlayerUpdate;
+import commons.Activity;
+import commons.LobbyMessage;
+import commons.Image;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -38,6 +41,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -50,7 +54,7 @@ public class ServerUtils {
     private final HttpClient client;
 
     private String kGameUrl;
-
+    private String kActivityUrl;
     private String kAppUrl;
 
     private StompSession session;
@@ -76,6 +80,7 @@ public class ServerUtils {
             // if the above code does not throw -> we can set the urls
             this.kAppUrl = uri + "/app";
             this.kGameUrl = uri + "/game";
+            this.kActivityUrl = uri + "/activity";
             this.session = connect("ws://" + host + ":" + port + "/websocket");
             return null;
         } catch (IllegalArgumentException e) {
@@ -240,7 +245,6 @@ public class ServerUtils {
                 .uri(URI.create(kGameUrl + "/single/" + nick))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
-
        return parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
@@ -286,6 +290,66 @@ public class ServerUtils {
                 .GET()
                 .build();
         return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
+    }
+
+    public List<Activity> getAllActivities() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kActivityUrl))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+        return parseResponseToObject(request, new TypeReference<List<Activity>>() { });
+    }
+
+    public Activity addActivity(final Activity activity) {
+        ObjectMapper mapper = new ObjectMapper();
+        String activityString = "";
+        try {
+            activityString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(activity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kActivityUrl))
+                .headers("accept", "application/json", "content-type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(activityString))
+                .build();
+        return parseResponseToObject(request, new TypeReference<Activity>() { });
+    }
+
+    public Image sendImage(final Image image) {
+        ObjectMapper mapper = new ObjectMapper();
+        String imageString = "";
+        try {
+            imageString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(image);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+                    HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(kActivityUrl + "/img"))
+                    .headers("accept", "application/json", "content-type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(imageString))
+                    .build();
+        return parseResponseToObject(request, new TypeReference<Image>() { });
+    }
+
+    public Image getImage(final String path) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kActivityUrl + "/img?path=" + path))
+                .headers("accept", "application/json")
+                .GET()
+                .build();
+        return parseResponseToObject(request, new TypeReference<Image>() { });
+    }
+
+    public Activity deleteActivity(final Long id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kActivityUrl + "/" + id))
+                .DELETE()
+                .build();
+
+        Activity deletedActivity = parseResponseToObject(request, new TypeReference<Activity>() { });
+        return deletedActivity;
     }
 
     /**
@@ -345,8 +409,10 @@ public class ServerUtils {
         try {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
 
-            if (response.statusCode() != 200) return null;
+                return null;
+            }
 
             ObjectMapper mapper = new ObjectMapper();
             T obj = mapper.readValue(response.body(), type);
