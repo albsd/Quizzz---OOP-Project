@@ -298,6 +298,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
+
+        server.startHeartbeat(new TimerTask() {
+            @Override
+            public void run() {
+                me.updateTimestamp(new Date());
+            }
+        });
     }
 
     /**
