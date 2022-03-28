@@ -226,7 +226,7 @@ public class AdminPanelController implements Initializable {
         titleInput.setText(activityEdit.getTitle());
         powerInput.setText(Long.toString(activityEdit.getEnergyConsumption()));
         sourceInput.setText(activityEdit.getSource());
-        image = server.getImage(activityEdit.getPath());
+        image = server.getImage(activityEdit.getPath().replace(" ", "%20"));
         imageShow.setImage(new Image(new ByteArrayInputStream(image.getData())));
 
         if (isEditing) {
@@ -263,8 +263,7 @@ public class AdminPanelController implements Initializable {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null && file.length() / 1024 <= 500) {
 
-            image = new commons.Image(generateImageByteArray(file.getPath()),
-                    file.getName().replaceAll("\\s", "_"));
+            image = new commons.Image(generateImageByteArray(file.getPath()), file.getName());
             Image img = new Image(new ByteArrayInputStream(image.getData()));
             if (img.getHeight() < 200) {
                 infoText.setText("Image height must be greater than 200px.");
