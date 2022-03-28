@@ -24,7 +24,17 @@
                      <Font name="System Bold" size="30.0" />
                   </font>
                </Label>
-               <Label fx:id="answeredCorrectlyText" contentDisplay="CENTER" layoutX="809.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="439.0" text="Questions Answered Correctly: ">
+               <Label fx:id="correctText" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="1093.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" text="0" textFill="#009a19">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
+                  </font>
+               </Label>
+               <Label alignment="CENTER" contentDisplay="CENTER" layoutX="1154.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" text="/">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
+                  </font>
+               </Label>
+               <Label fx:id="incorrectText" contentDisplay="CENTER" layoutX="1165.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" text="0" textFill="#d70c0c">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
@@ -36,7 +46,7 @@
                            <Font size="24.0" />
                         </font>
                         <padding>
-                           <Insets left="50.0" />
+                           <Insets left="65.0" />
                         </padding>
                      </Label>
                      <HBox fx:id="mainHorizontalBox" prefHeight="400.0" prefWidth="1240.0">
@@ -212,7 +222,7 @@
                         </image>
                      </ImageView>
                   </graphic></Button>
-               <Label fx:id="questionNumber" alignment="TOP_LEFT" layoutX="3.0" layoutY="126.0" text="#">
+               <Label fx:id="questionNumber" layoutY="126.0" text="#">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>

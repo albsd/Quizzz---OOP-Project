@@ -12,7 +12,7 @@
     </padding>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
         <children>
-            <Label fx:id="title" alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" text="How to play" textAlignment="CENTER" textFill="#009a19">
+            <Label fx:id="title" alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" style="-fx-text-fill: black;" text="How to play" textAlignment="CENTER">
                 <font>
                     <Font name="System Bold" size="60.0" />
                 </font>

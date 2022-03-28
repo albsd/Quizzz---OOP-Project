@@ -54,7 +54,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     
     @FXML
     private Label questionPrompt, questionNumber, points, timer1, timer2,
-            warning, answerBox, questionPoint, answeredCorrectlyText;
+            warning, answerBox, questionPoint, correctText, incorrectText;
 
     @FXML
     private Region bufferRegion;
@@ -163,7 +163,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         timer2.setFont(font);
         answerBox.setFont(font);
         warning.setFont(font);
-        answeredCorrectlyText.setFont(font);
+        correctText.setFont(font);
+        incorrectText.setFont(font);
         submittedAnswer = false;
         doubleScore = false;
         openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), null,
@@ -306,7 +307,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             Button[] options = {option1, option2, option3};
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
-            if (currentScore != 0) answeredCorrectly++;
         }
     }
 
@@ -355,6 +355,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void checkAnswer(final long option, final int time) {
         currentScore = game.getCurrentQuestion().calculateScore(option, time);
+        if (currentScore > 0) answeredCorrectly++;
     }
 
     /**
@@ -373,10 +374,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         Platform.runLater(() -> {
             timer.setProgress(0.0);
             points.setText("Total points: " + me.getScore());
-            if (numberOfMultipleChoiceQuestions != 0) {
-                answeredCorrectlyText.setText(String.format("Questions Answered Correctly: %d/%d",
-                        answeredCorrectly, numberOfMultipleChoiceQuestions));
-            }
+                correctText.setText(String.valueOf(answeredCorrectly));
+                incorrectText.setText(String.valueOf(game.getCurrentQuestionNumber() - answeredCorrectly));
             questionPoint.setText("You got: " + currentScore + " points");
             currentScore = 0;
         });
@@ -471,7 +470,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                 changeToFreeMode();
                 isOpenQuestion = true;
             }
-            questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
+            questionNumber.setText(String.format("%d/%d", game.getCurrentQuestionNumber(), 20));
             questionPrompt.setText(currentQuestion.getPrompt());
             Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()), 340, 340, false, true);
             questionImage.setImage(img);
