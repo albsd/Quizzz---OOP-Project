@@ -471,7 +471,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                 isOpenQuestion = true;
             }
             if (currentQuestion.getImages() != null) {
-                System.out.println("multiple images");
+                //TODO: WRITE A METHOD FOR 3 IMAGE QUESTION RESTRUCTURING
             }
             questionNumber.setText(String.format("%d/%d", game.getCurrentQuestionNumber(), 20));
             questionPrompt.setText(currentQuestion.getPrompt());
