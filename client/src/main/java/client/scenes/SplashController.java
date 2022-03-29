@@ -19,6 +19,14 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+>>>>>>> client/src/main/java/client/scenes/SplashController.java
 public class SplashController implements Initializable {
 
     @FXML
@@ -107,6 +115,14 @@ public class SplashController implements Initializable {
 
         warning.setTextFill(green);
         warning.setText("Nickname set");
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("./src/main/resources/nick.txt"));
+            writer.write(user);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 
@@ -152,5 +168,25 @@ public class SplashController implements Initializable {
     @FXML
     public void admin(final ActionEvent event) {
         fxml.showAdminPanel();
+    }
+
+    /**
+     * Called to initialize a controller after its root element has been
+     * completely processed.
+     *
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     */
+    @Override
+    public void initialize(final URL location, final ResourceBundle resources) {
+        try {
+            Scanner sc = new Scanner(new File("./src/main/resources/nick.txt"));
+            nickField.setText(sc.nextLine());
+            sc.close();
+        } catch (FileNotFoundException e) {
+            //System.out.println("No nickname set.");
+        }
+
     }
 }
