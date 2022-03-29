@@ -63,7 +63,8 @@ class ActivityTest {
 
     @Test
     void getActivityMultipleChoiceQuestion() {
-        MultipleChoiceQuestion actual = activity1.generateActivityMultipleChoiceQuestion(activityChoices, new byte[3][]);
+        MultipleChoiceQuestion actual =
+                activity1.generateActivityMultipleChoiceQuestion(activityChoices, new byte[3][]);
         MultipleChoiceQuestion expected = new ActivityMultipleChoiceQuestion(
                 "Which of the following activities takes the most energy?",
                 (String[]) activity1.getMultipleActivitiesOptions(activityChoices),
