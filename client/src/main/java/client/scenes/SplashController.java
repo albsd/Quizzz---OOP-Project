@@ -135,7 +135,7 @@ public class SplashController implements Initializable {
             return;
         }
 
-        final Player me = server.joinGame(nick);
+        final Player me = server.joinLobby(nick);
         if (me == null) {
             warning.setTextFill(red);
             warning.setText("User with the given name is already in the game");
@@ -147,5 +147,10 @@ public class SplashController implements Initializable {
     @FXML
     public void leaderBoard(final ActionEvent event) {
         fxml.showLeaderboard(server.getSinglePlayerLeaderboard());
+    }
+
+    @FXML
+    public void admin(final ActionEvent event) {
+        fxml.showAdminPanel();
     }
 }

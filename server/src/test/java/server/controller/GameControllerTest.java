@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import server.repository.LeaderboardRepository;
 import server.service.ActivityService;
@@ -63,6 +64,9 @@ public class GameControllerTest {
     @Mock
     LeaderboardRepository leaderboardRepository;
 
+    @Mock
+    SimpMessagingTemplate simpMessagingTemplate;
+
     private final List<GameResult> gameResults = List.of(new GameResult("nick", 0));
 
     private String nick;
@@ -81,13 +85,13 @@ public class GameControllerTest {
         LeaderboardService leaderboardService = new LeaderboardService(leaderboardRepository);
         service.initializeLobby(activityService.getQuestionList());
 
-        ctrl = new GameController(service, activityService, leaderboardService);
+        ctrl = new GameController(service, activityService, leaderboardService, simpMessagingTemplate);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
         game = service.getCurrentGame();
-        ctrl.joinCurrentGame("johny");
-        ctrl.joinCurrentGame("niko");
-        ctrl.joinCurrentGame("babe");
+        ctrl.joinLobby("johny");
+        ctrl.joinLobby("niko");
+        ctrl.joinLobby("babe");
         nick = "johny";
         score = 50;
         ctrl.startLobby();
@@ -102,39 +106,38 @@ public class GameControllerTest {
 
     @Test
     public void addNullNickName() {
-        var actual = ctrl.joinCurrentGame(null);
+        var actual = ctrl.joinLobby(null);
         assertEquals(BAD_REQUEST, actual.getStatusCode());
     }
 
     @Test
     public void addEmptyNickName() {
-        var actual = ctrl.joinCurrentGame("    ");
+        var actual = ctrl.joinLobby("    ");
         assertEquals(BAD_REQUEST, actual.getStatusCode());
     }
 
     @Test
     public void addValidNickName() {
-        var actual = ctrl.joinCurrentGame(nick);
+        var actual = ctrl.joinLobby(nick);
         assertEquals(OK, actual.getStatusCode());
         assertEquals(nick, actual.getBody().getNick());
     }
 
     @Test
     public void addValidNickNameTwice() {
-        var actual = ctrl.joinCurrentGame(nick);
-        actual = ctrl.joinCurrentGame(nick);
+        var actual = ctrl.joinLobby(nick);
+        actual = ctrl.joinLobby(nick);
         assertEquals(403, actual.getStatusCode().value());
     }
 
     @Test
     public void startTheLobby() {
-        ctrl.joinCurrentGame("johny");
-        ctrl.joinCurrentGame("niko");
-        ctrl.joinCurrentGame("babe");
+        ctrl.joinLobby("johny");
+        ctrl.joinLobby("niko");
+        ctrl.joinLobby("babe");
 
         ctrl.startLobby();
 
-        assertEquals(ctrl.getAll().size(), 2);
         assertEquals(lobby.getPlayers().size(), 3);
         assertNotEquals(lobby, ctrl.getCurrentGame());
     }
@@ -160,7 +163,7 @@ public class GameControllerTest {
 
     @Test
     public void updateGameStatus() {
-        ctrl.markGameDone(game.getId());
+        ctrl.setGameOver(game.getId());
         assertEquals(true, game.isOver());
     }
 }

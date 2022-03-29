@@ -1,6 +1,7 @@
 package server.service;
 
 import commons.Activity;
+import commons.Image;
 import commons.Question;
 
 import org.apache.tomcat.util.json.JSONParser;
@@ -18,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,18 +91,61 @@ public class ActivityService {
         return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
     }
 
+    /**
+     * Adds a new activity to the database.
+     * @param activity Activity to be added
+     * @return Activity added
+     */
     public Activity addActivity(final Activity activity) {
+        activity.setPath(resourcesPath + "/images/" + activity.getPath());
         return activityRepository.saveAndFlush(activity);
     }
 
+    /**
+     * Deletes an activity from the database and its image.
+     * @param id ID of the activity to be deleted
+     * @return Deleted activity
+     */
     public Activity deleteActivity(final Long id) {
         Optional<Activity> activity = activityRepository.findById(id);
         if (activity.isEmpty()) {
             return null;
         } else {
-            activityRepository.delete(activity.get());
+            Activity activityReal = activity.get();
+            (new File(activityReal.getPath())).delete();
+            activityRepository.delete(activityReal);
             return activity.get();
         }
+    }
+
+    /**
+     * Saves the image to the server.
+     * @param image Image to be saved
+     * @return Image saved
+     * @throws IOException
+     */
+    public Image saveImage(final Image image) throws IOException {
+        byte[] data = image.getData();
+        String name = image.getName();
+        File dir = new File(resourcesPath + "/images");
+        if (!dir.exists()) dir.mkdirs();
+        try {
+            File file = new File(resourcesPath + "/images/" + name);
+            OutputStream os = new FileOutputStream(file);
+            os.write(data);
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
+
+    /**
+     * @param path Path of the image to be collected
+     * @return Returns the Image that exists in the path
+     */
+    public Image getImage(final String path) {
+        return new Image(generateImageByteArray(path), path.substring(path.lastIndexOf('/') + 1));
     }
 
     public List<Activity> getAllActivities() throws IOException, ParseException {

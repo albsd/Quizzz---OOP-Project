@@ -1,7 +1,7 @@
-## Week 3.4 meeting
-Date:           01/03/2022
-Main focus:     Sprint week 4 issues assign & select checkstyle modules
-Chair:          Pil Kyu Cho
+## Week 3.8 meeting
+Date:           29/03/2022
+Main focus:     Sprint week 8 issues assign & create MVP for Beta-testing
+Chair:          Jakub Patrik
 Note taker:     Elias Hoste
 
 # Opening
@@ -11,33 +11,30 @@ Attendance check:
 - Albert Sandu
 - Elias Hoste
 - Kerem Yoner
-- LohithSai Yadala Chanchu
+- Lohithsai Yadala Chanchu
 
 # Approval of the agenda
 *If there are other things that needs to be added to the agenda.*
 
 # Points of action
-- Work on the final version of HCI report
-- Get started on buddycheck feedbacks
-- Assign issues for week 4 sprint
-- Go over 'rebasing' in git
-- Go over the other endpoints to implement
 - Check-in: how are things going?
-- A short reflection on learnings (tips/tops) last week
-- Code of Conduct: are we still on track?
-- Add additional agreements to code of conduct (if necessary)
+- Go over the backend checklist, see if we're missing something
+- Go over progress so far and what more needs to be done
+- Create an MVP of the application for beta-testing
+- Assign issues for week 8 sprint
+- Code of Conduct: how are we testing the frontend?
 - Sharing tips & tops (feedback for the chair and the team)
+- Improve the overall UI
 
 # Action points for next week (Scrum board)
-- Submit final HCI evaluation report by Friday
-- Think about feedbacks for each members
-- Are we on track regarding the issues
+- Group assignments go over
+- Implement the feedback from the evaluators
 
 # Any other business
 *If anybody has something that should be discussed but came up with that after the agenda was finalized (in point 2), he/she should bring that up now so that it can be discussed after all.*
 
 # Questions for the TA
-- none
+- Does a MR without the actual code count, as long as its relevant to the project?
 
 # Question round
 *If there are any questions, now is the time to ask them.*

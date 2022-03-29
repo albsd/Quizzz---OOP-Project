@@ -61,3 +61,7 @@
     -fx-border-color: black;
     -fx-border-width: 7px;
 }
+
+.table-view .column-header .label {
+    -fx-alignment: CENTER_LEFT;
+}
