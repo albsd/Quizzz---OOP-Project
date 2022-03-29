@@ -87,7 +87,7 @@ public class LeaderboardController implements Initializable {
 
     @FXML
     public void lobby(final ActionEvent event) {
-        final Player me = server.joinGame(prevMe.getNick());
+        final Player me = server.joinLobby(prevMe.getNick());
         fxml.showLobby(me);
     }
 
