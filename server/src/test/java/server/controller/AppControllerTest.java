@@ -20,7 +20,7 @@ class AppControllerTest {
     private AppController ctrl;
 
     private final List<Question> questions = List.of(
-            new MultipleChoiceQuestion("test_prompt", new byte[23],
+            new MultipleChoiceQuestion("test_prompt", new byte[23], null,
                     new String[]{"Option1", "Option2", "Option3"}, 1));
 
     private Game game;

@@ -57,16 +57,16 @@ class ActivityTest {
         MultipleChoiceQuestion actual = activity1.getNumberMultipleChoiceQuestion(new byte[2]);
         actual.setOptions(choices);
         MultipleChoiceQuestion expected = new MultipleChoiceQuestion("How much energy does "
-                + activity1.getTitle() + " take in watt hours?", new byte[2], choices, actual.getAnswer());
+                + activity1.getTitle() + " take in watt hours?", new byte[2], null, choices, actual.getAnswer());
         assertEquals(actual, expected);
     }
 
     @Test
     void getActivityMultipleChoiceQuestion() {
-        MultipleChoiceQuestion actual = activity1.getActivityMultipleChoiceQuestion(activityChoices, new byte[2]);
+        MultipleChoiceQuestion actual = activity1.getActivityMultipleChoiceQuestion(activityChoices, new byte[3][]);
         MultipleChoiceQuestion expected = new MultipleChoiceQuestion(
                 "Which of the following activities takes the most energy?",
-                new byte[2], (String[]) activity1.getMultipleActivitiesOptions(activityChoices),
+                null, new byte[3][], (String[]) activity1.getMultipleActivitiesOptions(activityChoices),
                 activity1.getMultipleActivitiesAnswerIndex(activityChoices));
         assertEquals(actual, expected);
     }

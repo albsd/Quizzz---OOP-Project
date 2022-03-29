@@ -42,7 +42,18 @@
 }
 
 .scene {
-    -fx-background-color: #F4F4F4;
+    -fx-background-color: white;
+}
+
+.nicknameField {
+    -fx-background-color: #E0FCCF;
+    -fx-text-fill: #009A19;
+    -fx-prompt-text-fill: #c6d9ba;
+}
+
+.scrollPane {
+    -fx-background: white;
+    -fx-border-width: 1px;
 }
 
 .returnPopup {

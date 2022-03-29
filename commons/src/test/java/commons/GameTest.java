@@ -34,12 +34,12 @@ public class GameTest {
         p2 = List.of(new Player[]{
                 new Player("test4")});
         q1 = List.of(new Question[]{
-                new MultipleChoiceQuestion("title1", new byte[]{}, new String[]{}, 2),
-                new MultipleChoiceQuestion("title2", new byte[]{}, new String[]{}, 1),
+                new MultipleChoiceQuestion("title1", new byte[]{}, null, new String[]{}, 2),
+                new MultipleChoiceQuestion("title2", new byte[]{}, null, new String[]{}, 1),
                 new FreeResponseQuestion("title3", new byte[]{}, 25553)});
         q2 = List.of(new Question[]{
                 new FreeResponseQuestion("title1", new byte[]{}, 132),
-                new MultipleChoiceQuestion("title2", new byte[]{}, new String[]{}, 0),
+                new MultipleChoiceQuestion("title2", new byte[]{}, null, new String[]{}, 0),
                 new FreeResponseQuestion("title3", new byte[]{}, 233434)});
         id1 = UUID.randomUUID();
         id2 = UUID.randomUUID();

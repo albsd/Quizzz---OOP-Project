@@ -71,10 +71,16 @@ public class ActivityService {
     public Question turnActivityIntoQuestion(final Activity activity, final int questionType,
             final List<Activity> options) {
         byte[] image = generateImageByteArray(activity.getPath());
-        byte[] optionImage = generateImageByteArray(options.get(1).getPath());
+        byte[][] images = new byte[3][];
+        if (questionType == 1) {
+            images = new byte[][] {generateImageByteArray(options.get(0).getPath()),
+                                            generateImageByteArray(options.get(1).getPath()),
+                                            generateImageByteArray(options.get(2).getPath())};
+        }
+        //byte[] optionImage = generateImageByteArray(options.get(1).getPath());
         return switch (questionType) {
             case 0 -> activity.getNumberMultipleChoiceQuestion(image);
-            case 1 -> activity.getActivityMultipleChoiceQuestion(options, optionImage);
+            case 1 -> activity.getActivityMultipleChoiceQuestion(options, images);
             default -> activity.getFreeResponseQuestion(image);
         };
     }

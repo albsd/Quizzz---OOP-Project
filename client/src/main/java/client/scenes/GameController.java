@@ -55,7 +55,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     private Button option1, option2, option3, timeButton, soundButton;
     
     @FXML
-    private Label questionPrompt, questionNumber, points, timer1, timer2, warning, answerBox;
+    private Label questionPrompt, questionNumber, points, timer1, timer2,
+            warning, answerBox, questionPoint, correctText, incorrectText;
 
     @FXML
     private Region bufferRegion;
@@ -129,7 +130,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
-    private int currentScore;
+    private int currentScore, numberOfMultipleChoiceQuestions = 0, answeredCorrectly = 0;
 
     private boolean muted = false;
 
@@ -161,10 +162,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         questionPrompt.setFont(font);
         questionNumber.setFont(font);
         points.setFont(font);
+        questionPoint.setFont(font);
         timer1.setFont(font);
         timer2.setFont(font);
         answerBox.setFont(font);
         warning.setFont(font);
+        correctText.setFont(font);
+        incorrectText.setFont(font);
         submittedAnswer = false;
         doubleScore = false;
         openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), null,
@@ -368,6 +372,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         optionSound.play(muted, false);
 
         currentScore = game.getCurrentQuestion().calculateScore(option, time);
+        if (currentScore > 0) answeredCorrectly++;
     }
 
     /**
@@ -386,11 +391,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         me.addScore(currentScore);
         server.addScore(game.getId(), me.getNick(), currentScore);
 
-        currentScore = 0;
-
         Platform.runLater(() -> {
             timer.setProgress(0.0);
             points.setText("Total points: " + me.getScore());
+                correctText.setText(String.valueOf(answeredCorrectly));
+                incorrectText.setText(String.valueOf(game.getCurrentQuestionNumber() - answeredCorrectly));
+            questionPoint.setText("You got: " + currentScore + " points");
+            currentScore = 0;
         });
         warning.setVisible(false);
         long answer = game.getCurrentQuestion().getAnswer();
@@ -490,23 +497,35 @@ public class GameController implements Initializable, WebSocketSubscription {
                 changeToFreeMode();
                 isOpenQuestion = true;
             }
-            questionNumber.setText("#" + (game.getCurrentQuestionNumber()));
+            /*
+            //TODO: WRITE A METHOD FOR 3 IMAGE QUESTION RESTRUCTURING
+            if (currentQuestion.getImages() != null) {
+
+            }
+            */
+            questionNumber.setText(String.format("%d/%d", game.getCurrentQuestionNumber(), 20));
             questionPrompt.setText(currentQuestion.getPrompt());
             Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()), 340, 340, false, true);
             questionImage.setImage(img);
+            questionPoint.setText("");
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
                 option1.setDisable(false);
                 option2.setDisable(false);
                 option3.setDisable(false);
 
-                option1.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
-                option2.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
-                option3.setStyle("-fx-background-color:" + orange + ";" + "-fx-opacity: 1");
+                option1.setStyle("-fx-background-color:" + orange);
+                option2.setStyle("-fx-background-color:" + orange);
+                option3.setStyle("-fx-background-color:" + orange);
+
+                option1.setStyle("-fx-opacity: 1");
+                option2.setStyle("-fx-opacity: 1");
+                option3.setStyle("-fx-opacity: 1");
 
                 option1.setText(options[0]);
                 option2.setText(options[1]);
                 option3.setText(options[2]);
+                numberOfMultipleChoiceQuestions++;
             }
         });
     }
@@ -569,7 +588,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
             int finalIndex = removeIndices.get(0);
             options[finalIndex].setDisable(true);
-            options[finalIndex].setOpacity(0.25);
+            options[finalIndex].setStyle("-fx-opacity: 0.25");
         } else {
             warning.setText("Power-up not available!");
             warning.setVisible(true);

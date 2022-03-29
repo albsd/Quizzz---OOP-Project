@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpController">
     <padding>
@@ -18,12 +12,12 @@
     </padding>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
         <children>
-            <Label fx:id="title" alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" text="How to play" textAlignment="CENTER">
+            <Label fx:id="title" alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" style="-fx-text-fill: black;" text="How to play" textAlignment="CENTER">
                 <font>
                     <Font name="System Bold" size="60.0" />
                 </font>
             </Label>
-         <GridPane layoutX="8.0" layoutY="138.0">
+         <GridPane layoutX="8.0" layoutY="138.0" vgap="2.0">
            <columnConstraints>
              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
@@ -52,32 +46,32 @@
                      <Image url="@/images/remove.png" />
                   </image>
                </ImageView>
-               <Label alignment="TOP_LEFT" prefHeight="72.0" prefWidth="234.0" text="Halves time for everyone but you" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <Label fx:id="powerup1Text" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="72.0" prefWidth="234.0" text="Halves time for everyone but you" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label alignment="TOP_LEFT" prefHeight="70.0" prefWidth="237.0" text="Doubles your score for this question" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <Label fx:id="powerup2Text" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="70.0" prefWidth="237.0" text="Doubles your score for this question" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label alignment="TOP_LEFT" prefHeight="71.0" prefWidth="205.0" text="Removes one wrong answer" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <Label fx:id="powerup3Text" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="71.0" prefWidth="205.0" text="Removes one wrong answer" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label text="Power-ups:" GridPane.columnIndex="1">
+               <Label fx:id="powerupText" lineSpacing="4.0" text="Power-ups:" textFill="#a07400" GridPane.columnIndex="1">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label text="Chat:" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <Label fx:id="chatText" lineSpacing="4.0" text="Chat:" textFill="#a07400" GridPane.columnIndex="1" GridPane.rowIndex="4">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label alignment="TOP_LEFT" prefHeight="71.0" prefWidth="205.0" text="Represents a player leaving" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <Label fx:id="leaveText" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="71.0" prefWidth="205.0" text="Represents a player leaving" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
                   <font>
                      <Font size="24.0" />
                   </font>
@@ -89,7 +83,7 @@
                </ImageView>
             </children>
          </GridPane>
-         <GridPane layoutX="385.0" layoutY="135.0">
+         <GridPane layoutX="385.0" layoutY="135.0" vgap="6.0">
            <columnConstraints>
              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="800.0" />
            </columnConstraints>
@@ -101,7 +95,7 @@
                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
            </rowConstraints>
             <children>
-               <Label alignment="TOP_LEFT" text="The game has 20 questions regarding renewable energy and energy consumption. There is a timer at the bottom. The faster you answer correctly, the more points you get. But, be aware that you can’t change your answer, it’s final!&#10;&#10;You can either play Singleplayer or Multiplayer:&#10;" wrapText="true">
+               <Label fx:id="howToText1" alignment="TOP_LEFT" lineSpacing="4.0" text="The game has 20 questions regarding renewable energy and energy consumption. There is a timer at the bottom. The faster you answer correctly, the more points you get. But, be aware that you can’t change your answer, it’s final!&#10;&#10;You can either play Singleplayer or Multiplayer:&#10;" wrapText="true">
                   <font>
                      <Font size="24.0" />
                   </font>
@@ -109,12 +103,12 @@
                      <Insets bottom="24.0" />
                   </GridPane.margin>
                </Label>
-               <Label alignment="TOP_LEFT" text="Singleplayer" wrapText="true" GridPane.rowIndex="1">
+               <Label fx:id="singleText" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="35.0" prefWidth="250.0" text="Singleplayer" textFill="#a07400" wrapText="true" GridPane.rowIndex="1">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label alignment="TOP_LEFT" text="Compete for the global leaderboard! There are no powerups involved." wrapText="true" GridPane.rowIndex="2">
+               <Label fx:id="howToText2" alignment="TOP_LEFT" lineSpacing="4.0" text="Compete for the global leaderboard! There are no powerups involved." wrapText="true" GridPane.rowIndex="2">
                   <font>
                      <Font size="24.0" />
                   </font>
@@ -122,12 +116,12 @@
                      <Insets bottom="24.0" />
                   </GridPane.margin>
                </Label>
-               <Label alignment="TOP_LEFT" text="Play with others and compete for the highest score in the game! You have the ability to use power ups. You can also use emotes to interact with others. Any number of players per lobby. Woah!" wrapText="true" GridPane.rowIndex="4">
+               <Label fx:id="howToText3" alignment="TOP_LEFT" lineSpacing="4.0" text="Play with others and compete for the highest score in the game! You have the ability to use power ups. You can also use emotes to interact with others. Any number of players per lobby. Woah!" wrapText="true" GridPane.rowIndex="4">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label alignment="TOP_LEFT" text="Multiplayer" wrapText="true" GridPane.rowIndex="3">
+               <Label fx:id="multiText" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="35.0" prefWidth="242.0" text="Multiplayer" textFill="#a07400" wrapText="true" GridPane.rowIndex="3">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>

@@ -19,6 +19,26 @@
                      <Font name="System Bold" size="30.0" />
                   </font>
                </Label>
+               <Label fx:id="questionPoint" alignment="CENTER" contentDisplay="CENTER" layoutY="32.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0">
+                  <font>
+                     <Font name="System Bold" size="30.0" />
+                  </font>
+               </Label>
+               <Label fx:id="correctText" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="1093.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" text="0" textFill="#009a19">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
+                  </font>
+               </Label>
+               <Label alignment="CENTER" contentDisplay="CENTER" layoutX="1154.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" text="/">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
+                  </font>
+               </Label>
+               <Label fx:id="incorrectText" contentDisplay="CENTER" layoutX="1165.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" text="0" textFill="#d70c0c">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
+                  </font>
+               </Label>
                <VBox layoutY="100.0">
                   <children>
                      <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" text="What is the expected energy consumption of an average personal gaming computer system per hour?" wrapText="true">
@@ -26,7 +46,7 @@
                            <Font size="24.0" />
                         </font>
                         <padding>
-                           <Insets left="50.0" />
+                           <Insets left="65.0" />
                         </padding>
                      </Label>
                      <HBox fx:id="mainHorizontalBox" prefHeight="400.0" prefWidth="1240.0">
@@ -71,7 +91,7 @@
                                  </HBox>
                               </children>
                            </VBox>
-                           <Region prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
+                           <Region fx:id="region1" prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
                            <VBox fx:id="optionBox" prefHeight="414.0" prefWidth="395.0" spacing="25.0">
                               <children>
                                  <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" text="200 Watts / hour" textAlignment="CENTER" textFill="#a07400" wrapText="true" VBox.vgrow="ALWAYS">
@@ -110,7 +130,7 @@
                                  <Insets />
                               </HBox.margin>
                            </VBox>
-                           <Region prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
+                           <Region fx:id="region2" prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
                            <VBox fx:id="chatBox" prefHeight="400.0" prefWidth="350.0">
                               <children>
                                  <ScrollPane fx:id="emoteScroll" fitToWidth="true" hbarPolicy="NEVER" prefHeight="315.0" prefWidth="350.0" style="-fx-background: white;" VBox.vgrow="ALWAYS">
@@ -202,7 +222,7 @@
                         </image>
                      </ImageView>
                   </graphic></Button>
-               <Label fx:id="questionNumber" alignment="TOP_LEFT" layoutX="3.0" layoutY="126.0" text="#">
+               <Label fx:id="questionNumber" layoutX="-8.0" layoutY="126.0" text="20/20">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>

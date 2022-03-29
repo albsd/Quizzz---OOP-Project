@@ -72,22 +72,22 @@ public class Activity {
         String prompt = "How much energy does " + title.substring(0, 1).toLowerCase() 
                         + title.substring(1) + " take in watt hours?";
         String[] choices = generateChoices(energyConsumption);
-        return new MultipleChoiceQuestion(prompt, image, choices,
+        return new MultipleChoiceQuestion(prompt, image, null, choices,
                 ArrayUtils.indexOf(choices, Long.toString(energyConsumption)));
     }
 
     /**
      * Forms a question that has activities as options.
      * @param answerOptions list of activities
-     * @param image image associated with an activity
+     * @param images images associated with activities
      * @return a multiple choice question with activities as options
      */
     public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(
-            final List<Activity> answerOptions, final byte[] image) {
+            final List<Activity> answerOptions, final byte[][] images) {
         String prompt = "Which of the following activities takes the most energy?";
         String[] options = this.getMultipleActivitiesOptions(answerOptions);
 
-        return new MultipleChoiceQuestion(prompt, image, options,
+        return new MultipleChoiceQuestion(prompt, images[0], images, options,
                  this.getMultipleActivitiesAnswerIndex(answerOptions));
     }
 
