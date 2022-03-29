@@ -460,6 +460,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         Platform.runLater(() -> leaderboardController.displayLeaderboard(leaderboard, me));
         menu.setVisible(false);
         leaderboardController.show();
+        if (game.isOver()) {
+            leaderboardController.endGame(me);
+        }
         try {
             Thread.sleep(5000L);
         } catch (InterruptedException e) {

@@ -1,5 +1,7 @@
 package client.scenes;
 
+import client.utils.ServerUtils;
+import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
 import javafx.event.ActionEvent;
@@ -15,6 +17,7 @@ import java.util.ResourceBundle;
 import javax.inject.Inject;
 
 import client.FXMLController;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
@@ -37,11 +40,18 @@ public class LeaderboardController implements Initializable {
     @FXML
     private VBox menu, playerRanking;
 
+    @FXML
+    private Button lobby, singleplayer;
+
+    private Player prevMe;
+
     private final FXMLController fxml;
+    private final ServerUtils server;
 
     @Inject
-    public LeaderboardController(final FXMLController fxml) {
+    public LeaderboardController(final ServerUtils server, final FXMLController fxml) {
         this.fxml = fxml;
+        this.server = server;
     }
 
     @Override
@@ -65,6 +75,26 @@ public class LeaderboardController implements Initializable {
 
     public void hide() {
         menu.setVisible(false);
+    }
+
+    public void endGame(final Player me) {
+        lobby.setVisible(true);
+        singleplayer.setVisible(true);
+        lobby.setFont(font);
+        singleplayer.setFont(font);
+        this.prevMe = me;
+    }
+
+    @FXML
+    public void lobby(final ActionEvent event) {
+        final Player me = server.joinLobby(prevMe.getNick());
+        fxml.showLobby(me);
+    }
+
+    @FXML
+    public void singleplayer() {
+        Game single = server.startSinglePlayer(prevMe.getNick());
+        fxml.showSinglePlayer(single);
     }
 
     public void displayLeaderboard(final Leaderboard leaderboard, final Player me) {
