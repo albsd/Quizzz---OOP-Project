@@ -74,7 +74,7 @@ public class GameService {
         return player;
     }
 
-    public Game markGameDone(final UUID id) {
+    public Game setGameOver(final UUID id) {
         Game game = repo.findById(id);
         game.setCurrentQuestionIndex(19);
         return game;

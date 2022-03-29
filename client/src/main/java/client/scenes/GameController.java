@@ -425,7 +425,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             if (game.isMultiplayer()) {
                 server.cancelHeartbeat();
                 displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
-                server.markGameOver(game.getId());
+                server.setGameOver(game.getId());
             } else {
                 server.sendGameResult(this.me.getNick(), this.me.getScore());
                 displayLeaderboardMomentarily(server.getSinglePlayerLeaderboard());

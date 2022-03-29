@@ -109,7 +109,7 @@ public class SplashController {
             return;
         }
 
-        final Player me = server.joinGame(nick);
+        final Player me = server.joinLobby(nick);
         if (me == null) {
             warning.setTextFill(red);
             warning.setText("User with the given name is already in the game");
