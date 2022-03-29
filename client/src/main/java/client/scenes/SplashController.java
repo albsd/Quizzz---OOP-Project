@@ -122,4 +122,9 @@ public class SplashController {
     public void leaderBoard(final ActionEvent event) {
         fxml.showLeaderboard(server.getSinglePlayerLeaderboard());
     }
+
+    @FXML
+    public void admin(final ActionEvent event) {
+        fxml.showAdminPanel();
+    }
 }
