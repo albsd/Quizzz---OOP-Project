@@ -135,6 +135,7 @@ public class Activity {
         Long[] choices = new Long[3];
         Random r = new Random();
         Long tempChoice;
+        int numberOfTrailingZeroes = this.getNumberOfTrailingZeroes(energyConsumption);
         for (int i = 0; i < choices.length; i++) {
             do {
                 tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
@@ -143,7 +144,9 @@ public class Activity {
                     tempChoice = Math.abs((long) (5 * r.nextGaussian()));
                 }
                 if (tempChoice >= 10) {
-                    tempChoice = (long) Math.round(tempChoice / 10) * 10;
+                    for(int z = 0; z<numberOfTrailingZeroes;z++) {
+                        tempChoice = (long) Math.round(tempChoice / 10) * 10;
+                    }
                 }
             } while (Arrays.stream(choices).anyMatch(tempChoice::equals) || tempChoice.equals(energyConsumption));
             choices[i] = tempChoice;
@@ -204,5 +207,18 @@ public class Activity {
 
     public void setPath(final String path) {
         this.path = path;
+    }
+
+    public int getNumberOfTrailingZeroes(final long answer) {
+        long x = answer;
+        if (x == 0) {
+            return 0;
+        }
+        int counter = 0;
+        while (x % 10 == 0) {
+            counter++;
+            x /= 10;
+        }
+        return counter;
     }
 }
