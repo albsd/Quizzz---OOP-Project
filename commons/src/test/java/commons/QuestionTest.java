@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static java.nio.file.Files.readAllBytes;
 
 public class QuestionTest {
-    private MultipleChoiceQuestion q1;
+    private NumberMultipleChoiceQuestion q1;
 
     @BeforeEach
     void setup() throws URISyntaxException {
@@ -33,8 +33,8 @@ public class QuestionTest {
                 bytes = new byte[0];
             }
         }
-        q1 = new MultipleChoiceQuestion("test_prompt", bytes, null,
-                new String[]{"Option1", "Option2", "Option3"}, 1);
+        q1 = new NumberMultipleChoiceQuestion("test_prompt",
+                new String[]{"Option1", "Option2", "Option3"}, 1, bytes);
     }
 
     @Test

@@ -81,8 +81,8 @@ public class ActivityService {
         }
         //byte[] optionImage = generateImageByteArray(options.get(1).getPath());
         return switch (questionType) {
-            case 0 -> activity.getNumberMultipleChoiceQuestion(image);
-            case 1 -> activity.getActivityMultipleChoiceQuestion(options, images);
+            case 0 -> activity.generateNumberMultipleChoiceQuestion(image);
+            case 1 -> activity.generateActivityMultipleChoiceQuestion(options, images);
             default -> activity.getFreeResponseQuestion(image);
         };
     }

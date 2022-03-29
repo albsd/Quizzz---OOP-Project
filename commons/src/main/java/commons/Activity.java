@@ -68,12 +68,12 @@ public class Activity {
      * @param image image associated with activity
      * @return a multiple choice question with only numbers as options
      */
-    public MultipleChoiceQuestion getNumberMultipleChoiceQuestion(final byte[] image) {
+    public NumberMultipleChoiceQuestion generateNumberMultipleChoiceQuestion(final byte[] image) {
         String prompt = "How much energy does " + title.substring(0, 1).toLowerCase() 
                         + title.substring(1) + " take in watt hours?";
         String[] choices = generateChoices(energyConsumption);
-        return new MultipleChoiceQuestion(prompt, image, null, choices,
-                ArrayUtils.indexOf(choices, Long.toString(energyConsumption)));
+        return new NumberMultipleChoiceQuestion(prompt, choices,
+                ArrayUtils.indexOf(choices, Long.toString(energyConsumption)), image);
     }
 
     /**
@@ -82,13 +82,13 @@ public class Activity {
      * @param images images associated with activities
      * @return a multiple choice question with activities as options
      */
-    public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(
+    public ActivityMultipleChoiceQuestion generateActivityMultipleChoiceQuestion(
             final List<Activity> answerOptions, final byte[][] images) {
         String prompt = "Which of the following activities takes the most energy?";
         String[] options = this.getMultipleActivitiesOptions(answerOptions);
 
-        return new MultipleChoiceQuestion(prompt, images[0], images, options,
-                 this.getMultipleActivitiesAnswerIndex(answerOptions));
+        return new ActivityMultipleChoiceQuestion(prompt, options,
+                 this.getMultipleActivitiesAnswerIndex(answerOptions), images);
     }
 
     /**
