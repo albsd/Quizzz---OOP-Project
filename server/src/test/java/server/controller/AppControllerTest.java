@@ -1,6 +1,9 @@
 package server.controller;
 
-import commons.*;
+import commons.Game;
+import commons.NumberMultipleChoiceQuestion;
+import commons.Question;
+import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.repository.GameRepository;
