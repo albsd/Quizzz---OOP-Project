@@ -24,11 +24,11 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="lobby" layoutX="980.0" layoutY="602.0" mnemonicParsing="false" onAction="#lobby" prefHeight="51.0" prefWidth="200.0" styleClass="optionButton" text="Multiplayer" visible="false">
+            <Button fx:id="lobby" layoutX="980.0" layoutY="602.0" mnemonicParsing="false" onAction="#lobby" prefHeight="51.0" prefWidth="200.0" styleClass="optionButton" text="Lobby" visible="false">
                <font>
                   <Font size="24.0" />
                </font></Button>
-            <Button fx:id="singleplayer" layoutX="60.0" layoutY="602.0" mnemonicParsing="false" onAction="#singleplayer" prefHeight="51.0" prefWidth="200.0" styleClass="optionButton" text="Singleplayer" visible="false">
+            <Button fx:id="singleplayer" layoutX="60.0" layoutY="602.0" mnemonicParsing="false" onAction="#singleplayer" prefHeight="51.0" prefWidth="200.0" styleClass="optionButton" text="Singleplayer">
                <font>
                   <Font size="24.0" />
                </font></Button>
@@ -56,7 +56,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </StackPane>
-            <ScrollPane hbarPolicy="NEVER" layoutX="313.0" layoutY="110.0" prefHeight="460.0" prefWidth="615.0" style="-fx-background-color: transparent;">
+            <ScrollPane hbarPolicy="NEVER" layoutX="314.0" layoutY="110.0" prefHeight="460.0" prefWidth="615.0" style="-fx-background-color: transparent;">
                <content>
                   <VBox fx:id="playerRanking" alignment="TOP_CENTER" prefWidth="600.0" spacing="10.0">
                      <padding>
