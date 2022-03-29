@@ -82,6 +82,7 @@ public class Activity {
      * @param images images associated with activities
      * @return a multiple choice question with activities as options
      */
+
     public MultipleChoiceQuestion getActivityMultipleChoiceQuestion(
             final List<Activity> answerOptions, final byte[][] images) {
         String prompt = "Which of the following activities takes the most energy?";
@@ -129,7 +130,7 @@ public class Activity {
                         + title.substring(1) + " take in watt hours?";
         return new FreeResponseQuestion(prompt, image, energyConsumption);
     }
-
+    //TODO Make the number of trailing zeroes the same in the generate answers as in the real one
     public String[] generateChoices(final long energyConsumption) {
         Long[] choices = new Long[3];
         Random r = new Random();

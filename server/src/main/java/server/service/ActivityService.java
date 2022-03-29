@@ -84,7 +84,7 @@ public class ActivityService {
             default -> activity.getFreeResponseQuestion(image);
         };
     }
-
+    //TODO: actually implement the finding the closest activities here
     public List<Activity> generateOptions(final List<Activity> allActivities, final int numberOfOptions) {
         List<Activity> copy = new ArrayList<Activity>(allActivities);
         Collections.shuffle(copy);
