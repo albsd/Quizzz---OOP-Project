@@ -444,10 +444,9 @@ public class GameController implements Initializable, WebSocketSubscription {
             warning.setVisible(false);
             game.nextQuestion();
             displayCurrentQuestion();
-            if (me.isAlive()) {
-                clientTimer.start(0);
-                gameTimer.start(0);
-            }
+
+            clientTimer.start(0);
+            gameTimer.start(0);
         }
     }
 
@@ -516,6 +515,8 @@ public class GameController implements Initializable, WebSocketSubscription {
                 server.cancelHeartbeat();
                 server.leaveGame(me.getNick(), game.getId());
             }
+            clientTimer.stop();
+            gameTimer.stop();
         });
     }
 
