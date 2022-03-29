@@ -161,7 +161,7 @@ public class SplashController implements Initializable {
             nickField.setText(sc.nextLine());
             sc.close();
         } catch (FileNotFoundException e) {
-            System.out.println("No nickname set.");
+            //System.out.println("No nickname set.");
         }
 
     }
