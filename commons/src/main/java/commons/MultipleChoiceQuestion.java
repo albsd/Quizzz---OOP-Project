@@ -12,18 +12,16 @@ import java.util.Arrays;
  * activity text only answers.
  */
 
-public class MultipleChoiceQuestion extends Question {
+public abstract class MultipleChoiceQuestion extends Question {
 
     @JsonProperty("options")
     private String[] options;
 
     @JsonCreator
     public MultipleChoiceQuestion(@JsonProperty("prompt") final String prompt,
-                                  @JsonProperty("imageBytes") final byte[] imageBytes,
-                                  @JsonProperty("imagesBytes") final byte[][] imagesBytes,
                                   @JsonProperty("options") final String[] options,
                                   @JsonProperty("answer") final long answer) {
-        super(prompt, answer, imageBytes, imagesBytes);
+        super(prompt, answer);
         this.options = options;
     }
 

@@ -6,16 +6,10 @@ import client.sounds.SoundName;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
 
-import commons.GameUpdate;
-import commons.QuestionTimer;
-import commons.Player;
-import commons.Game;
-import commons.Emote;
 import commons.EmoteMessage;
-import commons.Question;
-import commons.FreeResponseQuestion;
-import commons.MultipleChoiceQuestion;
-import commons.Leaderboard;
+import commons.Game;
+import commons.Player;
+import commons.QuestionTimer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -490,12 +484,21 @@ public class GameController implements Initializable, WebSocketSubscription {
             notificationSound.play(muted, false);
 
             Question currentQuestion = game.getCurrentQuestion();
-            if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
-                changeToMultiMode();
+            if (isOpenQuestion && currentQuestion instanceof NumberMultipleChoiceQuestion numQuestion) {
+                changeToNumberMultiMode();
                 isOpenQuestion = false;
-            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
+                Image img = new Image(new ByteArrayInputStream(numQuestion.getImage()), 340, 340, false, true);
+                questionImage.setImage(img);
+            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion openQuestion) {
                 changeToFreeMode();
                 isOpenQuestion = true;
+                Image img = new Image(new ByteArrayInputStream(openQuestion.getImage()), 340, 340, false, true);
+                questionImage.setImage(img);
+            } else if (!isOpenQuestion && currentQuestion instanceof ActivityMultipleChoiceQuestion activityQuestion) {
+                changeToActivityMultiMode();
+                isOpenQuestion = false;
+                Image img = new Image(new ByteArrayInputStream(activityQuestion.getImages()[0]), 340, 340, false, true);
+                questionImage.setImage(img);
             }
             /*
             //TODO: WRITE A METHOD FOR 3 IMAGE QUESTION RESTRUCTURING
@@ -505,8 +508,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             */
             questionNumber.setText(String.format("%d/%d", game.getCurrentQuestionNumber(), 20));
             questionPrompt.setText(currentQuestion.getPrompt());
-            Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()), 340, 340, false, true);
-            questionImage.setImage(img);
             questionPoint.setText("");
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
@@ -630,8 +631,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     /**
      * Updates the interface to reflect a multiple-choice question.
      */
-    @FXML
-    private void changeToMultiMode() {
+    private void changeToNumberMultiMode() {
         answerBox.toFront();
         openAnswer.toFront();
         openAnswer.setVisible(false);
@@ -643,7 +643,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     /**
      * Updates the interface to reflect an open-choice question.
      */
-    @FXML
     private void changeToFreeMode() {
         answerBox.toBack();
         openAnswer.toBack();
@@ -651,6 +650,11 @@ public class GameController implements Initializable, WebSocketSubscription {
         option1.setVisible(false);
         option2.setVisible(false);
         option3.setVisible(false);
+    }
+
+    private void changeToActivityMultiMode() {
+
+
     }
 
     @FXML
