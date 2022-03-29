@@ -470,9 +470,12 @@ public class GameController implements Initializable, WebSocketSubscription {
                 changeToFreeMode();
                 isOpenQuestion = true;
             }
+            /*
+            //TODO: WRITE A METHOD FOR 3 IMAGE QUESTION RESTRUCTURING
             if (currentQuestion.getImages() != null) {
-                //TODO: WRITE A METHOD FOR 3 IMAGE QUESTION RESTRUCTURING
+
             }
+            */
             questionNumber.setText(String.format("%d/%d", game.getCurrentQuestionNumber(), 20));
             questionPrompt.setText(currentQuestion.getPrompt());
             Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()), 340, 340, false, true);
