@@ -9,7 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = MultipleChoiceQuestion.class, name = "MultipleChoiceQuestion"),
+        @JsonSubTypes.Type(value = NumberMultipleChoiceQuestion.class, name = "NumberMultipleChoiceQuestion"),
+        @JsonSubTypes.Type(value = ActivityMultipleChoiceQuestion.class, name = "ActivityMultipleChoiceQuestion"),
         @JsonSubTypes.Type(value = FreeResponseQuestion.class, name = "FreeResponseQuestion")
 })
 
