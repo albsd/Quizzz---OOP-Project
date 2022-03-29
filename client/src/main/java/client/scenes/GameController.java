@@ -5,10 +5,7 @@ import client.sounds.SoundName;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
 
-import commons.EmoteMessage;
-import commons.Game;
-import commons.Player;
-import commons.QuestionTimer;
+import commons.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
