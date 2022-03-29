@@ -7,6 +7,7 @@ import commons.Player;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -14,7 +15,16 @@ import javafx.scene.paint.Color;
 
 import javax.inject.Inject;
 
-public class SplashController {
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.Scanner;
+
+public class SplashController implements Initializable {
 
     @FXML
     private TextField nickField;
@@ -81,6 +91,14 @@ public class SplashController {
 
         warning.setTextFill(green);
         warning.setText("Nickname set");
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("./src/main/resources/nick.txt"));
+            writer.write(user);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 
@@ -109,7 +127,7 @@ public class SplashController {
             return;
         }
 
-        final Player me = server.joinGame(nick);
+        final Player me = server.joinLobby(nick);
         if (me == null) {
             warning.setTextFill(red);
             warning.setText("User with the given name is already in the game");
@@ -121,5 +139,30 @@ public class SplashController {
     @FXML
     public void leaderBoard(final ActionEvent event) {
         fxml.showLeaderboard(server.getSinglePlayerLeaderboard());
+    }
+
+    @FXML
+    public void admin(final ActionEvent event) {
+        fxml.showAdminPanel();
+    }
+
+    /**
+     * Called to initialize a controller after its root element has been
+     * completely processed.
+     *
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     */
+    @Override
+    public void initialize(final URL location, final ResourceBundle resources) {
+        try {
+            Scanner sc = new Scanner(new File("./src/main/resources/nick.txt"));
+            nickField.setText(sc.nextLine());
+            sc.close();
+        } catch (FileNotFoundException e) {
+            //System.out.println("No nickname set.");
+        }
+
     }
 }

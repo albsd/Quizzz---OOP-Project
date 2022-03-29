@@ -44,4 +44,6 @@ out/
 
 ### JSON and images in activities ###
 /server/src/main/resources/activities/*
+/server/src/main/resources/images/*
 activities.zip
+/client/src/main/resources/nick.txt

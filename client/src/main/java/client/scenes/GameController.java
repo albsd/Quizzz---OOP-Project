@@ -425,7 +425,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             if (game.isMultiplayer()) {
                 server.cancelHeartbeat();
                 displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
-                server.markGameOver(game.getId());
+                server.setGameOver(game.getId());
             } else {
                 server.sendGameResult(this.me.getNick(), this.me.getScore());
                 displayLeaderboardMomentarily(server.getSinglePlayerLeaderboard());
@@ -444,9 +444,9 @@ public class GameController implements Initializable, WebSocketSubscription {
             warning.setVisible(false);
             game.nextQuestion();
             displayCurrentQuestion();
+
             clientTimer.start(0);
             gameTimer.start(0);
-
         }
     }
 
@@ -518,6 +518,8 @@ public class GameController implements Initializable, WebSocketSubscription {
                 server.cancelHeartbeat();
                 server.leaveGame(me.getNick(), game.getId());
             }
+            clientTimer.stop();
+            gameTimer.stop();
         });
     }
 
