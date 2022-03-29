@@ -14,7 +14,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
 import javax.inject.Inject;
-import java.io.*;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -150,7 +155,7 @@ public class SplashController implements Initializable {
      * @param resources The resources used to localize the root object, or {@code null} if
      */
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(final URL location, final ResourceBundle resources) {
         try {
             Scanner sc = new Scanner(new File("./src/main/resources/nick.txt"));
             nickField.setText(sc.nextLine());
