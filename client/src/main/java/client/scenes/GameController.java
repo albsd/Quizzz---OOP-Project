@@ -133,6 +133,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private boolean muted = false;
 
+    private boolean connected;
+
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
         this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
@@ -165,6 +167,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         timer2.setFont(font);
         answerBox.setFont(font);
         warning.setFont(font);
+        connected = true;
         submittedAnswer = false;
         doubleScore = false;
         openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), null,
@@ -217,7 +220,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                 switch (update) {
                     case halveTimer -> {
                         Sound boonSound = new Sound(SoundName.boon);
-                        boonSound.play(muted, false);
+                        boonSound.play(muted || !connected, false);
 
                         clientTimer.halve();
                     }
@@ -298,13 +301,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
-
-        server.startHeartbeat(new TimerTask() {
-            @Override
-            public void run() {
-                me.updateTimestamp(new Date());
-            }
-        });
     }
 
     /**
@@ -372,7 +368,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void checkAnswer(final long option, final int time) {
         Sound optionSound = new Sound(SoundName.option);
-        optionSound.play(muted, false);
+        optionSound.play(muted || !connected, false);
 
         currentScore = game.getCurrentQuestion().calculateScore(option, time);
     }
@@ -383,7 +379,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     private void displayAnswerMomentarily() {
         Sound suspenseSound = new Sound(SoundName.suspense);
-        suspenseSound.play(muted, false);
+        suspenseSound.play(muted || !connected, false);
 
         if (doubleScore) {
             currentScore *= 2;
@@ -451,9 +447,10 @@ public class GameController implements Initializable, WebSocketSubscription {
             warning.setVisible(false);
             game.nextQuestion();
             displayCurrentQuestion();
-            if (me.isAlive()) {
-                clientTimer.start(0);
-                gameTimer.start(0);
+
+            if (connected) {
+               clientTimer.start(0);
+               gameTimer.start(0);
             }
         }
     }
@@ -485,7 +482,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private void displayCurrentQuestion() {
         Platform.runLater(() -> {
             Sound notificationSound = new Sound(SoundName.notification);
-            notificationSound.play(muted, false);
+            notificationSound.play(muted || !connected, false);
 
             Question currentQuestion = game.getCurrentQuestion();
             if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
@@ -523,6 +520,7 @@ public class GameController implements Initializable, WebSocketSubscription {
                 server.cancelHeartbeat();
                 server.leaveGame(me.getNick(), game.getId());
             }
+            connected = false;
         });
     }
 
