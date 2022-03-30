@@ -101,7 +101,7 @@ public class SplashController implements Initializable {
 
      /**
      * The Player's nickname must be validated against the length constraints.
-     * 
+     *
      * @param event
      */
     @FXML
@@ -158,7 +158,7 @@ public class SplashController implements Initializable {
 
     /**
      * Enter the lobby from the splash screen.
-     * The Player's nickname must be validated against the names of the 
+     * The Player's nickname must be validated against the names of the
      * current players in the lobby.
      * 
      * @param event
