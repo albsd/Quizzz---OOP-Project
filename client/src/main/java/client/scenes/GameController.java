@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.FXMLController;
 import client.sounds.Sound;
 import client.sounds.SoundName;
 import client.utils.ServerUtils;
@@ -95,8 +94,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     private LeaderboardController leaderboardController;
 
     private final ServerUtils server;
-    
-    private final FXMLController fxml;
 
     private final QuestionTimer gameTimer;
 
@@ -135,12 +132,11 @@ public class GameController implements Initializable, WebSocketSubscription {
     private boolean muted = false;
 
     @Inject
-    public GameController(final ServerUtils server, final FXMLController fxml) {
+    public GameController(final ServerUtils server) {
         this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
         this.clientTimer = new QuestionTimer(
                 time -> Platform.runLater(() -> timer.setProgress((double) time / QuestionTimer.MAX_TIME)), () -> { });
         this.server = server;
-        this.fxml = fxml;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
         this.questionFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 17);
     }
@@ -271,7 +267,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
-
         server.startHeartbeat(new TimerTask() {
             @Override
             public void run() {
@@ -322,6 +317,10 @@ public class GameController implements Initializable, WebSocketSubscription {
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
         }
+        if (!game.isMultiplayer()) {
+            clientTimer.setCurrentTime(0);
+            gameTimer.setCurrentTime(0);
+        }
     }
 
     /**
@@ -357,6 +356,10 @@ public class GameController implements Initializable, WebSocketSubscription {
             submittedAnswer = true;
             long option = Long.parseLong(optionStr);
             checkAnswer(option, clientTimer.getCurrentTime());
+        }
+        if (!game.isMultiplayer()) {
+            clientTimer.setCurrentTime(0);
+            gameTimer.setCurrentTime(0);
         }
     }
 
@@ -451,7 +454,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             warning.setVisible(false);
             game.nextQuestion();
             displayCurrentQuestion();
-
             clientTimer.start(0);
             gameTimer.start(0);
         }
@@ -466,6 +468,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private void displayLeaderboardMomentarily(final Leaderboard leaderboard) {
         Platform.runLater(() -> leaderboardController.displayLeaderboard(leaderboard, me));
         menu.setVisible(false);
+        leaderboardController.hideBackButton();
         leaderboardController.show();
         if (game.isOver()) {
             leaderboardController.endGame(me);
@@ -582,8 +585,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             Button[] options = {option1, option2, option3};
 
             List<Integer> removeIndices = Arrays.asList(0, 1, 2);
-            long answerIndex = game.getCurrentQuestion().getAnswer();
-            removeIndices.remove(answerIndex);
+            int answerIndex = (int) game.getCurrentQuestion().getAnswer();
+            removeIndices.remove(Integer.valueOf(answerIndex));
             Collections.shuffle(removeIndices);
 
             int finalIndex = removeIndices.get(0);

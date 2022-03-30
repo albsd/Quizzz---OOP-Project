@@ -57,7 +57,7 @@ public class ActivityService {
         return activityRepository.findAllById(ids);
     }
 
-    public List<Question> getQuestionList() {
+    public synchronized List<Question> getQuestionList() {
         List<Activity> activityList = getActivities();
         return activityList.stream()
             .map((activity) -> {

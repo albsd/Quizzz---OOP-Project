@@ -36,8 +36,11 @@ public class GameRepository {
 
     private Set<Game> games;
 
+    private Set<Game> singleGames;
+
     public GameRepository() {
         games = new HashSet<>();
+        singleGames = new HashSet<>();
     }
 
     /**
@@ -67,21 +70,29 @@ public class GameRepository {
     }
     
     /**
-     * Creates a game object for singleplayer. Games created here
-     * will not be added to the game repository.
+     * Creates a singleplayer game object. Added to the singleplayer
+     * game hash set.
      * 
-     * @param nick name of player.
      * @param questions list of questiosn to add to game object
+     */
+    public void createSingleplayer(final List<Question> questions) {
+        Game game = new Game(null, questions, false);
+        singleGames.add(game);
+    }
+
+    /**
+     * Returns one of the pre-made single games in games repo.
+     * 
      * @return Game object
      */
-    public Game createSingleplayer(final String nick, final List<Question> questions) {
-        Game game = new Game(UUID.randomUUID(), questions, false);
-        game.addPlayer(new Player(nick));
+    public Game getSingleGame() {
+        Game game = singleGames.stream().findAny().get();
+        singleGames.remove(game);
         return game;
     }
 
     /**
-     * Adds the passed game object into the game repo.
+     * Adds the passed game object into the games set.
      *
      * @param game the game object to add
      * @return id of game that was added
@@ -89,6 +100,15 @@ public class GameRepository {
     public UUID addGame(final Game game) {
         games.add(game);
         return game.getId();
+    }
+
+    /**
+     * Adds the passed singleplayer game object into the singleGames set.
+     *
+     * @param game the game object to add
+     */
+    public void addSingleGame(final Game game) {
+        singleGames.add(game);
     }
 
     /**
