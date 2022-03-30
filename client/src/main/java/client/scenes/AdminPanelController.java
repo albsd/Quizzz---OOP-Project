@@ -20,19 +20,28 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
+import org.apache.tomcat.util.json.JSONParser;
+import org.apache.tomcat.util.json.ParseException;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -277,6 +286,81 @@ public class AdminPanelController implements Initializable {
         } else {
             infoText.setText("File size must be smaller than 500KB.");
         }
+    }
+
+    public void chooseActivities() {
+        Stage stage = new Stage();
+        DirectoryChooser dirChooser = new DirectoryChooser();
+        dirChooser.setTitle("Choose the activities folder.");
+        File file = dirChooser.showDialog(stage);
+        if (file != null) {
+            populateRepo(file.getPath());
+        }
+        titleInput.setText("");
+        powerInput.setText("");
+        sourceInput.setText("");
+        imageShow.setImage(null);
+        image = null;
+    }
+
+    public void populateRepo(final String activitiesPath) {
+        List<File> files = getFiles(".json", new File(activitiesPath));
+        for (File jsonFile : files) {
+            BufferedReader bufferedReader = null;
+            try {
+                bufferedReader = new BufferedReader(new FileReader(jsonFile));
+            } catch (FileNotFoundException e) {
+                infoText.setText("Incorrect folder format or missing files.");
+            }
+            JSONParser jsonParser = new JSONParser(bufferedReader);
+            LinkedHashMap<String, ?> list = null;
+            try {
+                list = (LinkedHashMap<String, ?>) jsonParser.parse();
+            } catch (ParseException e) {
+                infoText.setText("Incorrect format or missing files.");
+            }
+            String titleAct = list.get("title").toString();
+            long wattHours = ((BigInteger) list.get("consumption_in_wh")).longValue();
+            String sourceAct = list.get("source").toString();
+
+            String str = jsonFile.getName();
+            File file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".png");
+            if (file == null) {
+                file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+            }
+            if (file == null) {
+                file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
+            }
+            server.addActivity(new Activity(titleAct, wattHours, sourceAct, file.getName()));
+            server.sendImage(new commons.Image(generateImageByteArray(file.getPath()), file.getName()));
+        }
+        loadTable(true);
+        infoText.setText("Activities are loaded successfully.");
+    }
+
+    private static List<File> getFiles(final String ext, final File folder) {
+        String extension = ext.toUpperCase();
+        final List<File> files = new ArrayList<File>();
+        for (final File file : folder.listFiles()) {
+            if (file.isDirectory()) {
+                files.addAll(getFiles(extension, file));
+            } else if (file.getName().toUpperCase().endsWith(extension)) {
+                files.add(file);
+            }
+        }
+        return files;
+    }
+
+    private static File find(final String path, final String fName) {
+        File f = new File(path);
+        if (fName.equalsIgnoreCase(f.getName())) return f;
+        if (f.isDirectory()) {
+            for (String aChild : f.list()) {
+                File ff = find(path + File.separator + aChild, fName);
+                if (ff != null) return ff;
+            }
+        }
+        return null;
     }
 
     /**

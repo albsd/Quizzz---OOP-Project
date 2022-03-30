@@ -40,7 +40,7 @@ public class SplashController implements Initializable {
     private PopupController popupController;
 
     @FXML
-    private Button singleplayerButton, leaderBoardButton, multiplayerButton;
+    private Button singleplayerButton, leaderBoardButton, multiplayerButton, adminButton;
 
     private final Font font1, font2;
     public final Color red = new Color(0.8, 0, 0, 1);
@@ -74,6 +74,7 @@ public class SplashController implements Initializable {
         singleplayerButton.setFont(font1);
         leaderBoardButton.setFont(font1);
         multiplayerButton.setFont(font1);
+        adminButton.setFont(font1);
 
         try {
             Scanner sc = new Scanner(new File("./src/main/resources/nick.txt"));
