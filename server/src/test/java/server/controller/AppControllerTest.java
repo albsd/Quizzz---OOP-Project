@@ -34,8 +34,6 @@ class AppControllerTest {
 
     private String mac1;
 
-    private String mac2;
-
     private String nick1;
 
     @BeforeEach
@@ -45,7 +43,6 @@ class AppControllerTest {
         p3 = new Player("Kelly");
         nick1 = "deVito";
         mac1 = "E2_43_F2_J6_O9_3F";
-        mac2 = "A8_43_G2_J6_O9_0F";
         GameService gameService = new GameService(new GameRepository());
         AppService appService = new AppService(new AppRepository());
         gameService.initializeLobby(questions);
