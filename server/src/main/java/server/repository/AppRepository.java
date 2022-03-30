@@ -17,6 +17,10 @@ public class AppRepository {
        this.nicknames = new HashMap<>();
     }
 
+    public Map<String, String> getNickMapping() {
+        return this.nicknames;
+    }
+
     public void saveNickname(final String macAddress, final String nick) {
         nicknames.put(macAddress, nick);
     }

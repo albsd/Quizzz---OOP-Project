@@ -29,7 +29,7 @@ public class AppController {
     private final SimpMessagingTemplate smt;
 
     @Autowired
-    public AppController(final GameService gameService, final SimpMessagingTemplate smt, final AppService appService) {
+    public AppController(final GameService gameService, final AppService appService, final SimpMessagingTemplate smt) {
         this.gameService = gameService;
         this.smt = smt;
         this.appService = appService;
@@ -91,14 +91,13 @@ public class AppController {
      * @return Player object.
      */
     @GetMapping({"/nick/{macAddress}"})
-    public ResponseEntity<Player>  getMacAddress(final @PathVariable String macAddress) {
+    public ResponseEntity<Player> getNickname(final @PathVariable String macAddress) {
         String nick = appService.getNickname(macAddress);
         if (nick == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(new Player(nick));
     }
-
 
     /**
      * Endpoint to save nickname with MAC address.
@@ -107,7 +106,7 @@ public class AppController {
      * @return Player object.
      */
     @PostMapping({"/nick/{macAddress}/{nick}"})
-    public Player saveMacAddress(final @PathVariable String macAddress, final @PathVariable String nick) {
+    public Player saveNickname(final @PathVariable String macAddress, final @PathVariable String nick) {
         appService.saveNickname(macAddress, nick);
         return new Player(nick);
     }
