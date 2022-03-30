@@ -4,7 +4,6 @@ import client.FXMLController;
 import client.utils.ServerUtils;
 import commons.Game;
 import commons.Player;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -93,7 +92,7 @@ public class SplashController implements Initializable {
     @FXML
     public void exitApp(final ActionEvent event) {
         popupController.open("app", () -> {
-            Platform.exit();
+            System.exit(0);
         });
     }
 
@@ -136,12 +135,12 @@ public class SplashController implements Initializable {
     @FXML
     public void singleGame(final ActionEvent event) {
         String nick = nickField.getText();
+        nickField.setText(nick);
         if (!validateNickname(nick)) {
             return;
         }
-
-        Game single = server.startSinglePlayer(nick);
-        fxml.showSinglePlayer(single);
+        Game singleGame = server.startSinglePlayer(nick);
+        fxml.showSinglePlayer(singleGame);
     }
 
     /**
@@ -154,6 +153,7 @@ public class SplashController implements Initializable {
     @FXML
     public void lobby(final ActionEvent event) {
         String nick = nickField.getText();
+        nickField.setText(nick);
         if (!validateNickname(nick)) {
             return;
         }

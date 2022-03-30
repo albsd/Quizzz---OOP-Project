@@ -58,13 +58,13 @@ public class ServerUtils {
 
     private StompSession session;
 
-    private Timer playerTimer;
+    private Timer heartBeatTimer;
 
     private TimerTask heartBeat;
 
     public ServerUtils() {
         this.client = HttpClient.newHttpClient();
-        this.playerTimer = new Timer();
+        this.heartBeatTimer = new Timer();
     }
 
     public String isRunning(final String host, final String port) {
@@ -137,7 +137,7 @@ public class ServerUtils {
      */
     public Game getLobby() {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/current"))
+                .uri(URI.create(kGameUrl + "/lobby"))
                 .header("accept", "application/json")
                 .GET()
                 .build();
@@ -282,9 +282,9 @@ public class ServerUtils {
     
     // REQUESTS FOR A SINGLEPLAYER GAME ===============================================================================
     /**
-     * Calls the REST endpoint to create and start a singleplayer game.
+     * Calls the REST endpoint to create a singleplayer game.
      *
-     * @param nick  String of the user nickname
+     * @param nick  Nickname of player
      * @return      Player that has started the game
      */
     public Game startSinglePlayer(final String nick) {
@@ -294,6 +294,7 @@ public class ServerUtils {
                 .build();
        return parseResponseToObject(request, new TypeReference<Game>() { });
     }
+
 
     /**
      * Fetch an all-time leaderboard for singleplayer.
@@ -434,7 +435,7 @@ public class ServerUtils {
      */
     public void startHeartbeat(final TimerTask heartBeat) {
         this.heartBeat = heartBeat;
-        playerTimer.scheduleAtFixedRate(heartBeat, 0, 5000);
+        heartBeatTimer.scheduleAtFixedRate(heartBeat, 0, 5000);
     }
 
     /**
@@ -442,5 +443,6 @@ public class ServerUtils {
      */
     public void cancelHeartbeat() {
         heartBeat.cancel();
+        heartBeatTimer.purge();
     }
 }

@@ -39,11 +39,12 @@ class AppControllerTest {
         GameService gameService = new GameService(new GameRepository());
         gameService.initializeLobby(questions);
         ctrl = new AppController(gameService, null);
-        game = gameService.getCurrentGame();
+        game = gameService.getLobby();
         game.addPlayer(p1);
         game.addPlayer(p2);
+        gameService.addLobby();
         gameService.newGame(questions);
-        Game lobby = gameService.getCurrentGame();
+        Game lobby = gameService.getLobby();
         lobby.addPlayer(p3);
     }
 

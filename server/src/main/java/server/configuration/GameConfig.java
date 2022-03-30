@@ -49,7 +49,7 @@ public class GameConfig {
                     appCtrl.sendPlayerLeft(player, game.getId());
                 }
             }
-            if (players.isEmpty() || game.isOver()) {
+            if (players.isEmpty()) {
                 gameRepo.removeGame(game.getId());
             }
         }
@@ -62,7 +62,7 @@ public class GameConfig {
      */
     @Scheduled(fixedRate = 1000)
     private void checkLobbyPlayers() {
-        Game lobby = gameService.getCurrentGame();
+        Game lobby = gameService.getLobby();
         List<Player> players = lobby.getPlayers();
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
