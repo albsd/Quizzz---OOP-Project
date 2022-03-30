@@ -17,11 +17,7 @@ import javafx.scene.text.Font;
 import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -50,6 +46,8 @@ public class SplashController implements Initializable {
 
     private final FXMLController fxml;
 
+    private String nick;
+
     @Inject
     public SplashController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
@@ -75,13 +73,10 @@ public class SplashController implements Initializable {
         leaderBoardButton.setFont(font1);
         multiplayerButton.setFont(font1);
 
-        try {
-            Scanner sc = new Scanner(new File("./src/main/resources/nick.txt"));
-            nickField.setText(sc.nextLine());
-            sc.close();
-        } catch (FileNotFoundException e) {
-            //System.out.println("No nickname set.");
-        }
+        nick = fxml.getNick();
+        if (nick != null) {
+            nickField.setText(nick);
+        };
     }
 
     @FXML
@@ -96,11 +91,29 @@ public class SplashController implements Initializable {
         });
     }
 
+     /**
+     * The Player's nickname must be validated against the length constraints.
+     * 
+     * @param event
+     */
+    @FXML
+    public void onEnter(ActionEvent event) {
+        if (!validateNickname(nickField.getText())) {
+            return;
+        };
+        if (nick != null) {
+            warning.setTextFill(green);
+            warning.setText("Nickname has been changed");
+        }
+        nick = nickField.getText();
+        nickField.setText(nick);
+        fxml.saveNick(nick);
+    }
+
     private boolean validateNickname(final String user) {
         final int maxChrLimit = 12;
         final int minChrLimit = 3;
         int len = user.length();
-
         if (len < minChrLimit || len > maxChrLimit) {
             warning.setTextFill(red);
             warning.setText("Nickname should be between 3 and 12 characters");
@@ -118,25 +131,16 @@ public class SplashController implements Initializable {
             warning.setText("Nickname must contain at least one letter");
             return false;
         }
-
         warning.setTextFill(green);
         warning.setText("Nickname set");
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("./src/main/resources/nick.txt"));
-            writer.write(user);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         return true;
     }
 
     @FXML
     public void singleGame(final ActionEvent event) {
-        String nick = nickField.getText();
-        nickField.setText(nick);
-        if (!validateNickname(nick)) {
+        if (nick == null) {
+            warning.setTextFill(red);
+            warning.setText("Please enter a nick name");
             return;
         }
         Game singleGame = server.startSinglePlayer(nick);
@@ -144,20 +148,19 @@ public class SplashController implements Initializable {
     }
 
     /**
-     * Enter the lobby from the splash screen
-     * The Player's nickname must be validated against the length constraints and
-     * further against the names of the current players in the lobby.
+     * Enter the lobby from the splash screen.
+     * The Player's nickname must be validated against the names of the 
+     * current players in the lobby.
      * 
      * @param event
      */
     @FXML
     public void lobby(final ActionEvent event) {
-        String nick = nickField.getText();
-        nickField.setText(nick);
-        if (!validateNickname(nick)) {
+        if (nick == null) {
+            warning.setTextFill(red);
+            warning.setText("Please enter a nick name");
             return;
         }
-
         final Player me = server.joinLobby(nick);
         if (me == null) {
             warning.setTextFill(red);

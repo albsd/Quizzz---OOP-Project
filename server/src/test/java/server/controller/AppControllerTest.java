@@ -52,13 +52,13 @@ class AppControllerTest {
     void updateLobbyPlayerTime() {
         assertEquals(p3, ctrl.updateLobbyPlayerTime("Kelly"));
         long millisecondDif = new Date().getTime() - p3.getTimestamp().getTime();
-        assertTrue(5000 > (int) millisecondDif);
+        assertTrue(10000 > (int) millisecondDif);
     }
 
     @Test
     void updateGamePlayerTime() {
         assertEquals(p1, ctrl.updateGamePlayerTime(game.getId(), "Charlie"));
         long millisecondDif = new Date().getTime() - p3.getTimestamp().getTime();
-        assertTrue(5000 > (int) millisecondDif);
+        assertTrue(10000 > (int) millisecondDif);
     }
 }
