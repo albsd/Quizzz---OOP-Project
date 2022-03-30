@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import server.service.GameService;
-
 import java.util.UUID;
 /**
  * Controller class to receive and update clients' heartbeats.
@@ -76,6 +75,7 @@ public class AppController {
      * @param id id of the game
      */
     public void sendPlayerLeft(@Payload final Player player, final UUID id) {
+        this.smt.convertAndSend("/topic/game/" + id + "/finishedtimer/" + player.getNick(), "true");
         this.smt.convertAndSend("/topic/game/" + id + "/leave", player);
     }
 }
