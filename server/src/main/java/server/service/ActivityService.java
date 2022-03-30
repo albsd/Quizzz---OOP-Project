@@ -121,6 +121,56 @@ public class ActivityService {
         return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
     }
 
+    public List<Activity> generateApproximateOptions(
+            final List<Activity> allActivities, final int numberOfOptions, final Activity activity) {
+        //Getting activities that have approximately same energy consumption with the activity in the question
+        List<Activity> approximateActivities = allActivities
+                .stream()
+                .filter(a -> !a.getTitle().equals(activity.getTitle()))
+                .filter(a -> a.getEnergyConsumption() >= activity.getEnergyConsumption() * (1 - offset)
+                        && a.getEnergyConsumption() <= activity.getEnergyConsumption() * (1 + offset))
+                .collect(Collectors.toList());
+
+        //Adding None as an option
+        List<Activity> options = new ArrayList<>();
+        Random rand = new Random();
+
+        //If there is an approximate activity, add it to the options
+        Activity approximateActivity = null;
+        if (!approximateActivities.isEmpty()) {
+            approximateActivity = approximateActivities.get(rand.nextInt(approximateActivities.size()));
+            options.add(approximateActivity);
+        }
+
+        //Getting incorrect activities
+        while (options.size() < numberOfOptions - 1) {
+            int index = rand.nextInt(allActivities.size());
+            Activity incorrectActivity = allActivities.get(index);
+            if (!options.contains(incorrectActivity)
+                    && (incorrectActivity.getEnergyConsumption() < activity.getEnergyConsumption() * (1 - offset)
+                    || incorrectActivity.getEnergyConsumption() > activity.getEnergyConsumption() * (1 + offset))) {
+                options.add(incorrectActivity);
+            }
+        }
+        Activity noneActivity = new Activity();
+        noneActivity.setTitle("None");
+        Collections.shuffle(options);
+
+        //Answer is hidden/encoded in the energyConsumption of none activity
+        // +1 is caused by adding the None at the beginning of the list
+        if (approximateActivity != null) {
+            noneActivity.setEnergyConsumption(options.indexOf(approximateActivity) + 1);
+        } else {
+            noneActivity.setEnergyConsumption(0);
+        }
+        options.add(0, noneActivity);
+
+//        System.out.println(activity);
+//        System.out.println("Approximates " + approximateActivities);
+//        System.out.println("Options " + options);
+        return options;
+    }
+
     /**
      * @param allActivities List of all activities available in the database
      * @param numberOfOptions Number of options that will be generated for the question
