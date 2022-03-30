@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.LinkedHashMap;
@@ -39,6 +40,8 @@ public class ActivityService {
     private final String activitiesPath = "./src/main/resources/activities";
 
     private final String resourcesPath = "./src/main/resources";
+
+    private final float offset = 0.1f;
 
     @Autowired
     public ActivityService(final ActivityRepository activityRepository) {
@@ -61,27 +64,42 @@ public class ActivityService {
         List<Activity> activityList = getActivities();
         return activityList.stream()
             .map((activity) -> {
-                int questionType = (int) ((Math.random() * (3)));
-                return  turnActivityIntoQuestion(activity, questionType, generateOptions(activityList, 3));
+                int questionType = (int) ((Math.random() * (4)));
+                return  turnActivityIntoQuestion(activity, questionType, activityList);
             })
             .collect(Collectors.toList());
     }
 
     // question type of 0 means number multiple choice
     public Question turnActivityIntoQuestion(final Activity activity, final int questionType,
-            final List<Activity> options) {
-        byte[] image = generateImageByteArray(activity.getPath());
-        byte[][] images = new byte[3][];
-        if (questionType == 1) {
-            images = new byte[][] {generateImageByteArray(options.get(0).getPath()),
-                                            generateImageByteArray(options.get(1).getPath()),
-                                            generateImageByteArray(options.get(2).getPath())};
-        }
-        //byte[] optionImage = generateImageByteArray(options.get(1).getPath());
+            final List<Activity> activityList) {
+        byte[] image;
+        byte[][] images;
+        List<Activity> options;
+
         return switch (questionType) {
-            case 0 -> activity.generateNumberMultipleChoiceQuestion(image);
-            case 1 -> activity.generateActivityMultipleChoiceQuestion(options, images);
-            default -> activity.getFreeResponseQuestion(image);
+            case 0 -> {
+                image = generateImageByteArray(activity.getPath());
+                yield activity.generateNumberMultipleChoiceQuestion(image);
+            }
+            case 1 -> {
+                options = generateOptions(activityList, 3);
+                images = new byte[][] {generateImageByteArray(options.get(0).getPath()),
+                        generateImageByteArray(options.get(1).getPath()),
+                        generateImageByteArray(options.get(2).getPath())};
+                yield activity.generateActivityMultipleChoiceQuestion(options, images);
+            }
+
+            case 2 -> {
+                options = generateApproximateOptions(activityList, 3, activity);
+                image = generateImageByteArray(activity.getPath());
+                yield activity.generateInsteadOfMultipleChoiceQuestion(options, image);
+            }
+
+            default -> {
+                image = generateImageByteArray(activity.getPath());
+                yield activity.getFreeResponseQuestion(image);
+            }
         };
     }
 
@@ -89,6 +107,56 @@ public class ActivityService {
         List<Activity> copy = new ArrayList<Activity>(allActivities);
         Collections.shuffle(copy);
         return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
+    }
+
+    public List<Activity> generateApproximateOptions(
+            final List<Activity> allActivities, final int numberOfOptions, final Activity activity) {
+        //Getting activities that have approximately same energy consumption with the activity in the question
+        List<Activity> approximateActivities = allActivities
+                .stream()
+                .filter(a -> !a.getTitle().equals(activity.getTitle()))
+                .filter(a -> a.getEnergyConsumption() >= activity.getEnergyConsumption() * (1 - offset)
+                        && a.getEnergyConsumption() <= activity.getEnergyConsumption() * (1 + offset))
+                .collect(Collectors.toList());
+
+        //Adding None as an option
+        List<Activity> options = new ArrayList<>();
+        Random rand = new Random();
+
+        //If there is an approximate activity, add it to the options
+        Activity approximateActivity = null;
+        if (!approximateActivities.isEmpty()) {
+            approximateActivity = approximateActivities.get(rand.nextInt(approximateActivities.size()));
+            options.add(approximateActivity);
+        }
+
+        //Getting incorrect activities
+        while (options.size() < numberOfOptions - 1) {
+            int index = rand.nextInt(allActivities.size());
+            Activity incorrectActivity = allActivities.get(index);
+            if (!options.contains(incorrectActivity)
+                    && (incorrectActivity.getEnergyConsumption() < activity.getEnergyConsumption() * (1 - offset)
+                    || incorrectActivity.getEnergyConsumption() > activity.getEnergyConsumption() * (1 + offset))) {
+                options.add(incorrectActivity);
+            }
+        }
+        Activity noneActivity = new Activity();
+        noneActivity.setTitle("None");
+        Collections.shuffle(options);
+
+        //Answer is hidden/encoded in the energyConsumption of none activity
+        // +1 is caused by adding the None at the beginning of the list
+        if (approximateActivity != null) {
+            noneActivity.setEnergyConsumption(options.indexOf(approximateActivity) + 1);
+        } else {
+            noneActivity.setEnergyConsumption(0);
+        }
+        options.add(0, noneActivity);
+
+//        System.out.println(activity);
+//        System.out.println("Approximates " + approximateActivities);
+//        System.out.println("Options " + options);
+        return options;
     }
 
     /**
