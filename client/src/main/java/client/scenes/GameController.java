@@ -493,17 +493,17 @@ public class GameController implements Initializable, WebSocketSubscription {
             notificationSound.play(muted, false);
 
             Question currentQuestion = game.getCurrentQuestion();
-            if (isOpenQuestion && currentQuestion instanceof NumberMultipleChoiceQuestion numQuestion) {
+            if (currentQuestion instanceof NumberMultipleChoiceQuestion numQuestion) {
                 changeToNumberMultiMode();
                 isOpenQuestion = false;
                 Image img = new Image(new ByteArrayInputStream(numQuestion.getImage()), 340, 340, false, true);
                 questionImage.setImage(img);
-            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion openQuestion) {
+            } else if (currentQuestion instanceof FreeResponseQuestion openQuestion) {
                 changeToFreeMode();
                 isOpenQuestion = true;
                 Image img = new Image(new ByteArrayInputStream(openQuestion.getImage()), 340, 340, false, true);
                 questionImage.setImage(img);
-            } else if (!isOpenQuestion && currentQuestion instanceof ActivityMultipleChoiceQuestion activityQuestion) {
+            } else if (currentQuestion instanceof ActivityMultipleChoiceQuestion activityQuestion) {
                 changeToActivityMultiMode();
                 isOpenQuestion = false;
                 Image img = new Image(new ByteArrayInputStream(activityQuestion.getImages()[0]), 340, 340, false, true);
