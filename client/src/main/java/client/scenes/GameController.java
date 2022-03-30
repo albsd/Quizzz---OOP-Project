@@ -34,6 +34,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.ArrayUtils;
@@ -61,7 +62,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private Region bufferRegion;
 
     @FXML
-    private ProgressBar timer;
+    private ProgressBar progressBar;
 
     @FXML
     private ScrollPane emoteScroll;
@@ -136,7 +137,22 @@ public class GameController implements Initializable, WebSocketSubscription {
     public GameController(final ServerUtils server) {
         this.gameTimer = new QuestionTimer(time -> { }, this::displayAnswerMomentarily);
         this.clientTimer = new QuestionTimer(
-                time -> Platform.runLater(() -> timer.setProgress((double) time / QuestionTimer.MAX_TIME)), () -> { });
+                time -> Platform.runLater(() -> {
+                    double ratio = (double) time / QuestionTimer.MAX_TIME;
+                    progressBar.setProgress(ratio);
+                    
+                    Color rgb;
+                    double y = 1 - Math.abs(2 * ratio - 1);
+                    if (ratio > 0.5) {
+                        rgb = Color.valueOf(orange).interpolate(Color.valueOf(green), 1 - y);
+                    } else {
+                        rgb = Color.valueOf(red).interpolate(Color.valueOf(orange), y);
+                    }
+                    progressBar.getStyleClass().removeIf((s) -> s.startsWith("-fx-accent:"));
+                    progressBar.setStyle("-fx-accent: #" + rgb.toString().substring(2) + ";"); 
+                }),
+                () -> {
+                });
         this.server = server;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
         this.questionFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 17);
@@ -269,6 +285,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         displayCurrentQuestion();
         clientTimer.start(0);
+
         gameTimer.start(0);
         server.startHeartbeat(new TimerTask() {
             @Override
@@ -397,7 +414,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         server.addScore(game.getId(), me.getNick(), currentScore);
 
         Platform.runLater(() -> {
-            timer.setProgress(0.0);
+            progressBar.setProgress(0.0);
             points.setText("Total points: " + me.getScore());
             correctText.setText(String.valueOf(answeredCorrectly));
             incorrectText.setText(String.valueOf(game.getCurrentQuestionNumber() - answeredCorrectly));
