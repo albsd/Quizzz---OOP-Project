@@ -93,7 +93,6 @@ public class AppController {
     @GetMapping({"/nick/{macAddress}"})
     public ResponseEntity<Player>  getMacAddress(final @PathVariable String macAddress) {
         String nick = appService.getNickname(macAddress);
-        System.out.println("geting nickname");
         if (nick == null) {
             return ResponseEntity.badRequest().build();
         }

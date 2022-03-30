@@ -46,7 +46,6 @@ public class QuestionTimer {
         if (currentTask != null) {
             currentTask.cancel();
         }
-        System.out.println("Timer started");
         currentTime = MAX_TIME;
         started = true;
         over = false;
@@ -58,6 +57,13 @@ public class QuestionTimer {
         if (started && !over) {
             currentTime /= 2;
         }
+    }
+
+    public void stop() {
+        if (currentTask != null) {
+            currentTask.cancel();
+        }
+        timer.purge();
     }
 
     private TimerTask newTimerTask() {
