@@ -21,7 +21,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -30,7 +29,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.AnchorPane;
@@ -58,11 +56,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     private Button option1, option2, option3, timeButton;
     
     @FXML
-    private Label questionPrompt, questionNumber, points, timer1, timer2,
+    private Label questionPrompt, questionNumber, points,
             warning, answerBox, questionPoint, correctText, incorrectText;
-
-    @FXML
-    private Region bufferRegion;
 
     @FXML
     private ProgressBar timer;
@@ -89,13 +84,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private SVGPath soundIcon;
     
     @FXML
-    private Parent popup;
-
-    @FXML
     private PopupController popupController;
-
-    @FXML
-    private Parent leaderboard;
 
     @FXML
     private LeaderboardController leaderboardController;

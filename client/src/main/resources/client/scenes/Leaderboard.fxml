@@ -57,7 +57,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </StackPane>
-            <ScrollPane hbarPolicy="NEVER" layoutX="300.0" layoutY="110.0" prefHeight="460.0" prefWidth="630.0" styleClass="leaderboardPane">
+            <ScrollPane hbarPolicy="NEVER" layoutX="300.0" layoutY="110.0" prefHeight="460.0" prefWidth="630.0">
                <content>
                   <VBox fx:id="playerRanking" alignment="TOP_CENTER" prefWidth="600.0" spacing="10.0">
                      <padding>

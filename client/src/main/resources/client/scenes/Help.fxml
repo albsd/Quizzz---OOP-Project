@@ -17,7 +17,7 @@
     </padding>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
         <children>
-            <Label fx:id="title" alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" styleClass="h1" text="How to play" textAlignment="CENTER">
+            <Label alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" styleClass="h1" text="How to play" textAlignment="CENTER">
                 <font>
                     <Font name="System Bold" size="72.0" />
                 </font>
@@ -36,32 +36,32 @@
                <RowConstraints minHeight="64.0" prefHeight="100.0" vgrow="SOMETIMES" />
            </rowConstraints>
             <children>
-               <Label fx:id="powerup1Text" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="72.0" prefWidth="234.0" text="Halves time for everyone but you" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="72.0" prefWidth="234.0" text="Halves time for everyone but you" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="powerup2Text" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="70.0" prefWidth="237.0" text="Doubles your score for this question" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="70.0" prefWidth="237.0" text="Doubles your score for this question" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="powerup3Text" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="71.0" prefWidth="205.0" text="Removes one wrong answer" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="71.0" prefWidth="205.0" text="Removes one wrong answer" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="powerupText" lineSpacing="4.0" styleClass="bold" text="Power-ups:" GridPane.columnIndex="1">
+               <Label lineSpacing="4.0" styleClass="bold" text="Power-ups:" GridPane.columnIndex="1">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="chatText" lineSpacing="4.0" styleClass="bold" text="Chat:" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <Label lineSpacing="4.0" styleClass="bold" text="Chat:" GridPane.columnIndex="1" GridPane.rowIndex="4">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="leaveText" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="71.0" prefWidth="205.0" text="Represents a player leaving" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="71.0" prefWidth="205.0" text="Represents a player leaving" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
                   <font>
                      <Font size="24.0" />
                   </font>
@@ -84,7 +84,7 @@
                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
            </rowConstraints>
             <children>
-               <Label fx:id="howToText1" alignment="TOP_LEFT" lineSpacing="4.0" text="The game has 20 questions regarding renewable energy and energy consumption. There is a timer at the bottom. The faster you answer correctly, the more points you get. But, be aware that you can’t change your answer, it’s final!&#10;&#10;You can either play Singleplayer or Multiplayer:&#10;" wrapText="true">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" text="The game has 20 questions regarding renewable energy and energy consumption. There is a timer at the bottom. The faster you answer correctly, the more points you get. But, be aware that you can’t change your answer, it’s final!&#10;&#10;You can either play Singleplayer or Multiplayer:&#10;" wrapText="true">
                   <font>
                      <Font size="24.0" />
                   </font>
@@ -92,12 +92,12 @@
                      <Insets bottom="24.0" />
                   </GridPane.margin>
                </Label>
-               <Label fx:id="singleText" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="35.0" prefWidth="250.0" styleClass="bold" text="Singleplayer" wrapText="true" GridPane.rowIndex="1">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="35.0" prefWidth="250.0" styleClass="bold" text="Singleplayer" wrapText="true" GridPane.rowIndex="1">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="howToText2" alignment="TOP_LEFT" lineSpacing="4.0" text="Compete for the global leaderboard! There are no powerups involved." wrapText="true" GridPane.rowIndex="2">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" text="Compete for the global leaderboard! There are no powerups involved." wrapText="true" GridPane.rowIndex="2">
                   <font>
                      <Font size="24.0" />
                   </font>
@@ -105,12 +105,12 @@
                      <Insets bottom="24.0" />
                   </GridPane.margin>
                </Label>
-               <Label fx:id="howToText3" alignment="TOP_LEFT" lineSpacing="4.0" text="Play with others and compete for the highest score in the game! You have the ability to use power ups. You can also use emotes to interact with others. Any number of players per lobby. Woah!" wrapText="true" GridPane.rowIndex="4">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" text="Play with others and compete for the highest score in the game! You have the ability to use power ups. You can also use emotes to interact with others. Any number of players per lobby. Woah!" wrapText="true" GridPane.rowIndex="4">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="multiText" alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="35.0" prefWidth="242.0" styleClass="bold" text="Multiplayer" wrapText="true" GridPane.rowIndex="3">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" prefHeight="35.0" prefWidth="242.0" styleClass="bold" text="Multiplayer" wrapText="true" GridPane.rowIndex="3">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>

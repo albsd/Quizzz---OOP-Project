@@ -14,7 +14,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -39,16 +38,13 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private ScrollPane chatArea;
 
     @FXML
-    private Label chatText, playersLeft, playersRight, playerCount, title, chatTitle;
+    private Label chatText, playersLeft, playersRight, playerCount;
 
     @FXML
     private Button startButton;
 
     @FXML
     private TextField chatInput;
-
-    @FXML
-    private Parent popup;
 
     @FXML
     private PopupController popupController;

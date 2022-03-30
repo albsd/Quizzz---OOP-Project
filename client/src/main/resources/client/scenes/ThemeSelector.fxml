@@ -20,7 +20,7 @@
     </padding>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
         <children>
-            <Label fx:id="title" alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" styleClass="h1" text="Select Theme" textAlignment="CENTER">
+            <Label alignment="CENTER" prefHeight="100.0" prefWidth="1240.0" styleClass="h1" text="Select Theme" textAlignment="CENTER">
                 <font>
                     <Font name="System Bold" size="60.0" />
                 </font>
@@ -52,7 +52,7 @@
                          <RowConstraints minHeight="10.0" prefHeight="70.0" vgrow="SOMETIMES" />
                        </rowConstraints>
                         <children>
-                           <Label fx:id="defaultTitle" styleClass="h1" text="Default" GridPane.columnSpan="2">
+                           <Label styleClass="h1" text="Default" GridPane.columnSpan="2">
                               <font>
                                  <Font name="System Bold" size="72.0" />
                               </font>
@@ -127,7 +127,7 @@
                            <RowConstraints minHeight="10.0" prefHeight="70.0" vgrow="SOMETIMES" />
                         </rowConstraints>
                         <children>
-                           <Label fx:id="darkTitle" styleClass="h1" text="Dark">
+                           <Label styleClass="h1" text="Dark">
                               <font>
                                  <Font name="System Bold" size="72.0" />
                               </font>

@@ -3,16 +3,12 @@ package client.scenes;
 import client.FXMLController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 import javax.inject.Inject;
 
 public class PopupController {
-
-    @FXML
-    private Button cancelButton, confirmButton;
 
     @FXML
     private Pane menu;

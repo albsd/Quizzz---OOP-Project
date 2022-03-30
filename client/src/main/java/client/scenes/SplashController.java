@@ -7,11 +7,8 @@ import commons.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -30,19 +27,10 @@ public class SplashController implements Initializable {
     private TextField nickField;
 
     @FXML
-    private Label warning, title;
+    private Label warning;
     
     @FXML
-    private Parent popup;
-
-    @FXML
     private PopupController popupController;
-
-    @FXML
-    private Button singleplayerButton, leaderBoardButton, multiplayerButton;
-
-    public final Color red = new Color(0.8, 0, 0, 1);
-    public final Color green = new Color(0, 0.6, 0, 1);
 
     private final ServerUtils server;
 
@@ -97,24 +85,24 @@ public class SplashController implements Initializable {
         int len = user.length();
 
         if (len < minChrLimit || len > maxChrLimit) {
-            warning.setTextFill(red);
+            warning.getStyleClass().add("incorrectText");
             warning.setText("Nickname should be between 3 and 12 characters");
             return false;
         }
 
         if (!user.matches("[a-zA-Z0-9]*")) {
-            warning.setTextFill(red);
+            warning.getStyleClass().add("incorrectText");
             warning.setText("Nickname can only contain letters and numbers");
             return false;
         }
 
         if (user.matches("[0-9]*")) {
-            warning.setTextFill(red);
+            warning.getStyleClass().add("incorrectText");
             warning.setText("Nickname must contain at least one letter");
             return false;
         }
 
-        warning.setTextFill(green);
+        warning.getStyleClass().add("correctText");
         warning.setText("Nickname set");
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("./src/main/resources/nick.txt"));
@@ -155,7 +143,7 @@ public class SplashController implements Initializable {
 
         final Player me = server.joinLobby(nick);
         if (me == null) {
-            warning.setTextFill(red);
+            warning.getStyleClass().add("correctText");
             warning.setText("User with the given name is already in the game");
             return;
         }

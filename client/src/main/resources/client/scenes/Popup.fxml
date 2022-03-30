@@ -13,12 +13,12 @@
          <children>
             <HBox alignment="CENTER" layoutY="120.0" prefHeight="50.0" prefWidth="800.0" spacing="40.0">
                <children>
-                  <Button fx:id="cancelButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#close" prefHeight="50.0" prefWidth="350.0" styleClass="cancelButton" text="Cancel">
+                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#close" prefHeight="50.0" prefWidth="350.0" styleClass="cancelButton" text="Cancel">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Button fx:id="confirmButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#returnToMenu" prefHeight="50.0" prefWidth="350.0" styleClass="confirmButton" text="Confirm">
+                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#returnToMenu" prefHeight="50.0" prefWidth="350.0" styleClass="confirmButton" text="Confirm">
                      <font>
                         <Font size="24.0" />
                      </font>

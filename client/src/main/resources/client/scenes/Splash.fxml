@@ -19,7 +19,7 @@
     </padding>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
         <children>
-            <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" layoutY="52.0" prefHeight="140.0" prefWidth="1240.0" styleClass="title" text="Energy Quizzz" textAlignment="CENTER">
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutY="52.0" prefHeight="140.0" prefWidth="1240.0" styleClass="title" text="Energy Quizzz" textAlignment="CENTER">
                 <font>
                     <Font name="System Bold" size="150.0" />
                 </font>
@@ -27,22 +27,22 @@
          <Line endX="515.0" layoutX="614.0" layoutY="251.0" startX="-502.0" stroke="#4f4f4f" strokeWidth="2.0" />
          <HBox alignment="CENTER" layoutX="34.0" layoutY="490.0" prefHeight="60.0" prefWidth="1173.0" spacing="100.0">
             <children>
-                  <Button fx:id="singleplayerButton" mnemonicParsing="false" onAction="#singleGame" prefHeight="110.0" prefWidth="300.0" text="Singleplayer">
+                  <Button mnemonicParsing="false" onAction="#singleGame" prefHeight="110.0" prefWidth="300.0" text="Singleplayer">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Button>
-                  <Button fx:id="leaderBoardButton" mnemonicParsing="false" onAction="#leaderBoard" prefHeight="98.0" prefWidth="300.0" text="Leaderboard">
+                  <Button mnemonicParsing="false" onAction="#leaderBoard" prefHeight="98.0" prefWidth="300.0" text="Leaderboard">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Button>
-                  <Button fx:id="multiplayerButton" mnemonicParsing="false" onAction="#lobby" prefHeight="98.0" prefWidth="300.0" text="Multiplayer">
+                  <Button mnemonicParsing="false" onAction="#lobby" prefHeight="98.0" prefWidth="300.0" text="Multiplayer">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Button>
-               <Button fx:id="adminButton" mnemonicParsing="false" onAction="#admin" prefHeight="60.0" prefWidth="300.0" text="Admin Panel">
+               <Button mnemonicParsing="false" onAction="#admin" prefHeight="60.0" prefWidth="300.0" text="Admin Panel">
                   <font>
                      <Font size="24.0" />
                   </font></Button>
@@ -72,19 +72,19 @@
                </Label>
             </children>
          </VBox>
-            <Button fx:id="helpButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#help" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton">
+            <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#help" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton">
             <font>
                <Font name="System Bold" size="18.0" />
             </font>
             <graphic>
                <SVGPath content="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 400c-18 0-32-14-32-32s13.1-32 32-32c17.1 0 32 14 32 32S273.1 400 256 400zM325.1 258L280 286V288c0 13-11 24-24 24S232 301 232 288V272c0-8 4-16 12-21l57-34C308 213 312 206 312 198C312 186 301.1 176 289.1 176h-51.1C225.1 176 216 186 216 198c0 13-11 24-24 24s-24-11-24-24C168 159 199 128 237.1 128h51.1C329 128 360 159 360 198C360 222 347 245 325.1 258z" scaleX="0.125" scaleY="0.125" />
             </graphic></Button>
-            <Button fx:id="exitButton" alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" layoutX="1160.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#exitApp" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton">
+            <Button alignment="CENTER" contentDisplay="TOP" graphicTextGap="0.0" layoutX="1160.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#exitApp" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton">
             <graphic>
                <SVGPath content="M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM175 208.1L222.1 255.1L175 303C165.7 312.4 165.7 327.6 175 336.1C184.4 346.3 199.6 346.3 208.1 336.1L255.1 289.9L303 336.1C312.4 346.3 327.6 346.3 336.1 336.1C346.3 327.6 346.3 312.4 336.1 303L289.9 255.1L336.1 208.1C346.3 199.6 346.3 184.4 336.1 175C327.6 165.7 312.4 165.7 303 175L255.1 222.1L208.1 175C199.6 165.7 184.4 165.7 175 175C165.7 184.4 165.7 199.6 175 208.1V208.1z" scaleX="0.125" scaleY="0.125" />
             </graphic></Button>
             <!-- Include the popup at top of everything -->
-            <fx:include fx:id="popup" source="../../client/scenes/Popup.fxml" />
+            <fx:include fx:id="popup" source="/client/scenes/Popup.fxml" />
          <Button layoutX="100.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#theme" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton">
             <font>
                <Font name="System Bold" size="18.0" />

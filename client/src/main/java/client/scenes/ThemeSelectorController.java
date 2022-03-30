@@ -3,13 +3,10 @@ package client.scenes;
 import client.FXMLController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 
 import javax.inject.Inject;
 
 public class ThemeSelectorController {
-
-    private Label defaultTitle, darkTitle;
 
     private final FXMLController fxml;
 
