@@ -12,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -42,7 +41,6 @@ public class SplashController implements Initializable {
     @FXML
     private Button singleplayerButton, leaderBoardButton, multiplayerButton;
 
-    private final Font font1, font2;
     public final Color red = new Color(0.8, 0, 0, 1);
     public final Color green = new Color(0, 0.6, 0, 1);
 
@@ -54,8 +52,6 @@ public class SplashController implements Initializable {
     public SplashController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
         this.fxml = fxml;
-        this.font1 = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
-        this.font2 = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 150);
     }
 
     /**
@@ -68,12 +64,6 @@ public class SplashController implements Initializable {
      */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        title.setFont(font2);
-        warning.setFont(font1);
-        nickField.setFont(font1);
-        singleplayerButton.setFont(font1);
-        leaderBoardButton.setFont(font1);
-        multiplayerButton.setFont(font1);
 
         try {
             Scanner sc = new Scanner(new File("./src/main/resources/nick.txt"));
@@ -87,6 +77,11 @@ public class SplashController implements Initializable {
     @FXML
     public void help(final ActionEvent event) {
         fxml.showHelp();
+    }
+
+    @FXML
+    public void theme(final ActionEvent event) {
+        fxml.showThemeSelector();
     }
 
     @FXML

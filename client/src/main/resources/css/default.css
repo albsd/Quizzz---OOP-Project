@@ -1,12 +1,4 @@
-.button {
-    -fx-border-color: transparent;
-}
-
-.returnMenuButton{
-    -fx-background-color: transparent;
-}
-
-.returnMenuButton:hover{
+.button:hover{
     -fx-border-color: black;
 }
 
@@ -41,12 +33,28 @@
     -fx-background-color: #FFD029;
 }
 
+.correctAnswer {
+    -fx-background-color: #E0FCCF;
+    -fx-text-fill: #009A19
+}
+
+.wrongAnswer {
+    -fx-background-color: #FE6F5B;
+    -fx-text-fill: #A00000;
+}
+
+.selectedOption {
+    -fx-border-color: black;
+    -fx-border-width: 3;
+    -fx-border-style: solid;
+}
+
 .scene {
     -fx-background-color: white;
 }
 
 .nicknameField {
-    -fx-background-color: #E0FCCF;
+    -fx-background-color: #000000;/* #E0FCCF;*/
     -fx-text-fill: #009A19;
     -fx-prompt-text-fill: #c6d9ba;
 }
@@ -59,9 +67,5 @@
 .returnPopup {
     -fx-background-color: white;
     -fx-border-color: black;
-    -fx-border-width: 7px;
-}
-
-.table-view .column-header .label {
-    -fx-alignment: CENTER_LEFT;
+    -fx-border-width: 3px;
 }

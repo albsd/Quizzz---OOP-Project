@@ -1,0 +1,111 @@
+/* GENERAL */
+.scene {
+    -fx-background-color: #151515;
+}
+
+/* LABEL */
+.label {
+    -fx-text-fill: #D0D0D0;
+}
+
+.correctText {
+    -fx-text-fill: #009A19
+}
+
+.incorrectText, .warning {
+    -fx-text-fill: #A00000;
+}
+
+/* LEADERBOARD */
+.leaderboardEntry .label {
+    -fx-text-fill: #D0D0D0;
+}
+
+.leaderboardEntry {
+    -fx-background-color: #EAEAEA;
+}
+
+.leaderboardFirst .label {
+    -fx-text-fill: #A07400;
+}
+
+.leaderboardFirst {
+    -fx-background-color: #FFD029;
+}
+
+.leaderboardSelf .label {
+    -fx-text-fill: #009A19
+}
+
+.leaderboardSelf {
+    -fx-background-color: #E0FCCF;
+}
+
+/* BUTTON */
+.button {
+    -fx-background-color: #FFD029;
+    -fx-text-fill: #A07400;
+}
+
+.button:hover {
+    -fx-background-color: #E7BE2D;
+}
+
+.cancelButton, .wrongAnswer {
+    -fx-background-color: #FE6F5B;
+    -fx-text-fill: #A00000;
+}
+
+.cancelButton:hover, .wrongAnswer:hover {
+    -fx-background-color: #D83D28;
+}
+
+.confirmButton, .correctAnswer {
+    -fx-background-color: #E0FCCF;
+    -fx-text-fill: #009A19
+}
+
+.confirmButton:hover, .correctAnswer:hover {
+    -fx-background-color: #7BD942;
+}
+
+.selectedOption {
+    -fx-border-color: white;
+    -fx-border-width: 3;
+    -fx-border-style: solid;
+}
+
+/* ICONBUTTON */
+SVGPath {
+    -fx-fill: #D0D0D0;
+}
+
+.iconButton:hover SVGPath {
+    -fx-fill: #F5F5F5;
+}
+
+/* TEXTFIELD */
+.text-field {
+    -fx-background-color: #505050;
+    -fx-text-fill: #D0D0D0;
+}
+
+.nicknameField {
+    -fx-background-color: #E0FCCF;
+    -fx-text-fill: #009A19;
+    -fx-prompt-text-fill: #C6D9BA;
+}
+
+/* SCROLLPANE */
+.scroll-pane {
+    -fx-background: #151515;
+    -fx-border-color: #505050;
+/*    -fx-border-width: 1px;*/
+}
+
+/* POPUP */
+.returnPopup {
+    -fx-background-color: #151515;
+    -fx-border-color: white;
+    -fx-border-width: 3px;
+}
