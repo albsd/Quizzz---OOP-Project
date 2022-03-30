@@ -143,10 +143,12 @@ public class Activity {
                 if (energyConsumption == 0) {
                     tempChoice = Math.abs((long) (5 * r.nextGaussian()));
                 }
+                int tempDiv = 1;
                 if (tempChoice >= 10) {
                     for(int z = 0; z<numberOfTrailingZeroes;z++) {
-                        tempChoice = (long) Math.round(tempChoice / 10) * 10;
+                        tempDiv = tempDiv * 10;
                     }
+                    tempChoice = (long) Math.round(tempChoice / tempDiv) * tempDiv;
                 }
             } while (Arrays.stream(choices).anyMatch(tempChoice::equals) || tempChoice.equals(energyConsumption));
             choices[i] = tempChoice;
