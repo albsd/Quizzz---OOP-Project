@@ -414,24 +414,27 @@ public class ServerUtils {
             return null;
         }
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kAppUrl + "/" + macAddress))
-                .header("accept", "application/json")
+                .uri(URI.create(kAppUrl + "/nick/" + macAddress))
+                .headers("accept", "application/json")
                 .GET()
                 .build();
-
-        return parseResponseToObject(request, new TypeReference<String>() { });
-    }
-
-    public String saveNickname(final String nick) {
-        if (macAddress == null) {
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player == null) {
             return null;
         }
+        return player.getNick();
+    }
+
+    public void saveNickname(final String nick) {
+        if (macAddress == null) {
+            return;
+        }
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kAppUrl + "/" + macAddress + "/" + nick))
+                .uri(URI.create(kAppUrl + "/nick/" + macAddress + "/" + nick))
+                .headers("accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
-
-        return parseResponseToObject(request, new TypeReference<String>() { });
+        parseResponseToObject(request, new TypeReference<Player>() { });
     }
 
 
@@ -448,10 +451,8 @@ public class ServerUtils {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-
                 return null;
             }
-
             ObjectMapper mapper = new ObjectMapper();
             T obj = mapper.readValue(response.body(), type);
             return obj;
@@ -502,6 +503,6 @@ public class ServerUtils {
         for (int i = 0; i < hardwareAddress.length; i++) {
             hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
         }
-        this.macAddress = String.join("-", hexadecimal);
+        this.macAddress = String.join("_", hexadecimal);
     }
 }

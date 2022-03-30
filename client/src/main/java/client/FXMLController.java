@@ -153,7 +153,7 @@ public class FXMLController {
         return root;
     }
 
-    public void saveNick(String nick) {
+    public void saveNick(final String nick) {
         this.nick = nick;
     }
 

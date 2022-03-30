@@ -75,12 +75,14 @@ public class SplashController implements Initializable {
         if (nick != null) {
             nick = fxml.getNick();
             nickField.setText(nick);
-        };
-        //if just started application, set it with server saved nickname if exists
-        String serverNick = server.getNickname();
-        if (nick == null && serverNick != null) {
-            nick = serverNick;
-            nickField.setText(nick);
+        } else {
+            //if just started application, set it with server saved nickname if exists
+            String serverNick = server.getNickname();
+            if (serverNick != null) {
+                nick = serverNick;
+                nickField.setText(nick);
+            }
+            //otherwise create new nickname and also save on server
         }
     }
 
@@ -102,10 +104,10 @@ public class SplashController implements Initializable {
      * @param event
      */
     @FXML
-    public void onEnter(ActionEvent event) {
+    public void onEnter(final ActionEvent event) {
         if (!validateNickname(nickField.getText())) {
             return;
-        };
+        }
         if (nick != null) {
             warning.setTextFill(green);
             warning.setText("Nickname has been changed");

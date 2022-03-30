@@ -17,13 +17,11 @@ public class AppRepository {
        this.nicknames = new HashMap<>();
     }
 
-    //returns saved nick
-    public String saveNickname(final String macAddress, final String nick) {
-        return nicknames.put(macAddress, nick);
+    public void saveNickname(final String macAddress, final String nick) {
+        nicknames.put(macAddress, nick);
     }
 
     public String getNickname(final String macAddress) {
         return nicknames.get(macAddress);
     }
 }
-    
