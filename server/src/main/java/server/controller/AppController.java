@@ -7,8 +7,11 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import server.service.AppService;
 import server.service.GameService;
 
 import java.util.UUID;
@@ -21,12 +24,15 @@ public class AppController {
 
     private final GameService gameService;
 
+    private final AppService appService;
+
     private final SimpMessagingTemplate smt;
 
     @Autowired
-    public AppController(final GameService gameService, final SimpMessagingTemplate smt) {
+    public AppController(final GameService gameService, final SimpMessagingTemplate smt, final AppService appService) {
         this.gameService = gameService;
         this.smt = smt;
+        this.appService = appService;
     }
 
     /**
@@ -77,5 +83,22 @@ public class AppController {
      */
     public void sendPlayerLeft(@Payload final Player player, final UUID id) {
         this.smt.convertAndSend("/topic/game/" + id + "/leave", player);
+    }
+
+    /**
+     * Endpoint to check the get player's saved nickname.
+     */
+    @GetMapping({"/{macAddress}"})
+    public String getMacAddress(final @PathVariable String macAddress) {
+        return appService.getNickname(macAddress);
+    }
+
+
+    /**
+     * Endpoint to save nickname with player's MAC address.
+     */
+    @PostMapping({"/{macAddress}/{nick}"})
+    public String saveMacAddress(final @PathVariable String macAddress, @PathVariable String nick) {
+        return appService.saveNickname(macAddress, nick);
     }
 }
