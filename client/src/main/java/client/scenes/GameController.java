@@ -96,9 +96,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final ServerUtils server;
 
-    private QuestionTimer gameTimer;
-
-    private QuestionTimer clientTimer;
+    private final QuestionTimer clientTimer;
 
     private final Font font;
 
@@ -135,26 +133,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @Inject
     public GameController(final ServerUtils server) {
-        this.gameTimer = new QuestionTimer(time -> { }, this::displayAnswerMomentarily);
-        this.clientTimer = new QuestionTimer(
-                time -> Platform.runLater(() -> {
-                    double ratio = (double) time / QuestionTimer.MAX_TIME;
-                    progressBar.setProgress(ratio);
-                    
-                    Color rgb; // linearly interpolate
-                    // x [1, 0.5] -> y [1, 0]
-                    // x [0.5, 0] -> y [1, 0]
-                    double y = 1 - Math.abs(2 * ratio - 1);
-                    if (ratio > 0.5) {
-                        rgb = Color.valueOf(orange).interpolate(Color.valueOf(green), 1 - y);
-                    } else {
-                        rgb = Color.valueOf(red).interpolate(Color.valueOf(orange), y);
-                    }
-                    progressBar.getStyleClass().removeIf((s) -> s.startsWith("-fx-accent:"));
-                    progressBar.setStyle("-fx-accent: #" + rgb.toString().substring(2) + ";"); 
-                }),
-                () -> {
-                });
+        this.clientTimer = initClientTimer();
         this.server = server;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
         this.questionFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 17);
@@ -204,12 +183,31 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-     * Registers the player to the server's messages
-     * for chat messages from other players
-     * and disconnection updates in the chat
-     * and time halving updates.
-     * @return the subscriptions of the client
+     * On each tick, update the progressBar's value and calculate the color.
+     * The color animates from green - orange - red.
+     * An animated color is interpolated based on the remaining time.
+     * x [1, 0.5] -> y [1, 0]; x [0.5, 0] -> y [1, 0]
+     * 
+     * @return an instance of the QuestionTimer for the client
      */
+    private QuestionTimer initClientTimer() {
+        return new QuestionTimer(
+                time -> Platform.runLater(() -> {
+                    double ratio = (double) time / QuestionTimer.MAX_TIME;
+                    progressBar.setProgress(ratio);
+
+                    Color rgb; // linearly interpolate
+                    double y = 1 - Math.abs(2 * ratio - 1);
+                    if (ratio > 0.5) {
+                        rgb = Color.valueOf(orange).interpolate(Color.valueOf(green), 1 - y);
+                    } else {
+                        rgb = Color.valueOf(red).interpolate(Color.valueOf(orange), y);
+                    }
+                    progressBar.getStyleClass().removeIf((s) -> s.startsWith("-fx-accent:"));
+                    progressBar.setStyle("-fx-accent: #" + rgb.toString().substring(2) + ";");
+                }), this::displayAnswerMomentarily);
+    }
+
     @Override
     public Subscription[] registerForMessages() {
         Subscription[] subscriptions = new Subscription[3];
@@ -287,7 +285,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         displayCurrentQuestion();
         clientTimer.start(0);
-        gameTimer.start(0);
         server.startHeartbeat(new TimerTask() {
             @Override
             public void run() {
@@ -317,7 +314,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         displayCurrentQuestion();
         clientTimer.start(0);
-        gameTimer.start(0);
     }
 
     /**
@@ -340,7 +336,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
         if (!game.isMultiplayer()) {
             clientTimer.setCurrentTime(7);
-            gameTimer.setCurrentTime(7);
         }
     }
 
@@ -380,7 +375,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
         if (!game.isMultiplayer()) {
             clientTimer.setCurrentTime(7);
-            gameTimer.setCurrentTime(7);
         }
     }
 
@@ -436,7 +430,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         } else {
             Platform.runLater(() -> answerBox.setText("Answer is: " + answer));
         }
-        gameTimer.startDelay(this::setNextQuestion);
+        clientTimer.startDelay(this::setNextQuestion);
     }
 
     /**
@@ -470,7 +464,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             game.nextQuestion();
             displayCurrentQuestion();
             clientTimer.start(0);
-            gameTimer.start(0);
         }
     }
 
@@ -489,7 +482,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             leaderboardController.endGame(me);
         }
         if (!game.isOver()) {
-            gameTimer.startDelay(this::setNextQuestion);
+            clientTimer.startDelay(this::setNextQuestion);
             leaderboardController.hide();
             menu.setVisible(true);
         }
@@ -552,7 +545,6 @@ public class GameController implements Initializable, WebSocketSubscription {
                 server.leaveGame(me.getNick(), game.getId());
             }
             clientTimer.stop();
-            gameTimer.stop();
             //mark game over to prevent next callback
             game.setCurrentQuestionIndex(20);
         });
