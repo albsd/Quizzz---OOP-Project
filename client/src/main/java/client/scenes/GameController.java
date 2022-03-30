@@ -131,8 +131,12 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private boolean muted = false;
 
+
     @Inject
     public GameController(final ServerUtils server) {
+        this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
+        this.clientTimer = new QuestionTimer(
+                time -> Platform.runLater(() -> timer.setProgress((double) time / QuestionTimer.MAX_TIME)), () -> { });
         this.server = server;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
         this.questionFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 17);
@@ -176,7 +180,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         Image muteImage = new Image("/images/sounds-unmuted.png");
         ImageView image = new ImageView(muteImage);
         soundButton.setGraphic(image);
-        setupTimers();
     }
 
     /**
@@ -538,8 +541,10 @@ public class GameController implements Initializable, WebSocketSubscription {
                 server.cancelHeartbeat();
                 server.leaveGame(me.getNick(), game.getId());
             }
-            //reset timers
-            setupTimers();
+            clientTimer.stop();
+            gameTimer.stop();
+            //mark game over to prevent next callback
+            game.setCurrentQuestionIndex(20);
         });
     }
 
@@ -667,11 +672,5 @@ public class GameController implements Initializable, WebSocketSubscription {
             ImageView icon = new ImageView(image);
             ((Button) e.getSource()).setGraphic(icon);
         }
-    }
-
-    private void setupTimers() {
-        this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
-        this.clientTimer = new QuestionTimer(
-                time -> Platform.runLater(() -> timer.setProgress((double) time / QuestionTimer.MAX_TIME)), () -> { });
     }
 }
