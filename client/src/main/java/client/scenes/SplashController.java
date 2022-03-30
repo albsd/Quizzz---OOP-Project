@@ -74,10 +74,20 @@ public class SplashController implements Initializable {
         multiplayerButton.setFont(font1);
         adminButton.setFont(font1);
 
-        nick = fxml.getNick();
+        //Players can prefer to play with server saved nickname or new nickname
+        //nick has already been set so used persistent fxml nick
         if (nick != null) {
+            nick = fxml.getNick();
             nickField.setText(nick);
-        };
+        } else {
+            //if just started application, set it with server saved nickname if exists
+            String serverNick = server.getNickname();
+            if (serverNick != null) {
+                nick = serverNick;
+                nickField.setText(nick);
+            }
+            //otherwise create new nickname and also save on server
+        }
     }
 
     @FXML
@@ -108,6 +118,7 @@ public class SplashController implements Initializable {
         }
         nick = nickField.getText();
         nickField.setText(nick);
+        server.saveNickname(nick);
         fxml.saveNick(nick);
     }
 

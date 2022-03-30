@@ -36,7 +36,11 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -62,9 +66,12 @@ public class ServerUtils {
 
     private TimerTask heartBeat;
 
+    private String macAddress;
+
     public ServerUtils() {
         this.client = HttpClient.newHttpClient();
         this.heartBeatTimer = new Timer();
+        setMacAddress();
     }
 
     public String isRunning(final String host, final String port) {
@@ -401,6 +408,32 @@ public class ServerUtils {
         return deletedActivity;
     }
 
+    // REQUESTS FOR SERVER SAVED NICKNAME  ============================================================================
+    public String getNickname() {
+        if (macAddress == null) {
+            return null;
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kAppUrl + "/" + macAddress))
+                .header("accept", "application/json")
+                .GET()
+                .build();
+
+        return parseResponseToObject(request, new TypeReference<String>() { });
+    }
+
+    public String saveNickname(final String nick) {
+        if (macAddress == null) {
+            return null;
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kAppUrl + "/" + macAddress + "/" + nick))
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        return parseResponseToObject(request, new TypeReference<String>() { });
+    }
+
 
     /**
      * Utility method to parse HttpResponse to a given object type.
@@ -444,5 +477,31 @@ public class ServerUtils {
     public void cancelHeartbeat() {
         heartBeat.cancel();
         heartBeatTimer.purge();
+    }
+
+    private void setMacAddress() {
+        InetAddress localHost = null;
+        try {
+            localHost = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        NetworkInterface ni = null;
+        try {
+            ni = NetworkInterface.getByInetAddress(localHost);
+        } catch (SocketException e1) {
+            e1.printStackTrace();
+        }
+        byte[] hardwareAddress = null;
+        try {
+            hardwareAddress = ni.getHardwareAddress();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        String[] hexadecimal = new String[hardwareAddress.length];
+        for (int i = 0; i < hardwareAddress.length; i++) {
+            hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
+        }
+        this.macAddress = String.join("-", hexadecimal);
     }
 }

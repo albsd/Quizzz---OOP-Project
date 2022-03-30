@@ -60,6 +60,10 @@ public class QuestionTimer {
         }
     }
 
+    public void purge() {
+        timer.purge();
+    }
+
     public void halve() {
         if (started && !over) {
             currentTime /= 2;
