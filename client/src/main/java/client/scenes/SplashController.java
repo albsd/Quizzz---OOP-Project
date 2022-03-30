@@ -17,9 +17,6 @@ import javafx.scene.text.Font;
 import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 public class SplashController implements Initializable {
 
