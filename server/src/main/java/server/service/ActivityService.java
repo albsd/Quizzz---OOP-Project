@@ -40,6 +40,8 @@ public class ActivityService {
 
     private final String resourcesPath = "./src/main/resources";
 
+    private final String defaultImagePath = ".src/main/resources/images/icon.png";
+
     @Autowired
     public ActivityService(final ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
@@ -219,9 +221,8 @@ public class ActivityService {
         }
     }
 
-    private byte[] generateImageByteArray(final String imagePath) {
-        // TODO: add the path to the default image
-        if (imagePath == null) return new byte[0];
+    private byte[] generateImageByteArray(String imagePath) {
+        if (imagePath == null) imagePath = defaultImagePath;
         File file = new File(imagePath);
         String extension = imagePath.substring(imagePath.lastIndexOf('.') + 1);
         try {

@@ -66,6 +66,11 @@ public class QuestionTimer {
         timer.purge();
     }
 
+    public void startDelay(final Runnable task) {
+        currentTask = delayTask(task);
+        timer.schedule(currentTask, 5000);
+    }
+
     private TimerTask newTimerTask() {
         return new TimerTask() {
             @Override
@@ -87,6 +92,15 @@ public class QuestionTimer {
                     e.printStackTrace();
                 }
 
+            }
+        };
+    }
+
+    private TimerTask delayTask(final Runnable task) {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                task.run();
             }
         };
     }
