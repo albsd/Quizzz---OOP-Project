@@ -42,6 +42,7 @@ import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -130,6 +131,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private boolean muted = false;
 
+    private List<Button> optionButtons;
 
     @Inject
     public GameController(final ServerUtils server) {
@@ -141,17 +143,12 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        option1.setFont(questionFont);
-        option2.setFont(questionFont);
-        option3.setFont(questionFont);
-
-        option1.setWrapText(true);
-        option2.setWrapText(true);
-        option3.setWrapText(true);
-
-        option1.setPrefWidth(145);
-        option2.setPrefWidth(145);
-        option3.setPrefWidth(145);
+        optionButtons = new ArrayList<>(Arrays.asList(option1, option2, option3));
+        optionButtons.forEach((b) -> {
+            b.setFont(questionFont);
+            b.setWrapText(true);
+            b.setPrefWidth(145);
+        });
 
         questionPrompt.setFont(font);
         questionNumber.setFont(font);
@@ -308,9 +305,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         powerupBox.getChildren().remove(1, 3);
         VBox.setMargin(optionBox, new Insets(75, 0, 0, 0));
 
-        option1.setPrefHeight(145);
-        option2.setPrefHeight(145);
-        option3.setPrefHeight(145);
+        optionButtons.forEach((b) -> b.setPrefHeight(145));        
 
         displayCurrentQuestion();
         clientTimer.start(0);
@@ -517,21 +512,13 @@ public class GameController implements Initializable, WebSocketSubscription {
             questionPoint.setText("");
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
-                option1.setDisable(false);
-                option2.setDisable(false);
-                option3.setDisable(false);
-
-                option1.setStyle("-fx-background-color:" + orange);
-                option2.setStyle("-fx-background-color:" + orange);
-                option3.setStyle("-fx-background-color:" + orange);
-
-                option1.setStyle("-fx-opacity: 1");
-                option2.setStyle("-fx-opacity: 1");
-                option3.setStyle("-fx-opacity: 1");
-
-                option1.setText(options[0]);
-                option2.setText(options[1]);
-                option3.setText(options[2]);
+                optionButtons.forEach((b) -> {
+                    b.setDisable(false);
+                    b.setStyle("-fx-background-color:" + orange);
+                    b.setStyle("-fx-opacity: 1");
+                    b.setText(options[optionButtons.indexOf(b)]);
+                });
+                
                 numberOfMultipleChoiceQuestions++;
             }
         });
@@ -643,9 +630,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         answerBox.toFront();
         openAnswer.toFront();
         openAnswer.setVisible(false);
-        option1.setVisible(true);
-        option2.setVisible(true);
-        option3.setVisible(true);
+        optionButtons.forEach((b) -> b.setVisible(true));
     }
 
     /**
@@ -656,9 +641,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         answerBox.toBack();
         openAnswer.toBack();
         openAnswer.setVisible(true);
-        option1.setVisible(false);
-        option2.setVisible(false);
-        option3.setVisible(false);
+        optionButtons.forEach((b) -> b.setVisible(false));
     }
 
     @FXML
