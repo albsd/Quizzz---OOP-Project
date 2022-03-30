@@ -94,11 +94,12 @@ public class ActivityService {
 //           System.out.println(a.getTitle() + " + " + a.getEnergyConsumption());
 //       }
 //        System.out.println("\n");
-         return getClosestActivities(baseActivity, copy);
+        return getClosestActivities(baseActivity, copy);
         //return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
     }
 //TODO: Solve bug of not allowing duplicate activities in the questions
     public List<Activity> getClosestActivities(final Activity baseActivity, final List<Activity> activities) {
+        final int closeness = 10;
         Collections.sort(activities, new Comparator<Activity>() {
             public int compare(Activity a, Activity b) {
                 long d1 = Math.abs(a.getEnergyConsumption() - baseActivity.getEnergyConsumption());
@@ -106,20 +107,28 @@ public class ActivityService {
                 return Long.compare(d1, d2);
             }
         });
-        for(Activity a: activities) {
-            System.out.println(a.getTitle() + " + " + (a.getEnergyConsumption() - baseActivity.getEnergyConsumption()));
-        }
+//        for(Activity a: activities) {
+//            System.out.println(a.getTitle() + " + " + (a.getEnergyConsumption() - baseActivity.getEnergyConsumption()));
+//        }
         System.out.println("\n");
         Random random = new Random();
         List<Activity> options = new ArrayList<>();
         options.add(baseActivity);
-        int firstActivityIndex = random.nextInt(6);
+        int firstActivityIndex = random.nextInt(closeness);
+        while(baseActivity.equals(activities.get(firstActivityIndex))) {
+            firstActivityIndex = random.nextInt(closeness);
+        }
         options.add(activities.get(firstActivityIndex));
-        int secondActivityIndex = random.nextInt(6);
-        while(secondActivityIndex == firstActivityIndex || activities.get(secondActivityIndex).equals(activities.get(firstActivityIndex))) {
-            secondActivityIndex = random.nextInt(6);
+        int secondActivityIndex = random.nextInt(closeness);
+        while(baseActivity.equals(activities.get(secondActivityIndex)) ||
+                activities.get(secondActivityIndex).equals(activities.get(firstActivityIndex))) {
+            secondActivityIndex = random.nextInt(closeness);
         }
         options.add(activities.get(secondActivityIndex));
+        for(Activity a: options) {
+            System.out.println(a.getTitle());
+        }
+        System.out.println("\n");
         return options;
     }
 
