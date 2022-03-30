@@ -21,13 +21,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -50,7 +46,7 @@ public class ActivityService {
         long count = activityRepository.count();
         List<Long> ids = ThreadLocalRandom.current().longs(1L, count + 1L)
                 .distinct()
-                .limit(20)
+                .limit(100)
                 .boxed()
                 .collect(Collectors.toList());
 
@@ -88,7 +84,43 @@ public class ActivityService {
     public List<Activity> generateOptions(final List<Activity> allActivities, final int numberOfOptions) {
         List<Activity> copy = new ArrayList<Activity>(allActivities);
         Collections.shuffle(copy);
-        return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
+        Random random = new Random();
+        Activity baseActivity = copy.get(random.nextInt(copy.size()));
+        while (baseActivity.getEnergyConsumption() > 100000000L) {
+            baseActivity = copy.get(random.nextInt(copy.size()));
+        }
+       List<Activity> options = getClosestActivities(baseActivity, copy);
+//       for(Activity a:options) {
+//           System.out.println(a.getTitle() + " + " + a.getEnergyConsumption());
+//       }
+//        System.out.println("\n");
+         return getClosestActivities(baseActivity, copy);
+        //return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
+    }
+//TODO: Solve bug of not allowing duplicate activities in the questions
+    public List<Activity> getClosestActivities(final Activity baseActivity, final List<Activity> activities) {
+        Collections.sort(activities, new Comparator<Activity>() {
+            public int compare(Activity a, Activity b) {
+                long d1 = Math.abs(a.getEnergyConsumption() - baseActivity.getEnergyConsumption());
+                long d2 = Math.abs(b.getEnergyConsumption() - baseActivity.getEnergyConsumption());
+                return Long.compare(d1, d2);
+            }
+        });
+        for(Activity a: activities) {
+            System.out.println(a.getTitle() + " + " + (a.getEnergyConsumption() - baseActivity.getEnergyConsumption()));
+        }
+        System.out.println("\n");
+        Random random = new Random();
+        List<Activity> options = new ArrayList<>();
+        options.add(baseActivity);
+        int firstActivityIndex = random.nextInt(6);
+        options.add(activities.get(firstActivityIndex));
+        int secondActivityIndex = random.nextInt(6);
+        while(secondActivityIndex == firstActivityIndex || activities.get(secondActivityIndex).equals(activities.get(firstActivityIndex))) {
+            secondActivityIndex = random.nextInt(6);
+        }
+        options.add(activities.get(secondActivityIndex));
+        return options;
     }
 
     /**
