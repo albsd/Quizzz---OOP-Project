@@ -21,11 +21,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.LinkedHashMap;
 
 @Service
 public class ActivityService {
@@ -101,7 +107,7 @@ public class ActivityService {
     public List<Activity> getClosestActivities(final Activity baseActivity, final List<Activity> activities) {
         final int closeness = 10;
         Collections.sort(activities, new Comparator<Activity>() {
-            public int compare(Activity a, Activity b) {
+            public int compare(final Activity a, final Activity b) {
                 long d1 = Math.abs(a.getEnergyConsumption() - baseActivity.getEnergyConsumption());
                 long d2 = Math.abs(b.getEnergyConsumption() - baseActivity.getEnergyConsumption());
                 return Long.compare(d1, d2);
@@ -115,17 +121,17 @@ public class ActivityService {
         List<Activity> options = new ArrayList<>();
         options.add(baseActivity);
         int firstActivityIndex = random.nextInt(closeness);
-        while(baseActivity.equals(activities.get(firstActivityIndex))) {
+        while (baseActivity.equals(activities.get(firstActivityIndex))) {
             firstActivityIndex = random.nextInt(closeness);
         }
         options.add(activities.get(firstActivityIndex));
         int secondActivityIndex = random.nextInt(closeness);
-        while(baseActivity.equals(activities.get(secondActivityIndex)) ||
-                activities.get(secondActivityIndex).equals(activities.get(firstActivityIndex))) {
+        while (baseActivity.equals(activities.get(secondActivityIndex))
+                || activities.get(secondActivityIndex).equals(activities.get(firstActivityIndex))) {
             secondActivityIndex = random.nextInt(closeness);
         }
         options.add(activities.get(secondActivityIndex));
-        for(Activity a: options) {
+        for (Activity a: options) {
             System.out.println(a.getTitle());
         }
         System.out.println("\n");

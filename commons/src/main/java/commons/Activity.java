@@ -8,7 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.Objects;
 
 /**
  * This class is used to represent an energy related activity.
@@ -142,7 +145,7 @@ public class Activity {
                 }
                 int tempDiv = 1;
                 if (tempChoice >= 10) {
-                    for(int z = 0; z<numberOfTrailingZeroes;z++) {
+                    for (int z = 0; z < numberOfTrailingZeroes; z++) {
                         tempDiv = tempDiv * 10;
                     }
                     tempChoice = (long) Math.round(tempChoice / tempDiv) * tempDiv;
