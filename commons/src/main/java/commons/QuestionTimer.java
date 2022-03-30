@@ -46,22 +46,12 @@ public class QuestionTimer {
         if (currentTask != null) {
             currentTask.cancel();
         }
+        System.out.println("Timer started");
         currentTime = MAX_TIME;
         started = true;
         over = false;
         currentTask = newTimerTask();
         timer.scheduleAtFixedRate(currentTask, delay, decrement);
-    }
-
-    public void stop() {
-        over = true;
-        if (currentTask != null) {
-            currentTask.cancel();
-        }
-    }
-
-    public void purge() {
-        timer.purge();
     }
 
     public void halve() {

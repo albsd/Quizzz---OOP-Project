@@ -95,9 +95,9 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final ServerUtils server;
 
-    private final QuestionTimer gameTimer;
+    private QuestionTimer gameTimer;
 
-    private final QuestionTimer clientTimer;
+    private QuestionTimer clientTimer;
 
     private final Font font;
 
@@ -133,9 +133,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @Inject
     public GameController(final ServerUtils server) {
-        this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
-        this.clientTimer = new QuestionTimer(
-                time -> Platform.runLater(() -> timer.setProgress((double) time / QuestionTimer.MAX_TIME)), () -> { });
         this.server = server;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
         this.questionFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 17);
@@ -179,6 +176,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         Image muteImage = new Image("/images/sounds-unmuted.png");
         ImageView image = new ImageView(muteImage);
         soundButton.setGraphic(image);
+        setupTimers();
     }
 
     /**
@@ -540,10 +538,8 @@ public class GameController implements Initializable, WebSocketSubscription {
                 server.cancelHeartbeat();
                 server.leaveGame(me.getNick(), game.getId());
             }
-            clientTimer.stop();
-            clientTimer.purge();
-            gameTimer.stop();
-            gameTimer.purge();
+            //reset timers
+            setupTimers();
         });
     }
 
@@ -673,4 +669,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
     }
 
+    private void setupTimers() {
+        this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
+        this.clientTimer = new QuestionTimer(
+                time -> Platform.runLater(() -> timer.setProgress((double) time / QuestionTimer.MAX_TIME)), () -> { });
+    }
 }

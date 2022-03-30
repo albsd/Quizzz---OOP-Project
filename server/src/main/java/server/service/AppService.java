@@ -15,8 +15,8 @@ public class AppService {
         this.appRepo = appRepo;
     }
 
-    public String saveNickname(final String macAddress, final String nick) {
-        return appRepo.saveNickname(macAddress, nick);
+    public void saveNickname(final String macAddress, final String nick) {
+        appRepo.saveNickname(macAddress, nick);
     }
 
     public String getNickname(final String macAddress) {

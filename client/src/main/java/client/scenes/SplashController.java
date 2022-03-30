@@ -105,10 +105,10 @@ public class SplashController implements Initializable {
      * @param event
      */
     @FXML
-    public void onEnter(ActionEvent event) {
+    public void onEnter(final ActionEvent event) {
         if (!validateNickname(nickField.getText())) {
             return;
-        };
+        }
         if (nick != null) {
             warning.setTextFill(green);
             warning.setText("Nickname has been changed");

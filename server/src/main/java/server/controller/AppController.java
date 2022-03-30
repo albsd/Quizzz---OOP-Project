@@ -3,6 +3,7 @@ package server.controller;
 import commons.Player;
 import commons.PlayerUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,11 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import server.service.AppService;
 import server.service.GameService;
-
 import java.util.UUID;
+
 /**
  * Controller class to receive and update clients' heartbeats.
  */
@@ -86,19 +86,30 @@ public class AppController {
     }
 
     /**
-     * Endpoint to check the get player's saved nickname.
+     * Endpoint to get nickname of MAC address.
+     * @param macAddress unique MAC address of device
+     * @return Player object.
      */
-    @GetMapping({"/{macAddress}"})
-    public String getMacAddress(final @PathVariable String macAddress) {
-        return appService.getNickname(macAddress);
+    @GetMapping({"/nick/{macAddress}"})
+    public ResponseEntity<Player>  getMacAddress(final @PathVariable String macAddress) {
+        String nick = appService.getNickname(macAddress);
+        System.out.println("geting nickname");
+        if (nick == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(new Player(nick));
     }
 
 
     /**
-     * Endpoint to save nickname with player's MAC address.
+     * Endpoint to save nickname with MAC address.
+     * @param macAddress unique MAC address of device
+     * @param nick nickname of client
+     * @return Player object.
      */
-    @PostMapping({"/{macAddress}/{nick}"})
-    public String saveMacAddress(final @PathVariable String macAddress, @PathVariable String nick) {
-        return appService.saveNickname(macAddress, nick);
+    @PostMapping({"/nick/{macAddress}/{nick}"})
+    public Player saveMacAddress(final @PathVariable String macAddress, final @PathVariable String nick) {
+        appService.saveNickname(macAddress, nick);
+        return new Player(nick);
     }
 }
