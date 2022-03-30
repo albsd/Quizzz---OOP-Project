@@ -320,6 +320,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         if (!game.isMultiplayer()) {
             clientTimer.setCurrentTime(0);
             gameTimer.setCurrentTime(0);
+            clientTimer.stop();
+            gameTimer.stop();
         }
     }
 
