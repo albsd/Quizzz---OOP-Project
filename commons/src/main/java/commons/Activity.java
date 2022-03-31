@@ -140,10 +140,9 @@ public class Activity {
         for (int i = 0; i < choices.length; i++) {
             do {
                 long offset;
-                if(energyConsumption < 2) {
+                if (energyConsumption < 2) {
                     offset = 1;
-                }
-                else {
+                } else {
                     offset = r.longs(-energyConsumption / 2, energyConsumption / 2)
                             .findFirst()
                             .getAsLong();
