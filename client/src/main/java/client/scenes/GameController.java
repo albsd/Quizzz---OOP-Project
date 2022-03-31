@@ -34,6 +34,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.ArrayUtils;
@@ -41,6 +42,7 @@ import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -61,7 +63,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private Region bufferRegion;
 
     @FXML
-    private ProgressBar timer;
+    private ProgressBar progressBar;
 
     @FXML
     private ScrollPane emoteScroll;
@@ -95,9 +97,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final ServerUtils server;
 
-    private QuestionTimer gameTimer;
-
-    private QuestionTimer clientTimer;
+    private final QuestionTimer clientTimer;
 
     private final Font font;
 
@@ -131,12 +131,11 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private boolean muted = false;
 
+    private List<Button> optionButtons;
 
     @Inject
     public GameController(final ServerUtils server) {
-        this.gameTimer = new QuestionTimer(time -> { }, this::displayAnswerMomentarily);
-        this.clientTimer = new QuestionTimer(
-                time -> Platform.runLater(() -> timer.setProgress((double) time / QuestionTimer.MAX_TIME)), () -> { });
+        this.clientTimer = initClientTimer();
         this.server = server;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
         this.questionFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 17);
@@ -144,17 +143,12 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        option1.setFont(questionFont);
-        option2.setFont(questionFont);
-        option3.setFont(questionFont);
-
-        option1.setWrapText(true);
-        option2.setWrapText(true);
-        option3.setWrapText(true);
-
-        option1.setPrefWidth(145);
-        option2.setPrefWidth(145);
-        option3.setPrefWidth(145);
+        optionButtons = new ArrayList<>(Arrays.asList(option1, option2, option3));
+        optionButtons.forEach((b) -> {
+            b.setFont(questionFont);
+            b.setWrapText(true);
+            b.setPrefWidth(145);
+        });
 
         questionPrompt.setFont(font);
         questionNumber.setFont(font);
@@ -186,12 +180,30 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     /**
-     * Registers the player to the server's messages
-     * for chat messages from other players
-     * and disconnection updates in the chat
-     * and time halving updates.
-     * @return the subscriptions of the client
+     * On each tick, update the progressBar's value and calculate the color.
+     * The color animates from green - orange - red.
+     * An animated color is interpolated based on the remaining time.
+     * x [1, 0.5] -> y [1, 0]; x [0.5, 0] -> y [1, 0]
+     * 
+     * @return an instance of the QuestionTimer for the client
      */
+    private QuestionTimer initClientTimer() {
+        return new QuestionTimer(
+                time -> Platform.runLater(() -> {
+                    double ratio = (double) time / QuestionTimer.MAX_TIME;
+                    progressBar.setProgress(ratio);
+
+                    Color rgb; // linearly interpolate
+                    double y = 1 - Math.abs(2 * ratio - 1);
+                    if (ratio > 0.5) {
+                        rgb = Color.valueOf(orange).interpolate(Color.valueOf(green), 1 - y);
+                    } else {
+                        rgb = Color.valueOf(red).interpolate(Color.valueOf(orange), y);
+                    }
+                    progressBar.setStyle("-fx-accent: #" + rgb.toString().substring(2) + ";");
+                }), this::displayAnswerMomentarily);
+    }
+
     @Override
     public Subscription[] registerForMessages() {
         Subscription[] subscriptions = new Subscription[3];
@@ -269,7 +281,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         displayCurrentQuestion();
         clientTimer.start(0);
-        gameTimer.start(0);
         server.startHeartbeat(new TimerTask() {
             @Override
             public void run() {
@@ -293,13 +304,10 @@ public class GameController implements Initializable, WebSocketSubscription {
         powerupBox.getChildren().remove(1, 3);
         VBox.setMargin(optionBox, new Insets(75, 0, 0, 0));
 
-        option1.setPrefHeight(145);
-        option2.setPrefHeight(145);
-        option3.setPrefHeight(145);
+        optionButtons.forEach((b) -> b.setPrefHeight(145));        
 
         displayCurrentQuestion();
         clientTimer.start(0);
-        gameTimer.start(0);
     }
 
     /**
@@ -322,7 +330,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
         if (!game.isMultiplayer()) {
             clientTimer.setCurrentTime(7);
-            gameTimer.setCurrentTime(7);
         }
     }
 
@@ -362,7 +369,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         }
         if (!game.isMultiplayer()) {
             clientTimer.setCurrentTime(7);
-            gameTimer.setCurrentTime(7);
         }
     }
 
@@ -397,7 +403,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         server.addScore(game.getId(), me.getNick(), currentScore);
 
         Platform.runLater(() -> {
-            timer.setProgress(0.0);
+            progressBar.setProgress(0.0);
             points.setText("Total points: " + me.getScore());
             correctText.setText(String.valueOf(answeredCorrectly));
             incorrectText.setText(String.valueOf(game.getCurrentQuestionNumber() - answeredCorrectly));
@@ -418,7 +424,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         } else {
             Platform.runLater(() -> answerBox.setText("Answer is: " + answer));
         }
-        gameTimer.startDelay(this::setNextQuestion);
+        clientTimer.startDelay(this::setNextQuestion);
     }
 
     /**
@@ -452,7 +458,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             game.nextQuestion();
             displayCurrentQuestion();
             clientTimer.start(0);
-            gameTimer.start(0);
         }
     }
 
@@ -471,7 +476,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             leaderboardController.endGame(me);
         }
         if (!game.isOver()) {
-            gameTimer.startDelay(this::setNextQuestion);
+            clientTimer.startDelay(this::setNextQuestion);
             leaderboardController.hide();
             menu.setVisible(true);
         }
@@ -506,21 +511,13 @@ public class GameController implements Initializable, WebSocketSubscription {
             questionPoint.setText("");
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
-                option1.setDisable(false);
-                option2.setDisable(false);
-                option3.setDisable(false);
-
-                option1.setStyle("-fx-background-color:" + orange);
-                option2.setStyle("-fx-background-color:" + orange);
-                option3.setStyle("-fx-background-color:" + orange);
-
-                option1.setStyle("-fx-opacity: 1");
-                option2.setStyle("-fx-opacity: 1");
-                option3.setStyle("-fx-opacity: 1");
-
-                option1.setText(options[0]);
-                option2.setText(options[1]);
-                option3.setText(options[2]);
+                optionButtons.forEach((b) -> {
+                    b.setDisable(false);
+                    b.setStyle("-fx-background-color:" + orange);
+                    b.setStyle("-fx-opacity: 1");
+                    b.setText(options[optionButtons.indexOf(b)]);
+                });
+                
                 numberOfMultipleChoiceQuestions++;
             }
         });
@@ -534,7 +531,6 @@ public class GameController implements Initializable, WebSocketSubscription {
                 server.leaveGame(me.getNick(), game.getId());
             }
             clientTimer.stop();
-            gameTimer.stop();
             //mark game over to prevent next callback
             game.setCurrentQuestionIndex(20);
         });
@@ -633,9 +629,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         answerBox.toFront();
         openAnswer.toFront();
         openAnswer.setVisible(false);
-        option1.setVisible(true);
-        option2.setVisible(true);
-        option3.setVisible(true);
+        optionButtons.forEach((b) -> b.setVisible(true));
     }
 
     /**
@@ -646,9 +640,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         answerBox.toBack();
         openAnswer.toBack();
         openAnswer.setVisible(true);
-        option1.setVisible(false);
-        option2.setVisible(false);
-        option3.setVisible(false);
+        optionButtons.forEach((b) -> b.setVisible(false));
     }
 
     @FXML
