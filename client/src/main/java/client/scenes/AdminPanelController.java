@@ -285,20 +285,19 @@ public class AdminPanelController implements Initializable {
      * @return Data of the image to be read as byte array
      */
     private byte[] generateImageByteArray(final String imagePath) {
-        // TODO: add the path to the default image
-        if (imagePath == null) return new byte[0];
         File file = new File(imagePath);
         String extension = imagePath.substring(imagePath.lastIndexOf('.') + 1);
         try {
             BufferedImage bImage = ImageIO.read(file);
             if (bImage == null) {
-                return new byte[0];
+                URL imageURL = AdminPanelController.class.getClassLoader().getResource("images/icon.png");
+                bImage = ImageIO.read(imageURL);
+                extension = "png";
             }
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ImageIO.write(bImage, extension, bos);
             return bos.toByteArray();
         } catch (IOException e) {
-            System.err.println("IndexOutOfBoundsException: " + e.getMessage());
             return new byte[0];
         }
     }
