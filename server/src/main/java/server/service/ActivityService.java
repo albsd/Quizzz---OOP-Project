@@ -24,13 +24,14 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.Optional;
+import java.util.LinkedHashMap;
 
 @Service
 public class ActivityService {
@@ -50,12 +51,11 @@ public class ActivityService {
         this.activityRepository = activityRepository;
     }
 
-    // Assumes 20 is the number of questions in the game
     public List<Activity> getActivities() {
         long count = activityRepository.count();
         List<Long> ids = ThreadLocalRandom.current().longs(1L, count + 1L)
                 .distinct()
-                .limit(20)
+                .limit(100)
                 .boxed()
                 .collect(Collectors.toList());
 
@@ -115,10 +115,51 @@ public class ActivityService {
         };
     }
 
-    public List<Activity> generateOptions(final List<Activity> allActivities, final int numberOfOptions) {
-        List<Activity> copy = new ArrayList<Activity>(allActivities);
-        Collections.shuffle(copy);
-        return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
+    /**
+     * Helper method to generate activity multiple choice questions.
+     * @param allActivities
+     * @return a list with 3 randomly picked activities
+     */
+    public List<Activity> generateOptions(final List<Activity> allActivities) {
+        List<Activity> copy = new ArrayList<>(allActivities);
+        Random random = new Random();
+        Activity baseActivity = copy.get(random.nextInt(copy.size()));
+        while (baseActivity.getEnergyConsumption() > 100000L) {
+            baseActivity = copy.get(random.nextInt(copy.size()));
+        }
+        return getClosestActivities(baseActivity, copy);
+    }
+
+    /**
+     * Helper method that gets closest activities in terms of energy consumption within a range of 10 in the list
+     * sorted by its "distance" to the base activity's energy consumption.
+     * @param baseActivity
+     * @param activities
+     * @return A list including the base activity and 2 randomly chosen activities that are close to the energy
+     * consumption of the base activity
+     */
+    public List<Activity> getClosestActivities(final Activity baseActivity, final List<Activity> activities) {
+        final int closeness = 10;
+        Collections.sort(activities, (a, b) -> {
+            long d1 = Math.abs(a.getEnergyConsumption() - baseActivity.getEnergyConsumption());
+            long d2 = Math.abs(b.getEnergyConsumption() - baseActivity.getEnergyConsumption());
+            return Long.compare(d1, d2);
+        });
+        Random random = new Random();
+        List<Activity> options = new ArrayList<>();
+        options.add(baseActivity);
+        int firstActivityIndex = random.nextInt(closeness);
+        while (baseActivity.equals(activities.get(firstActivityIndex))) {
+            firstActivityIndex = random.nextInt(closeness);
+        }
+        options.add(activities.get(firstActivityIndex));
+        int secondActivityIndex = random.nextInt(closeness);
+        while (baseActivity.equals(activities.get(secondActivityIndex))
+                || activities.get(secondActivityIndex).equals(activities.get(firstActivityIndex))) {
+            secondActivityIndex = random.nextInt(closeness);
+        }
+        options.add(activities.get(secondActivityIndex));
+        return options;
     }
 
     /**
