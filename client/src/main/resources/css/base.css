@@ -1,3 +1,4 @@
+/* FONTS */
 .label, .button, .text-field, Text {
     -fx-font-family: 'Righteous';
     -fx-font-size: 24;
@@ -30,14 +31,126 @@
     -fx-font-size: 17;
 }
 
-.iconButton {
-    -fx-background-color: transparent !important;
-}
-
+/* GENERAL */
 .removedOption {
     -fx-opacity: 0.25;
 }
 
 .table-view .column-header .label {
     -fx-alignment: CENTER_LEFT;
+}
+
+.scene {
+    -fx-background-color: -background;
+}
+
+/* BUTTONS */
+.button {
+    -fx-background-color: -button-background;
+    -fx-text-fill: -button-text;
+}
+
+.button:hover {
+    -fx-background-color: derive(-button-background, -10%);
+    -fx-text-fill: derive(-button-text, -10%);
+}
+
+.cancelButton, .wrongAnswer {
+    -fx-background-color: -incorrect-background;
+    -fx-text-fill: -incorrect-text;
+}
+
+.cancelButton:hover, .wrongAnswer:hover {
+    -fx-background-color: derive(-incorrect-background, -10%);
+    -fx-text-fill: derive(-incorrect-text, -10%);
+}
+
+.confirmButton, .correctAnswer {
+    -fx-background-color: -correct-background;
+    -fx-text-fill: -correct-text;
+}
+
+.confirmButton:hover, .correctAnswer:hover {
+    -fx-background-color: derive(-correct-background, -10%);
+    -fx-text-fill: derive(-correct-text, -10%);
+}
+
+.selectedOption {
+    -fx-border-color: -selected-border;
+    -fx-border-width: 3;
+    -fx-border-style: solid;
+}
+
+/* LABELS */
+.label {
+    -fx-text-fill: -text;
+}
+
+.correctText {
+    -fx-text-fill: -correct-text;
+}
+
+.incorrectText, .warning {
+    -fx-text-fill: -incorrect-text;
+}
+
+/* LEADERBOARD */
+.leaderboardEntry .label {
+    -fx-text-fill: -leaderboard-text;
+}
+
+.leaderboardEntry {
+    -fx-background-color: -leaderboard-background;
+}
+
+.leaderboardFirst .label {
+    -fx-text-fill: -leaderboard-first-text;
+}
+
+.leaderboardFirst {
+    -fx-background-color: -leaderboard-first-background;
+}
+
+.leaderboardSelf .label {
+    -fx-text-fill: -leaderboard-self-text;
+}
+
+.leaderboardSelf {
+    -fx-background-color: -leaderboard-self-background;
+}
+
+/* ICONS */
+SVGPath {
+    -fx-fill: -icon;
+}
+
+.iconButton:hover SVGPath {
+    -fx-fill: derive(-icon, -20%);
+}
+
+.iconButton {
+    -fx-background-color: transparent !important;
+}
+
+/* OTHER */
+.text-field {
+    -fx-background-color: -background-alt;
+    -fx-text-fill: -text;
+}
+
+.nicknameField {
+    -fx-background-color: -correct-background;
+    -fx-text-fill: -correct-text;
+    -fx-prompt-text-fill: derive(-correct-background, -10%);
+}
+
+.scroll-pane {
+    -fx-background: -background;
+    -fx-border-color: -background-alt;
+}
+
+.returnPopup {
+    -fx-background-color: -background;
+    -fx-border-color: -selected-border;
+    -fx-border-width: 3px;
 }

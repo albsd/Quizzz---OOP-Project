@@ -21,8 +21,8 @@ public class ThemeSelectorController {
     }
 
     @FXML
-    public void setDefaultTheme() {
-        fxml.setTheme("css/default.css");
+    public void setLightheme() {
+        fxml.setTheme("css/light.css");
     }
 
     @FXML
