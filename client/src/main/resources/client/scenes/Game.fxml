@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -49,7 +41,7 @@
                </Label>
                <VBox layoutY="100.0">
                   <children>
-                     <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" text="What is the expected energy consumption of an average personal gaming computer system per hour?" wrapText="true">
+                     <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" wrapText="true">
                         <font>
                            <Font size="24.0" />
                         </font>
@@ -59,51 +51,46 @@
                      </Label>
                      <HBox fx:id="mainHorizontalBox" prefHeight="400.0" prefWidth="1240.0">
                         <children>
-                           <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                              <children>
-                                 <Button fx:id="timeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#timePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton">
-                                    <graphic>
-                                       <ImageView pickOnBounds="true" preserveRatio="true">
-                                          <image>
-                                             <Image url="@/images/time.png" />
-                                          </image>
-                                       </ImageView>
-                                    </graphic>
-                                 </Button>
-                                 <Button fx:id="scoreButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#scorePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton">
-                                    <graphic>
-                                       <ImageView pickOnBounds="true" preserveRatio="true">
-                                          <image>
-                                             <Image url="@/images/score.png" />
-                                          </image>
-                                       </ImageView>
-                                    </graphic>
-                                 </Button>
-                                 <Button fx:id="removeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#removePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton">
-                                    <graphic>
-                                       <ImageView pickOnBounds="true" preserveRatio="true">
-                                          <image>
-                                             <Image url="@/images/remove.png" />
-                                          </image>
-                                       </ImageView>
-                                    </graphic>
-                                 </Button>
-                              </children>
-                           </VBox>
-                           <Region prefHeight="414.0" prefWidth="20.0" />
                            <VBox fx:id="leftBox" alignment="CENTER" prefHeight="268.0" prefWidth="343.0">
                               <children>
-                                 <ImageView fx:id="questionImage" fitHeight="340.0" fitWidth="345.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
-                                    <image>
-                                       <Image url="@/images/placeholderQuestion.png" />
-                                    </image>
-                                 </ImageView>
+                                 <ImageView fx:id="questionImage" fitHeight="340.0" fitWidth="345.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS" />
+                                 <HBox fx:id="powerupBox" prefHeight="85.0" prefWidth="311.0">
+                                    <children>
+                                       <Button fx:id="timeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#timePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                          <graphic>
+                                             <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@/images/time.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                       <Button fx:id="scoreButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#scorePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                          <graphic>
+                                             <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@/images/score.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                       <Button fx:id="removeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#removePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                          <graphic>
+                                             <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@/images/remove.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                    </children>
+                                 </HBox>
                               </children>
                            </VBox>
                            <Region fx:id="region1" prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
                            <VBox fx:id="optionBox" prefHeight="414.0" prefWidth="395.0" spacing="25.0">
                               <children>
-                                 <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" text="200 Watts / hour" textAlignment="CENTER" textFill="#a07400" wrapText="true" VBox.vgrow="ALWAYS">
+                                 <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" textFill="#a07400" wrapText="true" VBox.vgrow="ALWAYS">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
@@ -111,12 +98,12 @@
                                        <Insets />
                                     </VBox.margin>
                                  </Button>
-                                 <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" text="100 Watts / hour" textAlignment="CENTER" textFill="#a07400" wrapText="true">
+                                 <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" textFill="#a07400" wrapText="true">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
                                  </Button>
-                                 <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" text="50 Watts / hour" textAlignment="CENTER" textFill="#a07400" wrapText="true">
+                                 <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" textFill="#a07400" wrapText="true">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
@@ -231,7 +218,7 @@
                         </image>
                      </ImageView>
                   </graphic></Button>
-               <Label fx:id="questionNumber" layoutX="-8.0" layoutY="126.0" text="20/20">
+               <Label fx:id="questionNumber" layoutX="-8.0" layoutY="126.0">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
