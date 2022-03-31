@@ -15,6 +15,8 @@ import commons.Question;
 import commons.FreeResponseQuestion;
 import commons.MultipleChoiceQuestion;
 import commons.Leaderboard;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,6 +38,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
@@ -184,7 +187,7 @@ public class GameController implements Initializable, WebSocketSubscription {
      * The color animates from green - orange - red.
      * An animated color is interpolated based on the remaining time.
      * x [1, 0.5] -> y [1, 0]; x [0.5, 0] -> y [1, 0]
-     * 
+     *
      * @return an instance of the QuestionTimer for the client
      */
     private QuestionTimer initClientTimer() {
@@ -201,9 +204,16 @@ public class GameController implements Initializable, WebSocketSubscription {
                         rgb = Color.valueOf(red).interpolate(Color.valueOf(orange), y);
                     }
                     progressBar.setStyle("-fx-accent: #" + rgb.toString().substring(2) + ";");
-                }), this::displayAnswerMomentarily);
+                }), this::sendFinishMessage);
     }
 
+    /**
+     * Registers the player to the server's messages
+     * for chat messages from other players
+     * and disconnection updates in the chat
+     * and time halving updates.
+     * @return the subscriptions of the client
+     */
     @Override
     public Subscription[] registerForMessages() {
         Subscription[] subscriptions = new Subscription[3];
@@ -234,9 +244,13 @@ public class GameController implements Initializable, WebSocketSubscription {
                     case halveTimer -> {
                         Sound boonSound = new Sound(SoundName.boon);
                         boonSound.play(muted, false);
+
                         clientTimer.halve();
                     }
-                    case startTimer -> clientTimer.start(0);
+                    case startTimer -> {
+                        displayAnswerMomentarily();
+                    }
+                    case stopTimer -> clientTimer.stop();
                     default -> { }
                 }
             });
@@ -304,7 +318,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         powerupBox.getChildren().remove(1, 3);
         VBox.setMargin(optionBox, new Insets(75, 0, 0, 0));
 
-        optionButtons.forEach((b) -> b.setPrefHeight(145));        
+        optionButtons.forEach((b) -> b.setPrefHeight(145));
 
         displayCurrentQuestion();
         clientTimer.start(0);
@@ -444,9 +458,12 @@ public class GameController implements Initializable, WebSocketSubscription {
                 displayLeaderboardMomentarily(server.getSinglePlayerLeaderboard());
             }
         }
+        int delay = 0;
         // Displays leaderboard every 10 questions in multiplayer
         if (game.isMultiplayer() && game.shouldShowMultiplayerLeaderboard()) {
+            delay = 5000;
             displayLeaderboardMomentarily(server.getLeaderboard(game.getId()));
+
         }
         if (!game.isOver()) {
             Platform.runLater(() -> {
@@ -457,7 +474,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             warning.setVisible(false);
             game.nextQuestion();
             displayCurrentQuestion();
-            clientTimer.start(0);
+            clientTimer.start(delay);
         }
     }
 
@@ -468,19 +485,28 @@ public class GameController implements Initializable, WebSocketSubscription {
      * @param leaderboard leaderboard to be displayed
      */
     private void displayLeaderboardMomentarily(final Leaderboard leaderboard) {
-        Platform.runLater(() -> leaderboardController.displayLeaderboard(leaderboard, me));
-        menu.setVisible(false);
-        leaderboardController.hideBackButton();
-        leaderboardController.show();
-        if (game.isOver()) {
-            leaderboardController.endGame(me);
-        }
-        if (!game.isOver()) {
-            clientTimer.startDelay(this::setNextQuestion);
-            leaderboardController.hide();
-            menu.setVisible(true);
-        }
+        //System.out.println("Displaying leaderboard");
+        Platform.runLater(() -> {
+            leaderboardController.displayLeaderboard(leaderboard, me);
+            menu.setVisible(false);
+            leaderboardController.hideBackButton();
+            leaderboardController.show();
+        });
+
+        KeyFrame kf = new KeyFrame(Duration.seconds(5), e -> {
+            if (game.isOver()) {
+                leaderboardController.endGame(me);
+            }
+            if (!game.isOver()) {
+                //clientTimer.startDelay(this::sendFinishMessage);
+                leaderboardController.hide();
+                menu.setVisible(true);
+            }
+        });
+        Timeline timeline = new Timeline(kf);
+        Platform.runLater(timeline::play);
     }
+
 
     /**
      * Displays the current question and updates visual elements accordingly.
@@ -517,16 +543,25 @@ public class GameController implements Initializable, WebSocketSubscription {
                     b.setStyle("-fx-opacity: 1");
                     b.setText(options[optionButtons.indexOf(b)]);
                 });
-                
+
                 numberOfMultipleChoiceQuestions++;
             }
         });
+    }
+
+    public void sendFinishMessage() {
+        if (game.isMultiplayer()) {
+            server.updatePlayerFinished(game.getId(), me.getNick(), true);
+        } else {
+            displayAnswerMomentarily();
+        }
     }
 
     @FXML
     public void openPopup(final ActionEvent e) {
         popupController.open("game", () -> {
             if (game.isMultiplayer()) {
+                server.updatePlayerFinished(game.getId(), me.getNick(), true);
                 server.cancelHeartbeat();
                 server.leaveGame(me.getNick(), game.getId());
             }
@@ -657,4 +692,5 @@ public class GameController implements Initializable, WebSocketSubscription {
             ((Button) e.getSource()).setGraphic(icon);
         }
     }
+
 }

@@ -347,6 +347,16 @@ public class ServerUtils {
         parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
+    public void updatePlayerFinished(final UUID id, final String nick, final boolean finished) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kAppUrl + "/" + id + "/finishedtimer/" + nick))
+                .header("accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(Boolean.toString(finished)))
+                .build();
+        parseResponseToObject(request, new TypeReference<Game>() { });
+    }
+
+
     // REQUESTS FOR THE DATABASE OF ACTIVITIES  =======================================================================
     public List<Activity> getAllActivities() {
         HttpRequest request = HttpRequest.newBuilder()

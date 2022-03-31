@@ -56,7 +56,7 @@ public class PopupController implements Initializable {
 
     @FXML
     public void returnToMenu() {
-        onConfirm.run();
         fxml.showSplash();
+        onConfirm.run();
     }
 }
