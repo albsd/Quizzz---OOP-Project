@@ -96,12 +96,7 @@ public class ActivityService {
             baseActivity = copy.get(random.nextInt(copy.size()));
         }
        List<Activity> options = getClosestActivities(baseActivity, copy);
-//       for(Activity a:options) {
-//           System.out.println(a.getTitle() + " + " + a.getEnergyConsumption());
-//       }
-//        System.out.println("\n");
         return getClosestActivities(baseActivity, copy);
-        //return numberOfOptions > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, numberOfOptions);
     }
 //TODO: Solve bug of not allowing duplicate activities in the questions
     public List<Activity> getClosestActivities(final Activity baseActivity, final List<Activity> activities) {
@@ -113,10 +108,6 @@ public class ActivityService {
                 return Long.compare(d1, d2);
             }
         });
-//        for(Activity a: activities) {
-//            System.out.println(a.getTitle() + " + " + (a.getEnergyConsumption() - baseActivity.getEnergyConsumption()));
-//        }
-        System.out.println("\n");
         Random random = new Random();
         List<Activity> options = new ArrayList<>();
         options.add(baseActivity);
@@ -131,10 +122,6 @@ public class ActivityService {
             secondActivityIndex = random.nextInt(closeness);
         }
         options.add(activities.get(secondActivityIndex));
-        for (Activity a: options) {
-            System.out.println(a.getTitle());
-        }
-        System.out.println("\n");
         return options;
     }
 
