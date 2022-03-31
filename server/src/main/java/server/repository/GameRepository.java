@@ -38,9 +38,12 @@ public class GameRepository {
 
     private Set<Game> singleGames;
 
+    private UUID defaultID;
+
     public GameRepository() {
         games = new HashSet<>();
         singleGames = new HashSet<>();
+        defaultID = UUID.randomUUID();
     }
 
     /**
@@ -76,7 +79,7 @@ public class GameRepository {
      * @param questions list of questiosn to add to game object
      */
     public void createSingleplayer(final List<Question> questions) {
-        Game game = new Game(null, questions, false);
+        Game game = new Game(defaultID, questions, false);
         singleGames.add(game);
     }
 

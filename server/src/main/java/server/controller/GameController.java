@@ -66,14 +66,11 @@ public class GameController {
         this.leaderboardService = leaderboardService;
         this.smt = smt;
         gameService.initializeLobby(activityService.getQuestionList());
-
-        UUID defaultID = UUID.randomUUID();
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < 10; i++) {
-                    Game game = new Game(defaultID, activityService.getQuestionList(), false);
-                    gameService.addSingleGame(game);
+                    gameService.createSingleplayer(activityService.getQuestionList());
                 }
             }
         });

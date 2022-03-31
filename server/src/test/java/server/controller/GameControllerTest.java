@@ -125,17 +125,6 @@ public class GameControllerTest {
         actual = ctrl.joinLobby(nick);
         assertEquals(403, actual.getStatusCode().value());
     }
-    //May not be testable as new game creation is done in anoter thread
-    // @Test
-    // public void startTheLobby() {
-    //     ctrl.joinLobby("johny");
-    //     ctrl.joinLobby("niko");
-    //     ctrl.joinLobby("babe");
-    //     assertEquals(ctrl.getLobby().getPlayers().size(), 3);
-    //     ctrl.startLobby();
-    
-    //     assertEquals(ctrl.getLobby().getPlayers().size(), 0);
-    // }
 
     @Test
     public void leaderboardSorted() {
