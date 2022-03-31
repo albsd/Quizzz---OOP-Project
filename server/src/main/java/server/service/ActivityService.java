@@ -52,7 +52,7 @@ public class ActivityService {
         long count = activityRepository.count();
         List<Long> ids = ThreadLocalRandom.current().longs(1L, count + 1L)
                 .distinct()
-                .limit(100)
+                .limit(5)
                 .boxed()
                 .collect(Collectors.toList());
 
