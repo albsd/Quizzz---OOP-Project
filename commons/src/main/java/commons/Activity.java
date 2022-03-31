@@ -112,7 +112,6 @@ public class Activity {
         return maxIndex;
     }
 
-
     /**
      * Takes a list of activities and makes a string array with its titles.
      * @param answerOptions list of activities as options
@@ -132,7 +131,7 @@ public class Activity {
                         + title.substring(1) + " take in watt hours?";
         return new FreeResponseQuestion(prompt, image, energyConsumption);
     }
-    //TODO Make the number of trailing zeroes the same in the generate answers as in the real one
+
     public String[] generateChoices(final long energyConsumption) {
         Long[] choices = new Long[3];
         Random r = new Random();
@@ -213,7 +212,7 @@ public class Activity {
         this.path = path;
     }
 
-    public int getNumberOfTrailingZeroes(final long answer) {
+    public static int getNumberOfTrailingZeroes(final long answer) {
         Pattern pattern = Pattern.compile("(\\d+?)(0*)$", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(Long.toString(answer));
         int count = 0;
