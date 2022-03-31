@@ -503,18 +503,16 @@ public class GameController implements Initializable, WebSocketSubscription {
                 isOpenQuestion = true;
                 Image img = new Image(new ByteArrayInputStream(openQuestion.getImage()), 340, 340, false, true);
                 questionImage.setImage(img);
-            } else if (currentQuestion instanceof ActivityMultipleChoiceQuestion activityQuestion) {
-                changeToActivityMultiMode();
+            } else {
+                ActivityMultipleChoiceQuestion activityQuestion = (ActivityMultipleChoiceQuestion) currentQuestion;
+                //This line should be changed after the function is implemented
+                //changeToActivityMultiMode();
+                changeToNumberMultiMode();
                 isOpenQuestion = false;
                 Image img = new Image(new ByteArrayInputStream(activityQuestion.getImages()[0]), 340, 340, false, true);
                 questionImage.setImage(img);
             }
-            /*
-            //TODO: WRITE A METHOD FOR 3 IMAGE QUESTION RESTRUCTURING
-            if (currentQuestion.getImages() != null) {
 
-            }
-            */
             questionNumber.setText(String.format("%d/%d", game.getCurrentQuestionNumber(), 20));
             questionPrompt.setText(currentQuestion.getPrompt());
             questionPoint.setText("");
@@ -650,9 +648,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         optionButtons.forEach((b) -> b.setVisible(false));
     }
 
+    //TODO: WILL BE IMPLEMENTED IN THE RESTRUCTURING ISSUE
     private void changeToActivityMultiMode() {
-
-
     }
 
     @FXML

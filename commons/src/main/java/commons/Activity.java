@@ -94,7 +94,7 @@ public class Activity {
     public NumberMultipleChoiceQuestion generateInsteadOfMultipleChoiceQuestion(
             final List<Activity>  answerOptions, final byte[] image) {
         String prompt = "Instead of " + title.substring(0, 1).toLowerCase()
-                + title.substring(1) + " you can do...";
+                + title.substring(1) + " you could do instead...";
         String[] choices = this.getMultipleActivitiesOptions(answerOptions);
         return new NumberMultipleChoiceQuestion(prompt, choices, answerOptions.get(0).getEnergyConsumption(), image);
     }
