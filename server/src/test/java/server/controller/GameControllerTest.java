@@ -54,12 +54,11 @@ public class GameControllerTest {
     private ActivityRepository activityRepository;
 
     private final List<Activity> activities = List.of(
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity());
+            new Activity("", 1, "", ""),
+            new Activity("", 2, "", ""),
+            new Activity("", 3, "", ""),
+            new Activity("", 4, "", ""),
+            new Activity("", 5, "", ""));
 
     @Mock
     LeaderboardRepository leaderboardRepository;
@@ -76,13 +75,14 @@ public class GameControllerTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        when(activityRepository.count()).thenReturn(20L);
+        when(activityRepository.count()).thenReturn(5L);
         when(activityRepository.findAll()).thenReturn(activities);
         when(leaderboardRepository.findAll()).thenReturn(gameResults);
 
         GameService service =  new GameService(new GameRepository());
         ActivityService activityService = new ActivityService(activityRepository);
         LeaderboardService leaderboardService = new LeaderboardService(leaderboardRepository);
+        //TODO: Figure out why this test is broken
         service.initializeLobby(activityService.getQuestionList());
 
         ctrl = new GameController(service, activityService, leaderboardService, simpMessagingTemplate);
