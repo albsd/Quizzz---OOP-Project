@@ -102,7 +102,7 @@ public class ActivityService {
         Collections.shuffle(copy);
         Random random = new Random();
         Activity baseActivity = copy.get(random.nextInt(copy.size()));
-        while (baseActivity.getEnergyConsumption() > 100000000L) {
+        while (baseActivity.getEnergyConsumption() > 100000L) {
             baseActivity = copy.get(random.nextInt(copy.size()));
         }
         return getClosestActivities(baseActivity, copy);

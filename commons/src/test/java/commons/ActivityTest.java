@@ -101,4 +101,9 @@ class ActivityTest {
         int expected = 5;
         assertEquals(expected, Activity.getNumberOfTrailingZeroes(200100000L));
     }
+    @Test
+    void getNumberOfTrailingZeroesWithNoZeroes() {
+        int expected = 0;
+        assertEquals(expected, Activity.getNumberOfTrailingZeroes(111L));
+    }
 }
