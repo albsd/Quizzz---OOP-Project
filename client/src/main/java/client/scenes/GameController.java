@@ -205,8 +205,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         svg.setContent(loadSVGPath(svgFilePath));
         svg.setScaleX(0.125);
         svg.setScaleY(0.125);
-        svg.setTranslateX(-224);
-        svg.setTranslateY(-224);
+        svg.setTranslateX(-svg.getLayoutBounds().getCenterX() + 32);
+        svg.setTranslateY(-svg.getLayoutBounds().getCenterY() + 32);
 
         Pane svgHolder = new Pane();
         svgHolder.setPrefSize(64, 64);
@@ -633,7 +633,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     public String loadSVGPath(final String filePath) {
-        System.out.println(filePath);
         try {
             Scanner svgScanner = new Scanner(getClass().getResource(filePath).openStream(), StandardCharsets.UTF_8);
             svgScanner.skip(".*<path d=\"");
