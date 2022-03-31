@@ -95,7 +95,7 @@ public class ActivityService {
                 yield activity.generateNumberMultipleChoiceQuestion(image);
             }
             case 1 -> {
-                options = generateOptions(activityList, 3);
+                options = generateOptions(activityList);
                 images = new byte[][] {generateImageByteArray(options.get(0).getPath()),
                         generateImageByteArray(options.get(1).getPath()),
                         generateImageByteArray(options.get(2).getPath())};
