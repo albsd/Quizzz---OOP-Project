@@ -65,7 +65,7 @@ public class Player {
     public boolean isAlive() {
         Date now = new Date();
         int timerDifference = (int) now.getTime() - (int) this.time.getTime();
-        return timerDifference < 10000;
+        return timerDifference < 7000;
     }
 
     public boolean hasFinishedQuestion() {

@@ -349,7 +349,7 @@ public class ServerUtils {
 
     public void updatePlayerFinished(final UUID id, final String nick, final boolean finished) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/" + id + "/finishedtimer/" + nick))
+                .uri(URI.create(kAppUrl + "/" + id + "/finishedtimer/" + nick))
                 .header("accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(Boolean.toString(finished)))
                 .build();

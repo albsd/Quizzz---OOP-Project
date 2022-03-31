@@ -40,7 +40,7 @@ public class ActivityService {
 
     private final String resourcesPath = "./src/main/resources";
 
-    private final String defaultImagePath = ".src/main/resources/images/icon.png";
+    private final String defaultImagePath = "./src/main/resources/images/icon.png";
 
     @Autowired
     public ActivityService(final ActivityRepository activityRepository) {
@@ -234,7 +234,7 @@ public class ActivityService {
             ImageIO.write(bImage, extension, bos);
             return bos.toByteArray();
         } catch (IOException e) {
-            System.err.println("IndexOutOfBoundsException: " + e.getMessage());
+            e.printStackTrace();
             return new byte[0];
         }
     }

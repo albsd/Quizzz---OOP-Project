@@ -313,45 +313,7 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
-    /**
-     * Updates the player's state as having finished his timer.
-     *
-     * @param id id of the game
-     * @param nick name of the player
-     * @param finishedString whether the player's timer is finished4
-     * @return Game object of the player
-     */
-    @PostMapping("/{id}/finishedtimer/{nick}")
-    public ResponseEntity<Game> updatePlayerTimer(final @PathVariable("id") UUID id,
-                                                  final @PathVariable("nick") String nick,
-                                                  final @RequestBody String finishedString) {
-        System.out.println(nick);
 
-        boolean finished = Boolean.parseBoolean(finishedString);
-        Game game = gameService.findById(id);
-        if (game == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        gameService.updateGamePlayerFinished(id, nick, finished);
-
-        if (finished) {
-            boolean allDone = true;
-            for (Player p : game.getPlayers()) {
-                if (p.isAlive() && !p.hasFinishedQuestion()) {
-                    //System.out.println("Check failed for: " + p.getNick() + "  (" + nick + ")");
-                    allDone = false;
-                }
-            }
-
-            if (allDone) {
-                //System.out.println("all players finished their timers");
-                startTimerMessage(id);
-            }
-        }
-        //updatePlayerTimerHelper(id, nick, finishedString);
-        return ResponseEntity.ok(game);
-    }
 
     // WEBSOCKET ENDPOINTS FOR THE MULTIPLAYER ------------------------------------------------------------------------
     /**
@@ -387,13 +349,6 @@ public class GameController {
     @SendTo("/topic/game/{id}/update")
     public GameUpdate halveTimeMessage() {
         return GameUpdate.halveTimer;
-    }
-
-    @MessageMapping("/game/{id}/startTimer")
-    @SendTo("/topic/game/{id}/update")
-    public GameUpdate startTimerMessage(final UUID id) {
-        smt.convertAndSend("/topic/game/" + id  + "/update", GameUpdate.startTimer);
-        return GameUpdate.startTimer;
     }
 
     @MessageMapping("/game/{id}/stopTimer")
