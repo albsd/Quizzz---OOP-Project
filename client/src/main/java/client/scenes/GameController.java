@@ -200,7 +200,6 @@ public class GameController implements Initializable, WebSocketSubscription {
                     } else {
                         rgb = Color.valueOf(red).interpolate(Color.valueOf(orange), y);
                     }
-                    progressBar.getStyleClass().removeIf((s) -> s.startsWith("-fx-accent:"));
                     progressBar.setStyle("-fx-accent: #" + rgb.toString().substring(2) + ";");
                 }), this::displayAnswerMomentarily);
     }
