@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class is used to represent an energy related activity.
@@ -31,9 +33,9 @@ public class Activity {
     @Column(length = 500)
     @JsonProperty("source")
     private String source;
-
     @JsonProperty("image_path")
     private String path;
+
 
     /**
      * Default activity constructor.
@@ -212,15 +214,13 @@ public class Activity {
     }
 
     public int getNumberOfTrailingZeroes(final long answer) {
-        long x = answer;
-        if (x == 0) {
-            return 0;
+        Pattern pattern = Pattern.compile("(\\d+?)(0*)$", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(Long.toString(answer));
+        int count = 0;
+        if (matcher.find()) {
+            count = matcher.group(2).length();
         }
-        int counter = 0;
-        while (x % 10 == 0) {
-            counter++;
-            x /= 10;
-        }
-        return counter;
+        return count;
+
     }
 }

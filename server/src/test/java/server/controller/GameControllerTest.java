@@ -58,7 +58,32 @@ public class GameControllerTest {
             new Activity("", 2, "", ""),
             new Activity("", 3, "", ""),
             new Activity("", 4, "", ""),
-            new Activity("", 5, "", ""));
+            new Activity("", 5, "", ""),
+            new Activity("", 6, "", ""),
+            new Activity("", 7, "", ""),
+            new Activity("", 8, "", ""),
+            new Activity("", 9, "", ""),
+            new Activity("", 10, "", ""),
+            new Activity("", 11, "", ""),
+            new Activity("", 12, "", ""),
+            new Activity("", 13, "", ""),
+            new Activity("", 14, "", ""),
+            new Activity("", 15, "", ""),
+            new Activity("", 16, "", ""),
+            new Activity("", 17, "", ""),
+            new Activity("", 18, "", ""),
+            new Activity("", 19, "", ""),
+            new Activity("", 20, "", ""),
+            new Activity("", 21, "", ""),
+            new Activity("", 22, "", ""),
+            new Activity("", 23, "", ""),
+            new Activity("", 24, "", ""),
+            new Activity("", 25, "", ""),
+            new Activity("", 26, "", ""),
+            new Activity("", 27, "", ""),
+            new Activity("", 28, "", ""),
+            new Activity("", 29, "", ""),
+            new Activity("", 30, "", ""));
 
     @Mock
     LeaderboardRepository leaderboardRepository;
