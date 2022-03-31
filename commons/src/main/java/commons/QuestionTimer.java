@@ -53,17 +53,22 @@ public class QuestionTimer {
         timer.scheduleAtFixedRate(currentTask, delay, decrement);
     }
 
-    public void stop() {
-        over = true;
-        if (currentTask != null) {
-            currentTask.cancel();
-        }
-    }
-
     public void halve() {
         if (started && !over) {
             currentTime /= 2;
         }
+    }
+
+    public void stop() {
+        if (currentTask != null) {
+            currentTask.cancel();
+        }
+        timer.purge();
+    }
+
+    public void startDelay(final Runnable task) {
+        currentTask = delayTask(task);
+        timer.schedule(currentTask, 5000);
     }
 
     private TimerTask newTimerTask() {
@@ -87,6 +92,15 @@ public class QuestionTimer {
                     e.printStackTrace();
                 }
 
+            }
+        };
+    }
+
+    private TimerTask delayTask(final Runnable task) {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                task.run();
             }
         };
     }

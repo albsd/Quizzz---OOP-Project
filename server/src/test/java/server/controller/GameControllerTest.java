@@ -16,7 +16,6 @@
 package server.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
@@ -45,8 +44,6 @@ import java.util.Comparator;
 
 @DataJpaTest
 public class GameControllerTest {
-
-    private Game lobby;
 
     private Game game;
 
@@ -89,20 +86,19 @@ public class GameControllerTest {
         ctrl = new GameController(service, activityService, leaderboardService, simpMessagingTemplate);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
-        game = service.getCurrentGame();
+        game = service.getLobby();
         ctrl.joinLobby("johny");
         ctrl.joinLobby("niko");
         ctrl.joinLobby("babe");
         nick = "johny";
         score = 50;
         ctrl.startLobby();
-        lobby = ctrl.getCurrentGame();
+        service.newGame(null);
     }
 
     @Test
     public void lobbyIsEmpty() {
-        var actual = ctrl.getCurrentGame();
-        assertEquals(0, actual.getPlayers().size());
+        assertEquals(0, ctrl.getLobby().getPlayers().size());
     }
 
     @Test
@@ -129,18 +125,6 @@ public class GameControllerTest {
         var actual = ctrl.joinLobby(nick);
         actual = ctrl.joinLobby(nick);
         assertEquals(403, actual.getStatusCode().value());
-    }
-
-    @Test
-    public void startTheLobby() {
-        ctrl.joinLobby("johny");
-        ctrl.joinLobby("niko");
-        ctrl.joinLobby("babe");
-
-        ctrl.startLobby();
-
-        assertEquals(lobby.getPlayers().size(), 3);
-        assertNotEquals(lobby, ctrl.getCurrentGame());
     }
 
     @Test

@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.FXMLController;
 import client.sounds.Sound;
 import client.sounds.SoundName;
 import client.utils.ServerUtils;
@@ -95,12 +94,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     private LeaderboardController leaderboardController;
 
     private final ServerUtils server;
-    
-    private final FXMLController fxml;
 
-    private final QuestionTimer gameTimer;
+    private QuestionTimer gameTimer;
 
-    private final QuestionTimer clientTimer;
+    private QuestionTimer clientTimer;
 
     private final Font font;
 
@@ -130,17 +127,17 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final String darkRed = "#A00000";
 
-    private int currentScore, numberOfMultipleChoiceQuestions = 0, answeredCorrectly = 0;
+    private int answeredCorrectly, numberOfMultipleChoiceQuestions, currentScore;
 
     private boolean muted = false;
 
+
     @Inject
-    public GameController(final ServerUtils server, final FXMLController fxml) {
-        this.gameTimer = new QuestionTimer(time -> { }, this::setNextQuestion);
+    public GameController(final ServerUtils server) {
+        this.gameTimer = new QuestionTimer(time -> { }, this::displayAnswerMomentarily);
         this.clientTimer = new QuestionTimer(
                 time -> Platform.runLater(() -> timer.setProgress((double) time / QuestionTimer.MAX_TIME)), () -> { });
         this.server = server;
-        this.fxml = fxml;
         this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
         this.questionFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 17);
     }
@@ -171,6 +168,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         incorrectText.setFont(font);
         submittedAnswer = false;
         doubleScore = false;
+        numberOfMultipleChoiceQuestions = 0;
+        answeredCorrectly = 0;
+        currentScore = 0;
         openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), null,
                 change -> {
             String newText = change.getControlNewText();
@@ -222,7 +222,6 @@ public class GameController implements Initializable, WebSocketSubscription {
                     case halveTimer -> {
                         Sound boonSound = new Sound(SoundName.boon);
                         boonSound.play(muted, false);
-
                         clientTimer.halve();
                     }
                     case startTimer -> clientTimer.start(0);
@@ -271,7 +270,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         displayCurrentQuestion();
         clientTimer.start(0);
         gameTimer.start(0);
-
         server.startHeartbeat(new TimerTask() {
             @Override
             public void run() {
@@ -322,6 +320,10 @@ public class GameController implements Initializable, WebSocketSubscription {
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
         }
+        if (!game.isMultiplayer()) {
+            clientTimer.setCurrentTime(7);
+            gameTimer.setCurrentTime(7);
+        }
     }
 
     /**
@@ -358,6 +360,10 @@ public class GameController implements Initializable, WebSocketSubscription {
             long option = Long.parseLong(optionStr);
             checkAnswer(option, clientTimer.getCurrentTime());
         }
+        if (!game.isMultiplayer()) {
+            clientTimer.setCurrentTime(7);
+            gameTimer.setCurrentTime(7);
+        }
     }
 
     /**
@@ -370,7 +376,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void checkAnswer(final long option, final int time) {
         Sound optionSound = new Sound(SoundName.option);
         optionSound.play(muted, false);
-
         currentScore = game.getCurrentQuestion().calculateScore(option, time);
         if (currentScore > 0) answeredCorrectly++;
     }
@@ -394,8 +399,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         Platform.runLater(() -> {
             timer.setProgress(0.0);
             points.setText("Total points: " + me.getScore());
-                correctText.setText(String.valueOf(answeredCorrectly));
-                incorrectText.setText(String.valueOf(game.getCurrentQuestionNumber() - answeredCorrectly));
+            correctText.setText(String.valueOf(answeredCorrectly));
+            incorrectText.setText(String.valueOf(game.getCurrentQuestionNumber() - answeredCorrectly));
             questionPoint.setText("You got: " + currentScore + " points");
             currentScore = 0;
         });
@@ -413,11 +418,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         } else {
             Platform.runLater(() -> answerBox.setText("Answer is: " + answer));
         }
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        gameTimer.startDelay(this::setNextQuestion);
     }
 
     /**
@@ -426,7 +427,6 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void setNextQuestion() {
-        displayAnswerMomentarily();
         // Displays leaderboard at end of game
         if (game.isOver()) {
             if (game.isMultiplayer()) {
@@ -451,7 +451,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             warning.setVisible(false);
             game.nextQuestion();
             displayCurrentQuestion();
-
             clientTimer.start(0);
             gameTimer.start(0);
         }
@@ -466,16 +465,13 @@ public class GameController implements Initializable, WebSocketSubscription {
     private void displayLeaderboardMomentarily(final Leaderboard leaderboard) {
         Platform.runLater(() -> leaderboardController.displayLeaderboard(leaderboard, me));
         menu.setVisible(false);
+        leaderboardController.hideBackButton();
         leaderboardController.show();
         if (game.isOver()) {
             leaderboardController.endGame(me);
         }
-        try {
-            Thread.sleep(5000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         if (!game.isOver()) {
+            gameTimer.startDelay(this::setNextQuestion);
             leaderboardController.hide();
             menu.setVisible(true);
         }
@@ -539,6 +535,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             clientTimer.stop();
             gameTimer.stop();
+            //mark game over to prevent next callback
+            game.setCurrentQuestionIndex(20);
         });
     }
 
@@ -582,8 +580,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             Button[] options = {option1, option2, option3};
 
             List<Integer> removeIndices = Arrays.asList(0, 1, 2);
-            long answerIndex = game.getCurrentQuestion().getAnswer();
-            removeIndices.remove(answerIndex);
+            int answerIndex = (int) game.getCurrentQuestion().getAnswer();
+            removeIndices.remove(Integer.valueOf(answerIndex));
             Collections.shuffle(removeIndices);
 
             int finalIndex = removeIndices.get(0);
@@ -667,5 +665,4 @@ public class GameController implements Initializable, WebSocketSubscription {
             ((Button) e.getSource()).setGraphic(icon);
         }
     }
-
 }

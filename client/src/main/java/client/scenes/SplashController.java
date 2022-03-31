@@ -4,7 +4,6 @@ import client.FXMLController;
 import client.utils.ServerUtils;
 import commons.Game;
 import commons.Player;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,13 +17,6 @@ import javafx.scene.text.Font;
 import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 public class SplashController implements Initializable {
 
@@ -51,6 +43,8 @@ public class SplashController implements Initializable {
 
     private final FXMLController fxml;
 
+    private String nick;
+
     @Inject
     public SplashController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
@@ -75,13 +69,20 @@ public class SplashController implements Initializable {
         singleplayerButton.setFont(font1);
         leaderBoardButton.setFont(font1);
         multiplayerButton.setFont(font1);
-
-        try {
-            Scanner sc = new Scanner(new File("./src/main/resources/nick.txt"));
-            nickField.setText(sc.nextLine());
-            sc.close();
-        } catch (FileNotFoundException e) {
-            //System.out.println("No nickname set.");
+        
+        //Players can prefer to play with server saved nickname or new nickname
+        //nick has already been set so used persistent fxml nick
+        if (nick != null) {
+            nick = fxml.getNick();
+            nickField.setText(nick);
+        } else {
+            //if just started application, set it with server saved nickname if exists
+            String serverNick = server.getNickname();
+            if (serverNick != null) {
+                nick = serverNick;
+                nickField.setText(nick);
+            }
+            //otherwise create new nickname and also save on server
         }
     }
 
@@ -93,15 +94,34 @@ public class SplashController implements Initializable {
     @FXML
     public void exitApp(final ActionEvent event) {
         popupController.open("app", () -> {
-            Platform.exit();
+            System.exit(0);
         });
+    }
+
+     /**
+     * The Player's nickname must be validated against the length constraints.
+     * 
+     * @param event
+     */
+    @FXML
+    public void onEnter(final ActionEvent event) {
+        if (!validateNickname(nickField.getText())) {
+            return;
+        }
+        if (nick != null) {
+            warning.setTextFill(green);
+            warning.setText("Nickname has been changed");
+        }
+        nick = nickField.getText();
+        nickField.setText(nick);
+        server.saveNickname(nick);
+        fxml.saveNick(nick);
     }
 
     private boolean validateNickname(final String user) {
         final int maxChrLimit = 12;
         final int minChrLimit = 3;
         int len = user.length();
-
         if (len < minChrLimit || len > maxChrLimit) {
             warning.setTextFill(red);
             warning.setText("Nickname should be between 3 and 12 characters");
@@ -119,45 +139,36 @@ public class SplashController implements Initializable {
             warning.setText("Nickname must contain at least one letter");
             return false;
         }
-
         warning.setTextFill(green);
         warning.setText("Nickname set");
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("./src/main/resources/nick.txt"));
-            writer.write(user);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         return true;
     }
 
     @FXML
     public void singleGame(final ActionEvent event) {
-        String nick = nickField.getText();
-        if (!validateNickname(nick)) {
+        if (nick == null) {
+            warning.setTextFill(red);
+            warning.setText("Please enter a nick name");
             return;
         }
-
-        Game single = server.startSinglePlayer(nick);
-        fxml.showSinglePlayer(single);
+        Game singleGame = server.startSinglePlayer(nick);
+        fxml.showSinglePlayer(singleGame);
     }
 
     /**
-     * Enter the lobby from the splash screen
-     * The Player's nickname must be validated against the length constraints and
-     * further against the names of the current players in the lobby.
+     * Enter the lobby from the splash screen.
+     * The Player's nickname must be validated against the names of the 
+     * current players in the lobby.
      * 
      * @param event
      */
     @FXML
     public void lobby(final ActionEvent event) {
-        String nick = nickField.getText();
-        if (!validateNickname(nick)) {
+        if (nick == null) {
+            warning.setTextFill(red);
+            warning.setText("Please enter a nick name");
             return;
         }
-
         final Player me = server.joinLobby(nick);
         if (me == null) {
             warning.setTextFill(red);

@@ -36,7 +36,11 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -58,13 +62,16 @@ public class ServerUtils {
 
     private StompSession session;
 
-    private Timer playerTimer;
+    private Timer heartBeatTimer;
 
     private TimerTask heartBeat;
 
+    private String macAddress;
+
     public ServerUtils() {
         this.client = HttpClient.newHttpClient();
-        this.playerTimer = new Timer();
+        this.heartBeatTimer = new Timer();
+        setMacAddress();
     }
 
     public String isRunning(final String host, final String port) {
@@ -137,7 +144,7 @@ public class ServerUtils {
      */
     public Game getLobby() {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(kGameUrl + "/current"))
+                .uri(URI.create(kGameUrl + "/lobby"))
                 .header("accept", "application/json")
                 .GET()
                 .build();
@@ -282,9 +289,9 @@ public class ServerUtils {
     
     // REQUESTS FOR A SINGLEPLAYER GAME ===============================================================================
     /**
-     * Calls the REST endpoint to create and start a singleplayer game.
+     * Calls the REST endpoint to create a singleplayer game.
      *
-     * @param nick  String of the user nickname
+     * @param nick  Nickname of player
      * @return      Player that has started the game
      */
     public Game startSinglePlayer(final String nick) {
@@ -294,6 +301,7 @@ public class ServerUtils {
                 .build();
        return parseResponseToObject(request, new TypeReference<Game>() { });
     }
+
 
     /**
      * Fetch an all-time leaderboard for singleplayer.
@@ -400,6 +408,35 @@ public class ServerUtils {
         return deletedActivity;
     }
 
+    // REQUESTS FOR SERVER SAVED NICKNAME  ============================================================================
+    public String getNickname() {
+        if (macAddress == null) {
+            return null;
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kAppUrl + "/nick/" + macAddress))
+                .headers("accept", "application/json")
+                .GET()
+                .build();
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player == null) {
+            return null;
+        }
+        return player.getNick();
+    }
+
+    public void saveNickname(final String nick) {
+        if (macAddress == null) {
+            return;
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kAppUrl + "/nick/" + macAddress + "/" + nick))
+                .headers("accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+        parseResponseToObject(request, new TypeReference<Player>() { });
+    }
+
 
     /**
      * Utility method to parse HttpResponse to a given object type.
@@ -414,10 +451,8 @@ public class ServerUtils {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-
                 return null;
             }
-
             ObjectMapper mapper = new ObjectMapper();
             T obj = mapper.readValue(response.body(), type);
             return obj;
@@ -434,7 +469,7 @@ public class ServerUtils {
      */
     public void startHeartbeat(final TimerTask heartBeat) {
         this.heartBeat = heartBeat;
-        playerTimer.scheduleAtFixedRate(heartBeat, 0, 5000);
+        heartBeatTimer.scheduleAtFixedRate(heartBeat, 0, 5000);
     }
 
     /**
@@ -442,5 +477,32 @@ public class ServerUtils {
      */
     public void cancelHeartbeat() {
         heartBeat.cancel();
+        heartBeatTimer.purge();
+    }
+
+    private void setMacAddress() {
+        InetAddress localHost = null;
+        try {
+            localHost = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        NetworkInterface ni = null;
+        try {
+            ni = NetworkInterface.getByInetAddress(localHost);
+        } catch (SocketException e1) {
+            e1.printStackTrace();
+        }
+        byte[] hardwareAddress = null;
+        try {
+            hardwareAddress = ni.getHardwareAddress();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        String[] hexadecimal = new String[hardwareAddress.length];
+        for (int i = 0; i < hardwareAddress.length; i++) {
+            hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
+        }
+        this.macAddress = String.join("_", hexadecimal);
     }
 }

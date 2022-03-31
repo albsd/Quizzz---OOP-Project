@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox fx:id="menu" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LeaderboardController">
+<VBox fx:id="menu" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LeaderboardController">
    <children>
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
          <children>
@@ -17,7 +17,7 @@
             </Label>
             <Button mnemonicParsing="false" onAction="#backToSplash" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" stylesheets="@/stylesheets/style.css">
                <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="backButton" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@/images/back.png" />
                      </image>
@@ -28,7 +28,7 @@
                <font>
                   <Font size="24.0" />
                </font></Button>
-            <Button fx:id="singleplayer" layoutX="60.0" layoutY="602.0" mnemonicParsing="false" onAction="#singleplayer" prefHeight="51.0" prefWidth="200.0" styleClass="optionButton" text="Singleplayer">
+            <Button fx:id="singleplayer" layoutX="60.0" layoutY="602.0" mnemonicParsing="false" onAction="#singleplayer" prefHeight="51.0" prefWidth="200.0" styleClass="optionButton" text="Singleplayer" visible="false">
                <font>
                   <Font size="24.0" />
                </font></Button>

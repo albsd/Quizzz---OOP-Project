@@ -3,12 +3,13 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
-
 import commons.Game;
+import commons.GameUpdate;
 import commons.LobbyMessage;
 import commons.Player;
 import commons.PlayerUpdate;
-import commons.GameUpdate;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,10 +28,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import javax.inject.Inject;
-
 import javafx.scene.text.Font;
+import javafx.util.Duration;
+
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 
 public class LobbyController implements Initializable, WebSocketSubscription {
@@ -58,12 +59,12 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private final ServerUtils server;
     
     private final FXMLController fxml;
-
-    private Game lobby;
     
     private Player me;
     
     private List<String> players;
+
+    private Game lobby;
 
     @Inject
     public LobbyController(final ServerUtils server, final FXMLController fxml) {
@@ -80,7 +81,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         // We DON'T use the shorthand .toList() here, because that returns an immutable
         // list and causes player updates to get ignored silently
         this.lobby = server.getLobby();
-        this.players = this.lobby.getPlayers().stream()
+        this.players = lobby.getPlayers().stream()
                 .map(Player::getNick)
                 .collect(Collectors.toList());
 
@@ -110,6 +111,10 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
         subscriptions[1] = server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, message -> {
             Platform.runLater(() -> {
+                //prevent repeated clicking of start button
+                if (message.toString().startsWith("Server - Game is about to start.")) {
+                    startButton.setDisable(true);
+                }
                 String chatBox = chatText.getText() + message.toString();
                 chatText.setText(chatBox);
                 chatArea.layout();
@@ -118,13 +123,15 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         });
 
         subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, update -> {
-            Platform.runLater(() -> {
+            KeyFrame kf = new KeyFrame(Duration.seconds(3), e -> {
                 server.cancelHeartbeat();
-                //sets lobby with recent list of players
                 Game game = server.getGameById(lobby.getId());
                 fxml.showMultiPlayer(me, game);
             });
+            Timeline timeline = new Timeline(kf);
+            Platform.runLater(timeline::play);
         });
+
         return subscriptions;
     }
 
