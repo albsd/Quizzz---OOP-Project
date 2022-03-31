@@ -98,8 +98,7 @@ public class ActivityService {
      * @return a list with 3 randomly picked activities
      */
     public List<Activity> generateOptions(final List<Activity> allActivities) {
-        List<Activity> copy = new ArrayList<Activity>(allActivities);
-        Collections.shuffle(copy);
+        List<Activity> copy = new ArrayList<>(allActivities);
         Random random = new Random();
         Activity baseActivity = copy.get(random.nextInt(copy.size()));
         while (baseActivity.getEnergyConsumption() > 100000L) {

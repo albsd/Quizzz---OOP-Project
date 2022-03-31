@@ -139,8 +139,17 @@ public class Activity {
         int numberOfTrailingZeroes = this.getNumberOfTrailingZeroes(energyConsumption);
         for (int i = 0; i < choices.length; i++) {
             do {
+                long offset;
+                if(energyConsumption < 2) {
+                    offset = 1;
+                }
+                else {
+                    offset = r.longs(-energyConsumption / 2, energyConsumption / 2)
+                            .findFirst()
+                            .getAsLong();
+                }
                 tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
-                        * r.nextGaussian()));
+                        * r.nextGaussian() + offset));
                 if (energyConsumption == 0) {
                     tempChoice = Math.abs((long) (5 * r.nextGaussian()));
                 }
@@ -149,7 +158,7 @@ public class Activity {
                     for (int z = 0; z < numberOfTrailingZeroes; z++) {
                         tempDiv = tempDiv * 10;
                     }
-                    tempChoice = (long) Math.round(tempChoice / tempDiv) * tempDiv;
+                    tempChoice = tempChoice / tempDiv * tempDiv;
                 }
             } while (Arrays.stream(choices).anyMatch(tempChoice::equals) || tempChoice.equals(energyConsumption));
             choices[i] = tempChoice;
