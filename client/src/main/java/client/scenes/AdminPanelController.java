@@ -3,6 +3,7 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import commons.Activity;
+import commons.DBController;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -40,7 +41,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -295,16 +295,16 @@ public class AdminPanelController implements Initializable {
         File file = dirChooser.showDialog(stage);
         if (file != null) {
             populateRepo(file.getPath());
+            titleInput.setText("");
+            powerInput.setText("");
+            sourceInput.setText("");
+            imageShow.setImage(null);
+            image = null;
         }
-        titleInput.setText("");
-        powerInput.setText("");
-        sourceInput.setText("");
-        imageShow.setImage(null);
-        image = null;
     }
 
     public void populateRepo(final String activitiesPath) {
-        List<File> files = getFiles(".json", new File(activitiesPath));
+        List<File> files = DBController.getFiles(".json", new File(activitiesPath));
         for (File jsonFile : files) {
             BufferedReader bufferedReader = null;
             try {
@@ -324,43 +324,18 @@ public class AdminPanelController implements Initializable {
             String sourceAct = list.get("source").toString();
 
             String str = jsonFile.getName();
-            File file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".png");
+            File file = DBController.find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".png");
             if (file == null) {
-                file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+                file = DBController.find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
             }
             if (file == null) {
-                file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
+                file = DBController.find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
             }
             server.addActivity(new Activity(titleAct, wattHours, sourceAct, file.getName()));
             server.sendImage(new commons.Image(generateImageByteArray(file.getPath()), file.getName()));
         }
         loadTable(true);
         infoText.setText("Activities are loaded successfully.");
-    }
-
-    private static List<File> getFiles(final String ext, final File folder) {
-        String extension = ext.toUpperCase();
-        final List<File> files = new ArrayList<File>();
-        for (final File file : folder.listFiles()) {
-            if (file.isDirectory()) {
-                files.addAll(getFiles(extension, file));
-            } else if (file.getName().toUpperCase().endsWith(extension)) {
-                files.add(file);
-            }
-        }
-        return files;
-    }
-
-    private static File find(final String path, final String fName) {
-        File f = new File(path);
-        if (fName.equalsIgnoreCase(f.getName())) return f;
-        if (f.isDirectory()) {
-            for (String aChild : f.list()) {
-                File ff = find(path + File.separator + aChild, fName);
-                if (ff != null) return ff;
-            }
-        }
-        return null;
     }
 
     /**
