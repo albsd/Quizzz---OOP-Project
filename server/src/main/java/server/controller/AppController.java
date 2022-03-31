@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
 import server.service.AppService;
 import server.service.GameService;
 import java.util.UUID;
@@ -90,7 +89,7 @@ public class AppController {
         this.smt.convertAndSend("/topic/game/" + id + "/leave", player);
 
         try {
-            updatePlayerTimer(id, player.getNick(), "true");
+            updateFinishedTimers(id, player.getNick());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,43 +100,28 @@ public class AppController {
      *
      * @param id id of the game
      * @param nick name of the player
-     * @param finishedString whether the player's timer is finished4
      * @return Game object of the player
      */
     @PostMapping("/{id}/finishedtimer/{nick}")
-    public ResponseEntity<Game> updatePlayerTimer(final @PathVariable("id") UUID id,
-                                                  final @PathVariable("nick") String nick,
-                                                  final @RequestBody String finishedString) {
-        //System.out.println(nick);
+    public ResponseEntity<Game> updateFinishedTimers(final @PathVariable("id") UUID id,
+                                                     final @PathVariable("nick") String nick) {
 
-        boolean finished = Boolean.parseBoolean(finishedString);
         Game game = gameService.findById(id);
         if (game == null || game.isOver()) {
             return ResponseEntity.badRequest().build();
         }
 
-        gameService.updateGamePlayerFinished(id, nick, finished);
+        updateGamePlayerFinished(id, nick);
 
-        if (finished) {
-            boolean allDone = true;
-            for (Player p : game.getPlayers()) {
-                if (!p.hasFinishedQuestion() && p.isAlive()) {
-                    //System.out.println("Check failed for: " + p.getNick() + "  (" + nick + ")");
-                    allDone = false;
-                }
-            }
-
-            if (allDone) {
-                //System.out.println("all players finished their timers");
-                startTimerMessage(id);
-
-                for (Player p : game.getPlayers()) {
-                   p.setFinishedQuestion(false);
-                }
-            }
+        if (game.allPlayersFinished()) {
+            startTimerMessage(id);
         }
-        //updatePlayerTimerHelper(id, nick, finishedString);
+
         return ResponseEntity.ok(game);
+    }
+
+    public Player updateGamePlayerFinished(final UUID id, final String nick) {
+        return gameService.updateGamePlayerFinished(id, nick);
     }
 
     @MessageMapping("/game/{id}/startTimer")

@@ -551,7 +551,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     public void sendFinishMessage() {
         if (game.isMultiplayer()) {
-            server.updatePlayerFinished(game.getId(), me.getNick(), true);
+            server.updatePlayerFinished(game.getId(), me.getNick());
         } else {
             displayAnswerMomentarily();
         }
@@ -561,7 +561,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     public void openPopup(final ActionEvent e) {
         popupController.open("game", () -> {
             if (game.isMultiplayer()) {
-                server.updatePlayerFinished(game.getId(), me.getNick(), true);
+                server.updatePlayerFinished(game.getId(), me.getNick());
                 server.cancelHeartbeat();
                 server.leaveGame(me.getNick(), game.getId());
             }

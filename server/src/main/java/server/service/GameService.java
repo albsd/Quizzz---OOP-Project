@@ -97,9 +97,9 @@ public class GameService {
         return player;
     }
 
-    public Player updateGamePlayerFinished(final UUID id, final String nick, final boolean finished) {
+    public Player updateGamePlayerFinished(final UUID id, final String nick) {
         Player player = repo.findById(id).getPlayerByNick(nick);
-        player.setFinishedQuestion(finished);
+        player.setFinishedQuestion(true);
         return player;
     }
 
