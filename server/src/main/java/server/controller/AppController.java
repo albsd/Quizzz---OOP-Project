@@ -112,7 +112,7 @@ public class AppController {
 
         boolean finished = Boolean.parseBoolean(finishedString);
         Game game = gameService.findById(id);
-        if (game == null) {
+        if (game == null || game.isOver()) {
             return ResponseEntity.badRequest().build();
         }
 
