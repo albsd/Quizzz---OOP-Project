@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -24,17 +24,17 @@
                      <Font name="System Bold" size="30.0" />
                   </font>
                </Label>
-               <Label fx:id="correctText" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="1093.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" text="0" textFill="#009a19">
+               <Label fx:id="correctText" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="1012.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" text="0" textFill="#009a19">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label alignment="CENTER" contentDisplay="CENTER" layoutX="1154.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" text="/">
+               <Label alignment="CENTER" contentDisplay="CENTER" layoutX="1073.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" text="/">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="incorrectText" contentDisplay="CENTER" layoutX="1165.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" text="0" textFill="#d70c0c">
+               <Label fx:id="incorrectText" contentDisplay="CENTER" layoutX="1084.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" text="0" textFill="#d70c0c">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>

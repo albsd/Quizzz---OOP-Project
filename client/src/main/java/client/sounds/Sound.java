@@ -8,6 +8,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.FloatControl;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,8 @@ public class Sound {
         }
     }
 
+    FloatControl floatControl;
+
     public Sound(final SoundName soundName) {
         try {
 
@@ -34,14 +37,17 @@ public class Sound {
 
                 case boon -> "src/main/resources/sounds/boon.wav";
 
-                case suspense -> "src/main/resources/sounds/suspense.wav";
+                case lobby_music ->  "src/main/resources/sounds/lobby_music.wav";
 
-                case notification ->  "src/main/resources/sounds/notification.wav";
-
-                case click -> "src/main/resources/sounds/click.wav";
+                case lobby_start -> "src/main/resources/sounds/lobby_start.wav";
 
                 case option -> "src/main/resources/sounds/option.wav";
 
+                case wrong_answer -> "src/main/resources/sounds/wrong_answer.wav";
+
+                case right_answer -> "src/main/resources/sounds/right_answer.wav";
+
+                case chat_message -> "src/main/resources/sounds/chat_message.wav";
             };
             
             File file = new File(filePath);
@@ -72,6 +78,7 @@ public class Sound {
                 if (looped) {
                     clip.loop(Clip.LOOP_CONTINUOUSLY);
                 }
+                floatControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             } catch (LineUnavailableException | IOException e) {
                 e.printStackTrace();
             }
@@ -90,6 +97,18 @@ public class Sound {
                 audioClip.close();
             }
         }
+    }
+
+    public void stop() {
+        clip.close();
+    }
+
+    public void muteVolume() {
+        floatControl.setValue(-80f);
+    }
+
+    public void unmute() {
+        floatControl.setValue(0);
     }
 
 }

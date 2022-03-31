@@ -129,7 +129,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private int answeredCorrectly, numberOfMultipleChoiceQuestions, currentScore;
 
-    private boolean muted = false;
+    private boolean muted;
 
     private List<Button> optionButtons;
 
@@ -173,6 +173,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             return null;
         }));
+
+        muted = false;
 
         Image muteImage = new Image("/images/sounds-unmuted.png");
         ImageView image = new ImageView(muteImage);
@@ -391,8 +393,13 @@ public class GameController implements Initializable, WebSocketSubscription {
      * (for five seconds)
      */
     private void displayAnswerMomentarily() {
-        Sound suspenseSound = new Sound(SoundName.suspense);
-        suspenseSound.play(muted, false);
+        if (currentScore > 0) {
+            Sound rightAnswerSound = new Sound(SoundName.right_answer);
+            rightAnswerSound.play(muted, false);
+        } else {
+            Sound wrongAnswerSound = new Sound(SoundName.wrong_answer);
+            wrongAnswerSound.play(muted, false);
+        }
 
         if (doubleScore) {
             currentScore *= 2;
@@ -487,9 +494,6 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     private void displayCurrentQuestion() {
         Platform.runLater(() -> {
-            Sound notificationSound = new Sound(SoundName.notification);
-            notificationSound.play(muted, false);
-
             Question currentQuestion = game.getCurrentQuestion();
             if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
                 changeToMultiMode();
@@ -615,8 +619,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     private void sendEmote(final Emote emote) {
-        Sound clickSound = new Sound(SoundName.click);
-        clickSound.play(muted, false);
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(muted, false);
 
         server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
     }

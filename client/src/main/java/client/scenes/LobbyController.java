@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.FXMLController;
+import client.sounds.Sound;
+import client.sounds.SoundName;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
 import commons.Game;
@@ -19,6 +21,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.net.URL;
 import java.time.ZonedDateTime;
@@ -43,7 +47,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private Label chatText, playersLeft, playersRight, playerCount, title, chatTitle;
 
     @FXML
-    private Button startButton;
+    private Button startButton, soundButton;
 
     @FXML
     private TextField chatInput;
@@ -66,6 +70,10 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     private Game lobby;
 
+    private boolean muted = false;
+
+    private Sound lobbyMusic;
+
     @Inject
     public LobbyController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
@@ -80,6 +88,9 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void initialize(final URL location, final ResourceBundle resources) {
         // We DON'T use the shorthand .toList() here, because that returns an immutable
         // list and causes player updates to get ignored silently
+        lobbyMusic = new Sound(SoundName.lobby_music);
+        lobbyMusic.play(muted, true);
+
         this.lobby = server.getLobby();
         this.players = lobby.getPlayers().stream()
                 .map(Player::getNick)
@@ -95,12 +106,21 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         chatTitle.setFont(font2);
         startButton.setFont(font1);
         chatInput.setFont(font1);
+
+        muted = false;
+
+        Image muteImage = new Image("/images/sounds-unmuted.png");
+        ImageView image = new ImageView(muteImage);
+        soundButton.setGraphic(image);
     }
 
     @Override
     public Subscription[] registerForMessages() {
         Subscription[] subscriptions = new Subscription[3];
         subscriptions[0] = server.registerForMessages("/topic/update/player", PlayerUpdate.class, update -> {
+            Sound messageSound = new Sound(SoundName.chat_message);
+            messageSound.play(muted, false);
+
             if (update.getContent() == PlayerUpdate.Type.join) {
                 players.add(update.getNick());
             } else {
@@ -110,10 +130,14 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         });
 
         subscriptions[1] = server.registerForMessages("/topic/lobby/chat", LobbyMessage.class, message -> {
+            Sound messageSound = new Sound(SoundName.chat_message);
+            messageSound.play(muted, false);
+
             Platform.runLater(() -> {
                 //prevent repeated clicking of start button
                 if (message.toString().startsWith("Server - Game is about to start.")) {
                     startButton.setDisable(true);
+                    lobbyMusic.stop();
                 }
                 String chatBox = chatText.getText() + message.toString();
                 chatText.setText(chatBox);
@@ -123,6 +147,9 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         });
 
         subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, update -> {
+            Sound lobbyStartSound = new Sound(SoundName.lobby_start);
+            lobbyStartSound.play(muted, false);
+
             KeyFrame kf = new KeyFrame(Duration.seconds(3), e -> {
                 server.cancelHeartbeat();
                 Game game = server.getGameById(lobby.getId());
@@ -157,6 +184,8 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     }
 
     private void updatePlayerList() {
+        Sound messageSound = new Sound(SoundName.chat_message);
+        messageSound.play(muted, false);
         // GUI Updates must be run later
         // https://stackoverflow.com/questions/21083945/how-to-avoid-not-on-fx-application-thread-currentthread-javafx-application-th
         Platform.runLater(() -> {
@@ -186,6 +215,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     @FXML
     public void openPopup(final ActionEvent event) {
         popupController.open("lobby", () -> {
+            lobbyMusic.stop();
             server.leaveLobby(me.getNick());
             server.cancelHeartbeat();
             fxml.showSplash();
@@ -197,5 +227,24 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         //don't start game immediately cause invoker starts game faster
         //than other players in lobby
         server.startMultiPlayer();
+    }
+
+    @FXML
+    private void updateSoundButton(final ActionEvent e) {
+        if (muted) {
+            muted = false;
+            lobbyMusic.unmute();
+
+            Image image = new Image("/images/sounds-unmuted.png");
+            ImageView icon = new ImageView(image);
+            ((Button) e.getSource()).setGraphic(icon);
+        } else {
+            lobbyMusic.muteVolume();
+            muted = true;
+
+            Image image = new Image("/images/sounds-muted.png");
+            ImageView icon = new ImageView(image);
+            ((Button) e.getSource()).setGraphic(icon);
+        }
     }
 }
