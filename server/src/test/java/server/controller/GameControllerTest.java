@@ -71,7 +71,7 @@ public class GameControllerTest {
 
     @BeforeEach
     public void setup() {
-        for(int i = 1; i < 101; i++) {
+        for (int i = 1; i < 101; i++) {
             activities.add(new Activity("", i, "", ""));
         }
 
