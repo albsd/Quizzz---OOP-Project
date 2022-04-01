@@ -1,0 +1,19 @@
+.root {
+    -background: #001219;
+    -background-alt: #005F73;
+    -button-background: #CA6702;
+    -button-text: #FFAE17;
+    -text: #E9D8A6;
+    -icon: -text;
+    -correct-text: #94D2BD;
+    -correct-background: #0A9396;
+    -incorrect-text: #E74C04;
+    -incorrect-background: #AE2012;
+    -leaderboard-first-background: -button-background;
+    -leaderboard-first-text: -button-text;
+    -leaderboard-self-background: -correct-background;
+    -leaderboard-self-text: -correct-text;
+    -leaderboard-background: #EE9B00;
+    -leaderboard-text: -text;
+    -selected-border: -text;
+}

@@ -29,4 +29,14 @@ public class ThemeSelectorController {
     public void setDarkTheme() {
         fxml.setTheme("css/dark.css");
     }
+
+    @FXML
+    public void setAquaTheme() {
+        fxml.setTheme("css/aqua.css");
+    }
+
+    @FXML
+    public void setPineTheme() {
+        fxml.setTheme("css/pine.css");
+    }
 }

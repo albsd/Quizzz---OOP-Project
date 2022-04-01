@@ -39,12 +39,12 @@
                            <Font size="24.0" />
                         </font>
                      </Button>
-                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="70.0" text="Theme3">
+                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#setAquaTheme" prefHeight="70.0" text="Aqua">
                         <font>
                            <Font size="24.0" />
                         </font>
                      </Button>
-                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="70.0" text="Theme4">
+                     <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#setPineTheme" prefHeight="70.0" text="Pine">
                         <font>
                            <Font size="24.0" />
                         </font>

@@ -50,19 +50,9 @@
     -fx-text-fill: -button-text;
 }
 
-.button:hover {
-    -fx-background-color: derive(-button-background, -10%);
-    -fx-text-fill: derive(-button-text, -10%);
-}
-
 .cancelButton, .wrongAnswer {
     -fx-background-color: -incorrect-background;
     -fx-text-fill: -incorrect-text;
-}
-
-.cancelButton:hover, .wrongAnswer:hover {
-    -fx-background-color: derive(-incorrect-background, -10%);
-    -fx-text-fill: derive(-incorrect-text, -10%);
 }
 
 .confirmButton, .correctAnswer {
@@ -70,10 +60,6 @@
     -fx-text-fill: -correct-text;
 }
 
-.confirmButton:hover, .correctAnswer:hover {
-    -fx-background-color: derive(-correct-background, -10%);
-    -fx-text-fill: derive(-correct-text, -10%);
-}
 
 .selectedOption {
     -fx-border-color: -selected-border;
@@ -124,12 +110,34 @@ SVGPath {
     -fx-fill: -icon;
 }
 
-.iconButton:hover SVGPath {
-    -fx-fill: derive(-icon, -20%);
-}
-
 .iconButton {
     -fx-background-color: transparent !important;
+}
+
+/* HOVER */ 
+.button:hover {
+    /*-fx-background-color: derive(-button-background, -10%);
+    -fx-text-fill: derive(-button-text, -10%);*/
+    -fx-background-color: ladder(-button-background, derive(-button-background, 20%), derive(-button-background, -20%));
+    -fx-text-fill: ladder(-button-text, derive(-button-text, 20%), derive(-button-text, -20%));
+}
+
+.cancelButton:hover, .wrongAnswer:hover {
+    /*-fx-background-color: derive(-incorrect-background, -10%);
+    -fx-text-fill: derive(-incorrect-text, -10%);*/
+    -fx-background-color: ladder(-incorrect-background, derive(-incorrect-background, 20%), derive(-incorrect-background, -20%));
+    -fx-text-fill: ladder(-incorrect-text, derive(-incorrect-text, 20%), derive(-incorrect-text, -20%));
+}
+
+.confirmButton:hover, .correctAnswer:hover {
+    /*-fx-background-color: derive(-correct-background, -10%);
+    -fx-text-fill: derive(-correct-text, -10%);*/
+    -fx-background-color: ladder(-correct-background, derive(-correct-background, 20%), derive(-correct-background, -20%));
+    -fx-text-fill: ladder(-correct-text, derive(-correct-text, 20%), derive(-correct-text, -20%));
+}
+
+.iconButton:hover SVGPath {
+    -fx-fill: ladder(-icon, derive(-icon, 20%), derive(-icon, -20%));
 }
 
 /* OTHER */
