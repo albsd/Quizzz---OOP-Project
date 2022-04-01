@@ -1,21 +1,20 @@
 package server.repository;
 
 import commons.Question;
+import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Question repository that stores list of questions for faster game object creation.
+ */
+@Repository
 public class QuestionRepository {
 
-    private List<List<Question>> questions;
-
+    private final List<List<Question>> questions = new ArrayList<>();
 
     public QuestionRepository() {
-        questions = new ArrayList<>();
-    }
-
-    public List<List<Question>> getQuestionsList() {
-        return questions;
     }
 
     public List<Question> getQuestions() {

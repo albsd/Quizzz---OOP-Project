@@ -85,8 +85,6 @@ public class GameControllerTest {
         service.initializeLobby(activityService.getQuestions());
 
         ctrl = new GameController(service, activityService, leaderboardService, simpMessagingTemplate);
-        // The current lobby is promoted to a game
-        // a new lobby is returned after promotion
         game = service.getLobby();
         ctrl.joinLobby("johny");
         ctrl.joinLobby("niko");

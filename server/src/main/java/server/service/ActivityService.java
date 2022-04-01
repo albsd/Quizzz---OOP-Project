@@ -64,7 +64,7 @@ public class ActivityService {
         return activityRepository.findAllById(ids);
     }
 
-    public synchronized void generateQuestions() {
+    public void generateQuestions() {
         List<Activity> activityList = getActivities();
         List<Question> questions = activityList.stream()
             .map((activity) -> {
@@ -73,6 +73,7 @@ public class ActivityService {
             })
             .collect(Collectors.toList());
         questionRepository.addQuestions(questions);
+        System.out.println("generated questions");
     }
 
     public List<Question> getQuestions() {

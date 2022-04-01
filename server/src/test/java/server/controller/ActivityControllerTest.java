@@ -34,7 +34,7 @@ class ActivityControllerTest {
         when(activityRepository.saveAndFlush(activity)).thenReturn(activity);
         when(activityRepository.findAll()).thenReturn(activities);
         when(activityRepository.findById(10L)).thenReturn(java.util.Optional.ofNullable(activity));
-        ActivityService activityService = new ActivityService(activityRepository);
+        ActivityService activityService = new ActivityService(activityRepository, null);
         ctrl = new ActivityController(activityService);
     }
 

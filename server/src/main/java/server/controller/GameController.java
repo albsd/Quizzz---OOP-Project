@@ -65,6 +65,7 @@ public class GameController {
         this.activityService = activityService;
         this.leaderboardService = leaderboardService;
         this.smt = smt;
+        activityService.generateQuestions();
         gameService.initializeLobby(activityService.getQuestions());
     }
 

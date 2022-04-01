@@ -194,8 +194,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void start(final ActionEvent event) {
-        //don't start game immediately cause invoker starts game faster
-        //than other players in lobby
         server.startMultiPlayer();
     }
 }

@@ -50,8 +50,7 @@ class AppControllerTest {
         game = gameService.getLobby();
         game.addPlayer(p1);
         game.addPlayer(p2);
-        gameService.addLobby();
-        gameService.newGame(questions);
+        gameService.upgradeLobby(questions);
         Game lobby = gameService.getLobby();
         lobby.addPlayer(p3);
     }
