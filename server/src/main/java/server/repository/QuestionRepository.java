@@ -1,12 +1,9 @@
 package server.repository;
 
-import commons.Game;
 import commons.Question;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+
 
 public class QuestionRepository {
 
@@ -17,17 +14,18 @@ public class QuestionRepository {
         questions = new ArrayList<>();
     }
 
-    /**
-     * Gets all games in the repository.
-     *
-     * @return list of all games
-     */
     public List<List<Question>> getQuestionsList() {
         return questions;
     }
 
     public List<Question> getQuestions() {
-
+        List<Question> question = questions.stream().findAny().get();
+        //add null exception try catch
+        questions.remove(question);
+        return question;
     }
 
+    public void addQuestions(final List<Question> question) {
+        questions.add(question);
+    }
 }

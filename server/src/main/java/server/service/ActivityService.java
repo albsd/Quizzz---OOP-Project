@@ -72,17 +72,11 @@ public class ActivityService {
                 return  turnActivityIntoQuestion(activity, questionType, generateOptions(activityList));
             })
             .collect(Collectors.toList());
-
+        questionRepository.addQuestions(questions);
     }
 
     public List<Question> getQuestions() {
-        List<Activity> activityList = getActivities();
-        return activityList.stream()
-                .map((activity) -> {
-                    int questionType = (int) ((Math.random() * (3)));
-                    return  turnActivityIntoQuestion(activity, questionType, generateOptions(activityList));
-                })
-                .collect(Collectors.toList());
+        return questionRepository.getQuestions();
     }
 
     /**

@@ -32,6 +32,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import server.repository.LeaderboardRepository;
+import server.repository.QuestionRepository;
 import server.service.ActivityService;
 import server.repository.ActivityRepository;
 import server.repository.GameRepository;
@@ -78,10 +79,10 @@ public class GameControllerTest {
         when(leaderboardRepository.findAll()).thenReturn(gameResults);
 
         GameService service =  new GameService(new GameRepository());
-        ActivityService activityService = new ActivityService(activityRepository);
+        ActivityService activityService = new ActivityService(activityRepository, new QuestionRepository());
         LeaderboardService leaderboardService = new LeaderboardService(leaderboardRepository);
         //TODO: Figure out why this test is broken
-        service.initializeLobby(activityService.generateQuestions());
+        service.initializeLobby(activityService.getQuestions());
 
         ctrl = new GameController(service, activityService, leaderboardService, simpMessagingTemplate);
         // The current lobby is promoted to a game
@@ -93,7 +94,7 @@ public class GameControllerTest {
         nick = "johny";
         score = 50;
         ctrl.startLobby();
-        service.newGame(null);
+        service.upgradeLobby(null);
     }
 
     @Test

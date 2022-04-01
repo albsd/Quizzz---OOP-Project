@@ -17,10 +17,9 @@ public class ActivityConfig {
     @Bean
     CommandLineRunner commandLineRunner(final ActivityService activityService, final GameService gameService) {
         return args -> {
-            for (int i = 0; i <  12; i++) {
-
+            for (int i = 0; i < 20; i++) {
+                activityService.generateQuestions();
             }
-            gameService.createSingleplayer(activityService.get());
         };
     }
 }

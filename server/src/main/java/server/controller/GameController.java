@@ -108,15 +108,15 @@ public class GameController {
      */
     @PostMapping("/single/{nick}")
     public Game createAndGetGame(final @PathVariable String nick) {
+        Game game = gameService.getSingleGame(activityService.getQuestions());
+        game.addPlayer(new Player(nick));
         Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                gameService.createSingleplayer(activityService.generateQuestions());
+                activityService.generateQuestions();
             } 
         });
         t2.start();
-        Game game = gameService.getSingleGame();
-        game.addPlayer(new Player(nick));
         return game;
     }
     
@@ -274,11 +274,11 @@ public class GameController {
     @MessageMapping("/lobby/start") // /app/lobby/start
     @SendTo("/topic/lobby/start")
     public GameUpdate startLobby() {
-        gameService.addLobby();
+        gameService.upgradeLobby(activityService.getQuestions());
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                gameService.newGame(activityService.generateQuestions());
+                activityService.generateQuestions();
             }
         });
         t1.start();

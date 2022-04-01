@@ -27,12 +27,8 @@ public class GameService {
         this.lobby = new Game(UUID.randomUUID(), questions, true);
     }
 
-    public void createSingleplayer(final List<Question> questions) {
-        repo.createSingleplayer(questions);
-    }
-
-    public Game getSingleGame() {
-        return repo.getSingleGame();
+    public Game getSingleGame(final List<Question> questions) {
+        return repo.getSingleGame(questions);
     }
 
     public Game getLobby() {
@@ -44,28 +40,13 @@ public class GameService {
     }
 
     /**
-     * Current lobby is propagated to the game that has just started.
-     */
-    public void addLobby() {
-        repo.addGame(lobby);
-    }
-
-    /**
-     * Adds singlelayer game.
-     * 
-     * @param  game object of single player
-     */
-    public void addSingleGame(final Game game) {
-        repo.addSingleGame(game);
-    }
-
-    /**
      * Creates a new game as an active lobby.
      * The previous lobby is propagated to the game that has just started.
      *
      * @param questions List of questions for the newly created lobby
      */
-    public void newGame(final List<Question> questions) {
+    public void upgradeLobby(final List<Question> questions) {
+        repo.addGame(lobby);
         lobby = new Game(UUID.randomUUID(), questions, true);
     }
 
