@@ -1,0 +1,165 @@
+/* FONTS */
+.label, .button, .text-field, Text {
+    -fx-font-family: 'Righteous';
+    -fx-font-size: 24;
+}
+
+.title {
+    -fx-font-size: 150;
+    -fx-font-weight: bold;
+}
+
+.h1 {
+    -fx-font-size: 72;
+    -fx-font-weight: bold;
+}
+
+.h2 {
+    -fx-font-size: 48;
+    -fx-font-weight: bold;
+}
+
+.bold {
+    -fx-font-weight: bold;
+}
+
+.small {
+    -fx-font-size: 13;
+}
+
+.optionButton {
+    -fx-font-size: 17;
+}
+
+/* GENERAL */
+.removedOption {
+    -fx-opacity: 0.25;
+}
+
+.table-view .column-header .label {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.scene {
+    -fx-background-color: -background;
+}
+
+/* BUTTONS */
+.button {
+    -fx-background-color: -button-background;
+    -fx-text-fill: -button-text;
+}
+
+.cancelButton, .wrongAnswer {
+    -fx-background-color: -incorrect-background;
+    -fx-text-fill: -incorrect-text;
+}
+
+.confirmButton, .correctAnswer {
+    -fx-background-color: -correct-background;
+    -fx-text-fill: -correct-text;
+}
+
+
+.selectedOption {
+    -fx-border-color: -selected-border;
+    -fx-border-width: 3;
+    -fx-border-style: solid;
+}
+
+/* LABELS */
+.label {
+    -fx-text-fill: -text;
+}
+
+.incorrectText, .warning {
+    -fx-text-fill: -incorrect-text;
+}
+
+.correctText {
+    -fx-text-fill: -correct-text;
+}
+
+/* LEADERBOARD */
+.leaderboardEntry .label {
+    -fx-text-fill: -leaderboard-text;
+}
+
+.leaderboardEntry {
+    -fx-background-color: -leaderboard-background;
+}
+
+.leaderboardFirst .label {
+    -fx-text-fill: -leaderboard-first-text;
+}
+
+.leaderboardFirst {
+    -fx-background-color: -leaderboard-first-background;
+}
+
+.leaderboardSelf .label {
+    -fx-text-fill: -leaderboard-self-text;
+}
+
+.leaderboardSelf {
+    -fx-background-color: -leaderboard-self-background;
+}
+
+/* ICONS */
+SVGPath {
+    -fx-fill: -icon;
+}
+
+.iconButton {
+    -fx-background-color: transparent !important;
+}
+
+/* HOVER */ 
+.button:hover {
+    /*-fx-background-color: derive(-button-background, -10%);
+    -fx-text-fill: derive(-button-text, -10%);*/
+    -fx-background-color: ladder(-button-background, derive(-button-background, 20%), derive(-button-background, -20%));
+    -fx-text-fill: ladder(-button-text, derive(-button-text, 20%), derive(-button-text, -20%));
+}
+
+.cancelButton:hover, .wrongAnswer:hover {
+    /*-fx-background-color: derive(-incorrect-background, -10%);
+    -fx-text-fill: derive(-incorrect-text, -10%);*/
+    -fx-background-color: ladder(-incorrect-background, derive(-incorrect-background, 20%), derive(-incorrect-background, -20%));
+    -fx-text-fill: ladder(-incorrect-text, derive(-incorrect-text, 20%), derive(-incorrect-text, -20%));
+}
+
+.confirmButton:hover, .correctAnswer:hover {
+    /*-fx-background-color: derive(-correct-background, -10%);
+    -fx-text-fill: derive(-correct-text, -10%);*/
+    -fx-background-color: ladder(-correct-background, derive(-correct-background, 20%), derive(-correct-background, -20%));
+    -fx-text-fill: ladder(-correct-text, derive(-correct-text, 20%), derive(-correct-text, -20%));
+}
+
+.iconButton:hover SVGPath {
+    -fx-fill: ladder(-icon, derive(-icon, 20%), derive(-icon, -20%));
+}
+
+/* OTHER */
+.text-field {
+    -fx-background-color: -background-alt;
+    -fx-text-fill: -text;
+    -fx-prompt-text-fill: derive(-background-alt, -30%);
+}
+
+.nicknameField {
+    -fx-background-color: -correct-background;
+    -fx-text-fill: -correct-text;
+    -fx-prompt-text-fill: derive(-correct-background, -30%);
+}
+
+.scroll-pane {
+    -fx-background: -background;
+    -fx-border-color: -background-alt;
+}
+
+.returnPopup {
+    -fx-background-color: -background;
+    -fx-border-color: -selected-border;
+    -fx-border-width: 3px;
+}

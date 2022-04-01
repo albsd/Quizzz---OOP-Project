@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminPanelController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" styleClass="scene" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminPanelController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -22,18 +27,19 @@
                     <TableColumn fx:id="source" prefWidth="360.0" text="Source" />
                 </columns>
             </TableView>
-            <Label fx:id="modeText" alignment="CENTER" layoutX="1025.0" layoutY="78.0" prefHeight="25.0" prefWidth="100.0" text="ADD MODE" textFill="#22ab03" />
+            <Label fx:id="modeText" alignment="CENTER" layoutX="1025.0" layoutY="78.0" prefHeight="25.0" prefWidth="100.0" text="ADD MODE" styleClass="correctText" />
             <Label fx:id="infoText" alignment="CENTER" layoutX="925.0" layoutY="112.0" prefHeight="25.0" prefWidth="300.0" />
             <TextField fx:id="titleInput" layoutX="925.0" layoutY="150.0" prefWidth="300.0" promptText="Title" />
             <TextField fx:id="powerInput" layoutX="925.0" layoutY="200.0" prefWidth="300.0" promptText="Power Consumption" />
             <TextField fx:id="sourceInput" layoutX="925.0" layoutY="246.0" prefWidth="300.0" promptText="Source" />
-            <ImageView fx:id="imageShow" fitHeight="200.0" fitWidth="200.0" layoutX="975.0" layoutY="360.0" pickOnBounds="true" />
+            <ImageView fx:id="imageShow" fitHeight="200.0" fitWidth="200.0" layoutX="975.0" layoutY="360.0" pickOnBounds="true" preserveRatio="true" />
             <Button layoutX="1169.0" layoutY="286.0" mnemonicParsing="false" onAction="#submit" text="Submit" />
             <Button fx:id="imageButton" layoutX="925.0" layoutY="286.0" mnemonicParsing="false" onAction="#chooseImage" text="Choose Image" />
-            <Button layoutX="60.0" layoutY="665.0" mnemonicParsing="false" onAction="#refresh" prefHeight="27.0" prefWidth="105.0" text="Refresh" />
-            <Button layoutX="285.0" layoutY="665.0" mnemonicParsing="false" onAction="#edit" prefHeight="27.0" prefWidth="105.0" text="Edit Mode" />
-            <Button layoutX="510.0" layoutY="665.0" mnemonicParsing="false" onAction="#add" prefHeight="27.0" prefWidth="105.0" text="Add Mode" />
-            <Button layoutX="735.0" layoutY="665.0" mnemonicParsing="false" onAction="#delete" prefHeight="27.0" prefWidth="105.0" text="Delete" />
+            <Button layoutX="40.0" layoutY="665.0" mnemonicParsing="false" onAction="#refresh" prefHeight="27.0" prefWidth="100.0" text="Refresh" />
+            <Button layoutX="220.0" layoutY="665.0" mnemonicParsing="false" onAction="#edit" prefHeight="27.0" prefWidth="100.0" text="Edit Mode" />
+            <Button layoutX="400.0" layoutY="665.0" mnemonicParsing="false" onAction="#add" prefHeight="27.0" prefWidth="100.0" text="Add Mode" />
+            <Button layoutX="580.0" layoutY="665.0" mnemonicParsing="false" onAction="#delete" prefHeight="27.0" prefWidth="100.0" text="Delete" />
+         <Button fx:id="loadActivitiesButton" layoutX="760.0" layoutY="665.0" mnemonicParsing="false" onAction="#chooseActivities" prefHeight="27.0" prefWidth="100.0" text="Load Activities" />
             <Button layoutX="1125.0" layoutY="665.0" mnemonicParsing="false" onAction="#splash" prefHeight="27.0" prefWidth="100.0" text="Main Menu" />
         </children>
     </AnchorPane>
