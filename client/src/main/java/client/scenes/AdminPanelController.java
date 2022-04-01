@@ -21,7 +21,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.converter.IntegerStringConverter;
 
 import javax.imageio.ImageIO;
@@ -62,7 +61,7 @@ public class AdminPanelController implements Initializable {
     private boolean isEditing;
     private Activity activityEdit;
     private commons.Image image;
-    private final ExtensionFilter extensionFilter;
+    private final FileChooser.ExtensionFilter extensionFilter;
 
     @Inject
     public AdminPanelController(final ServerUtils server, final FXMLController fxml) {
@@ -288,7 +287,7 @@ public class AdminPanelController implements Initializable {
         try {
             BufferedImage bImage = ImageIO.read(file);
             if (bImage == null) {
-                URL imageURL = getClass().getClassLoader().getResource("images/icon.png");
+                URL imageURL = AdminPanelController.class.getClassLoader().getResource("images/icon.png");
                 bImage = ImageIO.read(imageURL);
                 extension = "png";
             }

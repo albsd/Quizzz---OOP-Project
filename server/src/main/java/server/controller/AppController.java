@@ -85,7 +85,6 @@ public class AppController {
      * @param id id of the game
      */
     public void sendPlayerLeft(@Payload final Player player, final UUID id) {
-
         this.smt.convertAndSend("/topic/game/" + id + "/leave", player);
 
         try {
@@ -98,14 +97,13 @@ public class AppController {
     /**
      * Updates the player's state as having finished his timer.
      *
-     * @param id id of the game
+     * @param id   id of the game
      * @param nick name of the player
      * @return Game object of the player
      */
     @PostMapping("/{id}/finishedtimer/{nick}")
     public ResponseEntity<Game> updateFinishedTimers(final @PathVariable("id") UUID id,
-                                                     final @PathVariable("nick") String nick) {
-
+            final @PathVariable("nick") String nick) {
         Game game = gameService.findById(id);
         if (game == null || game.isOver()) {
             return ResponseEntity.badRequest().build();

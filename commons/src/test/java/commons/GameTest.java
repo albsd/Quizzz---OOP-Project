@@ -112,18 +112,22 @@ public class GameTest {
     }
 
     @Test
-    void allPlayersFinished() {
+    void allPlayersFinishedReturnsTrue() {
         for (Player p : p1) {
             p.setFinishedQuestion(true);
         }
 
         assertTrue(g1.allPlayersFinished());
         assertFalse(g1.allPlayersFinished());
+    }
 
+    @Test
+    void onePlayersNotFinishedReturnsFalse() {
         for (Player p : p2) {
             p.setFinishedQuestion(true);
         }
         p2.get(0).setFinishedQuestion(false);
+        
         assertFalse(g2.allPlayersFinished());
     }
 }

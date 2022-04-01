@@ -313,8 +313,6 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
-
-
     // WEBSOCKET ENDPOINTS FOR THE MULTIPLAYER ------------------------------------------------------------------------
     /**
      * A Websocket endpoint for sending chat messages in the lobby.
