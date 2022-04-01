@@ -80,4 +80,14 @@ class AppControllerTest {
         ctrl.saveNickname(mac1, nick1);
         assertEquals(new Player(nick1), ctrl.getNickname(mac1).getBody());
     }
+
+    @Test
+    void updateGamePlayerFinished() {
+        p1.setFinishedQuestion(false);
+        ctrl.updateGamePlayerFinished(game.getId(), "Charlie");
+        Player dummy = ctrl.updateGamePlayerFinished(game.getId(), "Charlie");
+        assertEquals(p1, dummy);
+        assertTrue(p1.hasFinishedQuestion());
+    }
+
 }

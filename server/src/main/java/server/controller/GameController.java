@@ -345,8 +345,14 @@ public class GameController {
      */
     @MessageMapping("/game/{id}/halve") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/halve
     @SendTo("/topic/game/{id}/update")
-    public GameUpdate halveTimeWebsocket() {
+    public GameUpdate halveTimeMessage() {
         return GameUpdate.halveTimer;
+    }
+
+    @MessageMapping("/game/{id}/stopTimer")
+    @SendTo("/topic/game/{id}/update")
+    public GameUpdate stopTimerMessage() {
+        return GameUpdate.stopTimer;
     }
 
 }
