@@ -41,6 +41,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -305,6 +306,9 @@ public class AdminPanelController implements Initializable {
 
     public void populateRepo(final String activitiesPath) {
         List<File> files = DBController.getFiles(".json", new File(activitiesPath));
+        final String resourcesPath = "./src/main/resources";
+        List<Activity> newActivities = new ArrayList<>();
+        List<commons.Image> images = new ArrayList<>();
         for (File jsonFile : files) {
             BufferedReader bufferedReader = null;
             try {
@@ -331,9 +335,12 @@ public class AdminPanelController implements Initializable {
             if (file == null) {
                 file = DBController.find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
             }
-            server.addActivity(new Activity(titleAct, wattHours, sourceAct, file.getName()));
-            server.sendImage(new commons.Image(generateImageByteArray(file.getPath()), file.getName()));
+            newActivities.add(new Activity(titleAct, wattHours, sourceAct,
+                    resourcesPath + "/images/" + file.getName()));
+            images.add(new commons.Image(generateImageByteArray(file.getPath()), file.getName()));
         }
+        server.addActivities(newActivities);
+        server.sendImages(images);
         loadTable(true);
         infoText.setText("Activities are loaded successfully.");
     }

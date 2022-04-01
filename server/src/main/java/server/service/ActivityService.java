@@ -152,6 +152,11 @@ public class ActivityService {
         return activityRepository.saveAndFlush(activity);
     }
 
+    public List<Activity> addActivities(final List<Activity> activity) {
+        return activityRepository.saveAllAndFlush(activity);
+    }
+
+
     /**
      * Deletes an activity from the database and its image.
      * @param id ID of the activity to be deleted
@@ -189,6 +194,13 @@ public class ActivityService {
             e.printStackTrace();
         }
         return image;
+    }
+
+    public List<Image> saveImages(final List<Image> images) throws IOException {
+        for (Image img : images) {
+            saveImage(img);
+        }
+        return images;
     }
 
     /**

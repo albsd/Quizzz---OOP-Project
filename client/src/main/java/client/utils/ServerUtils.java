@@ -408,6 +408,40 @@ public class ServerUtils {
         return deletedActivity;
     }
 
+    public List<Activity> addActivities(final List<Activity> activities) {
+        ObjectMapper mapper = new ObjectMapper();
+        String activitiesString = "";
+        try {
+            activitiesString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(activities);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kActivityUrl + "/activities"))
+                .headers("accept", "application/json", "content-type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(activitiesString))
+                .build();
+        return parseResponseToObject(request, new TypeReference<List<Activity>>() { });
+    }
+
+    public List<Image> sendImages(final List<Image> images) {
+        ObjectMapper mapper = new ObjectMapper();
+        String imagesString = "";
+        try {
+            imagesString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(images);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kActivityUrl + "/imgs"))
+                .headers("accept", "application/json", "content-type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(imagesString))
+                .build();
+        return parseResponseToObject(request, new TypeReference<List<Image>>() { });
+    }
+
     // REQUESTS FOR SERVER SAVED NICKNAME  ============================================================================
     public String getNickname() {
         if (macAddress == null) {

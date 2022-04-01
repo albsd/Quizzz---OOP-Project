@@ -52,6 +52,11 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.addActivity(activity));
     }
 
+    @PostMapping("/activities")
+    public ResponseEntity<List<Activity>> addActivities(final @RequestBody List<Activity> activities) {
+        return ResponseEntity.ok(activityService.addActivities(activities));
+    }
+
     /**
      * Saves an image to the server.
      * @param image Image to be saved
@@ -61,6 +66,11 @@ public class ActivityController {
     @PostMapping("/img")
     public ResponseEntity<Image> sendImage(final @RequestBody Image image) throws IOException {
         return ResponseEntity.ok(activityService.saveImage(image));
+    }
+
+    @PostMapping("/imgs")
+    public ResponseEntity<List<Image>> sendImages(final @RequestBody List<Image> images) throws IOException {
+        return ResponseEntity.ok(activityService.saveImages(images));
     }
 
     /**
