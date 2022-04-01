@@ -45,8 +45,8 @@ public class GameConfig {
             for (int j = 0; j < players.size(); j++) {
                 Player player = players.get(j);
                 if (!player.isAlive()) {
-                    game.removePlayer(player);
                     appCtrl.sendPlayerLeft(player, game.getId());
+                    game.removePlayer(player);
                 }
             }
             if (players.isEmpty()) {

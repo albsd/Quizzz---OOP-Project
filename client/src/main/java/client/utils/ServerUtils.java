@@ -36,7 +36,11 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -62,9 +66,12 @@ public class ServerUtils {
 
     private TimerTask heartBeat;
 
+    private String macAddress;
+
     public ServerUtils() {
         this.client = HttpClient.newHttpClient();
         this.heartBeatTimer = new Timer();
+        this.macAddress = initMacAddress();
     }
 
     public String isRunning(final String host, final String port) {
@@ -292,6 +299,7 @@ public class ServerUtils {
                 .uri(URI.create(kGameUrl + "/single/" + nick))
                 .POST(HttpRequest.BodyPublishers.ofString(""))
                 .build();
+
        return parseResponseToObject(request, new TypeReference<Game>() { });
     }
 
@@ -307,11 +315,13 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
+
         return parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
     
     /**
      * Store the player's score for a single-player game.
+     * 
      * @param nick Name of tha player
      * @param score Player's score
      */
@@ -324,12 +334,13 @@ public class ServerUtils {
         parseResponseToObject(request, new TypeReference<Leaderboard>() { });
     }
 
-    // COMMON REQUESTS TO UPDATE PLAYER'S SCORE =======================================================================
+    // COMMON REQUESTS TO UPDATE PLAYER'S STATUS =======================================================================
     /**
      * Updates player score every question.
-     * @param id game object
-     * @param nick name of user
-     * @param score score of user
+     * 
+     * @param id    UUID of the given game
+     * @param nick  Nickname of the user
+     * @param score score of the user
      */
     public void addScore(final UUID id, final String nick, final int score) {
         HttpRequest request = HttpRequest.newBuilder()
@@ -337,8 +348,26 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(Integer.toString(score)))
                 .build();
+
         parseResponseToObject(request, new TypeReference<Game>() { });
     }
+
+    /**
+     * Updates the player's status of the current question to finished.
+     * 
+     * @param id    UUID of the given game
+     * @param nick  Nickname of the user
+     */
+    public void updatePlayerFinished(final UUID id, final String nick) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kAppUrl + "/" + id + "/finishedtimer/" + nick))
+                .header("accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        parseResponseToObject(request, new TypeReference<Game>() { });
+    }
+
 
     // REQUESTS FOR THE DATABASE OF ACTIVITIES  =======================================================================
     public List<Activity> getAllActivities() {
@@ -347,6 +376,7 @@ public class ServerUtils {
                 .header("accept", "application/json")
                 .GET()
                 .build();
+
         return parseResponseToObject(request, new TypeReference<List<Activity>>() { });
     }
 
@@ -363,6 +393,7 @@ public class ServerUtils {
                 .headers("accept", "application/json", "content-type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(activityString))
                 .build();
+
         return parseResponseToObject(request, new TypeReference<Activity>() { });
     }
 
@@ -379,6 +410,7 @@ public class ServerUtils {
                     .headers("accept", "application/json", "content-type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(imageString))
                     .build();
+
         return parseResponseToObject(request, new TypeReference<Image>() { });
     }
 
@@ -388,6 +420,7 @@ public class ServerUtils {
                 .headers("accept", "application/json")
                 .GET()
                 .build();
+
         return parseResponseToObject(request, new TypeReference<Image>() { });
     }
 
@@ -397,8 +430,37 @@ public class ServerUtils {
                 .DELETE()
                 .build();
 
-        Activity deletedActivity = parseResponseToObject(request, new TypeReference<Activity>() { });
-        return deletedActivity;
+        return parseResponseToObject(request, new TypeReference<Activity>() { });
+    }
+
+    // REQUESTS FOR SERVER SAVED NICKNAME  ============================================================================
+    public String getNickname() {
+        if (macAddress == null) {
+            return null;
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kAppUrl + "/nick/" + macAddress))
+                .headers("accept", "application/json")
+                .GET()
+                .build();
+        Player player = parseResponseToObject(request, new TypeReference<Player>() { });
+        if (player == null) {
+            return null;
+        }
+        return player.getNick();
+    }
+
+    public void saveNickname(final String nick) {
+        if (macAddress == null) {
+            return;
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(kAppUrl + "/nick/" + macAddress + "/" + nick))
+                .headers("accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        parseResponseToObject(request, new TypeReference<Player>() { });
     }
 
 
@@ -415,10 +477,8 @@ public class ServerUtils {
             HttpResponse<String> response = client.send(request,
                     HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-
                 return null;
             }
-
             ObjectMapper mapper = new ObjectMapper();
             T obj = mapper.readValue(response.body(), type);
             return obj;
@@ -444,5 +504,32 @@ public class ServerUtils {
     public void cancelHeartbeat() {
         heartBeat.cancel();
         heartBeatTimer.purge();
+    }
+
+    private String initMacAddress() {
+        InetAddress localHost = null;
+        try {
+            localHost = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        NetworkInterface ni = null;
+        try {
+            ni = NetworkInterface.getByInetAddress(localHost);
+        } catch (SocketException e1) {
+            e1.printStackTrace();
+        }
+        byte[] hardwareAddress = null;
+        try {
+            hardwareAddress = ni.getHardwareAddress();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        String[] hexadecimal = new String[hardwareAddress.length];
+        for (int i = 0; i < hardwareAddress.length; i++) {
+            hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
+        }
+        
+        return String.join("_", hexadecimal);
     }
 }

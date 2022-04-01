@@ -37,6 +37,8 @@ import server.repository.ActivityRepository;
 import server.repository.GameRepository;
 import server.service.GameService;
 import server.service.LeaderboardService;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
 
@@ -50,13 +52,7 @@ public class GameControllerTest {
     @Mock
     private ActivityRepository activityRepository;
 
-    private final List<Activity> activities = List.of(
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity());
+    private final List<Activity> activities = new ArrayList<>();
 
     @Mock
     LeaderboardRepository leaderboardRepository;
@@ -72,14 +68,19 @@ public class GameControllerTest {
 
     @BeforeEach
     public void setup() {
+        for (int i = 1; i < 101; i++) {
+            activities.add(new Activity("", i, "", ""));
+        }
+
         MockitoAnnotations.openMocks(this);
-        when(activityRepository.count()).thenReturn(20L);
+        when(activityRepository.count()).thenReturn(100L);
         when(activityRepository.findAll()).thenReturn(activities);
         when(leaderboardRepository.findAll()).thenReturn(gameResults);
 
         GameService service =  new GameService(new GameRepository());
         ActivityService activityService = new ActivityService(activityRepository);
         LeaderboardService leaderboardService = new LeaderboardService(leaderboardRepository);
+        //TODO: Figure out why this test is broken
         service.initializeLobby(activityService.getQuestionList());
 
         ctrl = new GameController(service, activityService, leaderboardService, simpMessagingTemplate);
@@ -125,17 +126,6 @@ public class GameControllerTest {
         actual = ctrl.joinLobby(nick);
         assertEquals(403, actual.getStatusCode().value());
     }
-    //May not be testable as new game creation is done in anoter thread
-    // @Test
-    // public void startTheLobby() {
-    //     ctrl.joinLobby("johny");
-    //     ctrl.joinLobby("niko");
-    //     ctrl.joinLobby("babe");
-    //     assertEquals(ctrl.getLobby().getPlayers().size(), 3);
-    //     ctrl.startLobby();
-    
-    //     assertEquals(ctrl.getLobby().getPlayers().size(), 0);
-    // }
 
     @Test
     public void leaderboardSorted() {

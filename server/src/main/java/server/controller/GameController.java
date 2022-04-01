@@ -66,14 +66,11 @@ public class GameController {
         this.leaderboardService = leaderboardService;
         this.smt = smt;
         gameService.initializeLobby(activityService.getQuestionList());
-
-        UUID defaultID = UUID.randomUUID();
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < 10; i++) {
-                    Game game = new Game(defaultID, activityService.getQuestionList(), false);
-                    gameService.addSingleGame(game);
+                    gameService.createSingleplayer(activityService.getQuestionList());
                 }
             }
         });
@@ -348,8 +345,14 @@ public class GameController {
      */
     @MessageMapping("/game/{id}/halve") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/halve
     @SendTo("/topic/game/{id}/update")
-    public GameUpdate halveTimeWebsocket() {
+    public GameUpdate halveTimeMessage() {
         return GameUpdate.halveTimer;
+    }
+
+    @MessageMapping("/game/{id}/stopTimer")
+    @SendTo("/topic/game/{id}/update")
+    public GameUpdate stopTimerMessage() {
+        return GameUpdate.stopTimer;
     }
 
 }

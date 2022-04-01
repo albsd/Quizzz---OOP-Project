@@ -36,6 +36,8 @@ public class FXMLController {
 
     private String themePath = "css/dark.css";
 
+    private String nick;
+
     /**
      * Store the primaryStage of the application and MyFXML reference for
      * loading the fxml files with the associated controller.
@@ -165,5 +167,13 @@ public class FXMLController {
         PauseTransition delay = new PauseTransition(Duration.seconds(5));
         delay.setOnFinished(event -> stage1.close());
         return root;
+    }
+
+    public void saveNick(final String nick) {
+        this.nick = nick;
+    }
+
+    public String getNick() {
+        return this.nick;
     }
 }
