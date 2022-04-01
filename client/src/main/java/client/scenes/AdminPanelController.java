@@ -19,9 +19,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.converter.IntegerStringConverter;
 
 import javax.imageio.ImageIO;
@@ -59,17 +59,15 @@ public class AdminPanelController implements Initializable {
     private final ServerUtils server;
     private final FXMLController fxml;
     private ObservableList<Activity> activities;
-    private final Font font;
     private boolean isEditing;
     private Activity activityEdit;
     private commons.Image image;
-    private final FileChooser.ExtensionFilter extensionFilter;
+    private final ExtensionFilter extensionFilter;
 
     @Inject
     public AdminPanelController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
         this.fxml = fxml;
-        this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
         this.extensionFilter = new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg",
                 "*.png", "*.gif");
     }
@@ -290,7 +288,7 @@ public class AdminPanelController implements Initializable {
         try {
             BufferedImage bImage = ImageIO.read(file);
             if (bImage == null) {
-                URL imageURL = AdminPanelController.class.getClassLoader().getResource("images/icon.png");
+                URL imageURL = getClass().getClassLoader().getResource("images/icon.png");
                 bImage = ImageIO.read(imageURL);
                 extension = "png";
             }
