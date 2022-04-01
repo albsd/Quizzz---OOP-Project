@@ -1,6 +1,7 @@
 package server.service;
 
 import commons.Activity;
+import commons.DBController;
 import commons.Image;
 import commons.Question;
 
@@ -251,6 +252,11 @@ public class ActivityService {
         return activityRepository.saveAndFlush(activity);
     }
 
+    public List<Activity> addActivities(final List<Activity> activity) {
+        return activityRepository.saveAllAndFlush(activity);
+    }
+
+
     /**
      * Deletes an activity from the database and its image.
      * @param id ID of the activity to be deleted
@@ -290,6 +296,13 @@ public class ActivityService {
         return image;
     }
 
+    public List<Image> saveImages(final List<Image> images) throws IOException {
+        for (Image img : images) {
+            saveImage(img);
+        }
+        return images;
+    }
+
     /**
      * @param path Path of the image to be collected
      * @return Returns the Image that exists in the path
@@ -310,7 +323,7 @@ public class ActivityService {
     @SuppressWarnings("unchecked")
     public List<Activity> populateRepo() throws FileNotFoundException, ParseException {
         List<Activity> activities = new ArrayList<>();
-        List<File> files = getFiles(".json", new File(activitiesPath));
+        List<File> files = DBController.getFiles(".json", new File(activitiesPath));
         for (File jsonFile : files) {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(jsonFile));
             JSONParser jsonParser = new JSONParser(bufferedReader);
@@ -320,12 +333,12 @@ public class ActivityService {
             String source = list.get("source").toString();
 
             String str = jsonFile.getName();
-            File file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".png");
+            File file = DBController.find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".png");
             if (file == null) {
-                file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+                file = DBController.find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
             }
             if (file == null) {
-                file = find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
+                file = DBController.find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
             }
             String path = file.getPath().replaceAll("\\\\", "/");
             String realPath = path.substring(path.lastIndexOf("./src"));
@@ -385,30 +398,5 @@ public class ActivityService {
         } catch (IOException e) {
             return new byte[0];
         }
-    }
-
-    private static File find(final String path, final String fName) {
-        File f = new File(path);
-        if (fName.equalsIgnoreCase(f.getName())) return f;
-        if (f.isDirectory()) {
-            for (String aChild : f.list()) {
-                File ff = find(path + File.separator + aChild, fName);
-                if (ff != null) return ff;
-            }
-        }
-        return null;
-    }
-
-    private static List<File> getFiles(final String ext, final File folder) {
-        String extension = ext.toUpperCase();
-        final List<File> files = new ArrayList<File>();
-        for (final File file : folder.listFiles()) {
-            if (file.isDirectory()) {
-                files.addAll(getFiles(extension, file));
-            } else if (file.getName().toUpperCase().endsWith(extension)) {
-                files.add(file);
-            }
-        }
-        return files;
     }
 }

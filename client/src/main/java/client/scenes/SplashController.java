@@ -33,7 +33,7 @@ public class SplashController implements Initializable {
     private PopupController popupController;
 
     @FXML
-    private Button singleplayerButton, leaderBoardButton, multiplayerButton;
+    private Button singleplayerButton, leaderBoardButton, multiplayerButton, adminButton;
 
     private final Font font1, font2;
     public final Color red = new Color(0.8, 0, 0, 1);
@@ -69,7 +69,8 @@ public class SplashController implements Initializable {
         singleplayerButton.setFont(font1);
         leaderBoardButton.setFont(font1);
         multiplayerButton.setFont(font1);
-        
+        adminButton.setFont(font1);
+
         //Players can prefer to play with server saved nickname or new nickname
         //nick has already been set so used persistent fxml nick
         if (nick != null) {
@@ -100,7 +101,6 @@ public class SplashController implements Initializable {
 
      /**
      * The Player's nickname must be validated against the length constraints.
-     * 
      * @param event
      */
     @FXML
@@ -159,7 +159,6 @@ public class SplashController implements Initializable {
      * Enter the lobby from the splash screen.
      * The Player's nickname must be validated against the names of the 
      * current players in the lobby.
-     * 
      * @param event
      */
     @FXML
