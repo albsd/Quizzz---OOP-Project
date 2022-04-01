@@ -47,13 +47,7 @@ public class SplashController implements Initializable {
      */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        title.setFont(font2);
-        warning.setFont(font1);
-        nickField.setFont(font1);
-        singleplayerButton.setFont(font1);
-        leaderBoardButton.setFont(font1);
-        multiplayerButton.setFont(font1);
-        
+
         //Players can prefer to play with server saved nickname or new nickname
         //nick has already been set so used persistent fxml nick
         if (nick != null) {
@@ -98,7 +92,7 @@ public class SplashController implements Initializable {
             return;
         }
         if (nick != null) {
-            warning.setTextFill(green);
+            warning.getStyleClass().add("correctText");
             warning.setText("Nickname has been changed");
         }
         nick = nickField.getText();
@@ -108,6 +102,7 @@ public class SplashController implements Initializable {
     }
 
     private boolean validateNickname(final String user) {
+        warning.getStyleClass().clear();
         final int maxChrLimit = 12;
         final int minChrLimit = 3;
         int len = user.length();
@@ -137,7 +132,8 @@ public class SplashController implements Initializable {
     @FXML
     public void singleGame(final ActionEvent event) {
         if (nick == null) {
-            warning.setTextFill(red);
+            warning.getStyleClass().clear();
+            warning.getStyleClass().add("incorrectText");
             warning.setText("Please enter a nick name");
             return;
         }
@@ -154,14 +150,15 @@ public class SplashController implements Initializable {
      */
     @FXML
     public void lobby(final ActionEvent event) {
+        warning.getStyleClass().clear();
         if (nick == null) {
-            warning.setTextFill(red);
+            warning.getStyleClass().add("incorrectText");
             warning.setText("Please enter a nick name");
             return;
         }
         final Player me = server.joinLobby(nick);
         if (me == null) {
-            warning.getStyleClass().add("correctText");
+            warning.getStyleClass().add("incorrectText");
             warning.setText("User with the given name is already in the game");
             return;
         }

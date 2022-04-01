@@ -21,7 +21,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Font;
 
 public class LeaderboardController implements Initializable {
 
@@ -48,8 +47,6 @@ public class LeaderboardController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 72);
-        title.setFont(titleFont);
         menu.setVisible(false);
     }
 

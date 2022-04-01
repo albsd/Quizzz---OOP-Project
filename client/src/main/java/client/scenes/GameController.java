@@ -35,6 +35,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
@@ -43,19 +44,13 @@ import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
-<<<<<<< client/src/main/java/client/scenes/GameController.java
 import java.nio.charset.StandardCharsets;
-=======
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
->>>>>>> client/src/main/java/client/scenes/GameController.java
 import java.util.ResourceBundle;
 import java.util.TimerTask;
 import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Scanner;
 
@@ -165,6 +160,10 @@ public class GameController implements Initializable, WebSocketSubscription {
                 time -> Platform.runLater(() -> {
                     double ratio = (double) time / QuestionTimer.MAX_TIME;
                     progressBar.setProgress(ratio);
+
+                    String green = "#e0fccf";
+                    String orange = "#ffd029";
+                    String red = "fe6f5b";
 
                     Color rgb; // linearly interpolate
                     double y = 1 - Math.abs(2 * ratio - 1);
@@ -290,9 +289,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         mainHorizontalBox.getChildren().remove(4, 5);
         optionBox.setAlignment(Pos.CENTER);
         optionBox.setPrefWidth(600);
-        //optionBox.setPrefHeight(600);
         optionBox.setPadding(Insets.EMPTY);
-        //optionBox.setSpacing(55);
         powerupBox.getChildren().remove(1, 3);
         VBox.setMargin(optionBox, new Insets(75, 0, 0, 0));
 
