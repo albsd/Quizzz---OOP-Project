@@ -72,12 +72,12 @@
     -fx-text-fill: -text;
 }
 
-.correctText {
-    -fx-text-fill: -correct-text;
-}
-
 .incorrectText, .warning {
     -fx-text-fill: -incorrect-text;
+}
+
+.correctText {
+    -fx-text-fill: -correct-text;
 }
 
 /* LEADERBOARD */
