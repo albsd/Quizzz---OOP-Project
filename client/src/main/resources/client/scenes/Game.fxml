@@ -14,7 +14,7 @@
       <children>
          <AnchorPane fx:id="menu" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
             <children>
-            <Label fx:id="points" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0" text="Total points: 0">
+               <Label fx:id="points" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0" text="Total points: 0">
                   <font>
                      <Font name="System Bold" size="30.0" />
                   </font>

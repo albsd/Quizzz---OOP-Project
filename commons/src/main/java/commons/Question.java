@@ -7,11 +7,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.Arrays;
-import java.util.Objects;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = MultipleChoiceQuestion.class, name = "MultipleChoiceQuestion"),
+        @JsonSubTypes.Type(value = NumberMultipleChoiceQuestion.class, name = "NumberMultipleChoiceQuestion"),
+        @JsonSubTypes.Type(value = ActivityMultipleChoiceQuestion.class, name = "ActivityMultipleChoiceQuestion"),
         @JsonSubTypes.Type(value = FreeResponseQuestion.class, name = "FreeResponseQuestion")
 })
 
@@ -25,21 +24,11 @@ public abstract class Question {
     @JsonProperty("answer")
     private long answer;
 
-    @JsonProperty("image")
-    private byte[] image;
-
-    @JsonProperty("images")
-    private byte[][] images;
-
     @JsonCreator
     public Question(final @JsonProperty("prompt") String prompt,
-                    final @JsonProperty("answer") long answer,
-                    final @JsonProperty("image") byte[] image,
-                    final @JsonProperty("images") byte[][] images) {
+                    final @JsonProperty("answer") long answer) {
         this.prompt = prompt;
         this.answer = answer;
-        this.image = image;
-        this.images = images;
     }
 
     public Question() {
@@ -53,14 +42,6 @@ public abstract class Question {
         return answer;
     }
 
-    public byte[] getImage() {
-        return image;
-    }
-    
-    public byte[][] getImages() {
-        return images;
-    }
-
     public abstract int calculateScore(long option, int time);
 
     protected int calculateBonusPoints(final int time) {
@@ -71,15 +52,17 @@ public abstract class Question {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Question question = (Question) o;
-        return answer == question.answer && Objects.equals(prompt, question.prompt)
-                && Arrays.equals(image, question.image);
+
+        if (answer != question.answer) return false;
+        return prompt != null ? prompt.equals(question.prompt) : question.prompt == null;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(prompt, answer);
-        result = 31 * result + Arrays.hashCode(image);
+        int result = prompt != null ? prompt.hashCode() : 0;
+        result = 31 * result + (int) (answer ^ (answer >>> 32));
         return result;
     }
 }

@@ -25,13 +25,13 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.Optional;
 import java.util.LinkedHashMap;
 
 @Service
@@ -42,6 +42,10 @@ public class ActivityService {
     private final String activitiesPath = "./src/main/resources/activities";
 
     private final String resourcesPath = "./src/main/resources";
+
+    private final float offset = 0.1f;
+
+    private final String defaultImagePath = ".src/main/resources/images/icon.png";
 
     @Autowired
     public ActivityService(final ActivityRepository activityRepository) {
@@ -63,34 +67,52 @@ public class ActivityService {
         List<Activity> activityList = getActivities();
         return activityList.stream()
             .map((activity) -> {
-                int questionType = (int) ((Math.random() * (3)));
-                return  turnActivityIntoQuestion(activity, questionType, generateOptions(activityList));
+                int questionType = (int) ((Math.random() * (4)));
+                return  turnActivityIntoQuestion(activity, questionType, activityList);
             })
             .collect(Collectors.toList());
     }
 
     /**
-     * Helper method to generate questions to decide which questions get generated.
-     * @param activity
-     * @param questionType
-     * @param options
-     * @return a random question of a random question type
+     * questionType cases.
+     * case 0 -> Multiple choice question that asks "How much energy consumption does X have?"
+     * case 1 -> Multiple choice question that asks "Which of the activities have the most energy consumption?"
+     * case 2 -> Multiple choice question that asks "Instead of doing X you can do..."
+     * case 3 -> Free response question that asks "What is the energy consumption of X?"
+     * @param activity Activity that is based on to create a question
+     * @param questionType Question type that should be generated
+     * @param activityList List of all activities available in the database
+     * @return Returns a question that is based on the "activity" with the type determined by questionType param
      */
-    // question type of 0 means number multiple choice
     public Question turnActivityIntoQuestion(final Activity activity, final int questionType,
-            final List<Activity> options) {
-        byte[] image = generateImageByteArray(activity.getPath());
-        byte[][] images = new byte[3][];
-        if (questionType == 1) {
-            images = new byte[][] {generateImageByteArray(options.get(0).getPath()),
-                                            generateImageByteArray(options.get(1).getPath()),
-                                            generateImageByteArray(options.get(2).getPath())};
-        }
-        //byte[] optionImage = generateImageByteArray(options.get(1).getPath());
+            final List<Activity> activityList) {
+        byte[] image;
+        byte[][] images;
+        List<Activity> options;
+
         return switch (questionType) {
-            case 0 -> activity.getNumberMultipleChoiceQuestion(image);
-            case 1 -> activity.getActivityMultipleChoiceQuestion(options, images);
-            default -> activity.getFreeResponseQuestion(image);
+            case 0 -> {
+                image = generateImageByteArray(activity.getPath());
+                yield activity.generateNumberMultipleChoiceQuestion(image);
+            }
+            case 1 -> {
+                options = generateOptions(activityList);
+                images = new byte[][] {generateImageByteArray(options.get(0).getPath()),
+                        generateImageByteArray(options.get(1).getPath()),
+                        generateImageByteArray(options.get(2).getPath())};
+                yield activity.generateActivityMultipleChoiceQuestion(options, images);
+            }
+
+            case 2 -> {
+                options = generateApproximateOptions(activityList, 3, activity);
+                image = generateImageByteArray(activity.getPath());
+                yield activity.generateInsteadOfMultipleChoiceQuestion(options, image);
+            }
+
+            default -> {
+                image = generateImageByteArray(activity.getPath());
+                yield activity.getFreeResponseQuestion(image);
+            }
         };
     }
 
@@ -139,6 +161,84 @@ public class ActivityService {
         }
         options.add(activities.get(secondActivityIndex));
         return options;
+    }
+
+    /**
+     * @param allActivities List of all activities available in the database
+     * @param numberOfOptions Number of options that will be generated for the question
+     * @param activity Activity that is based on to create a question
+     * @return Returns a list of activities that will be used as options for the InsteadOf question type
+     */
+    public List<Activity> generateApproximateOptions(final List<Activity> allActivities,
+                                                     final int numberOfOptions, final Activity activity) {
+
+        // Getting activities that have approximately same energy consumption with the activity in the question
+        List<Activity> approximateActivities = getApproximateActivities(allActivities, activity);
+
+        List<Activity> options = new ArrayList<>();
+        Random rand = new Random();
+
+        // If there is an approximate activity, add it to the options
+        Activity approximateActivity = null;
+        if (!approximateActivities.isEmpty()) {
+            approximateActivity = approximateActivities.get(rand.nextInt(approximateActivities.size()));
+            options.add(approximateActivity);
+        }
+
+        // Fill options with incorrect activities
+        fillIncorrectActivities(allActivities, options, activity, numberOfOptions);
+
+        // Creating the "None" activity
+        Activity noneActivity = new Activity();
+        noneActivity.setTitle("None of the below");
+        // Shuffling the options
+        Collections.shuffle(options);
+
+        // Answer is hidden/encoded in the energyConsumption of none activity
+        // +1 is caused by adding the None at the beginning of the list
+        if (approximateActivity != null) {
+            noneActivity.setEnergyConsumption(options.indexOf(approximateActivity) + 1);
+        } else {
+            noneActivity.setEnergyConsumption(0);
+        }
+        // Inserting the None option at index 0, so it will always  be the top option
+        options.add(0, noneActivity);
+        return options;
+    }
+
+    /**
+     * @param allActivities List of all activities available in the database
+     * @param activity Activity that is based on to find approximate activities
+     * @return Returns activities that have a similar energy consumption with the "activity" param as a list
+     */
+    private List<Activity> getApproximateActivities(final List<Activity> allActivities, final Activity activity) {
+        return allActivities
+                .stream()
+                .filter(a -> !a.getTitle().equals(activity.getTitle()))
+                .filter(a -> a.getEnergyConsumption() >= activity.getEnergyConsumption() * (1 - offset)
+                        && a.getEnergyConsumption() <= activity.getEnergyConsumption() * (1 + offset))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Fills the options list with activities that are not close to the "activity" param.
+     * @param allActivities List of all activities available in the database
+     * @param options List of activities that includes options for the InsteadOf question type
+     * @param activity Activity that is based on to create a question
+     * @param numberOfOptions Number of options that will be generated for the question
+     */
+    private void fillIncorrectActivities(final List<Activity> allActivities, final List<Activity> options,
+                                        final Activity activity, final int numberOfOptions) {
+        Random rand = new Random();
+        while (options.size() < numberOfOptions - 1) {
+            int index = rand.nextInt(allActivities.size());
+            Activity incorrectActivity = allActivities.get(index);
+            if (!options.contains(incorrectActivity)
+                    && (incorrectActivity.getEnergyConsumption() < activity.getEnergyConsumption() * (1 - offset)
+                    || incorrectActivity.getEnergyConsumption() > activity.getEnergyConsumption() * (1 + offset))) {
+                options.add(incorrectActivity);
+            }
+        }
     }
 
     /**
