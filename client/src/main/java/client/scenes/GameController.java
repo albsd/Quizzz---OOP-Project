@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.FXMLController;
 import client.sounds.Sound;
 import client.sounds.SoundName;
 import client.utils.ServerUtils;
