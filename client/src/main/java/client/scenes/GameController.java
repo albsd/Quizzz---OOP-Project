@@ -17,7 +17,6 @@ import commons.ActivityMultipleChoiceQuestion;
 import commons.FreeResponseQuestion;
 import commons.MultipleChoiceQuestion;
 import commons.Emote;
-import commons.Leaderboard;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
