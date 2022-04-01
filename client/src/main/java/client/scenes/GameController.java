@@ -158,21 +158,21 @@ public class GameController implements Initializable, WebSocketSubscription {
      * @return an instance of the QuestionTimer for the client
      */
     private QuestionTimer initClientTimer() {
+        Color green = Color.valueOf("#e0fccf");
+        Color orange = Color.valueOf("#ffd029");
+        Color red = Color.valueOf("fe6f5b");
+
         return new QuestionTimer(
                 time -> Platform.runLater(() -> {
                     double ratio = (double) time / QuestionTimer.MAX_TIME;
                     progressBar.setProgress(ratio);
 
-                    String green = "#e0fccf";
-                    String orange = "#ffd029";
-                    String red = "fe6f5b";
-
                     Color rgb; // linearly interpolate
                     double y = 1 - Math.abs(2 * ratio - 1);
                     if (ratio > 0.5) {
-                        rgb = Color.valueOf(orange).interpolate(Color.valueOf(green), 1 - y);
+                        rgb = orange.interpolate(green, 1 - y);
                     } else {
-                        rgb = Color.valueOf(red).interpolate(Color.valueOf(orange), y);
+                        rgb = red.interpolate(orange, y);
                     }
                     progressBar.setStyle("-fx-accent: #" + rgb.toString().substring(2) + ";");
                 }), this::sendFinishMessage);
