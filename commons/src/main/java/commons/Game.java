@@ -30,7 +30,7 @@ public class Game {
         this.id = id;
         this.players = new ArrayList<>();
         this.questions = questions;
-        this.currentQuestion = 0;
+        this.currentQuestion = 9;
         this.isMultiplayer = isMultiplayer;
     }
 
@@ -117,6 +117,32 @@ public class Game {
     public void setCurrentQuestionIndex(final int number) {
         this.currentQuestion = number;
     }
+
+    /**
+     * Check if all the players in the game have finished
+     * and mark them as not finished if true.
+     * @return if all the players have finished
+     */
+
+    public boolean allPlayersFinished() {
+        boolean allDone = true;
+
+        for (Player p : getPlayers()) {
+            if (!p.hasFinishedQuestion() && p.isAlive()) {
+                allDone = false;
+            }
+        }
+
+        if (allDone) {
+            for (Player p : getPlayers()) {
+                p.setFinishedQuestion(false);
+            }
+        }
+
+        return allDone;
+    }
+
+
 
     @Override
     public boolean equals(final Object o) {
