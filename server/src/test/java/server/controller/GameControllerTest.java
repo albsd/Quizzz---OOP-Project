@@ -16,7 +16,6 @@
 package server.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
@@ -38,13 +37,13 @@ import server.repository.ActivityRepository;
 import server.repository.GameRepository;
 import server.service.GameService;
 import server.service.LeaderboardService;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
 
 @DataJpaTest
 public class GameControllerTest {
-
-    private Game lobby;
 
     private Game game;
 
@@ -53,13 +52,7 @@ public class GameControllerTest {
     @Mock
     private ActivityRepository activityRepository;
 
-    private final List<Activity> activities = List.of(
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity(),
-            new Activity(), new Activity(), new Activity(), new Activity());
+    private final List<Activity> activities = new ArrayList<>();
 
     @Mock
     LeaderboardRepository leaderboardRepository;
@@ -75,33 +68,37 @@ public class GameControllerTest {
 
     @BeforeEach
     public void setup() {
+        for (int i = 1; i < 101; i++) {
+            activities.add(new Activity("", i, "", ""));
+        }
+
         MockitoAnnotations.openMocks(this);
-        when(activityRepository.count()).thenReturn(20L);
+        when(activityRepository.count()).thenReturn(100L);
         when(activityRepository.findAll()).thenReturn(activities);
         when(leaderboardRepository.findAll()).thenReturn(gameResults);
 
         GameService service =  new GameService(new GameRepository());
         ActivityService activityService = new ActivityService(activityRepository);
         LeaderboardService leaderboardService = new LeaderboardService(leaderboardRepository);
+        //TODO: Figure out why this test is broken
         service.initializeLobby(activityService.getQuestionList());
 
         ctrl = new GameController(service, activityService, leaderboardService, simpMessagingTemplate);
         // The current lobby is promoted to a game
         // a new lobby is returned after promotion
-        game = service.getCurrentGame();
+        game = service.getLobby();
         ctrl.joinLobby("johny");
         ctrl.joinLobby("niko");
         ctrl.joinLobby("babe");
         nick = "johny";
         score = 50;
         ctrl.startLobby();
-        lobby = ctrl.getCurrentGame();
+        service.newGame(null);
     }
 
     @Test
     public void lobbyIsEmpty() {
-        var actual = ctrl.getCurrentGame();
-        assertEquals(0, actual.getPlayers().size());
+        assertEquals(0, ctrl.getLobby().getPlayers().size());
     }
 
     @Test
@@ -128,18 +125,6 @@ public class GameControllerTest {
         var actual = ctrl.joinLobby(nick);
         actual = ctrl.joinLobby(nick);
         assertEquals(403, actual.getStatusCode().value());
-    }
-
-    @Test
-    public void startTheLobby() {
-        ctrl.joinLobby("johny");
-        ctrl.joinLobby("niko");
-        ctrl.joinLobby("babe");
-
-        ctrl.startLobby();
-
-        assertEquals(lobby.getPlayers().size(), 3);
-        assertNotEquals(lobby, ctrl.getCurrentGame());
     }
 
     @Test

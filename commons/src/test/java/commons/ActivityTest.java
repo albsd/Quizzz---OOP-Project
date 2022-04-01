@@ -96,4 +96,15 @@ class ActivityTest {
         activity2 = new Activity(title2, energy1, source1, path1);
         assertNotEquals(activity1, activity2);
     }
+
+    @Test
+    void getNumberOfTrailingZeroes() {
+        int expected = 5;
+        assertEquals(expected, Activity.getNumberOfTrailingZeroes(200100000L));
+    }
+    @Test
+    void getNumberOfTrailingZeroesWithNoZeroes() {
+        int expected = 0;
+        assertEquals(expected, Activity.getNumberOfTrailingZeroes(111L));
+    }
 }

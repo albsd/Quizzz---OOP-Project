@@ -27,16 +27,36 @@ public class GameService {
         this.lobby = new Game(UUID.randomUUID(), questions, true);
     }
 
-    public Game createSingleplayer(final String nick, final List<Question> questions) {
-        return repo.createSingleplayer(nick, questions);
+    public void createSingleplayer(final List<Question> questions) {
+        repo.createSingleplayer(questions);
     }
 
-    public Game getCurrentGame() {
+    public Game getSingleGame() {
+        return repo.getSingleGame();
+    }
+
+    public Game getLobby() {
         return lobby;
     }
 
     public List<Game> getAll() {
         return repo.getGames();
+    }
+
+    /**
+     * Current lobby is propagated to the game that has just started.
+     */
+    public void addLobby() {
+        repo.addGame(lobby);
+    }
+
+    /**
+     * Adds singlelayer game.
+     * 
+     * @param  game object of single player
+     */
+    public void addSingleGame(final Game game) {
+        repo.addSingleGame(game);
     }
 
     /**
@@ -46,7 +66,6 @@ public class GameService {
      * @param questions List of questions for the newly created lobby
      */
     public void newGame(final List<Question> questions) {
-        repo.addGame(lobby);
         lobby = new Game(UUID.randomUUID(), questions, true);
     }
 
@@ -64,6 +83,10 @@ public class GameService {
 
     public Player updateLobbyPlayerHeartbeat(final String nick) {
         Player player = lobby.getPlayerByNick(nick);
+        
+        // Can occur when the scheduled task executes after the game was started
+        if (player == null) return null;
+        
         player.updateTimestamp(new Date());
         return player;
     }
@@ -71,6 +94,12 @@ public class GameService {
     public Player updateGamePlayerHeartbeat(final UUID id, final String nick) {
         Player player = repo.findById(id).getPlayerByNick(nick);
         player.updateTimestamp(new Date());
+        return player;
+    }
+
+    public Player updateGamePlayerFinished(final UUID id, final String nick) {
+        Player player = repo.findById(id).getPlayerByNick(nick);
+        player.setFinishedQuestion(true);
         return player;
     }
 

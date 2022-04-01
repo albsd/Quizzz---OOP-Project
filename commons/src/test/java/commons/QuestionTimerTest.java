@@ -13,7 +13,7 @@ class QuestionTimerTest {
 
     @BeforeEach
     void setup() {
-        questionTimer = new QuestionTimer(time -> { }, () -> { });
+        questionTimer = new QuestionTimer((time) -> { }, () -> { });
     }
 
     @Test

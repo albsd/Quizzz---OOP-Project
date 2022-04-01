@@ -54,9 +54,12 @@ public class PopupController implements Initializable {
         menu.setVisible(false);
     }
 
+    /**
+     * First unsubscribe from messages, only then execute the callback.
+     */
     @FXML
     public void returnToMenu() {
-        onConfirm.run();
         fxml.showSplash();
+        onConfirm.run();
     }
 }

@@ -66,6 +66,15 @@ public class GameController {
         this.leaderboardService = leaderboardService;
         this.smt = smt;
         gameService.initializeLobby(activityService.getQuestionList());
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 10; i++) {
+                    gameService.createSingleplayer(activityService.getQuestionList());
+                }
+            }
+        });
+        t1.start();
     }
 
     // SINGLEPLAYER GAME ENDPOINTS ====================================================================================
@@ -99,14 +108,25 @@ public class GameController {
     }
 
     /**
-     * Creates a game for a singleplayer game.
+     * Creates a game for a singleplayer game. This returns a prebuilt
+     * single player game and on another thread, creates and adds another
+     * game to replace that one.
      *
      * @param nick Name of the player who started a singleplayer game
      * @return Game object for singleplayer
      */
     @PostMapping("/single/{nick}")
-    public Game createGame(final @PathVariable String nick) {
-        return gameService.createSingleplayer(nick, activityService.getQuestionList());
+    public Game createAndGetGame(final @PathVariable String nick) {
+        Thread t2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                gameService.createSingleplayer(activityService.getQuestionList());
+            } 
+        });
+        t2.start();
+        Game game = gameService.getSingleGame();
+        game.addPlayer(new Player(nick));
+        return game;
     }
     
     // MULTIPLAYER GAME ENDPOINTS =====================================================================================
@@ -116,11 +136,11 @@ public class GameController {
      *
      * @return The current active game which accepts new players
      */
-    @GetMapping("/current")
-    public Game getCurrentGame() {
-        return gameService.getCurrentGame();
+    @GetMapping("/lobby")
+    public Game getLobby() {
+        return gameService.getLobby();
     }
-
+    
     /**
      * Join the active game lobby as a Player with id "nick".
      *
@@ -133,7 +153,7 @@ public class GameController {
             return ResponseEntity.badRequest().build();
         }
 
-        Game lobby = gameService.getCurrentGame();
+        Game lobby = gameService.getLobby();
 
         Player p = new Player(nick);
         boolean success = lobby.addPlayer(p);
@@ -159,7 +179,7 @@ public class GameController {
             return ResponseEntity.badRequest().build();
         }
 
-        Game lobby = gameService.getCurrentGame();
+        Game lobby = gameService.getLobby();
         final int errorCode = 403; // FORBIDDEN
 
         Player p = lobby.getPlayerByNick(nick);
@@ -243,6 +263,38 @@ public class GameController {
     }
 
     /**
+     * A Websocket endpoint for sending updates about the game's player' status.
+     * Namely, updates the active players in the game for all clients.
+     *
+     * @param update The object containing a player who has joined/left
+     * @return The PlayerUpdate object
+     */
+    @MessageMapping("/update/player") // /app/update/player
+    @SendTo("/topic/update/player")
+    private PlayerUpdate sendPlayerUpdate(final PlayerUpdate update) {
+        return update;
+    }
+
+    /**
+     * WS endpoint to start the game for multiplayers.
+     * 
+     * @return GameUpdate to start the game
+     */
+    @MessageMapping("/lobby/start") // /app/lobby/start
+    @SendTo("/topic/lobby/start")
+    public GameUpdate startLobby() {
+        gameService.addLobby();
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                gameService.newGame(activityService.getQuestionList());
+            }
+        });
+        t1.start();
+        return GameUpdate.start;
+    }
+
+    /**
      * Updates the multiplayers' scores on game repo for specific games.
      * 
      * @param id id of game
@@ -275,18 +327,6 @@ public class GameController {
     }
 
     /**
-     * WS endpoint to start the game for multiplayers.
-     * 
-     * @return GameUpdate to start the game
-     */
-    @MessageMapping("/lobby/start") // /app/lobby/start
-    @SendTo("/topic/lobby/start")
-    public GameUpdate startLobby() {
-        gameService.newGame(activityService.getQuestionList());
-        return GameUpdate.start;
-    }
-
-    /**
      * Send an emote message to the game with the given id.
      * 
      * @param message EmoteMessage to be sent
@@ -305,8 +345,14 @@ public class GameController {
      */
     @MessageMapping("/game/{id}/halve") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/halve
     @SendTo("/topic/game/{id}/update")
-    public GameUpdate halveTimeWebsocket() {
+    public GameUpdate halveTimeMessage() {
         return GameUpdate.halveTimer;
+    }
+
+    @MessageMapping("/game/{id}/stopTimer")
+    @SendTo("/topic/game/{id}/update")
+    public GameUpdate stopTimerMessage() {
+        return GameUpdate.stopTimer;
     }
 
 }

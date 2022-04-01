@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import client.FXMLController;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Background;
@@ -43,9 +44,13 @@ public class LeaderboardController implements Initializable {
     @FXML
     private Button lobby, singleplayer;
 
+    @FXML
+    private ImageView backButton;
+
     private Player prevMe;
 
     private final FXMLController fxml;
+    
     private final ServerUtils server;
 
     @Inject
@@ -78,10 +83,10 @@ public class LeaderboardController implements Initializable {
     }
 
     public void endGame(final Player me) {
-        lobby.setVisible(true);
-        singleplayer.setVisible(true);
         lobby.setFont(font);
+        lobby.setVisible(true);
         singleplayer.setFont(font);
+        singleplayer.setVisible(true);
         this.prevMe = me;
     }
 
@@ -100,7 +105,6 @@ public class LeaderboardController implements Initializable {
     public void displayLeaderboard(final Leaderboard leaderboard, final Player me) {
         nick.setText(me.getNick());
         score.setText(Integer.toString(me.getScore()));
-
         playerRanking.getChildren().clear();
         List<Player> ranking = leaderboard.getRanking();
         for (int i = 0; i < ranking.size(); i++) {
@@ -136,5 +140,10 @@ public class LeaderboardController implements Initializable {
 
             playerRanking.getChildren().add(entry);
         }
+    }
+
+    @FXML
+    public void hideBackButton() {
+        backButton.setVisible(false);
     }
 }

@@ -16,9 +16,12 @@ public class Player {
     @JsonIgnore
     private Date time = new Date();
 
+    private boolean finishedQuestion;
+
     public Player(final String nick) {
         this.nick = nick;
         this.score = 0;
+        this.finishedQuestion = false;
     }
 
     @JsonCreator
@@ -26,6 +29,7 @@ public class Player {
             final @JsonProperty("score") int score) {
         this.nick = nick;
         this.score = score;
+        this.finishedQuestion = false;
     }
 
     public String getNick() {
@@ -61,7 +65,15 @@ public class Player {
     public boolean isAlive() {
         Date now = new Date();
         int timerDifference = (int) now.getTime() - (int) this.time.getTime();
-        return timerDifference < 5000;
+        return timerDifference < 7000;
+    }
+
+    public boolean hasFinishedQuestion() {
+        return finishedQuestion;
+    }
+
+    public void setFinishedQuestion(final boolean finishedQuestion) {
+        this.finishedQuestion = finishedQuestion;
     }
 
     @Override

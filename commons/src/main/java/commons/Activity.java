@@ -12,6 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class is used to represent an energy related activity.
@@ -31,7 +34,6 @@ public class Activity {
     @Column(length = 500)
     @JsonProperty("source")
     private String source;
-
     @JsonProperty("image_path")
     private String path;
 
@@ -91,6 +93,14 @@ public class Activity {
                  this.getMultipleActivitiesAnswerIndex(answerOptions), images);
     }
 
+    public NumberMultipleChoiceQuestion generateInsteadOfMultipleChoiceQuestion(
+            final List<Activity>  answerOptions, final byte[] image) {
+        String prompt = "Instead of " + title.substring(0, 1).toLowerCase()
+                + title.substring(1) + " you could do instead...";
+        String[] choices = this.getMultipleActivitiesOptions(answerOptions);
+        return new NumberMultipleChoiceQuestion(prompt, choices, answerOptions.get(0).getEnergyConsumption(), image);
+    }
+
     /**
      * Finds the index of the activity that has the most energy consumption.
      * @param answerOptions list of activities
@@ -108,7 +118,6 @@ public class Activity {
         }
         return maxIndex;
     }
-
 
     /**
      * Takes a list of activities and makes a string array with its titles.
@@ -134,15 +143,28 @@ public class Activity {
         Long[] choices = new Long[3];
         Random r = new Random();
         Long tempChoice;
+        int numberOfTrailingZeroes = this.getNumberOfTrailingZeroes(energyConsumption);
         for (int i = 0; i < choices.length; i++) {
             do {
+                long offset;
+                if (energyConsumption < 2) {
+                    offset = 1;
+                } else {
+                    offset = r.longs(-energyConsumption / 2, energyConsumption / 2)
+                            .findFirst()
+                            .getAsLong();
+                }
                 tempChoice = Math.abs((long) (energyConsumption + energyConsumption / 2
-                        * r.nextGaussian()));
+                        * r.nextGaussian() + offset));
                 if (energyConsumption == 0) {
                     tempChoice = Math.abs((long) (5 * r.nextGaussian()));
                 }
+                int tempDiv = 1;
                 if (tempChoice >= 10) {
-                    tempChoice = (long) Math.round(tempChoice / 10) * 10;
+                    for (int z = 0; z < numberOfTrailingZeroes; z++) {
+                        tempDiv = tempDiv * 10;
+                    }
+                    tempChoice = tempChoice / tempDiv * tempDiv;
                 }
             } while (Arrays.stream(choices).anyMatch(tempChoice::equals) || tempChoice.equals(energyConsumption));
             choices[i] = tempChoice;
@@ -203,5 +225,16 @@ public class Activity {
 
     public void setPath(final String path) {
         this.path = path;
+    }
+
+    public static int getNumberOfTrailingZeroes(final long answer) {
+        Pattern pattern = Pattern.compile("(\\d+?)(0*)$", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(Long.toString(answer));
+        int count = 0;
+        if (matcher.find()) {
+            count = matcher.group(2).length();
+        }
+        return count;
+
     }
 }
