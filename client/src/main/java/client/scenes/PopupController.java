@@ -55,7 +55,7 @@ public class PopupController implements Initializable {
     }
 
     /**
-     * First unsubscribe from messages, only then execute the callback 
+     * First unsubscribe from messages, only then execute the callback.
      */
     @FXML
     public void returnToMenu() {
