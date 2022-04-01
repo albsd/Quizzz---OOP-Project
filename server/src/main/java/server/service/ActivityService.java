@@ -9,6 +9,8 @@ import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.ActivityRepository;
+import server.repository.QuestionRepository;
+
 import javax.imageio.ImageIO;
 
 import java.awt.image.BufferedImage;
@@ -39,13 +41,16 @@ public class ActivityService {
 
     private final ActivityRepository activityRepository;
 
+    private final QuestionRepository questionRepository;
+
     private final String activitiesPath = "./src/main/resources/activities";
 
     private final String resourcesPath = "./src/main/resources";
 
     @Autowired
-    public ActivityService(final ActivityRepository activityRepository) {
+    public ActivityService(final ActivityRepository activityRepository, final QuestionRepository questionRepository) {
         this.activityRepository = activityRepository;
+        this.questionRepository = questionRepository;
     }
 
     public List<Activity> getActivities() {
@@ -59,14 +64,25 @@ public class ActivityService {
         return activityRepository.findAllById(ids);
     }
 
-    public synchronized List<Question> getQuestionList() {
+    public synchronized void generateQuestions() {
         List<Activity> activityList = getActivities();
-        return activityList.stream()
+        List<Question> questions = activityList.stream()
             .map((activity) -> {
                 int questionType = (int) ((Math.random() * (3)));
                 return  turnActivityIntoQuestion(activity, questionType, generateOptions(activityList));
             })
             .collect(Collectors.toList());
+
+    }
+
+    public List<Question> getQuestions() {
+        List<Activity> activityList = getActivities();
+        return activityList.stream()
+                .map((activity) -> {
+                    int questionType = (int) ((Math.random() * (3)));
+                    return  turnActivityIntoQuestion(activity, questionType, generateOptions(activityList));
+                })
+                .collect(Collectors.toList());
     }
 
     /**

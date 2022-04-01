@@ -65,16 +65,7 @@ public class GameController {
         this.activityService = activityService;
         this.leaderboardService = leaderboardService;
         this.smt = smt;
-        gameService.initializeLobby(activityService.getQuestionList());
-        Thread t1 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 10; i++) {
-                    gameService.createSingleplayer(activityService.getQuestionList());
-                }
-            }
-        });
-        t1.start();
+        gameService.initializeLobby(activityService.getQuestions());
     }
 
     // SINGLEPLAYER GAME ENDPOINTS ====================================================================================
@@ -120,7 +111,7 @@ public class GameController {
         Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                gameService.createSingleplayer(activityService.getQuestionList());
+                gameService.createSingleplayer(activityService.generateQuestions());
             } 
         });
         t2.start();
@@ -287,7 +278,7 @@ public class GameController {
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                gameService.newGame(activityService.getQuestionList());
+                gameService.newGame(activityService.generateQuestions());
             }
         });
         t1.start();

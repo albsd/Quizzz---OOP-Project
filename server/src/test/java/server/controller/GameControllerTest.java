@@ -81,7 +81,7 @@ public class GameControllerTest {
         ActivityService activityService = new ActivityService(activityRepository);
         LeaderboardService leaderboardService = new LeaderboardService(leaderboardRepository);
         //TODO: Figure out why this test is broken
-        service.initializeLobby(activityService.getQuestionList());
+        service.initializeLobby(activityService.generateQuestions());
 
         ctrl = new GameController(service, activityService, leaderboardService, simpMessagingTemplate);
         // The current lobby is promoted to a game
