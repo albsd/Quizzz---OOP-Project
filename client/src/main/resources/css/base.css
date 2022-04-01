@@ -136,6 +136,7 @@ SVGPath {
 .text-field {
     -fx-background-color: -background-alt;
     -fx-text-fill: -text;
+    -fx-prompt-text-fill: derive(-background-alt, -10%);
 }
 
 .nicknameField {

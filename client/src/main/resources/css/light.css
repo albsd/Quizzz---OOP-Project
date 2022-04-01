@@ -1,9 +1,9 @@
 .root {
-    -background: white;
-    -background-alt: grey;
+    -background: #FFFFFF;
+    -background-alt: #DDDDDD;
     -button-background: #FFD029;
     -button-text: #A07400;
-    -text: darkgrey;
+    -text: #333333;
     -icon: -text;
     -correct-text: #009A19;
     -correct-background: #E0FCCF;
@@ -15,5 +15,5 @@
     -leaderboard-self-text: -correct-text;
     -leaderboard-background: #EAEAEA;
     -leaderboard-text: -text;
-    -selected-border: black;
+    -selected-border: #000000;
 }
