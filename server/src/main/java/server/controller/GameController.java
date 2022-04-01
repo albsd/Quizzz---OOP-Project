@@ -117,11 +117,8 @@ public class GameController {
      */
     @PostMapping("/single/{nick}")
     public Game createAndGetGame(final @PathVariable String nick) {
-        Thread t2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                gameService.createSingleplayer(activityService.getQuestionList());
-            } 
+        Thread t2 = new Thread(() -> {
+            gameService.createSingleplayer(activityService.getQuestionList());
         });
         t2.start();
         Game game = gameService.getSingleGame();
