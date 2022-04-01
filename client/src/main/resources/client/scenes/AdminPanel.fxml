@@ -32,13 +32,14 @@
             <TextField fx:id="titleInput" layoutX="925.0" layoutY="150.0" prefWidth="300.0" promptText="Title" />
             <TextField fx:id="powerInput" layoutX="925.0" layoutY="200.0" prefWidth="300.0" promptText="Power Consumption" />
             <TextField fx:id="sourceInput" layoutX="925.0" layoutY="246.0" prefWidth="300.0" promptText="Source" />
-            <ImageView fx:id="imageShow" fitHeight="200.0" fitWidth="200.0" layoutX="975.0" layoutY="360.0" pickOnBounds="true" />
+            <ImageView fx:id="imageShow" fitHeight="200.0" fitWidth="200.0" layoutX="975.0" layoutY="360.0" pickOnBounds="true" preserveRatio="true" />
             <Button layoutX="1169.0" layoutY="286.0" mnemonicParsing="false" onAction="#submit" text="Submit" />
             <Button fx:id="imageButton" layoutX="925.0" layoutY="286.0" mnemonicParsing="false" onAction="#chooseImage" text="Choose Image" />
-            <Button layoutX="60.0" layoutY="665.0" mnemonicParsing="false" onAction="#refresh" prefHeight="27.0" prefWidth="105.0" text="Refresh" />
-            <Button layoutX="285.0" layoutY="665.0" mnemonicParsing="false" onAction="#edit" prefHeight="27.0" prefWidth="105.0" text="Edit Mode" />
-            <Button layoutX="510.0" layoutY="665.0" mnemonicParsing="false" onAction="#add" prefHeight="27.0" prefWidth="105.0" text="Add Mode" />
-            <Button layoutX="735.0" layoutY="665.0" mnemonicParsing="false" onAction="#delete" prefHeight="27.0" prefWidth="105.0" text="Delete" />
+            <Button layoutX="40.0" layoutY="665.0" mnemonicParsing="false" onAction="#refresh" prefHeight="27.0" prefWidth="100.0" text="Refresh" />
+            <Button layoutX="220.0" layoutY="665.0" mnemonicParsing="false" onAction="#edit" prefHeight="27.0" prefWidth="100.0" text="Edit Mode" />
+            <Button layoutX="400.0" layoutY="665.0" mnemonicParsing="false" onAction="#add" prefHeight="27.0" prefWidth="100.0" text="Add Mode" />
+            <Button layoutX="580.0" layoutY="665.0" mnemonicParsing="false" onAction="#delete" prefHeight="27.0" prefWidth="100.0" text="Delete" />
+         <Button fx:id="loadActivitiesButton" layoutX="760.0" layoutY="665.0" mnemonicParsing="false" onAction="#chooseActivities" prefHeight="27.0" prefWidth="100.0" text="Load Activities" />
             <Button layoutX="1125.0" layoutY="665.0" mnemonicParsing="false" onAction="#splash" prefHeight="27.0" prefWidth="100.0" text="Main Menu" />
         </children>
     </AnchorPane>

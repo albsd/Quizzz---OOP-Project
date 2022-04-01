@@ -8,11 +8,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class FreeResponseQuestion extends Question {
 
+    @JsonProperty("image")
+    private byte[] image;
+
     @JsonCreator
     public FreeResponseQuestion(@JsonProperty("prompt") final String prompt,
                                 @JsonProperty("image") final byte[] image,
                                 @JsonProperty("answer") final long answer) {
-        super(prompt, answer, image, null);
+        super(prompt, answer);
+        this.image = image;
+    }
+
+    public byte[] getImage() {
+        return image;
     }
 
     /**
