@@ -144,13 +144,13 @@ SVGPath {
 .text-field {
     -fx-background-color: -background-alt;
     -fx-text-fill: -text;
-    -fx-prompt-text-fill: derive(-background-alt, -10%);
+    -fx-prompt-text-fill: derive(-background-alt, -30%);
 }
 
 .nicknameField {
     -fx-background-color: -correct-background;
     -fx-text-fill: -correct-text;
-    -fx-prompt-text-fill: derive(-correct-background, -10%);
+    -fx-prompt-text-fill: derive(-correct-background, -30%);
 }
 
 .scroll-pane {
