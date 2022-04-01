@@ -97,6 +97,12 @@ public class GameService {
         return player;
     }
 
+    public Player updateGamePlayerFinished(final UUID id, final String nick) {
+        Player player = repo.findById(id).getPlayerByNick(nick);
+        player.setFinishedQuestion(true);
+        return player;
+    }
+
     public Game setGameOver(final UUID id) {
         Game game = repo.findById(id);
         game.setCurrentQuestionIndex(19);

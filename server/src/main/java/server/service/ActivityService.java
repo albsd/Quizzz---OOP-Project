@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.ActivityRepository;
 import javax.imageio.ImageIO;
+
 import java.awt.image.BufferedImage;
 import java.io.FileReader;
 import java.io.ByteArrayOutputStream;
@@ -22,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,8 +43,6 @@ public class ActivityService {
     private final String activitiesPath = "./src/main/resources/activities";
 
     private final String resourcesPath = "./src/main/resources";
-
-    private final String defaultImagePath = ".src/main/resources/images/icon.png";
 
     @Autowired
     public ActivityService(final ActivityRepository activityRepository) {
@@ -288,14 +288,14 @@ public class ActivityService {
         try {
             BufferedImage bImage = ImageIO.read(file);
             if (bImage == null) {
-                bImage = ImageIO.read(new File(defaultImagePath));
+                URL imageURL = ActivityService.class.getClassLoader().getResource("icon.png");
+                bImage = ImageIO.read(imageURL);
                 extension = "png";
             }
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ImageIO.write(bImage, extension, bos);
             return bos.toByteArray();
         } catch (IOException e) {
-            System.err.println("IndexOutOfBoundsException: " + e.getMessage());
             return new byte[0];
         }
     }
