@@ -69,20 +69,16 @@ public class SplashController implements Initializable {
         singleplayerButton.setFont(font1);
         leaderBoardButton.setFont(font1);
         multiplayerButton.setFont(font1);
-        
-        //Players can prefer to play with server saved nickname or new nickname
-        //nick has already been set so used persistent fxml nick
+
         if (nick != null) {
             nick = fxml.getNick();
             nickField.setText(nick);
         } else {
-            //if just started application, set it with server saved nickname if exists
             String serverNick = server.getNickname();
             if (serverNick != null) {
                 nick = serverNick;
                 nickField.setText(nick);
             }
-            //otherwise create new nickname and also save on server
         }
     }
 
@@ -96,26 +92,6 @@ public class SplashController implements Initializable {
         popupController.open("app", () -> {
             System.exit(0);
         });
-    }
-
-     /**
-     * The Player's nickname must be validated against the length constraints.
-     * 
-     * @param event
-     */
-    @FXML
-    public void onEnter(final ActionEvent event) {
-        if (!validateNickname(nickField.getText())) {
-            return;
-        }
-        if (nick != null) {
-            warning.setTextFill(green);
-            warning.setText("Nickname has been changed");
-        }
-        nick = nickField.getText();
-        nickField.setText(nick);
-        server.saveNickname(nick);
-        fxml.saveNick(nick);
     }
 
     private boolean validateNickname(final String user) {
@@ -139,8 +115,6 @@ public class SplashController implements Initializable {
             warning.setText("Nickname must contain at least one letter");
             return false;
         }
-        warning.setTextFill(green);
-        warning.setText("Nickname set");
         return true;
     }
 
@@ -151,6 +125,13 @@ public class SplashController implements Initializable {
             warning.setText("Please enter a nick name");
             return;
         }
+        if (!validateNickname(nickField.getText())) {
+            return;
+        }
+        nick = nickField.getText();
+        nickField.setText(nick);
+        server.saveNickname(nick);
+        fxml.saveNick(nick);
         Game singleGame = server.startSinglePlayer(nick);
         fxml.showSinglePlayer(singleGame);
     }
@@ -175,6 +156,10 @@ public class SplashController implements Initializable {
             warning.setText("User with the given name is already in the game");
             return;
         }
+        nick = nickField.getText();
+        nickField.setText(nick);
+        server.saveNickname(nick);
+        fxml.saveNick(nick);
         fxml.showLobby(me);
     }
 

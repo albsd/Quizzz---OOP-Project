@@ -67,6 +67,15 @@ public class GameController {
         this.smt = smt;
         activityService.generateQuestions();
         gameService.initializeLobby(activityService.getQuestions());
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 10; i++) {
+                    activityService.generateQuestions();
+                }
+            }
+        });
+        t1.start();
     }
 
     // SINGLEPLAYER GAME ENDPOINTS ====================================================================================
@@ -276,13 +285,13 @@ public class GameController {
     @SendTo("/topic/lobby/start")
     public GameUpdate startLobby() {
         gameService.upgradeLobby(activityService.getQuestions());
-        Thread t1 = new Thread(new Runnable() {
+        Thread t3 = new Thread(new Runnable() {
             @Override
             public void run() {
                 activityService.generateQuestions();
             }
         });
-        t1.start();
+        t3.start();
         return GameUpdate.start;
     }
 

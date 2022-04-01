@@ -343,7 +343,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             checkAnswer(option, clientTimer.getCurrentTime());
         }
         if (!game.isMultiplayer()) {
-            clientTimer.setCurrentTime(7);
+            clientTimer.setCurrentTime(0);
         }
     }
 
@@ -382,7 +382,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             checkAnswer(option, clientTimer.getCurrentTime());
         }
         if (!game.isMultiplayer()) {
-            clientTimer.setCurrentTime(7);
+            clientTimer.setCurrentTime(0);
         }
     }
 

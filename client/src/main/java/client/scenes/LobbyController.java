@@ -123,7 +123,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         });
 
         subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, update -> {
-            KeyFrame kf = new KeyFrame(Duration.seconds(3), e -> {
+            KeyFrame kf = new KeyFrame(Duration.seconds(2), e -> {
                 server.cancelHeartbeat();
                 Game game = server.getGameById(lobby.getId());
                 fxml.showMultiPlayer(me, game);

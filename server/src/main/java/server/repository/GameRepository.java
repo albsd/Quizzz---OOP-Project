@@ -36,6 +36,8 @@ public class GameRepository {
 
     private Set<Game> games;
 
+    private UUID defaultID = UUID.randomUUID();
+
     public GameRepository() {
         games = new HashSet<>();
     }
@@ -73,7 +75,7 @@ public class GameRepository {
      * @return Game object
      */
     public Game getSingleGame(final List<Question> questions) {
-        return new Game(null, questions, false);
+        return new Game(defaultID, questions, false);
     }
 
     /**
