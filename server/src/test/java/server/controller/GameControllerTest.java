@@ -19,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
-
+import commons.Question;
 import commons.Activity;
 import commons.Game;
-import commons.GameResult;
 import commons.Player;
+import commons.GameResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -55,6 +55,10 @@ public class GameControllerTest {
 
     private final List<Activity> activities = new ArrayList<>();
 
+    private final List<Question> questions1 = new ArrayList<>();
+
+    private final List<Question> questions2 = new ArrayList<>();
+
     @Mock
     LeaderboardRepository leaderboardRepository;
 
@@ -77,13 +81,13 @@ public class GameControllerTest {
         when(activityRepository.count()).thenReturn(100L);
         when(activityRepository.findAll()).thenReturn(activities);
         when(leaderboardRepository.findAll()).thenReturn(gameResults);
-
         GameService service =  new GameService(new GameRepository());
-        ActivityService activityService = new ActivityService(activityRepository, new QuestionRepository());
+        QuestionRepository questionRepo = new QuestionRepository();
+        questionRepo.addQuestions(questions1);
+        questionRepo.addQuestions(questions2);
+        ActivityService activityService = new ActivityService(activityRepository, questionRepo);
         LeaderboardService leaderboardService = new LeaderboardService(leaderboardRepository);
-        //TODO: Figure out why this test is broken
-        service.initializeLobby(activityService.getQuestions());
-
+        service.initializeLobby(questions2);
         ctrl = new GameController(service, activityService, leaderboardService, simpMessagingTemplate);
         game = service.getLobby();
         ctrl.joinLobby("johny");
@@ -92,7 +96,7 @@ public class GameControllerTest {
         nick = "johny";
         score = 50;
         ctrl.startLobby();
-        service.upgradeLobby(null);
+        service.upgradeLobby(questions2);
     }
 
     @Test

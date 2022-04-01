@@ -120,11 +120,6 @@ public class SplashController implements Initializable {
 
     @FXML
     public void singleGame(final ActionEvent event) {
-        if (nick == null) {
-            warning.setTextFill(red);
-            warning.setText("Please enter a nick name");
-            return;
-        }
         if (!validateNickname(nickField.getText())) {
             return;
         }
@@ -145,18 +140,16 @@ public class SplashController implements Initializable {
      */
     @FXML
     public void lobby(final ActionEvent event) {
-        if (nick == null) {
-            warning.setTextFill(red);
-            warning.setText("Please enter a nick name");
+        if (!validateNickname(nickField.getText())) {
             return;
         }
+        nick = nickField.getText();
         final Player me = server.joinLobby(nick);
         if (me == null) {
             warning.setTextFill(red);
             warning.setText("User with the given name is already in the game");
             return;
         }
-        nick = nickField.getText();
         nickField.setText(nick);
         server.saveNickname(nick);
         fxml.saveNick(nick);

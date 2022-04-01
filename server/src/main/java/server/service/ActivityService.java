@@ -73,7 +73,6 @@ public class ActivityService {
             })
             .collect(Collectors.toList());
         questionRepository.addQuestions(questions);
-        System.out.println("generated questions");
     }
 
     public List<Question> getQuestions() {
