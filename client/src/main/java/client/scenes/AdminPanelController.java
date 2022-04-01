@@ -311,17 +311,15 @@ public class AdminPanelController implements Initializable {
         List<commons.Image> images = new ArrayList<>();
         for (File jsonFile : files) {
             BufferedReader bufferedReader = null;
-            try {
-                bufferedReader = new BufferedReader(new FileReader(jsonFile));
-            } catch (FileNotFoundException e) {
-                infoText.setText("Incorrect folder format or missing files.");
-            }
-            JSONParser jsonParser = new JSONParser(bufferedReader);
             LinkedHashMap<String, ?> list = null;
             try {
+                bufferedReader = new BufferedReader(new FileReader(jsonFile));
+                JSONParser jsonParser = new JSONParser(bufferedReader);
                 list = (LinkedHashMap<String, ?>) jsonParser.parse();
+            } catch (FileNotFoundException e) {
+                continue;
             } catch (ParseException e) {
-                infoText.setText("Incorrect format or missing files.");
+                continue;
             }
             String titleAct = list.get("title").toString();
             long wattHours = ((BigInteger) list.get("consumption_in_wh")).longValue();
