@@ -610,7 +610,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             ((Button) e.getSource()).setDisable(true);
             Button[] options = {option1, option2, option3};
 
-            List<Integer> removeIndices = Arrays.asList(0, 1, 2);
+            List<Integer> removeIndices = new ArrayList<>(Arrays.asList(0, 1, 2));
             int answerIndex = (int) game.getCurrentQuestion().getAnswer();
             removeIndices.remove(Integer.valueOf(answerIndex));
             Collections.shuffle(removeIndices);

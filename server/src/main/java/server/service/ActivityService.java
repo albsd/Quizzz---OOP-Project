@@ -227,7 +227,7 @@ public class ActivityService {
         try {
             BufferedImage bImage = ImageIO.read(file);
             if (bImage == null) {
-                URL imageURL = ActivityService.class.getClassLoader().getResource("images/icon.png");
+                URL imageURL = ActivityService.class.getClassLoader().getResource("icon.png");
                 bImage = ImageIO.read(imageURL);
                 extension = "png";
             }
