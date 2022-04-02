@@ -117,11 +117,8 @@ public class GameController {
      */
     @PostMapping("/single/{nick}")
     public Game createAndGetGame(final @PathVariable String nick) {
-        Thread t2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                gameService.createSingleplayer(activityService.getQuestionList());
-            } 
+        Thread t2 = new Thread(() -> {
+            gameService.createSingleplayer(activityService.getQuestionList());
         });
         t2.start();
         Game game = gameService.getSingleGame();
@@ -345,8 +342,14 @@ public class GameController {
      */
     @MessageMapping("/game/{id}/halve") // /app/game/cc0b8204-8d8c-40bb-a72a-b82f583260c8/halve
     @SendTo("/topic/game/{id}/update")
-    public GameUpdate halveTimeWebsocket() {
+    public GameUpdate halveTimeMessage() {
         return GameUpdate.halveTimer;
+    }
+
+    @MessageMapping("/game/{id}/stopTimer")
+    @SendTo("/topic/game/{id}/update")
+    public GameUpdate stopTimerMessage() {
+        return GameUpdate.stopTimer;
     }
 
 }

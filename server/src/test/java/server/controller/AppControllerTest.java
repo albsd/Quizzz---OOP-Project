@@ -1,9 +1,9 @@
 package server.controller;
 
 import commons.Game;
-import commons.MultipleChoiceQuestion;
-import commons.Player;
+import commons.NumberMultipleChoiceQuestion;
 import commons.Question;
+import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.repository.AppRepository;
@@ -21,8 +21,8 @@ class AppControllerTest {
     private AppController ctrl;
 
     private final List<Question> questions = List.of(
-            new MultipleChoiceQuestion("test_prompt", new byte[23], null,
-                    new String[]{"Option1", "Option2", "Option3"}, 1));
+            new NumberMultipleChoiceQuestion("test_prompt",
+                    new String[]{"Option1", "Option2", "Option3"}, 1, new byte[23]));
 
     private Game game;
 
@@ -80,4 +80,14 @@ class AppControllerTest {
         ctrl.saveNickname(mac1, nick1);
         assertEquals(new Player(nick1), ctrl.getNickname(mac1).getBody());
     }
+
+    @Test
+    void updateGamePlayerFinished() {
+        p1.setFinishedQuestion(false);
+        ctrl.updateGamePlayerFinished(game.getId(), "Charlie");
+        Player dummy = ctrl.updateGamePlayerFinished(game.getId(), "Charlie");
+        assertEquals(p1, dummy);
+        assertTrue(p1.hasFinishedQuestion());
+    }
+
 }

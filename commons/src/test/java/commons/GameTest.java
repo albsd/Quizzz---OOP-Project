@@ -34,12 +34,12 @@ public class GameTest {
         p2 = List.of(new Player[]{
                 new Player("test4")});
         q1 = List.of(new Question[]{
-                new MultipleChoiceQuestion("title1", new byte[]{}, null, new String[]{}, 2),
-                new MultipleChoiceQuestion("title2", new byte[]{}, null, new String[]{}, 1),
+                new NumberMultipleChoiceQuestion("title1", new String[]{}, 2, new byte[]{}),
+                new NumberMultipleChoiceQuestion("title2", new String[]{}, 1, new byte[]{}),
                 new FreeResponseQuestion("title3", new byte[]{}, 25553)});
         q2 = List.of(new Question[]{
                 new FreeResponseQuestion("title1", new byte[]{}, 132),
-                new MultipleChoiceQuestion("title2", new byte[]{}, null, new String[]{}, 0),
+                new NumberMultipleChoiceQuestion("title2", new String[]{}, 0,  new byte[]{}),
                 new FreeResponseQuestion("title3", new byte[]{}, 233434)});
         id1 = UUID.randomUUID();
         id2 = UUID.randomUUID();
@@ -109,5 +109,25 @@ public class GameTest {
     @Test
     void testDifferentGameNotEquals() {
         assertNotEquals(g1, g2);
+    }
+
+    @Test
+    void allPlayersFinishedReturnsTrue() {
+        for (Player p : p1) {
+            p.setFinishedQuestion(true);
+        }
+
+        assertTrue(g1.allPlayersFinished());
+        assertFalse(g1.allPlayersFinished());
+    }
+
+    @Test
+    void onePlayersNotFinishedReturnsFalse() {
+        for (Player p : p2) {
+            p.setFinishedQuestion(true);
+        }
+        p2.get(0).setFinishedQuestion(false);
+        
+        assertFalse(g2.allPlayersFinished());
     }
 }

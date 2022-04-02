@@ -9,12 +9,8 @@ import commons.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -26,20 +22,10 @@ public class SplashController implements Initializable {
     private TextField nickField;
 
     @FXML
-    private Label warning, title;
-    
-    @FXML
-    private Parent popup;
+    private Label warning;
 
     @FXML
     private PopupController popupController;
-
-    @FXML
-    private Button singleplayerButton, leaderBoardButton, multiplayerButton;
-
-    private final Font font1, font2;
-    public final Color red = new Color(0.8, 0, 0, 1);
-    public final Color green = new Color(0, 0.6, 0, 1);
 
     private final ServerUtils server;
 
@@ -51,8 +37,6 @@ public class SplashController implements Initializable {
     public SplashController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
         this.fxml = fxml;
-        this.font1 = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
-        this.font2 = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 150);
     }
 
     /**
@@ -65,13 +49,7 @@ public class SplashController implements Initializable {
      */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        title.setFont(font2);
-        warning.setFont(font1);
-        nickField.setFont(font1);
-        singleplayerButton.setFont(font1);
-        leaderBoardButton.setFont(font1);
-        multiplayerButton.setFont(font1);
-        
+
         //Players can prefer to play with server saved nickname or new nickname
         //nick has already been set so used persistent fxml nick
         if (nick != null) {
@@ -94,6 +72,11 @@ public class SplashController implements Initializable {
     }
 
     @FXML
+    public void theme(final ActionEvent event) {
+        fxml.showThemeSelector();
+    }
+
+    @FXML
     public void exitApp(final ActionEvent event) {
         popupController.open("app", () -> {
             System.exit(0);
@@ -102,7 +85,6 @@ public class SplashController implements Initializable {
 
      /**
      * The Player's nickname must be validated against the length constraints.
-     * 
      * @param event
      */
     @FXML
@@ -110,12 +92,10 @@ public class SplashController implements Initializable {
         if (!validateNickname(nickField.getText())) {
             return;
         }
+
         Sound newSound = new Sound(SoundName.option);
         newSound.play(false, false);
-        if (nick != null) {
-            warning.setTextFill(green);
-            warning.setText("Nickname has been changed");
-        }
+
         nick = nickField.getText();
         nickField.setText(nick);
         server.saveNickname(nick);
@@ -127,23 +107,24 @@ public class SplashController implements Initializable {
         final int minChrLimit = 3;
         int len = user.length();
         if (len < minChrLimit || len > maxChrLimit) {
-            warning.setTextFill(red);
+            setWarningClass("incorrectText");
             warning.setText("Nickname should be between 3 and 12 characters");
             return false;
         }
 
         if (!user.matches("[a-zA-Z0-9]*")) {
-            warning.setTextFill(red);
+            setWarningClass("incorrectText");
             warning.setText("Nickname can only contain letters and numbers");
             return false;
         }
 
         if (user.matches("[0-9]*")) {
-            warning.setTextFill(red);
+            setWarningClass("incorrectText");
             warning.setText("Nickname must contain at least one letter");
             return false;
         }
-        warning.setTextFill(green);
+
+        setWarningClass("correctText");
         warning.setText("Nickname set");
         return true;
     }
@@ -151,7 +132,7 @@ public class SplashController implements Initializable {
     @FXML
     public void singleGame(final ActionEvent event) {
         if (nick == null) {
-            warning.setTextFill(red);
+            setWarningClass("incorrectText");
             warning.setText("Please enter a nick name");
             return;
         }
@@ -165,25 +146,29 @@ public class SplashController implements Initializable {
      * Enter the lobby from the splash screen.
      * The Player's nickname must be validated against the names of the 
      * current players in the lobby.
-     * 
      * @param event
      */
     @FXML
     public void lobby(final ActionEvent event) {
         if (nick == null) {
-            warning.setTextFill(red);
+            setWarningClass("incorrectText");
             warning.setText("Please enter a nick name");
             return;
         }
         final Player me = server.joinLobby(nick);
         if (me == null) {
-            warning.setTextFill(red);
+            setWarningClass("incorrectText");
             warning.setText("User with the given name is already in the game");
             return;
         }
         Sound popSound = new Sound(SoundName.pop);
         popSound.play(false, false);
         fxml.showLobby(me);
+    }
+
+    private void setWarningClass(final String styleClass) {
+        warning.getStyleClass().removeAll("incorrectText", "correctText");
+        warning.getStyleClass().add(styleClass);
     }
 
     @FXML

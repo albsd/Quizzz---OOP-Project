@@ -3,6 +3,7 @@ package client.scenes;
 import client.FXMLController;
 import client.utils.ServerUtils;
 import commons.Activity;
+import commons.DBController;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -19,20 +20,28 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Font;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
+import org.apache.tomcat.util.json.JSONParser;
+import org.apache.tomcat.util.json.ParseException;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -59,7 +68,6 @@ public class AdminPanelController implements Initializable {
     private final ServerUtils server;
     private final FXMLController fxml;
     private ObservableList<Activity> activities;
-    private final Font font;
     private boolean isEditing;
     private Activity activityEdit;
     private commons.Image image;
@@ -69,7 +77,6 @@ public class AdminPanelController implements Initializable {
     public AdminPanelController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
         this.fxml = fxml;
-        this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
         this.extensionFilter = new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg",
                 "*.png", "*.gif");
     }
@@ -279,26 +286,79 @@ public class AdminPanelController implements Initializable {
         }
     }
 
+    public void chooseActivities() {
+        Stage stage = new Stage();
+        DirectoryChooser dirChooser = new DirectoryChooser();
+        dirChooser.setTitle("Choose the activities folder.");
+        File file = dirChooser.showDialog(stage);
+        if (file != null) {
+            populateRepo(file.getPath());
+            titleInput.setText("");
+            powerInput.setText("");
+            sourceInput.setText("");
+            imageShow.setImage(null);
+            image = null;
+        }
+    }
+
+    public void populateRepo(final String activitiesPath) {
+        List<File> files = DBController.getFiles(".json", new File(activitiesPath));
+        final String resourcesPath = "./src/main/resources";
+        List<Activity> newActivities = new ArrayList<>();
+        List<commons.Image> images = new ArrayList<>();
+        for (File jsonFile : files) {
+            BufferedReader bufferedReader = null;
+            LinkedHashMap<String, ?> list = null;
+            try {
+                bufferedReader = new BufferedReader(new FileReader(jsonFile));
+                JSONParser jsonParser = new JSONParser(bufferedReader);
+                list = (LinkedHashMap<String, ?>) jsonParser.parse();
+            } catch (FileNotFoundException e) {
+                continue;
+            } catch (ParseException e) {
+                continue;
+            }
+            String titleAct = list.get("title").toString();
+            long wattHours = ((BigInteger) list.get("consumption_in_wh")).longValue();
+            String sourceAct = list.get("source").toString();
+
+            String str = jsonFile.getName();
+            File file = DBController.find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".png");
+            if (file == null) {
+                file = DBController.find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpeg");
+            }
+            if (file == null) {
+                file = DBController.find(activitiesPath, str.substring(0, str.lastIndexOf('.')) + ".jpg");
+            }
+            newActivities.add(new Activity(titleAct, wattHours, sourceAct,
+                    resourcesPath + "/images/" + file.getName()));
+            images.add(new commons.Image(generateImageByteArray(file.getPath()), file.getName()));
+        }
+        server.addActivities(newActivities);
+        server.sendImages(images);
+        loadTable(true);
+        infoText.setText("Activities are loaded successfully.");
+    }
+
     /**
      * Reads the image file and turns it into byte array.
      * @param imagePath Path of the image to be read
      * @return Data of the image to be read as byte array
      */
     private byte[] generateImageByteArray(final String imagePath) {
-        // TODO: add the path to the default image
-        if (imagePath == null) return new byte[0];
         File file = new File(imagePath);
         String extension = imagePath.substring(imagePath.lastIndexOf('.') + 1);
         try {
             BufferedImage bImage = ImageIO.read(file);
             if (bImage == null) {
-                return new byte[0];
+                URL imageURL = AdminPanelController.class.getClassLoader().getResource("images/icon.png");
+                bImage = ImageIO.read(imageURL);
+                extension = "png";
             }
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ImageIO.write(bImage, extension, bos);
             return bos.toByteArray();
         } catch (IOException e) {
-            System.err.println("IndexOutOfBoundsException: " + e.getMessage());
             return new byte[0];
         }
     }

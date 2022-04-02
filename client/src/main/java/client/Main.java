@@ -2,6 +2,7 @@
 package client;
 
 import javafx.application.Application;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage stage) throws IOException {
+        Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
         var mainCtrl = INJECTOR.getInstance(FXMLController.class);
         mainCtrl.initialize(stage, FXML);
     }
