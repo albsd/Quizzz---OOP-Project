@@ -8,10 +8,14 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
+application {
+	mainClass = 'client.Main'
+}
+
 jar {
 	manifest {
 		attributes(
-				'Main-Class': 'client.Launcher',
+				'Main-Class': 'client.Main',
 		)
 	}
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
