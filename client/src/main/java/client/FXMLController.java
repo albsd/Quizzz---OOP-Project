@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.messaging.simp.stomp.StompSession.Subscription;
-import client.scenes.GameController;
 import client.scenes.IPPromptController;
 import client.scenes.LobbyController;
+import client.scenes.GameController;
 import client.scenes.SplashController;
 import client.scenes.LeaderboardController;
 import client.scenes.HelpController;
 import client.scenes.AdminPanelController;
+import client.scenes.ThemeSelectorController;
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import commons.Game;
 import commons.Leaderboard;
 import commons.Player;
@@ -32,6 +33,8 @@ public class FXMLController {
     private List<Subscription> lobbySubscriptions;
 
     private List<Subscription> gameSubscriptions;
+
+    private String themePath = "css/dark.css";
 
     private String nick;
 
@@ -70,6 +73,7 @@ public class FXMLController {
         String file = type.getSimpleName().replace("Controller", ".fxml");
         var root = myFXML.load(type, "client", "scenes", file);
         Scene scene = new Scene(root.getValue());
+        scene.getStylesheets().addAll("css/base.css", themePath);
         primaryStage.setScene(scene);
         primaryStage.show();
         return root;
@@ -91,6 +95,13 @@ public class FXMLController {
         } else if (type == GameController.class) {
             this.gameSubscriptions = Arrays.asList(subscriptions);
         }
+    }
+
+    public void setTheme(final String themePath) {
+        this.themePath = themePath;
+        var style = primaryStage.getScene().getStylesheets();
+        style.clear();
+        style.addAll("css/base.css", themePath);
     }
 
     public Pair<SplashController, Parent> showSplash() {
@@ -141,7 +152,12 @@ public class FXMLController {
         subscribe(GameController.class);
         return root;
     }
-    
+
+    public Pair<ThemeSelectorController, Parent> showThemeSelector() {
+        subscribe(ThemeSelectorController.class);
+        return displayScene(ThemeSelectorController.class);
+    }
+
     public Pair<LeaderboardController, Parent> displayLeaderboardMomentarily() {
         var root = myFXML.load(LeaderboardController.class, "client", "scenes", "Leaderboard.fxml");
         Stage stage1 = new Stage();

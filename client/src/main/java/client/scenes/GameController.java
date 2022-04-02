@@ -5,16 +5,18 @@ import client.sounds.SoundName;
 import client.utils.ServerUtils;
 import client.utils.WebSocketSubscription;
 
-import commons.GameUpdate;
 import commons.QuestionTimer;
 import commons.Player;
 import commons.Game;
-import commons.Emote;
 import commons.EmoteMessage;
+import commons.GameUpdate;
+import commons.Leaderboard;
 import commons.Question;
+import commons.NumberMultipleChoiceQuestion;
+import commons.ActivityMultipleChoiceQuestion;
 import commons.FreeResponseQuestion;
 import commons.MultipleChoiceQuestion;
-import commons.Leaderboard;
+import commons.Emote;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -23,7 +25,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -32,12 +33,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import javafx.util.converter.IntegerStringConverter;
 import org.apache.commons.lang3.ArrayUtils;
@@ -45,25 +46,25 @@ import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Collections;
 import java.util.TimerTask;
 import java.util.Date;
+import java.util.Collections;
+import java.util.Scanner;
 
 public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
-    private Button option1, option2, option3, timeButton, soundButton;
+    private Button option1, option2, option3, timeButton;
     
     @FXML
-    private Label questionPrompt, questionNumber, points, timer1, timer2,
+    private Label questionPrompt, questionNumber, points,
             warning, answerBox, questionPoint, correctText, incorrectText;
 
-    @FXML
-    private Region bufferRegion;
 
     @FXML
     private ProgressBar progressBar;
@@ -85,15 +86,12 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private TextField openAnswer;
+
+    @FXML
+    private SVGPath soundIcon;
     
     @FXML
-    private Parent popup;
-
-    @FXML
     private PopupController popupController;
-
-    @FXML
-    private Parent leaderboard;
 
     @FXML
     private LeaderboardController leaderboardController;
@@ -101,10 +99,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     private final ServerUtils server;
 
     private final QuestionTimer clientTimer;
-
-    private final Font font;
-
-    private final Font questionFont;
 
     private Player me;
 
@@ -120,17 +114,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private boolean submittedAnswer;
 
-    private final String green = "#E0FCCF";
-
-    private final String red = "#FE6F5B";
-
-    private final String orange = "#FFD029";
-
-    private final String darkGreen = "#009a19";
-
-    private final String darkRed = "#A00000";
-
-    private int answeredCorrectly, numberOfMultipleChoiceQuestions, currentScore;
+    private int currentScore, numberOfMultipleChoiceQuestions, answeredCorrectly;
 
     private boolean muted = false;
 
@@ -140,29 +124,16 @@ public class GameController implements Initializable, WebSocketSubscription {
     public GameController(final ServerUtils server) {
         this.clientTimer = initClientTimer();
         this.server = server;
-        this.font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
-        this.questionFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 17);
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         optionButtons = new ArrayList<>(Arrays.asList(option1, option2, option3));
         optionButtons.forEach((b) -> {
-            b.setFont(questionFont);
             b.setWrapText(true);
             b.setPrefWidth(145);
         });
 
-        questionPrompt.setFont(font);
-        questionNumber.setFont(font);
-        points.setFont(font);
-        questionPoint.setFont(font);
-        timer1.setFont(font);
-        timer2.setFont(font);
-        answerBox.setFont(font);
-        warning.setFont(font);
-        correctText.setFont(font);
-        incorrectText.setFont(font);
         submittedAnswer = false;
         doubleScore = false;
         numberOfMultipleChoiceQuestions = 0;
@@ -176,10 +147,6 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             return null;
         }));
-
-        Image muteImage = new Image("/images/sounds-unmuted.png");
-        ImageView image = new ImageView(muteImage);
-        soundButton.setGraphic(image);
     }
 
     /**
@@ -191,6 +158,10 @@ public class GameController implements Initializable, WebSocketSubscription {
      * @return an instance of the QuestionTimer for the client
      */
     private QuestionTimer initClientTimer() {
+        Color green = Color.valueOf("#e0fccf");
+        Color orange = Color.valueOf("#ffd029");
+        Color red = Color.valueOf("fe6f5b");
+
         return new QuestionTimer(
                 time -> Platform.runLater(() -> {
                     double ratio = (double) time / QuestionTimer.MAX_TIME;
@@ -199,9 +170,9 @@ public class GameController implements Initializable, WebSocketSubscription {
                     Color rgb; // linearly interpolate
                     double y = 1 - Math.abs(2 * ratio - 1);
                     if (ratio > 0.5) {
-                        rgb = Color.valueOf(orange).interpolate(Color.valueOf(green), 1 - y);
+                        rgb = orange.interpolate(green, 1 - y);
                     } else {
-                        rgb = Color.valueOf(red).interpolate(Color.valueOf(orange), y);
+                        rgb = red.interpolate(orange, y);
                     }
                     progressBar.setStyle("-fx-accent: #" + rgb.toString().substring(2) + ";");
                 }), this::sendFinishMessage);
@@ -220,11 +191,11 @@ public class GameController implements Initializable, WebSocketSubscription {
         subscriptions[0] = server.registerForMessages("/topic" + chatPath, EmoteMessage.class, message -> {
             Platform.runLater(() -> {
                 String emotePath = switch (message.getContent()) {
-                    case cry -> "/images/face-sad.png";
-                    case frown -> "/images/face-frown.png";
-                    case smile -> "/images/face-smile.png";
-                    case surprised -> "/images/face-surprise.png";
-                    case reducedTime -> "/images/reduced-time.png";
+                    case cry -> "/images/svgs/face-sad.svg";
+                    case frown -> "/images/svgs/face-frown.svg";
+                    case smile -> "/images/svgs/face-smile.svg";
+                    case surprised -> "/images/svgs/face-surprise.svg";
+                    case reducedTime -> "/images/svgs/time.svg";
                 };
                 
                 updateEmoteBox(message.getNick(), emotePath);
@@ -233,7 +204,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         subscriptions[1] = server.registerForMessages("/topic" + leavePath, Player.class, player -> {
             Platform.runLater(() -> {
-                updateEmoteBox(player.getNick(), "/images/disconnect.png");
+                updateEmoteBox(player.getNick(), "/images/svgs/leave.svg");
             });
         });
 
@@ -263,18 +234,26 @@ public class GameController implements Initializable, WebSocketSubscription {
     * Updates the emote box with the given event.
      * 
      * @param nick Player who sends an event
-     * @param imagePath Image to be displayed as result of the event
+     * @param svgFilePath File path to SVG to be displayed as result of the event
      */
-    private void updateEmoteBox(final String nick, final String imagePath) {
+    private void updateEmoteBox(final String nick, final String svgFilePath) {
         Label nickname = new Label(nick);
-        nickname.setFont(font);
-    
-        ImageView emoteImage = new ImageView();
-        emoteImage.setImage(new Image(imagePath));
+
+        SVGPath svg = new SVGPath();
+        svg.setContent(loadSVGPath(svgFilePath));
+        svg.setScaleX(0.125);
+        svg.setScaleY(0.125);
+        svg.setTranslateX(-svg.getLayoutBounds().getCenterX() + 32);
+        svg.setTranslateY(-svg.getLayoutBounds().getCenterY() + 32);
+
+        Pane svgHolder = new Pane();
+        svgHolder.setPrefSize(64, 64);
+        svgHolder.setMinSize(64, 64);
+        svgHolder.getChildren().add(svg);
 
         HBox emoteBox = new HBox(20);
         emoteBox.setAlignment(Pos.CENTER_RIGHT);
-        emoteBox.getChildren().addAll(nickname, emoteImage);
+        emoteBox.getChildren().addAll(nickname, svgHolder);
         emoteChat.getChildren().add(emoteBox);
         emoteScroll.layout();
         emoteScroll.setVvalue(1);
@@ -312,9 +291,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         mainHorizontalBox.getChildren().remove(4, 5);
         optionBox.setAlignment(Pos.CENTER);
         optionBox.setPrefWidth(600);
-        //optionBox.setPrefHeight(600);
         optionBox.setPadding(Insets.EMPTY);
-        //optionBox.setSpacing(55);
         powerupBox.getChildren().remove(1, 3);
         VBox.setMargin(optionBox, new Insets(75, 0, 0, 0));
 
@@ -336,8 +313,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             submittedAnswer = true;
             Button chosenOption = (Button) e.getSource();
 
-            chosenOption.setStyle("-fx-background-color:" + orange + ";"
-                    + "-fx-border-color:black; -fx-border-width: 3; -fx-border-style: solid;");
+            chosenOption.getStyleClass().add("selectedOption");
             Button[] options = {option1, option2, option3};
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
@@ -430,9 +406,9 @@ public class GameController implements Initializable, WebSocketSubscription {
             Button[] options = {option1, option2, option3};
             for (int i = 0; i < options.length; i++) {
                 if (i == answer) {
-                    options[i].setStyle("-fx-background-color:" + green + ";\n-fx-text-fill:" + darkGreen + ";");
+                    options[i].getStyleClass().add("correctAnswer");
                 } else {
-                    options[i].setStyle("-fx-background-color:" + red + ";\n-fx-text-fill:" + darkRed + ";");
+                    options[i].getStyleClass().add("wrongAnswer");
                 }
             }
         } else {
@@ -517,30 +493,35 @@ public class GameController implements Initializable, WebSocketSubscription {
             notificationSound.play(muted, false);
 
             Question currentQuestion = game.getCurrentQuestion();
-            if (isOpenQuestion && currentQuestion instanceof MultipleChoiceQuestion) {
-                changeToMultiMode();
+            if (currentQuestion instanceof NumberMultipleChoiceQuestion numQuestion) {
+                changeToNumberMultiMode();
                 isOpenQuestion = false;
-            } else if (!isOpenQuestion && currentQuestion instanceof FreeResponseQuestion) {
+                Image img = new Image(new ByteArrayInputStream(numQuestion.getImage()), 340, 340, false, true);
+                questionImage.setImage(img);
+            } else if (currentQuestion instanceof FreeResponseQuestion openQuestion) {
                 changeToFreeMode();
                 isOpenQuestion = true;
+                Image img = new Image(new ByteArrayInputStream(openQuestion.getImage()), 340, 340, false, true);
+                questionImage.setImage(img);
+            } else {
+                ActivityMultipleChoiceQuestion activityQuestion = (ActivityMultipleChoiceQuestion) currentQuestion;
+                //This line should be changed after the function is implemented
+                //changeToActivityMultiMode();
+                changeToNumberMultiMode();
+                isOpenQuestion = false;
+                Image img = new Image(new ByteArrayInputStream(activityQuestion.getImages()[0]), 340, 340, false, true);
+                questionImage.setImage(img);
             }
-            /*
-            //TODO: WRITE A METHOD FOR 3 IMAGE QUESTION RESTRUCTURING
-            if (currentQuestion.getImages() != null) {
 
-            }
-            */
             questionNumber.setText(String.format("%d/%d", game.getCurrentQuestionNumber(), 20));
             questionPrompt.setText(currentQuestion.getPrompt());
-            Image img = new Image(new ByteArrayInputStream(currentQuestion.getImage()), 340, 340, false, true);
-            questionImage.setImage(img);
             questionPoint.setText("");
             if (currentQuestion instanceof MultipleChoiceQuestion) {
                 String[] options = ((MultipleChoiceQuestion) currentQuestion).getOptions();
+
                 optionButtons.forEach((b) -> {
                     b.setDisable(false);
-                    b.setStyle("-fx-background-color:" + orange);
-                    b.setStyle("-fx-opacity: 1");
+                    b.getStyleClass().removeAll("wrongAnswer", "correctAnswer", "selectedOption", "removedOption");
                     b.setText(options[optionButtons.indexOf(b)]);
                 });
 
@@ -617,7 +598,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
             int finalIndex = removeIndices.get(0);
             options[finalIndex].setDisable(true);
-            options[finalIndex].setStyle("-fx-opacity: 0.25");
+            options[finalIndex].getStyleClass().add("removedOption");
         } else {
             warning.setText("Power-up not available!");
             warning.setVisible(true);
@@ -659,8 +640,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     /**
      * Updates the interface to reflect a multiple-choice question.
      */
-    @FXML
-    private void changeToMultiMode() {
+    private void changeToNumberMultiMode() {
         answerBox.toFront();
         openAnswer.toFront();
         openAnswer.setVisible(false);
@@ -670,7 +650,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     /**
      * Updates the interface to reflect an open-choice question.
      */
-    @FXML
     private void changeToFreeMode() {
         answerBox.toBack();
         openAnswer.toBack();
@@ -678,19 +657,31 @@ public class GameController implements Initializable, WebSocketSubscription {
         optionButtons.forEach((b) -> b.setVisible(false));
     }
 
+    //TODO: WILL BE IMPLEMENTED IN THE RESTRUCTURING ISSUE
+    private void changeToActivityMultiMode() {
+    }
+
     @FXML
     private void updateSoundButton(final ActionEvent e) {
         if (muted) {
             muted = false;
-            Image image = new Image("/images/sounds-unmuted.png");
-            ImageView icon = new ImageView(image);
-            ((Button) e.getSource()).setGraphic(icon);
+            soundIcon.setContent(loadSVGPath("/images/svgs/sound.svg"));
         } else {
             muted = true;
-            Image image = new Image("/images/sounds-muted.png");
-            ImageView icon = new ImageView(image);
-            ((Button) e.getSource()).setGraphic(icon);
+            soundIcon.setContent(loadSVGPath("/images/svgs/mute.svg"));
         }
     }
 
+    public String loadSVGPath(final String filePath) {
+        try {
+            Scanner svgScanner = new Scanner(getClass().getResource(filePath).openStream(), StandardCharsets.UTF_8);
+            svgScanner.skip(".*<path d=\"");
+            svgScanner.useDelimiter("\"");
+            String svgString = svgScanner.next();
+            return svgString;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
 }

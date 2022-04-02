@@ -19,21 +19,10 @@ import javax.inject.Inject;
 import client.FXMLController;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 public class LeaderboardController implements Initializable {
-
-    public final Color orange = new Color(1, 0.84, 0.26, 1); // #ffd644
-    public final Color grey = new Color(0.918, 0.914, 0.914, 1); // #eae9e9
-    public final Color green = new Color(0.878, 0.988, 0.812, 1); // e0fccf
-    public final Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
 
     @FXML
     private Label title, rank, nick, score;
@@ -42,10 +31,7 @@ public class LeaderboardController implements Initializable {
     private VBox menu, playerRanking;
 
     @FXML
-    private Button lobby, singleplayer;
-
-    @FXML
-    private ImageView backButton;
+    private Button lobby, singleplayer, backButton;
 
     private Player prevMe;
 
@@ -61,11 +47,6 @@ public class LeaderboardController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 72);
-        title.setFont(titleFont);
-        rank.setFont(font);
-        nick.setFont(font);
-        score.setFont(font);
         menu.setVisible(false);
     }
 
@@ -83,9 +64,7 @@ public class LeaderboardController implements Initializable {
     }
 
     public void endGame(final Player me) {
-        lobby.setFont(font);
         lobby.setVisible(true);
-        singleplayer.setFont(font);
         singleplayer.setVisible(true);
         this.prevMe = me;
     }
@@ -113,9 +92,6 @@ public class LeaderboardController implements Initializable {
             Label rankLabel = new Label("#" + (i + 1));
             Label nickLabel = new Label(player.getNick());
             Label scoreLabel = new Label(Integer.toString(player.getScore()));
-            rankLabel.setFont(font);
-            nickLabel.setFont(font);
-            scoreLabel.setFont(font);
 
             StackPane entry = new StackPane();
             StackPane.setAlignment(rankLabel, Pos.CENTER_LEFT);
@@ -125,17 +101,13 @@ public class LeaderboardController implements Initializable {
             entry.setPadding(new Insets(10, 10, 10, 10));
             entry.getChildren().addAll(rankLabel, nickLabel, scoreLabel);
 
-            if (i == 0) {
-                entry.setBackground(new Background(new BackgroundFill(orange,
-                        new CornerRadii(0.0), new Insets(0, 0, 0, 0))));
-            } else {
-                entry.setBackground(new Background(new BackgroundFill(grey,
-                        new CornerRadii(0.0), new Insets(0, 0, 0, 0))));
-            }
             if (player.getNick().equals(me.getNick())) {
                 rank.setText("#" + (i + 1));
-                entry.setBackground(new Background(new BackgroundFill(green,
-                        new CornerRadii(0.0), new Insets(0, 0, 0, 0))));
+                entry.getStyleClass().add("leaderboardSelf");
+            } else if (i == 0) {
+                entry.getStyleClass().add("leaderboardFirst");
+            } else {
+                entry.getStyleClass().add("leaderboardEntry");
             }
 
             playerRanking.getChildren().add(entry);

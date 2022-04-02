@@ -14,7 +14,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -29,7 +28,6 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
@@ -40,7 +38,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private ScrollPane chatArea;
 
     @FXML
-    private Label chatText, playersLeft, playersRight, playerCount, title, chatTitle;
+    private Label chatText, playersLeft, playersRight, playerCount;
 
     @FXML
     private Button startButton;
@@ -49,12 +47,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private TextField chatInput;
 
     @FXML
-    private Parent popup;
-
-    @FXML
     private PopupController popupController;
-
-    private final Font font1, font2, font3;
 
     private final ServerUtils server;
     
@@ -71,9 +64,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         this.server = server;
         this.fxml = fxml;
         this.players = new ArrayList<>();
-        this.font1 = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 24);
-        this.font2 = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 30);
-        this.font3 = Font.loadFont(getClass().getResourceAsStream("/fonts/Righteous-Regular.ttf"), 72);
     }
 
     @Override
@@ -86,15 +76,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
                 .collect(Collectors.toList());
 
         updatePlayerList();
-
-        chatText.setFont(font1);
-        playersLeft.setFont(font1);
-        playersRight.setFont(font1);
-        playerCount.setFont(font2);
-        title.setFont(font3);
-        chatTitle.setFont(font2);
-        startButton.setFont(font1);
-        chatInput.setFont(font1);
     }
 
     @Override

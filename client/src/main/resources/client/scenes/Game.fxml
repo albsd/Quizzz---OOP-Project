@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" stylesheets="@/stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -14,7 +22,7 @@
       <children>
          <AnchorPane fx:id="menu" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1240.0">
             <children>
-            <Label fx:id="points" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0" text="Total points: 0">
+               <Label fx:id="points" alignment="CENTER" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="1240.0" text="Total points: 0">
                   <font>
                      <Font name="System Bold" size="30.0" />
                   </font>
@@ -24,7 +32,7 @@
                      <Font name="System Bold" size="30.0" />
                   </font>
                </Label>
-               <Label fx:id="correctText" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="1093.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" text="0" textFill="#009a19">
+               <Label fx:id="correctText" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="1093.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" styleClass="correctText" text="0">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
@@ -34,7 +42,7 @@
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="incorrectText" contentDisplay="CENTER" layoutX="1165.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" text="0" textFill="#d70c0c">
+               <Label fx:id="incorrectText" contentDisplay="CENTER" layoutX="1165.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" styleClass="incorrectText" text="0">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
@@ -56,41 +64,34 @@
                                  <ImageView fx:id="questionImage" fitHeight="340.0" fitWidth="345.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS" />
                                  <HBox fx:id="powerupBox" prefHeight="85.0" prefWidth="311.0">
                                     <children>
-                                       <Button fx:id="timeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#timePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                       <Button fx:id="timeButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#timePowerup" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
                                           <graphic>
-                                             <ImageView pickOnBounds="true" preserveRatio="true">
-                                                <image>
-                                                   <Image url="@/images/time.png" />
-                                                </image>
-                                             </ImageView>
+                                             <SVGPath content="M0 24C0 10.75 10.75 0 24 0H360C373.3 0 384 10.75 384 24C384 37.25 373.3 48 360 48H352V66.98C352 107.3 335.1 145.1 307.5 174.5L225.9 256L307.5 337.5C335.1 366 352 404.7 352 445V464H360C373.3 464 384 474.7 384 488C384 501.3 373.3 512 360 512H24C10.75 512 0 501.3 0 488C0 474.7 10.75 464 24 464H32V445C32 404.7 48.01 366 76.52 337.5L158.1 256L76.52 174.5C48.01 145.1 32 107.3 32 66.98V48H24C10.75 48 0 37.25 0 24V24zM99.78 384H284.2C281 379.6 277.4 375.4 273.5 371.5L192 289.9L110.5 371.5C106.6 375.4 102.1 379.6 99.78 384H99.78zM284.2 128C296.1 110.4 304 89.03 304 66.98V48H80V66.98C80 89.03 87 110.4 99.78 128H284.2z" scaleX="0.125" scaleY="0.125" styleClass="iconButton" />
                                           </graphic>
                                        </Button>
-                                       <Button fx:id="scoreButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#scorePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                       <Region prefHeight="200.0" prefWidth="200.0" />
+                                       <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#scorePowerup" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
                                           <graphic>
-                                             <ImageView pickOnBounds="true" preserveRatio="true">
-                                                <image>
-                                                   <Image url="@/images/score.png" />
-                                                </image>
-                                             </ImageView>
+                                             <SVGPath content="M287.9 0C297.1 0 305.5 5.25 309.5 13.52L378.1 154.8L531.4 177.5C540.4 178.8 547.8 185.1 550.7 193.7C553.5 202.4 551.2 211.9 544.8 218.2L433.6 328.4L459.9 483.9C461.4 492.9 457.7 502.1 450.2 507.4C442.8 512.7 432.1 513.4 424.9 509.1L287.9 435.9L150.1 509.1C142.9 513.4 133.1 512.7 125.6 507.4C118.2 502.1 114.5 492.9 115.1 483.9L142.2 328.4L31.11 218.2C24.65 211.9 22.36 202.4 25.2 193.7C28.03 185.1 35.5 178.8 44.49 177.5L197.7 154.8L266.3 13.52C270.4 5.249 278.7 0 287.9 0L287.9 0zM287.9 78.95L235.4 187.2C231.9 194.3 225.1 199.3 217.3 200.5L98.98 217.9L184.9 303C190.4 308.5 192.9 316.4 191.6 324.1L171.4 443.7L276.6 387.5C283.7 383.7 292.2 383.7 299.2 387.5L404.4 443.7L384.2 324.1C382.9 316.4 385.5 308.5 391 303L476.9 217.9L358.6 200.5C350.7 199.3 343.9 194.3 340.5 187.2L287.9 78.95z" scaleX="0.125" scaleY="0.125" />
                                           </graphic>
                                        </Button>
-                                       <Button fx:id="removeButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#removePowerup" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                       <Region prefHeight="200.0" prefWidth="200.0" />
+                                       <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removePowerup" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
                                           <graphic>
-                                             <ImageView pickOnBounds="true" preserveRatio="true">
-                                                <image>
-                                                   <Image url="@/images/remove.png" />
-                                                </image>
-                                             </ImageView>
+                                             <SVGPath content="M135.2 17.69C140.6 6.848 151.7 0 163.8 0H284.2C296.3 0 307.4 6.848 312.8 17.69L320 32H416C433.7 32 448 46.33 448 64C448 81.67 433.7 96 416 96H32C14.33 96 0 81.67 0 64C0 46.33 14.33 32 32 32H128L135.2 17.69zM394.8 466.1C393.2 492.3 372.3 512 346.9 512H101.1C75.75 512 54.77 492.3 53.19 466.1L31.1 128H416L394.8 466.1z" scaleX="0.125" scaleY="0.125" />
                                           </graphic>
                                        </Button>
                                     </children>
+                                    <VBox.margin>
+                                       <Insets left="20.0" right="20.0" />
+                                    </VBox.margin>
                                  </HBox>
                               </children>
                            </VBox>
-                           <Region fx:id="region1" prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
+                           <Region prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
                            <VBox fx:id="optionBox" prefHeight="414.0" prefWidth="395.0" spacing="25.0">
                               <children>
-                                 <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" textFill="#a07400" wrapText="true" VBox.vgrow="ALWAYS">
+                                 <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
@@ -98,12 +99,12 @@
                                        <Insets />
                                     </VBox.margin>
                                  </Button>
-                                 <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" textFill="#a07400" wrapText="true">
+                                 <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" wrapText="true">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
                                  </Button>
-                                 <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" textFill="#a07400" wrapText="true">
+                                 <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" wrapText="true">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
@@ -113,7 +114,7 @@
                                        <Font size="24.0" />
                                     </font>
                                  </TextField>
-                                 <Label fx:id="answerBox" alignment="CENTER" prefHeight="35.0" prefWidth="424.0" textAlignment="CENTER" textFill="#31ce16">
+                                 <Label fx:id="answerBox" alignment="CENTER" prefHeight="35.0" prefWidth="424.0" styleClass="correctText" textAlignment="CENTER">
                                     <font>
                                        <Font size="24.0" />
                                     </font>
@@ -126,10 +127,10 @@
                                  <Insets />
                               </HBox.margin>
                            </VBox>
-                           <Region fx:id="region2" prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
-                           <VBox fx:id="chatBox" prefHeight="400.0" prefWidth="350.0">
+                           <Region prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
+                           <VBox prefHeight="400.0" prefWidth="350.0">
                               <children>
-                                 <ScrollPane fx:id="emoteScroll" fitToWidth="true" hbarPolicy="NEVER" prefHeight="315.0" prefWidth="350.0" style="-fx-background: white;" VBox.vgrow="ALWAYS">
+                                 <ScrollPane fx:id="emoteScroll" fitToWidth="true" hbarPolicy="NEVER" prefHeight="315.0" prefWidth="350.0" VBox.vgrow="ALWAYS">
                                     <content>
                                        <VBox fx:id="emoteChat" alignment="BOTTOM_RIGHT" minHeight="307.0" minWidth="300.0" prefHeight="315.0" prefWidth="555.0" spacing="20.0">
                                           <padding>
@@ -140,52 +141,39 @@
                                  </ScrollPane>
                                  <HBox prefHeight="85.0" prefWidth="356.0">
                                     <children>
-                                       <Button fx:id="frown" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#frown" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                       <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#frown" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
                                           <font>
                                              <Font size="10.0" />
                                           </font>
                                           <graphic>
-                                             <ImageView pickOnBounds="true" preserveRatio="true">
-                                                <image>
-                                                   <Image url="@/images/face-frown.png" />
-                                                </image>
-                                             </ImageView>
+                                             <SVGPath content="M143.9 398.6C131.4 394.1 124.9 380.3 129.4 367.9C146.9 319.4 198.9 288 256 288C313.1 288 365.1 319.4 382.6 367.9C387.1 380.3 380.6 394.1 368.1 398.6C355.7 403.1 341.9 396.6 337.4 384.1C328.2 358.5 297.2 336 256 336C214.8 336 183.8 358.5 174.6 384.1C170.1 396.6 156.3 403.1 143.9 398.6V398.6zM208.4 208C208.4 225.7 194 240 176.4 240C158.7 240 144.4 225.7 144.4 208C144.4 190.3 158.7 176 176.4 176C194 176 208.4 190.3 208.4 208zM304.4 208C304.4 190.3 318.7 176 336.4 176C354 176 368.4 190.3 368.4 208C368.4 225.7 354 240 336.4 240C318.7 240 304.4 225.7 304.4 208zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z" scaleX="0.125" scaleY="0.125" />
                                           </graphic>
                                        </Button>
-                                       <Button fx:id="cry" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cry" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                       <Region prefHeight="200.0" prefWidth="200.0" />
+                                       <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cry" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
                                           <font>
                                              <Font size="10.0" />
                                           </font>
                                           <graphic>
-                                             <ImageView pickOnBounds="true" preserveRatio="true">
-                                                <image>
-                                                   <Image url="@/images/face-sad.png" />
-                                                </image>
-                                             </ImageView>
+                                             <SVGPath content="M159.6 220C148.1 220 139.7 223.8 134.2 229.7C126.7 237.7 114 238.1 105.1 230.6C97.89 223 97.48 210.4 105 202.3C119.6 186.8 140.3 180 159.6 180C178.1 180 199.7 186.8 214.2 202.3C221.8 210.4 221.4 223 213.3 230.6C205.2 238.1 192.6 237.7 185 229.7C179.6 223.8 170.3 220 159.6 220zM297.9 230.6C289.9 223 289.5 210.4 297 202.3C311.6 186.8 332.3 180 351.6 180C370.1 180 391.7 186.8 406.2 202.3C413.8 210.4 413.4 223 405.3 230.6C397.2 238.1 384.6 237.7 377 229.7C371.6 223.8 362.3 220 351.6 220C340.1 220 331.7 223.8 326.2 229.7C318.7 237.7 306 238.1 297.9 230.6zM208 320C208 293.5 229.5 272 256 272C282.5 272 304 293.5 304 320V352C304 378.5 282.5 400 256 400C229.5 400 208 378.5 208 352V320zM0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM400 406.1C439.4 368.2 464 314.1 464 256C464 141.1 370.9 48 256 48C141.1 48 48 141.1 48 256C48 314.1 72.55 368.2 112 406.1V288C112 274.7 122.7 264 136 264C149.3 264 160 274.7 160 288V440.6C188.7 455.5 221.4 464 256 464C290.6 464 323.3 455.5 352 440.6V288C352 274.7 362.7 264 376 264C389.3 264 400 274.7 400 288V406.1z" scaleX="0.125" scaleY="0.125" />
                                           </graphic>
                                        </Button>
-                                       <Button fx:id="smile" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#smile" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                       <Region prefHeight="200.0" prefWidth="200.0" />
+                                       <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#smile" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
                                           <font>
                                              <Font size="10.0" />
                                           </font>
                                           <graphic>
-                                             <ImageView pickOnBounds="true" preserveRatio="true">
-                                                <image>
-                                                   <Image url="@/images/face-smile.png" />
-                                                </image>
-                                             </ImageView>
+                                             <SVGPath content="M256 352C293.2 352 319.2 334.5 334.4 318.1C343.3 308.4 358.5 307.7 368.3 316.7C378 325.7 378.6 340.9 369.6 350.6C347.7 374.5 309.7 400 256 400C202.3 400 164.3 374.5 142.4 350.6C133.4 340.9 133.1 325.7 143.7 316.7C153.5 307.7 168.7 308.4 177.6 318.1C192.8 334.5 218.8 352 256 352zM208.4 208C208.4 225.7 194 240 176.4 240C158.7 240 144.4 225.7 144.4 208C144.4 190.3 158.7 176 176.4 176C194 176 208.4 190.3 208.4 208zM304.4 208C304.4 190.3 318.7 176 336.4 176C354 176 368.4 190.3 368.4 208C368.4 225.7 354 240 336.4 240C318.7 240 304.4 225.7 304.4 208zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z" scaleX="0.125" scaleY="0.125" />
                                           </graphic>
                                        </Button>
-                                       <Button fx:id="surprised" layoutX="222.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#surprised" prefHeight="100.0" prefWidth="100.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
+                                       <Region prefHeight="200.0" prefWidth="200.0" />
+                                       <Button layoutX="222.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#surprised" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" HBox.hgrow="ALWAYS">
                                           <font>
                                              <Font size="10.0" />
                                           </font>
                                           <graphic>
-                                             <ImageView pickOnBounds="true" preserveRatio="true">
-                                                <image>
-                                                   <Image url="@/images/face-surprise.png" />
-                                                </image>
-                                             </ImageView>
+                                             <SVGPath content="M144.4 208C144.4 190.3 158.7 176 176.4 176C194 176 208.4 190.3 208.4 208C208.4 225.7 194 240 176.4 240C158.7 240 144.4 225.7 144.4 208zM368.4 208C368.4 225.7 354 240 336.4 240C318.7 240 304.4 225.7 304.4 208C304.4 190.3 318.7 176 336.4 176C354 176 368.4 190.3 368.4 208zM192 352C192 316.7 220.7 288 256 288C291.3 288 320 316.7 320 352C320 387.3 291.3 416 256 416C220.7 416 192 387.3 192 352zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z" scaleX="0.125" scaleY="0.125" />
                                           </graphic>
                                        </Button>
                                     </children>
@@ -205,30 +193,30 @@
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="timer2" layoutX="1186.0" layoutY="627.0" prefHeight="53.0" prefWidth="54.0" text="20s">
+               <Label layoutX="1186.0" layoutY="627.0" prefHeight="53.0" prefWidth="54.0" text="20s">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Button contentDisplay="TOP" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" style="-fx-background-color: transparent;" styleClass="iconButton" textAlignment="CENTER">
+               <Button contentDisplay="TOP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" textAlignment="CENTER">
                   <graphic>
-                     <ImageView pickOnBounds="true" preserveRatio="true">
-                        <image>
-                           <Image url="@/images/back.png" />
-                        </image>
-                     </ImageView>
+                     <SVGPath content="M256 0C114.6 0 0 114.6 0 256c0 141.4 114.6 256 256 256s256-114.6 256-256C512 114.6 397.4 0 256 0zM310.6 345.4c12.5 12.5 12.5 32.75 0 45.25s-32.75 12.5-45.25 0l-112-112C147.1 272.4 144 264.2 144 256s3.125-16.38 9.375-22.62l112-112c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L221.3 256L310.6 345.4z" scaleX="0.125" scaleY="0.125" styleClass="iconButton" />
                   </graphic></Button>
                <Label fx:id="questionNumber" layoutX="-8.0" layoutY="126.0">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="warning" alignment="CENTER" layoutX="458.0" layoutY="68.0" prefHeight="37.0" prefWidth="323.0" text="Already submitted answer!" textFill="#f10303" visible="false">
+               <Label fx:id="warning" alignment="CENTER" layoutX="458.0" layoutY="68.0" prefHeight="37.0" prefWidth="323.0" styleClass="warning" text="Already submitted answer!" visible="false">
                   <font>
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Button fx:id="soundButton" layoutX="1145.0" layoutY="11.0" mnemonicParsing="false" onAction="#updateSoundButton" prefHeight="65.0" prefWidth="65.0" style="-fx-background-color: transparent;" styleClass="iconButton" />
+               <Button layoutX="1160.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#updateSoundButton" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" textAlignment="CENTER">
+                  <graphic>
+                     <SVGPath fx:id="soundIcon" content="M412.6 182c-10.28-8.334-25.41-6.867-33.75 3.402c-8.406 10.24-6.906 25.35 3.375 33.74C393.5 228.4 400 241.8 400 255.1c0 14.17-6.5 27.59-17.81 36.83c-10.28 8.396-11.78 23.5-3.375 33.74c4.719 5.806 11.62 8.802 18.56 8.802c5.344 0 10.75-1.779 15.19-5.399C435.1 311.5 448 284.6 448 255.1S435.1 200.4 412.6 182zM473.1 108.2c-10.22-8.334-25.34-6.898-33.78 3.34c-8.406 10.24-6.906 25.35 3.344 33.74C476.6 172.1 496 213.3 496 255.1s-19.44 82.1-53.31 110.7c-10.25 8.396-11.75 23.5-3.344 33.74c4.75 5.775 11.62 8.771 18.56 8.771c5.375 0 10.75-1.779 15.22-5.431C518.2 366.9 544 313 544 255.1S518.2 145 473.1 108.2zM534.4 33.4c-10.22-8.334-25.34-6.867-33.78 3.34c-8.406 10.24-6.906 25.35 3.344 33.74C559.9 116.3 592 183.9 592 255.1s-32.09 139.7-88.06 185.5c-10.25 8.396-11.75 23.5-3.344 33.74C505.3 481 512.2 484 519.2 484c5.375 0 10.75-1.779 15.22-5.431C601.5 423.6 640 342.5 640 255.1S601.5 88.34 534.4 33.4zM301.2 34.98c-11.5-5.181-25.01-3.076-34.43 5.29L131.8 160.1H48c-26.51 0-48 21.48-48 47.96v95.92c0 26.48 21.49 47.96 48 47.96h83.84l134.9 119.8C272.7 477 280.3 479.8 288 479.8c4.438 0 8.959-.9314 13.16-2.835C312.7 471.8 320 460.4 320 447.9V64.12C320 51.55 312.7 40.13 301.2 34.98z" scaleX="0.125" scaleY="0.125" styleClass="iconButton" />
+                  </graphic>
+               </Button>
             </children>
          </AnchorPane>
          <!-- Include the popup at top of everything -->

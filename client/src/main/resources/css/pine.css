@@ -1,0 +1,23 @@
+.root {
+    -background: #DBD9E8;
+    -background-alt: #7E7AAF;
+    -button-background: #40555D;
+    -button-text: #DBD9E8;
+    -text: #447348;
+    -icon: -text;
+    -correct-text: #433E7A;
+    -correct-background: #7E7AAF;
+    -incorrect-text: #56536E;
+    -incorrect-background: #8D89A4;
+    -leaderboard-first-background: -button-background;
+    -leaderboard-first-text: -button-text;
+    -leaderboard-self-background: -correct-background;
+    -leaderboard-self-text: -correct-text;
+    -leaderboard-background: #8D89A4;
+    -leaderboard-text: -text;
+    -selected-border: -text;
+}
+
+.text-field {
+    -fx-text-fill: #433E7A;
+}
