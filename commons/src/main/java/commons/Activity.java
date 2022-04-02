@@ -10,8 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.Objects;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +35,6 @@ public class Activity {
     private String source;
     @JsonProperty("image_path")
     private String path;
-
 
     /**
      * Default activity constructor.

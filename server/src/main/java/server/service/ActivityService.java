@@ -13,7 +13,6 @@ import server.repository.ActivityRepository;
 import server.repository.QuestionRepository;
 
 import javax.imageio.ImageIO;
-
 import java.awt.image.BufferedImage;
 import java.io.FileReader;
 import java.io.ByteArrayOutputStream;
