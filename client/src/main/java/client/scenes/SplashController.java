@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.FXMLController;
+import client.sounds.Sound;
+import client.sounds.SoundName;
 import client.utils.ServerUtils;
 import commons.Game;
 import commons.Player;
@@ -21,7 +23,7 @@ public class SplashController implements Initializable {
 
     @FXML
     private Label warning;
-    
+
     @FXML
     private PopupController popupController;
 
@@ -112,6 +114,8 @@ public class SplashController implements Initializable {
         nickField.setText(nick);
         server.saveNickname(nick);
         fxml.saveNick(nick);
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(false, false);
         Game singleGame = server.startSinglePlayer(nick);
         fxml.showSinglePlayer(singleGame);
     }
@@ -137,6 +141,8 @@ public class SplashController implements Initializable {
         nickField.setText(nick);
         server.saveNickname(nick);
         fxml.saveNick(nick);
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(false, false);
         fxml.showLobby(me);
     }
 
@@ -154,11 +160,15 @@ public class SplashController implements Initializable {
         nickField.setText(nick);
         server.saveNickname(nick);
         fxml.saveNick(nick);
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(false, false);
         fxml.showLeaderboard(server.getSinglePlayerLeaderboard());
     }
 
     @FXML
     public void admin(final ActionEvent event) {
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(false, false);
         fxml.showAdminPanel();
     }
 }

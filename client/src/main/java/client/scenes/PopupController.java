@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.FXMLController;
+import client.sounds.Sound;
+import client.sounds.SoundName;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -33,6 +35,8 @@ public class PopupController {
 
     @FXML
     public void close(final ActionEvent e) {
+        Sound pop = new Sound(SoundName.pop);
+        pop.play(false, false);
         menu.setVisible(false);
     }
 
@@ -41,6 +45,8 @@ public class PopupController {
      */
     @FXML
     public void returnToMenu() {
+        Sound pop = new Sound(SoundName.pop);
+        pop.play(false, false);
         fxml.showSplash();
         onConfirm.run();
     }
