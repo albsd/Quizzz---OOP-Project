@@ -33,6 +33,9 @@ public class LeaderboardController implements Initializable {
     @FXML
     private Button lobby, singleplayer, backButton;
 
+    @FXML
+    private StackPane leaderboardPlaque;
+
     private Player prevMe;
 
     private final FXMLController fxml;
@@ -82,10 +85,14 @@ public class LeaderboardController implements Initializable {
     }
 
     public void displayLeaderboard(final Leaderboard leaderboard, final Player me) {
+        if (me.getNick() == null) {
+            leaderboardPlaque.setVisible(false);
+        }
         nick.setText(me.getNick());
         score.setText(Integer.toString(me.getScore()));
         playerRanking.getChildren().clear();
         List<Player> ranking = leaderboard.getRanking();
+        Boolean plaqueSet = false;
         for (int i = 0; i < ranking.size(); i++) {
             Player player = ranking.get(i);
 
@@ -101,8 +108,10 @@ public class LeaderboardController implements Initializable {
             entry.setPadding(new Insets(10, 10, 10, 10));
             entry.getChildren().addAll(rankLabel, nickLabel, scoreLabel);
 
-            if (player.getNick().equals(me.getNick())) {
+            if (player.getNick().equals(me.getNick()) && !plaqueSet) {
+                plaqueSet = true;
                 rank.setText("#" + (i + 1));
+                score.setText(Integer.toString(player.getScore()));
                 entry.getStyleClass().add("leaderboardSelf");
             } else if (i == 0) {
                 entry.getStyleClass().add("leaderboardFirst");

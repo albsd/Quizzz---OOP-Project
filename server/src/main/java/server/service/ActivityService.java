@@ -50,8 +50,6 @@ public class ActivityService {
 
     private final float offset = 0.1f;
 
-    private final String defaultImagePath = ".src/main/resources/images/icon.png";
-
     @Autowired
     public ActivityService(final ActivityRepository activityRepository, final QuestionRepository questionRepository) {
         this.activityRepository = activityRepository;

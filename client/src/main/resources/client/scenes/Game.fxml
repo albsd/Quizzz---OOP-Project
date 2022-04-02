@@ -25,17 +25,17 @@
                      <Font name="System Bold" size="30.0" />
                   </font>
                </Label>
-               <Label fx:id="correctText" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="1041.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" styleClass="correctText" text="0">
+               <Label fx:id="correctText" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="1050.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" styleClass="correctText" text="0">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label alignment="CENTER" contentDisplay="CENTER" layoutX="1102.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" text="/">
+               <Label alignment="CENTER" contentDisplay="CENTER" layoutX="1112.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" text="/">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="incorrectText" contentDisplay="CENTER" layoutX="1113.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" styleClass="incorrectText" text="0">
+               <Label fx:id="incorrectText" contentDisplay="CENTER" layoutX="1124.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" styleClass="incorrectText" text="0">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>

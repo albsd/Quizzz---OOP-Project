@@ -47,18 +47,18 @@ public class SplashController implements Initializable {
      */
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-
         //Players can prefer to play with server saved nickname or new nickname
-        //nick has already been set so used persistent fxml nick
-        if (nick != null) {
-            nick = fxml.getNick();
-            nickField.setText(nick);
-        } else {
+        if (nick == null) {
             String serverNick = server.getNickname();
             if (serverNick != null) {
                 nick = serverNick;
+                fxml.saveNick(nick);
                 nickField.setText(nick);
             }
+        //nick has already been set so used persistent fxml nick
+        } else {
+            nick = fxml.getNick();
+            nickField.setText(nick);
         }
     }
 
@@ -147,6 +147,13 @@ public class SplashController implements Initializable {
 
     @FXML
     public void leaderBoard(final ActionEvent event) {
+        if (!validateNickname(nickField.getText())) {
+            return;
+        }
+        nick = nickField.getText();
+        nickField.setText(nick);
+        server.saveNickname(nick);
+        fxml.saveNick(nick);
         fxml.showLeaderboard(server.getSinglePlayerLeaderboard());
     }
 

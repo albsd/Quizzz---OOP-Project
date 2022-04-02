@@ -20,8 +20,6 @@ public class QuestionRepository {
     public List<Question> getQuestions() {
         //temporary solution before testing. Not permanent
         return questions.stream().findAny().get();
-        // questions.remove(question);
-        // return question;
     }
 
     public void addQuestions(final List<Question> question) {

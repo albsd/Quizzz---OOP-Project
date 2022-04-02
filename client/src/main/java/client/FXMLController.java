@@ -114,7 +114,7 @@ public class FXMLController {
         var root = displayScene(LeaderboardController.class);
         LeaderboardController leaderboardController = root.getKey();
         leaderboardController.show();
-        leaderboardController.displayLeaderboard(leaderboard, new Player("you"));
+        leaderboardController.displayLeaderboard(leaderboard, new Player(nick));
         return root;
     }
 
