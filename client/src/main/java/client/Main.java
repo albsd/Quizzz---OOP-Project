@@ -17,7 +17,7 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
     public static void main(final String[] args) {
-        launch();
+        launch(args);
     }
 
     @Override
@@ -26,5 +26,4 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(FXMLController.class);
         mainCtrl.initialize(stage, FXML);
     }
-
 }
