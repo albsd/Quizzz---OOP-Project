@@ -1,5 +1,7 @@
 package client.scenes;
 
+import client.sounds.Sound;
+import client.sounds.SoundName;
 import client.utils.ServerUtils;
 import commons.Game;
 import commons.Leaderboard;
@@ -71,12 +73,16 @@ public class LeaderboardController implements Initializable {
 
     @FXML
     public void lobby(final ActionEvent event) {
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(false, false);
         final Player me = server.joinLobby(prevMe.getNick());
         fxml.showLobby(me);
     }
 
     @FXML
     public void singleplayer() {
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(false, false);
         Game single = server.startSinglePlayer(prevMe.getNick());
         fxml.showSinglePlayer(single);
     }

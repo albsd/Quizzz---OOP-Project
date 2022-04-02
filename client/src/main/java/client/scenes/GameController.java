@@ -89,7 +89,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private SVGPath soundIcon;
-    
+
     @FXML
     private PopupController popupController;
 
@@ -106,7 +106,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private String chatPath;
 
-    private boolean isOpenQuestion = false;
+    private boolean isOpenQuestion = false, muted, isSinglePlayer;
     
     private String leavePath;
 
@@ -115,8 +115,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     private boolean submittedAnswer;
 
     private int currentScore, numberOfMultipleChoiceQuestions, answeredCorrectly;
-
-    private boolean muted = false;
 
     private List<Button> optionButtons;
 
@@ -147,6 +145,9 @@ public class GameController implements Initializable, WebSocketSubscription {
             }
             return null;
         }));
+
+        muted = false;
+        isSinglePlayer = false;
     }
 
     /**
@@ -299,6 +300,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         displayCurrentQuestion();
         clientTimer.start(0);
+
+        isSinglePlayer = true;
     }
 
     /**
@@ -371,7 +374,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void checkAnswer(final long option, final int time) {
         Sound optionSound = new Sound(SoundName.option);
-        optionSound.play(muted, false);
+        optionSound.play(muted || isSinglePlayer, false);
         currentScore = game.getCurrentQuestion().calculateScore(option, time);
         if (currentScore > 0) answeredCorrectly++;
     }
@@ -381,9 +384,6 @@ public class GameController implements Initializable, WebSocketSubscription {
      * (for five seconds)
      */
     private void displayAnswerMomentarily() {
-        Sound suspenseSound = new Sound(SoundName.suspense);
-        suspenseSound.play(muted, false);
-
         if (doubleScore) {
             currentScore *= 2;
             doubleScore = false;
@@ -398,6 +398,13 @@ public class GameController implements Initializable, WebSocketSubscription {
             correctText.setText(String.valueOf(answeredCorrectly));
             incorrectText.setText(String.valueOf(game.getCurrentQuestionNumber() - answeredCorrectly));
             questionPoint.setText("You got: " + currentScore + " points");
+            if (currentScore > 0) {
+                Sound rightAnswerSound = new Sound(SoundName.right_answer);
+                rightAnswerSound.play(muted, false);
+            } else {
+                Sound wrongAnswerSound = new Sound(SoundName.wrong_answer);
+                wrongAnswerSound.play(muted, false);
+            }
             currentScore = 0;
         });
         warning.setVisible(false);
@@ -489,9 +496,6 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     private void displayCurrentQuestion() {
         Platform.runLater(() -> {
-            Sound notificationSound = new Sound(SoundName.notification);
-            notificationSound.play(muted, false);
-
             Question currentQuestion = game.getCurrentQuestion();
             if (currentQuestion instanceof NumberMultipleChoiceQuestion numQuestion) {
                 changeToNumberMultiMode();
@@ -631,8 +635,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     private void sendEmote(final Emote emote) {
-        Sound clickSound = new Sound(SoundName.click);
-        clickSound.play(muted, false);
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(muted, false);
 
         server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
     }

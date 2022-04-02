@@ -1,5 +1,5 @@
 package client.sounds;
 
 public enum SoundName {
-    suspense, pop, boon, notification, click, option
+    boon, lobby_music, lobby_start, option, pop, right_answer, wrong_answer, chat_message
 }
