@@ -461,11 +461,12 @@ public class GameController implements Initializable, WebSocketSubscription {
      * @param leaderboard leaderboard to be displayed
      */
     private void displayLeaderboardMomentarily(final Leaderboard leaderboard) {
-        //System.out.println("Displaying leaderboard");
         Platform.runLater(() -> {
             leaderboardController.displayLeaderboard(leaderboard, me);
             menu.setVisible(false);
-            leaderboardController.hideBackButton();
+            if (!game.isOver()) {
+                leaderboardController.hideBackButton();
+            }
             leaderboardController.show();
         });
 
