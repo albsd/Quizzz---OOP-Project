@@ -71,13 +71,14 @@ public class ActivityService {
 
     public synchronized void generateQuestions() {
         List<Activity> activityList = getActivities();
-        List<Question> questions = activityList.stream()
+        List<Question> questions = activityList.stream().limit(20)
             .map((activity) -> {
                 int questionType = (int) ((Math.random() * (4)));
                 return  turnActivityIntoQuestion(activity, questionType, activityList);
             })
             .collect(Collectors.toList());
         questionRepository.addQuestions(questions);
+        System.out.println("Generated questions");
     }
 
     public List<Question> getQuestions() {

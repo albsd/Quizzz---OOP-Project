@@ -678,6 +678,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             svgScanner.skip(".*<path d=\"");
             svgScanner.useDelimiter("\"");
             String svgString = svgScanner.next();
+            svgScanner.close();
             return svgString;
         } catch (Exception e) {
             e.printStackTrace();
