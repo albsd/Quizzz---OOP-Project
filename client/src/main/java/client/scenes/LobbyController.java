@@ -85,14 +85,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         // list and causes player updates to get ignored silently
         lobbyMusic = new Sound(SoundName.lobby_music);
         lobbyMusic.play(muted, true);
-
         this.lobby = server.getLobby();
         this.players = lobby.getPlayers().stream()
                 .map(Player::getNick)
                 .collect(Collectors.toList());
-
         updatePlayerList();
-
         muted = false;
     }
 
@@ -148,7 +145,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void onEnter(final ActionEvent e) {
         String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         chatInput.setText("");
-
         final ZonedDateTime time = ZonedDateTime.now();
         final LobbyMessage message = new LobbyMessage(me.getNick(), time.toString(), content);
         
@@ -228,6 +224,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
             svgScanner.skip(".*<path d=\"");
             svgScanner.useDelimiter("\"");
             String svgString = svgScanner.next();
+            svgScanner.close();
             return svgString;
         } catch (Exception e) {
             e.printStackTrace();

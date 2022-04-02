@@ -19,6 +19,7 @@ public class QuestionRepository {
 
     public List<Question> getQuestions() {
         //temporary solution before testing. Not permanent
+        System.out.println(questions.size());
         return questions.stream().findAny().get();
     }
 

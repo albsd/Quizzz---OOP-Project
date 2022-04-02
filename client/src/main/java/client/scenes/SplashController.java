@@ -117,6 +117,7 @@ public class SplashController implements Initializable {
         Sound popSound = new Sound(SoundName.pop);
         popSound.play(false, false);
         Game singleGame = server.startSinglePlayer(nick);
+        System.out.println(singleGame);
         fxml.showSinglePlayer(singleGame);
     }
 

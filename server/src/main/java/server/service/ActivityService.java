@@ -71,7 +71,7 @@ public class ActivityService {
         List<Question> questions = activityList.stream().limit(20)
             .map((activity) -> {
                 int questionType = (int) ((Math.random() * (4)));
-                return  turnActivityIntoQuestion(activity, questionType, activityList);
+                return turnActivityIntoQuestion(activity, questionType, activityList);
             })
             .collect(Collectors.toList());
         questionRepository.addQuestions(questions);
