@@ -559,11 +559,11 @@ public class GameController implements Initializable, WebSocketSubscription {
                 ActivityMultipleChoiceQuestion activityQuestion = (ActivityMultipleChoiceQuestion) currentQuestion;
                 isOpenQuestion = false;
                 Image img1 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[0]),
-                        multiImageSize, multiImageSize, true, true);
+                        multiImageSize, multiImageSize, false, true);
                 Image img2 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[1]),
-                        multiImageSize, multiImageSize, true, true);
+                        multiImageSize, multiImageSize, false, true);
                 Image img3 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[2]),
-                        multiImageSize, multiImageSize, true, true);
+                        multiImageSize, multiImageSize, false, true);
                 changeToActivityMultiMode(img1, img2, img3);
             }
 

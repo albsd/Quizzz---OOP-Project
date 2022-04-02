@@ -40,22 +40,22 @@
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="questionNumber" layoutX="-6.0" layoutY="140.0">
-                  <font>
-                     <Font name="System Bold" size="24.0" />
-                  </font>
-               </Label>
                <VBox layoutY="100.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1240.0">
                   <children>
-                     <HBox prefHeight="100.0" prefWidth="200.0" />
-                     <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" wrapText="true">
-                        <font>
-                           <Font size="24.0" />
-                        </font>
-                        <padding>
-                           <Insets left="75.0" />
-                        </padding>
-                     </Label>
+                     <HBox prefHeight="100.0" prefWidth="200.0">
+                        <children>
+                           <Label fx:id="questionNumber" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="71.0" prefWidth="219.0">
+                              <font>
+                                 <Font name="System Bold" size="24.0" />
+                              </font>
+                           </Label>
+                           <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" wrapText="true">
+                              <font>
+                                 <Font size="24.0" />
+                              </font>
+                           </Label>
+                        </children>
+                     </HBox>
                      <HBox fx:id="mainHorizontalBox" prefHeight="400.0" prefWidth="1240.0">
                         <children>
                            <VBox>
@@ -130,7 +130,7 @@
                                        </VBox>
                                     </children>
                                  </HBox>
-                                 <HBox fx:id="tripleImage">
+                                 <HBox fx:id="tripleImage" visible="false">
                                     <children>
                                        <VBox fx:id="multipleVBox1" alignment="TOP_CENTER" maxWidth="239.0" prefWidth="239.0">
                                           <children>
@@ -256,7 +256,7 @@
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Button contentDisplay="TOP" layoutX="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" textAlignment="CENTER">
+               <Button contentDisplay="TOP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" textAlignment="CENTER">
                   <graphic>
                      <SVGPath content="M256 0C114.6 0 0 114.6 0 256c0 141.4 114.6 256 256 256s256-114.6 256-256C512 114.6 397.4 0 256 0zM310.6 345.4c12.5 12.5 12.5 32.75 0 45.25s-32.75 12.5-45.25 0l-112-112C147.1 272.4 144 264.2 144 256s3.125-16.38 9.375-22.62l112-112c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L221.3 256L310.6 345.4z" scaleX="0.125" scaleY="0.125" styleClass="iconButton" />
                   </graphic></Button>
