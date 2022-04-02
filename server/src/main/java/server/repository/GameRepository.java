@@ -114,7 +114,7 @@ public class GameRepository {
      * @return leaderboard object
      */
     public Leaderboard getLeaderboard(final UUID id) {
-        Game game = this.findById(id);
+        Game game = findById(id);
         return new Leaderboard(game.getPlayers());
     }
 

@@ -60,22 +60,19 @@ public class GameController {
 
     @Autowired
     public GameController(final GameService gameService, final ActivityService activityService,
-                          final LeaderboardService leaderboardService,  final SimpMessagingTemplate smt) {
+            final LeaderboardService leaderboardService, final SimpMessagingTemplate smt) {
         this.gameService = gameService;
         this.activityService = activityService;
         this.leaderboardService = leaderboardService;
         this.smt = smt;
         activityService.generateQuestions();
         gameService.initializeLobby(activityService.getQuestions());
-        Thread t1 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 10; i++) {
-                    activityService.generateQuestions();
-                }
+        
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                activityService.generateQuestions();
             }
-        });
-        t1.start();
+        }).start();
     }
 
     // SINGLEPLAYER GAME ENDPOINTS ====================================================================================
@@ -98,7 +95,7 @@ public class GameController {
      */
     @PostMapping("/leaderboard/{nick}/{score}")
     public ResponseEntity<Leaderboard> updateSinglePlayerLeaderboard(final @PathVariable("nick") String nick,
-                                                                     final @PathVariable("score") int score) {
+            final @PathVariable("score") int score) {
         if (nick == null || nick.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
@@ -120,13 +117,8 @@ public class GameController {
     public Game createAndGetGame(final @PathVariable String nick) {
         Game game = gameService.getSingleGame(activityService.getQuestions());
         game.addPlayer(new Player(nick));
-        Thread t2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                activityService.generateQuestions();
-            } 
-        });
-        t2.start();
+        
+        new Thread(() -> activityService.generateQuestions()).start();
         return game;
     }
     
@@ -155,13 +147,11 @@ public class GameController {
         }
 
         Game lobby = gameService.getLobby();
-
         Player p = new Player(nick);
         boolean success = lobby.addPlayer(p);
 
-        final int errorCode = 403; // FORBIDDEN
         if (!success) {
-            return ResponseEntity.status(errorCode).build();
+            return ResponseEntity.status(403).build();
         }
 
         smt.convertAndSend("/topic/update/player", new PlayerUpdate(p.getNick(), PlayerUpdate.Type.join));
@@ -181,17 +171,15 @@ public class GameController {
         }
 
         Game lobby = gameService.getLobby();
-        final int errorCode = 403; // FORBIDDEN
-
         Player p = lobby.getPlayerByNick(nick);
 
         if (p == null) {
-            return ResponseEntity.status(errorCode).build();
+            return ResponseEntity.status(403).build();
         }
-        boolean success = lobby.removePlayer(p);
 
+        boolean success = lobby.removePlayer(p);
         if (!success) {
-            return ResponseEntity.status(errorCode).build();
+            return ResponseEntity.status(403).build();
         }
 
         smt.convertAndSend("/topic/update/player", new PlayerUpdate(p.getNick(), PlayerUpdate.Type.leave));
@@ -250,13 +238,11 @@ public class GameController {
         }
 
         Game game = gameService.findById(id);
-        final int errorCode = 403; // FORBIDDEN
-
         Player p = game.getPlayerByNick(nick);
         boolean success = game.removePlayer(p);
 
         if (!success) {
-            return ResponseEntity.status(errorCode).build();
+            return ResponseEntity.status(403).build();
         }
 
         smt.convertAndSend("/topic/game/" + id  + "/leave", p);
@@ -285,13 +271,8 @@ public class GameController {
     @SendTo("/topic/lobby/start")
     public GameUpdate startLobby() {
         gameService.upgradeLobby(activityService.getQuestions());
-        Thread t3 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                activityService.generateQuestions();
-            }
-        });
-        t3.start();
+        
+        new Thread(() -> activityService.generateQuestions()).start();
         return GameUpdate.start;
     }
 

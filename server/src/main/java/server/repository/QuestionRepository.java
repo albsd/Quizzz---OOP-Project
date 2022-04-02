@@ -15,9 +15,6 @@ public class QuestionRepository {
 
     private final List<List<Question>> questions = new ArrayList<>();
 
-    public QuestionRepository() {
-    }
-
     public List<Question> getQuestions() {
         //temporary solution before testing. Not permanent
         return questions.get(new Random().nextInt(questions.size()));

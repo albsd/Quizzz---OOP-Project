@@ -41,7 +41,7 @@ class ActivityControllerTest {
 
     @Test
     void getAllActivity() throws IOException, ParseException {
-        assertEquals(activities, ctrl.getAllActivity());
+        assertEquals(activities, ctrl.getAllActivities());
     }
 
     @Test
