@@ -142,7 +142,7 @@ public class Activity {
         Long[] choices = new Long[3];
         Random r = new Random();
         Long tempChoice;
-        int numberOfTrailingZeroes = this.getNumberOfTrailingZeroes(energyConsumption);
+        int numberOfTrailingZeroes = getNumberOfTrailingZeroes(energyConsumption);
         for (int i = 0; i < choices.length; i++) {
             do {
                 long offset;

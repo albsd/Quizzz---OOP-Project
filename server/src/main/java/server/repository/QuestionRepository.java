@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Question repository that stores list of questions for faster game object creation.
@@ -19,8 +20,7 @@ public class QuestionRepository {
 
     public List<Question> getQuestions() {
         //temporary solution before testing. Not permanent
-        System.out.println(questions.size());
-        return questions.stream().findAny().get();
+        return questions.get(new Random().nextInt(questions.size()));
     }
 
     public void addQuestions(final List<Question> question) {

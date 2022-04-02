@@ -734,9 +734,6 @@ public class GameController implements Initializable, WebSocketSubscription {
         double height1 = img1.getHeight();
         double height2 = img2.getHeight();
         double height3 = img3.getHeight();
-
-        System.out.println(multiImageSize);
-
         imageRegion1.setPrefHeight(multiImageSize - height1 + 25);
         imageRegion2.setPrefHeight(multiImageSize - height2 + 25);
         imageRegion3.setPrefHeight(multiImageSize - height3 + 25);
