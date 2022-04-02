@@ -318,11 +318,15 @@ public class ActivityService {
         return new Image(generateImageByteArray(path), path.substring(path.lastIndexOf('/') + 1));
     }
 
-    public List<Activity> getAllActivities() throws IOException, ParseException {
+    public List<Activity> getAllActivities() {
         List<Activity> activities = new ArrayList<>(activityRepository.findAll());
-        if (activities.isEmpty()) {
-            // unzipFolder();
-            activities = populateRepo();
+        try {
+            if (activities.isEmpty()) {
+                // unzipFolder();
+                activities = populateRepo();
+            }    
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return activities;
     }
