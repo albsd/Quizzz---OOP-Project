@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.ActivityRepository;
 import javax.imageio.ImageIO;
-
 import java.awt.image.BufferedImage;
 import java.io.FileReader;
 import java.io.ByteArrayOutputStream;
