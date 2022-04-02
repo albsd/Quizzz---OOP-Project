@@ -559,11 +559,11 @@ public class GameController implements Initializable, WebSocketSubscription {
                 ActivityMultipleChoiceQuestion activityQuestion = (ActivityMultipleChoiceQuestion) currentQuestion;
                 isOpenQuestion = false;
                 Image img1 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[0]),
-                        multiImageSize, 0, true, true);
+                        multiImageSize, multiImageSize, true, true);
                 Image img2 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[1]),
-                        multiImageSize, 0, true, true);
+                        multiImageSize, multiImageSize, true, true);
                 Image img3 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[2]),
-                        multiImageSize, 0, true, true);
+                        multiImageSize, multiImageSize, true, true);
                 changeToActivityMultiMode(img1, img2, img3);
             }
 
@@ -729,6 +729,8 @@ public class GameController implements Initializable, WebSocketSubscription {
         double height1 = img1.getHeight();
         double height2 = img2.getHeight();
         double height3 = img3.getHeight();
+
+        System.out.println(multiImageSize);
 
         imageRegion1.setPrefHeight(multiImageSize - height1 + 25);
         imageRegion2.setPrefHeight(multiImageSize - height2 + 25);

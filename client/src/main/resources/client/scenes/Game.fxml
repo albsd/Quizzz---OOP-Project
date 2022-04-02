@@ -140,7 +140,7 @@
                                                 </image>
                                              </ImageView>
                                              <Region fx:id="imageRegion1" prefHeight="25.0" prefWidth="239.0" />
-                                             <Button fx:id="activityOption1" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="75.0" styleClass="optionButton" text="Button" wrapText="true">
+                                             <Button fx:id="activityOption1" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="100.0" styleClass="optionButton" text="Button" wrapText="true">
                                                 <VBox.margin>
                                                    <Insets />
                                                 </VBox.margin></Button>
@@ -155,7 +155,7 @@
                                                 </image>
                                              </ImageView>
                                              <Region fx:id="imageRegion2" prefHeight="25.0" />
-                                             <Button fx:id="activityOption2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="75.0" styleClass="optionButton" text="Button" wrapText="true">
+                                             <Button fx:id="activityOption2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="100.0" styleClass="optionButton" text="Button" wrapText="true">
                                                 <VBox.margin>
                                                    <Insets />
                                                 </VBox.margin>
@@ -171,7 +171,7 @@
                                                 </image>
                                              </ImageView>
                                              <Region fx:id="imageRegion3" prefHeight="25.0" />
-                                             <Button fx:id="activityOption3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="75.0" styleClass="optionButton" text="Button" wrapText="true">
+                                             <Button fx:id="activityOption3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="100.0" styleClass="optionButton" text="Button" wrapText="true">
                                                 <VBox.margin>
                                                    <Insets />
                                                 </VBox.margin>
@@ -256,7 +256,7 @@
                      <Font size="24.0" />
                   </font>
                </Label>
-               <Button contentDisplay="TOP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" textAlignment="CENTER">
+               <Button contentDisplay="TOP" layoutX="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openPopup" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton" textAlignment="CENTER">
                   <graphic>
                      <SVGPath content="M256 0C114.6 0 0 114.6 0 256c0 141.4 114.6 256 256 256s256-114.6 256-256C512 114.6 397.4 0 256 0zM310.6 345.4c12.5 12.5 12.5 32.75 0 45.25s-32.75 12.5-45.25 0l-112-112C147.1 272.4 144 264.2 144 256s3.125-16.38 9.375-22.62l112-112c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L221.3 256L310.6 345.4z" scaleX="0.125" scaleY="0.125" styleClass="iconButton" />
                   </graphic></Button>
