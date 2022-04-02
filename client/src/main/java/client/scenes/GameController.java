@@ -106,7 +106,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private String chatPath;
 
-    private boolean isOpenQuestion = false;
+    private boolean isOpenQuestion = false, muted, isSinglePlayer;
     
     private String leavePath;
 
@@ -115,8 +115,6 @@ public class GameController implements Initializable, WebSocketSubscription {
     private boolean submittedAnswer;
 
     private int currentScore, numberOfMultipleChoiceQuestions, answeredCorrectly;
-
-    private boolean muted;
 
     private List<Button> optionButtons;
 
@@ -149,6 +147,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         }));
 
         muted = false;
+        isSinglePlayer = false;
     }
 
     /**
@@ -301,6 +300,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         displayCurrentQuestion();
         clientTimer.start(0);
+
+        isSinglePlayer = true;
     }
 
     /**
@@ -373,7 +374,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void checkAnswer(final long option, final int time) {
         Sound optionSound = new Sound(SoundName.option);
-        optionSound.play(muted, false);
+        optionSound.play(muted || isSinglePlayer, false);
         currentScore = game.getCurrentQuestion().calculateScore(option, time);
         if (currentScore > 0) answeredCorrectly++;
     }
