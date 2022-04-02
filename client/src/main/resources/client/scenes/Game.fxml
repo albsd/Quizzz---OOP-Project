@@ -82,7 +82,7 @@
                               </children>
                            </VBox>
                            <Region prefHeight="414.0" prefWidth="20.0" />
-                           <AnchorPane>
+                           <AnchorPane fx:id="overlapAnchor">
                               <children>
                                  <HBox fx:id="singleImage" visible="false">
                                     <children>
@@ -95,7 +95,7 @@
                                              </ImageView>
                                           </children>
                                        </VBox>
-                                       <Region prefHeight="414.0" prefWidth="20.0" />
+                                       <Region fx:id="imageOptionRegion" prefHeight="414.0" prefWidth="20.0" />
                                        <VBox fx:id="optionBox" alignment="TOP_CENTER" prefHeight="414.0" prefWidth="395.0" spacing="25.0">
                                           <children>
                                              <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
@@ -132,7 +132,7 @@
                                  </HBox>
                                  <HBox fx:id="tripleImage">
                                     <children>
-                                       <VBox alignment="TOP_CENTER" maxWidth="239.0" prefWidth="239.0">
+                                       <VBox fx:id="multipleVBox1" alignment="TOP_CENTER" maxWidth="239.0" prefWidth="239.0">
                                           <children>
                                              <ImageView fx:id="questionImage1" fitHeight="239.0" fitWidth="239.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                                                 <image>
@@ -146,8 +146,8 @@
                                                 </VBox.margin></Button>
                                           </children>
                                        </VBox>
-                                       <Region fx:id="region11" prefHeight="414.0" prefWidth="20.0" />
-                                       <VBox alignment="TOP_CENTER" prefWidth="239.0">
+                                       <Region fx:id="multipleImageRegion1" prefHeight="414.0" prefWidth="20.0" />
+                                       <VBox fx:id="multipleVBox2" alignment="TOP_CENTER" prefWidth="239.0">
                                           <children>
                                              <ImageView fx:id="questionImage2" fitHeight="239.0" fitWidth="239.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                                                 <image>
@@ -162,8 +162,8 @@
                                              </Button>
                                           </children>
                                        </VBox>
-                                       <Region fx:id="region111" layoutX="353.0" layoutY="10.0" prefHeight="414.0" prefWidth="20.0" />
-                                       <VBox alignment="TOP_CENTER" prefWidth="239.0">
+                                       <Region fx:id="multipleImageRegion2" layoutX="353.0" layoutY="10.0" prefHeight="414.0" prefWidth="20.0" />
+                                       <VBox fx:id="multipleVBox3" alignment="TOP_CENTER" prefWidth="239.0">
                                           <children>
                                              <ImageView fx:id="questionImage3" fitHeight="239.0" fitWidth="239.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
                                                 <image>

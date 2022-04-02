@@ -75,7 +75,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     private ScrollPane emoteScroll;
 
     @FXML
-    private VBox emoteChat, optionBox;
+    private AnchorPane overlapAnchor;
+
+    @FXML
+    private VBox emoteChat, optionBox, multipleVBox1, multipleVBox2, multipleVBox3;
 
     @FXML
     private HBox singleImage, tripleImage;
@@ -90,7 +93,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     private ImageView questionImage, questionImage1, questionImage2, questionImage3;
 
     @FXML
-    private Region imageRegion1, imageRegion2, imageRegion3;
+    private Region imageRegion1, imageRegion2, imageRegion3, imageOptionRegion,
+            multipleImageRegion1, multipleImageRegion2;
 
     @FXML
     private TextField openAnswer;
@@ -122,7 +126,9 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private boolean submittedAnswer;
 
-    private int currentScore, numberOfMultipleChoiceQuestions, answeredCorrectly;
+    private int currentScore, answeredCorrectly;
+
+    private double multiImageSize;
 
     private boolean muted = false;
 
@@ -137,6 +143,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        multiImageSize = 239;
         optionButtons = new ArrayList<>(Arrays.asList(option1, option2, option3));
         optionButtons.forEach((b) -> {
             b.setWrapText(true);
@@ -150,7 +157,6 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         submittedAnswer = false;
         doubleScore = false;
-        numberOfMultipleChoiceQuestions = 0;
         answeredCorrectly = 0;
         currentScore = 0;
         openAnswer.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(), null,
@@ -303,14 +309,36 @@ public class GameController implements Initializable, WebSocketSubscription {
 
         //Removing power-ups
         mainHorizontalBox.getChildren().remove(0);
+        //Removing region
+        mainHorizontalBox.getChildren().remove(0);
         //Removing chat
-        mainHorizontalBox.getChildren().remove(3);
+        mainHorizontalBox.getChildren().remove(1);
+        //Removing region
+        mainHorizontalBox.getChildren().remove(1);
+        overlapAnchor.setPrefWidth(1240);
+        singleImage.setPrefWidth(1210);
+        tripleImage.setPrefWidth(1210);
+        optionBox.setPrefWidth(500);
+        imageOptionRegion.setPrefWidth(250);
+        multipleImageRegion1.setPrefWidth(173);
+        multipleImageRegion2.setPrefWidth(173);
+        multipleVBox1.setPrefWidth(288);
+        multipleVBox2.setPrefWidth(288);
+        multipleVBox3.setPrefWidth(288);
+        questionImage1.setFitWidth(288);
+        questionImage2.setFitWidth(288);
+        questionImage3.setFitWidth(288);
+        questionImage1.setFitHeight(288);
+        questionImage2.setFitHeight(288);
+        questionImage3.setFitHeight(288);
+
         optionBox.setAlignment(Pos.CENTER);
         optionBox.setPrefWidth(600);
         optionBox.setPadding(Insets.EMPTY);
         VBox.setMargin(optionBox, new Insets(75, 0, 0, 0));
 
         optionButtons.forEach((b) -> b.setPrefHeight(145));
+        multiImageSize = 288;
 
         displayCurrentQuestion();
         clientTimer.start(0);
@@ -530,9 +558,9 @@ public class GameController implements Initializable, WebSocketSubscription {
             } else {
                 ActivityMultipleChoiceQuestion activityQuestion = (ActivityMultipleChoiceQuestion) currentQuestion;
                 isOpenQuestion = false;
-                Image img1 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[0]), 239, 0, true, true);
-                Image img2 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[1]), 239, 0, true, true);
-                Image img3 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[2]), 239, 0, true, true);
+                Image img1 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[0]), multiImageSize, 0, true, true);
+                Image img2 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[1]), multiImageSize, 0, true, true);
+                Image img3 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[2]), multiImageSize, 0, true, true);
                 changeToActivityMultiMode(img1, img2, img3);
             }
 
@@ -553,8 +581,6 @@ public class GameController implements Initializable, WebSocketSubscription {
                     b.getStyleClass().removeAll("wrongAnswer", "correctAnswer", "selectedOption", "removedOption");
                     b.setText(options[activityOptionButtons.indexOf(b)]);
                 });
-
-                numberOfMultipleChoiceQuestions++;
             }
         });
     }
@@ -701,9 +727,9 @@ public class GameController implements Initializable, WebSocketSubscription {
         double height2 = img2.getHeight();
         double height3 = img3.getHeight();
 
-        imageRegion1.setPrefHeight(239 - height1 + 25);
-        imageRegion2.setPrefHeight(239 - height2 + 25);
-        imageRegion3.setPrefHeight(239 - height3 + 25);
+        imageRegion1.setPrefHeight(multiImageSize - height1 + 25);
+        imageRegion2.setPrefHeight(multiImageSize - height2 + 25);
+        imageRegion3.setPrefHeight(multiImageSize - height3 + 25);
         questionImage1.setImage(img1);
         questionImage2.setImage(img2);
         questionImage3.setImage(img3);
