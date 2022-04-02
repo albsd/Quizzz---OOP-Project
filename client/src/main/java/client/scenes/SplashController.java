@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.FXMLController;
+import client.sounds.Sound;
+import client.sounds.SoundName;
 import client.utils.ServerUtils;
 import commons.Game;
 import commons.Player;
@@ -21,7 +23,7 @@ public class SplashController implements Initializable {
 
     @FXML
     private Label warning;
-    
+
     @FXML
     private PopupController popupController;
 
@@ -90,6 +92,10 @@ public class SplashController implements Initializable {
         if (!validateNickname(nickField.getText())) {
             return;
         }
+
+        Sound newSound = new Sound(SoundName.option);
+        newSound.play(false, false);
+
         nick = nickField.getText();
         nickField.setText(nick);
         server.saveNickname(nick);
@@ -130,6 +136,8 @@ public class SplashController implements Initializable {
             warning.setText("Please enter a nick name");
             return;
         }
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(false, false);
         Game singleGame = server.startSinglePlayer(nick);
         fxml.showSinglePlayer(singleGame);
     }
@@ -153,6 +161,8 @@ public class SplashController implements Initializable {
             warning.setText("User with the given name is already in the game");
             return;
         }
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(false, false);
         fxml.showLobby(me);
     }
 
@@ -163,11 +173,15 @@ public class SplashController implements Initializable {
 
     @FXML
     public void leaderBoard(final ActionEvent event) {
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(false, false);
         fxml.showLeaderboard(server.getSinglePlayerLeaderboard());
     }
 
     @FXML
     public void admin(final ActionEvent event) {
+        Sound popSound = new Sound(SoundName.pop);
+        popSound.play(false, false);
         fxml.showAdminPanel();
     }
 }
