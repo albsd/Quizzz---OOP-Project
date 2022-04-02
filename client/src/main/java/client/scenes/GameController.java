@@ -383,14 +383,6 @@ public class GameController implements Initializable, WebSocketSubscription {
      * (for five seconds)
      */
     private void displayAnswerMomentarily() {
-        if (currentScore > 0) {
-            Sound rightAnswerSound = new Sound(SoundName.right_answer);
-            rightAnswerSound.play(muted, false);
-        } else {
-            Sound wrongAnswerSound = new Sound(SoundName.wrong_answer);
-            wrongAnswerSound.play(muted, false);
-        }
-
         if (doubleScore) {
             currentScore *= 2;
             doubleScore = false;
@@ -405,6 +397,13 @@ public class GameController implements Initializable, WebSocketSubscription {
             correctText.setText(String.valueOf(answeredCorrectly));
             incorrectText.setText(String.valueOf(game.getCurrentQuestionNumber() - answeredCorrectly));
             questionPoint.setText("You got: " + currentScore + " points");
+            if (currentScore > 0) {
+                Sound rightAnswerSound = new Sound(SoundName.right_answer);
+                rightAnswerSound.play(muted, false);
+            } else {
+                Sound wrongAnswerSound = new Sound(SoundName.wrong_answer);
+                wrongAnswerSound.play(muted, false);
+            }
             currentScore = 0;
         });
         warning.setVisible(false);

@@ -107,7 +107,7 @@ public class Sound {
         floatControl.setValue(-80f);
     }
 
-    public void unmute() {
+    public void unmuteVolume() {
         floatControl.setValue(0);
     }
 

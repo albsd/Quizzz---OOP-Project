@@ -20,18 +20,20 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.TimerTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
+
+import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
@@ -45,7 +47,10 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private Label chatText, playersLeft, playersRight, playerCount;
 
     @FXML
-    private Button startButton, soundButton;
+    private Button startButton;
+
+    @FXML
+    private SVGPath soundIcon;
 
     @FXML
     private TextField chatInput;
@@ -210,18 +215,25 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     private void updateSoundButton(final ActionEvent e) {
         if (muted) {
             muted = false;
-            lobbyMusic.unmute();
-
-            Image image = new Image("/images/sounds-unmuted.png");
-            ImageView icon = new ImageView(image);
-            ((Button) e.getSource()).setGraphic(icon);
+            lobbyMusic.unmuteVolume();
+            soundIcon.setContent(loadSVGPath("/images/svgs/sound.svg"));
         } else {
-            lobbyMusic.muteVolume();
             muted = true;
+            lobbyMusic.muteVolume();
+            soundIcon.setContent(loadSVGPath("/images/svgs/mute.svg"));
+        }
+    }
 
-            Image image = new Image("/images/sounds-muted.png");
-            ImageView icon = new ImageView(image);
-            ((Button) e.getSource()).setGraphic(icon);
+    public String loadSVGPath(final String filePath) {
+        try {
+            Scanner svgScanner = new Scanner(getClass().getResource(filePath).openStream(), StandardCharsets.UTF_8);
+            svgScanner.skip(".*<path d=\"");
+            svgScanner.useDelimiter("\"");
+            String svgString = svgScanner.next();
+            return svgString;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
     }
 }
