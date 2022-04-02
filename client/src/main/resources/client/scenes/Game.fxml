@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.SVGPath?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
+<VBox alignment="CENTER" prefHeight="720.0" prefWidth="1240.0" spacing="20.0" styleClass="scene" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GameController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -32,36 +25,42 @@
                      <Font name="System Bold" size="30.0" />
                   </font>
                </Label>
-               <Label fx:id="correctText" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="1093.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" styleClass="correctText" text="0">
+               <Label fx:id="correctText" alignment="CENTER_RIGHT" contentDisplay="CENTER" layoutX="1053.0" layoutY="16.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" styleClass="correctText" text="0">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label alignment="CENTER" contentDisplay="CENTER" layoutX="1154.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" text="/">
+               <Label alignment="CENTER" contentDisplay="CENTER" layoutX="1114.0" layoutY="16.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" text="/">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label fx:id="incorrectText" contentDisplay="CENTER" layoutX="1165.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" styleClass="incorrectText" text="0">
+               <Label fx:id="incorrectText" contentDisplay="CENTER" layoutX="1125.0" layoutY="16.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" prefWidth="61.0" styleClass="incorrectText" text="0">
+                  <font>
+                     <Font name="System Bold" size="24.0" />
+                  </font>
+               </Label>
+               <Label fx:id="questionNumber" layoutX="-6.0" layoutY="140.0">
                   <font>
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
                <VBox layoutY="100.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1240.0">
                   <children>
+                     <HBox prefHeight="100.0" prefWidth="200.0" />
                      <Label fx:id="questionPrompt" prefHeight="82.0" prefWidth="1240.0" wrapText="true">
                         <font>
                            <Font size="24.0" />
                         </font>
                         <padding>
-                           <Insets left="65.0" />
+                           <Insets left="75.0" />
                         </padding>
                      </Label>
                      <HBox fx:id="mainHorizontalBox" prefHeight="400.0" prefWidth="1240.0">
                         <children>
                            <VBox>
                               <children>
-                                 <Region prefHeight="80.0" prefWidth="80.0" />
+                                 <Region prefHeight="0.0" prefWidth="80.0" />
                                  <Button fx:id="timeButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#timePowerup" prefHeight="80.0" prefWidth="80.0" styleClass="iconButton">
                                     <graphic>
                                        <SVGPath content="M0 24C0 10.75 10.75 0 24 0H360C373.3 0 384 10.75 384 24C384 37.25 373.3 48 360 48H352V66.98C352 107.3 335.1 145.1 307.5 174.5L225.9 256L307.5 337.5C335.1 366 352 404.7 352 445V464H360C373.3 464 384 474.7 384 488C384 501.3 373.3 512 360 512H24C10.75 512 0 501.3 0 488C0 474.7 10.75 464 24 464H32V445C32 404.7 48.01 366 76.52 337.5L158.1 256L76.52 174.5C48.01 145.1 32 107.3 32 66.98V48H24C10.75 48 0 37.25 0 24V24zM99.78 384H284.2C281 379.6 277.4 375.4 273.5 371.5L192 289.9L110.5 371.5C106.6 375.4 102.1 379.6 99.78 384H99.78zM284.2 128C296.1 110.4 304 89.03 304 66.98V48H80V66.98C80 89.03 87 110.4 99.78 128H284.2z" scaleX="0.125" scaleY="0.125" styleClass="iconButton" />
@@ -83,50 +82,106 @@
                               </children>
                            </VBox>
                            <Region prefHeight="414.0" prefWidth="20.0" />
-                           <VBox fx:id="leftBox" alignment="CENTER" prefHeight="268.0" prefWidth="343.0">
+                           <AnchorPane>
                               <children>
-                                 <ImageView fx:id="questionImage" fitHeight="340.0" fitWidth="345.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS" />
+                                 <HBox fx:id="singleImage" visible="false">
+                                    <children>
+                                       <VBox fx:id="leftBox" alignment="TOP_CENTER" prefHeight="268.0" prefWidth="343.0">
+                                          <children>
+                                             <ImageView fx:id="questionImage" fitHeight="340.0" fitWidth="345.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                                                <image>
+                                                   <Image url="@/images/placeholderQuestion.png" />
+                                                </image>
+                                             </ImageView>
+                                          </children>
+                                       </VBox>
+                                       <Region prefHeight="414.0" prefWidth="20.0" />
+                                       <VBox fx:id="optionBox" alignment="TOP_CENTER" prefHeight="414.0" prefWidth="395.0" spacing="25.0">
+                                          <children>
+                                             <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
+                                                <font>
+                                                   <Font size="24.0" />
+                                                </font>
+                                                <VBox.margin>
+                                                   <Insets />
+                                                </VBox.margin>
+                                             </Button>
+                                             <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" wrapText="true">
+                                                <font>
+                                                   <Font size="24.0" />
+                                                </font>
+                                             </Button>
+                                             <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" wrapText="true">
+                                                <font>
+                                                   <Font size="24.0" />
+                                                </font>
+                                             </Button>
+                                             <TextField fx:id="openAnswer" alignment="CENTER" onAction="#onEnter" prefHeight="52.0" prefWidth="421.0" promptText="Type in only numbers" visible="false">
+                                                <font>
+                                                   <Font size="24.0" />
+                                                </font>
+                                             </TextField>
+                                             <Label fx:id="answerBox" alignment="CENTER" prefHeight="35.0" prefWidth="424.0" styleClass="correctText" textAlignment="CENTER">
+                                                <font>
+                                                   <Font size="24.0" />
+                                                </font>
+                                             </Label>
+                                          </children>
+                                       </VBox>
+                                    </children>
+                                 </HBox>
+                                 <HBox fx:id="tripleImage">
+                                    <children>
+                                       <VBox alignment="TOP_CENTER" maxWidth="239.0" prefWidth="239.0">
+                                          <children>
+                                             <ImageView fx:id="questionImage1" fitHeight="239.0" fitWidth="239.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                                                <image>
+                                                   <Image url="@/images/placeholderQuestion.png" />
+                                                </image>
+                                             </ImageView>
+                                             <Region fx:id="imageRegion1" prefHeight="25.0" prefWidth="239.0" />
+                                             <Button fx:id="activityOption1" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="75.0" styleClass="optionButton" text="Button" wrapText="true">
+                                                <VBox.margin>
+                                                   <Insets />
+                                                </VBox.margin></Button>
+                                          </children>
+                                       </VBox>
+                                       <Region fx:id="region11" prefHeight="414.0" prefWidth="20.0" />
+                                       <VBox alignment="TOP_CENTER" prefWidth="239.0">
+                                          <children>
+                                             <ImageView fx:id="questionImage2" fitHeight="239.0" fitWidth="239.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                                                <image>
+                                                   <Image url="@/images/placeholderQuestion.png" />
+                                                </image>
+                                             </ImageView>
+                                             <Region fx:id="imageRegion2" prefHeight="25.0" />
+                                             <Button fx:id="activityOption2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="75.0" styleClass="optionButton" text="Button" wrapText="true">
+                                                <VBox.margin>
+                                                   <Insets />
+                                                </VBox.margin>
+                                             </Button>
+                                          </children>
+                                       </VBox>
+                                       <Region fx:id="region111" layoutX="353.0" layoutY="10.0" prefHeight="414.0" prefWidth="20.0" />
+                                       <VBox alignment="TOP_CENTER" prefWidth="239.0">
+                                          <children>
+                                             <ImageView fx:id="questionImage3" fitHeight="239.0" fitWidth="239.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                                                <image>
+                                                   <Image url="@/images/placeholderQuestion.png" />
+                                                </image>
+                                             </ImageView>
+                                             <Region fx:id="imageRegion3" prefHeight="25.0" />
+                                             <Button fx:id="activityOption3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="75.0" styleClass="optionButton" text="Button" wrapText="true">
+                                                <VBox.margin>
+                                                   <Insets />
+                                                </VBox.margin>
+                                             </Button>
+                                          </children>
+                                       </VBox>
+                                    </children>
+                                 </HBox>
                               </children>
-                           </VBox>
-                           <Region prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
-                           <VBox fx:id="optionBox" prefHeight="414.0" prefWidth="395.0" spacing="25.0">
-                              <children>
-                                 <Button fx:id="option1" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
-                                    <font>
-                                       <Font size="24.0" />
-                                    </font>
-                                    <VBox.margin>
-                                       <Insets />
-                                    </VBox.margin>
-                                 </Button>
-                                 <Button fx:id="option2" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" wrapText="true">
-                                    <font>
-                                       <Font size="24.0" />
-                                    </font>
-                                 </Button>
-                                 <Button fx:id="option3" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#checkMulChoiceOption" prefHeight="145.0" prefWidth="395.0" styleClass="optionButton" textAlignment="CENTER" wrapText="true">
-                                    <font>
-                                       <Font size="24.0" />
-                                    </font>
-                                 </Button>
-                                 <TextField fx:id="openAnswer" alignment="CENTER" onAction="#onEnter" prefHeight="52.0" prefWidth="421.0" promptText="Type in only numbers" visible="false">
-                                    <font>
-                                       <Font size="24.0" />
-                                    </font>
-                                 </TextField>
-                                 <Label fx:id="answerBox" alignment="CENTER" prefHeight="35.0" prefWidth="424.0" styleClass="correctText" textAlignment="CENTER">
-                                    <font>
-                                       <Font size="24.0" />
-                                    </font>
-                                 </Label>
-                              </children>
-                              <padding>
-                                 <Insets top="25.0" />
-                              </padding>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin>
-                           </VBox>
+                           </AnchorPane>
                            <Region prefHeight="414.0" prefWidth="20.0" HBox.hgrow="ALWAYS" />
                            <VBox prefHeight="400.0" prefWidth="350.0">
                               <children>
@@ -184,6 +239,9 @@
                         <padding>
                            <Insets left="15.0" right="15.0" />
                         </padding>
+                        <VBox.margin>
+                           <Insets top="15.0" />
+                        </VBox.margin>
                      </HBox>
                   </children>
                </VBox>
@@ -202,11 +260,6 @@
                   <graphic>
                      <SVGPath content="M256 0C114.6 0 0 114.6 0 256c0 141.4 114.6 256 256 256s256-114.6 256-256C512 114.6 397.4 0 256 0zM310.6 345.4c12.5 12.5 12.5 32.75 0 45.25s-32.75 12.5-45.25 0l-112-112C147.1 272.4 144 264.2 144 256s3.125-16.38 9.375-22.62l112-112c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L221.3 256L310.6 345.4z" scaleX="0.125" scaleY="0.125" styleClass="iconButton" />
                   </graphic></Button>
-               <Label fx:id="questionNumber" layoutX="-8.0" layoutY="126.0">
-                  <font>
-                     <Font name="System Bold" size="24.0" />
-                  </font>
-               </Label>
                <Label fx:id="warning" alignment="CENTER" layoutX="458.0" layoutY="68.0" prefHeight="37.0" prefWidth="323.0" styleClass="warning" text="Already submitted answer!" visible="false">
                   <font>
                      <Font size="24.0" />
@@ -220,8 +273,8 @@
             </children>
          </AnchorPane>
          <!-- Include the popup at top of everything -->
-         <fx:include fx:id="popup" source="../../client/scenes/Popup.fxml" />
-         <fx:include fx:id="leaderboard" layoutX="-2000.0" layoutY="-20.0" source="../../client/scenes/Leaderboard.fxml" />
+         <fx:include fx:id="popup" source="/client/scenes/Popup.fxml" />
+         <fx:include fx:id="leaderboard" layoutX="-20.0" layoutY="-20.0" source="/client/scenes/Leaderboard.fxml" />
       </children>
    </AnchorPane>
 </VBox>

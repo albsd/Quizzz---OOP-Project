@@ -37,6 +37,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
@@ -59,7 +60,8 @@ import java.util.Scanner;
 public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
-    private Button option1, option2, option3, timeButton;
+    private Button option1, option2, option3,
+            activityOption1, activityOption2, activityOption3, timeButton;
     
     @FXML
     private Label questionPrompt, questionNumber, points,
@@ -73,16 +75,22 @@ public class GameController implements Initializable, WebSocketSubscription {
     private ScrollPane emoteScroll;
 
     @FXML
-    private VBox emoteChat, leftBox, optionBox;
+    private VBox emoteChat, optionBox;
+
+    @FXML
+    private HBox singleImage, tripleImage;
 
     @FXML
     private AnchorPane menu;
 
     @FXML
-    private HBox mainHorizontalBox, powerupBox;
+    private HBox mainHorizontalBox;
 
     @FXML
-    private ImageView questionImage;
+    private ImageView questionImage, questionImage1, questionImage2, questionImage3;
+
+    @FXML
+    private Region imageRegion1, imageRegion2, imageRegion3;
 
     @FXML
     private TextField openAnswer;
@@ -119,6 +127,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     private boolean muted = false;
 
     private List<Button> optionButtons;
+    private List<Button> activityOptionButtons;
 
     @Inject
     public GameController(final ServerUtils server) {
@@ -132,6 +141,11 @@ public class GameController implements Initializable, WebSocketSubscription {
         optionButtons.forEach((b) -> {
             b.setWrapText(true);
             b.setPrefWidth(145);
+        });
+
+        activityOptionButtons = new ArrayList<>(Arrays.asList(activityOption1, activityOption2, activityOption3));
+        activityOptionButtons.forEach((b) -> {
+            b.setWrapText(true);
         });
 
         submittedAnswer = false;
@@ -287,12 +301,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         this.me = game.getPlayers().get(0); // only 1 player
         this.game = game;
 
-        leftBox.getChildren().remove(1);
-        mainHorizontalBox.getChildren().remove(4, 5);
+        //Removing power-ups
+        mainHorizontalBox.getChildren().remove(0);
+        //Removing chat
+        mainHorizontalBox.getChildren().remove(3);
         optionBox.setAlignment(Pos.CENTER);
         optionBox.setPrefWidth(600);
         optionBox.setPadding(Insets.EMPTY);
-        powerupBox.getChildren().remove(1, 3);
         VBox.setMargin(optionBox, new Insets(75, 0, 0, 0));
 
         optionButtons.forEach((b) -> b.setPrefHeight(145));
@@ -312,9 +327,14 @@ public class GameController implements Initializable, WebSocketSubscription {
         if (validateAnswerSubmission()) {
             submittedAnswer = true;
             Button chosenOption = (Button) e.getSource();
+            Button[] options;
 
             chosenOption.getStyleClass().add("selectedOption");
-            Button[] options = {option1, option2, option3};
+            if (game.getCurrentQuestion() instanceof ActivityMultipleChoiceQuestion) {
+                options = new Button[] {activityOption1, activityOption2, activityOption3};
+            } else {
+                options = new Button[] {option1, option2, option3};
+            }
             long option = ArrayUtils.indexOf(options, chosenOption);
             checkAnswer(option, clientTimer.getCurrentTime());
         }
@@ -403,7 +423,12 @@ public class GameController implements Initializable, WebSocketSubscription {
         warning.setVisible(false);
         long answer = game.getCurrentQuestion().getAnswer();
         if (!isOpenQuestion) {
-            Button[] options = {option1, option2, option3};
+            Button[] options;
+            if (game.getCurrentQuestion() instanceof ActivityMultipleChoiceQuestion) {
+                options = new Button[] {activityOption1, activityOption2, activityOption3};
+            } else {
+                options = new Button[] {option1, option2, option3};
+            }
             for (int i = 0; i < options.length; i++) {
                 if (i == answer) {
                     options[i].getStyleClass().add("correctAnswer");
@@ -504,12 +529,11 @@ public class GameController implements Initializable, WebSocketSubscription {
                 questionImage.setImage(img);
             } else {
                 ActivityMultipleChoiceQuestion activityQuestion = (ActivityMultipleChoiceQuestion) currentQuestion;
-                //This line should be changed after the function is implemented
-                //changeToActivityMultiMode();
-                changeToNumberMultiMode();
                 isOpenQuestion = false;
-                Image img = new Image(new ByteArrayInputStream(activityQuestion.getImages()[0]), 340, 340, false, true);
-                questionImage.setImage(img);
+                Image img1 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[0]), 239, 0, true, true);
+                Image img2 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[1]), 239, 0, true, true);
+                Image img3 = new Image(new ByteArrayInputStream(activityQuestion.getImages()[2]), 239, 0, true, true);
+                changeToActivityMultiMode(img1, img2, img3);
             }
 
             questionNumber.setText(String.format("%d/%d", game.getCurrentQuestionNumber(), 20));
@@ -522,6 +546,12 @@ public class GameController implements Initializable, WebSocketSubscription {
                     b.setDisable(false);
                     b.getStyleClass().removeAll("wrongAnswer", "correctAnswer", "selectedOption", "removedOption");
                     b.setText(options[optionButtons.indexOf(b)]);
+                });
+
+                activityOptionButtons.forEach((b) -> {
+                    b.setDisable(false);
+                    b.getStyleClass().removeAll("wrongAnswer", "correctAnswer", "selectedOption", "removedOption");
+                    b.setText(options[activityOptionButtons.indexOf(b)]);
                 });
 
                 numberOfMultipleChoiceQuestions++;
@@ -588,8 +618,12 @@ public class GameController implements Initializable, WebSocketSubscription {
             popSound.play(muted, false);
 
             ((Button) e.getSource()).setDisable(true);
-            Button[] options = {option1, option2, option3};
-
+            Button[] options;
+            if (game.getCurrentQuestion() instanceof ActivityMultipleChoiceQuestion) {
+                options = new Button[] {activityOption1, activityOption2, activityOption3};
+            } else {
+                options = new Button[] {option1, option2, option3};
+            }
             List<Integer> removeIndices = new ArrayList<>(Arrays.asList(0, 1, 2));
             int answerIndex = (int) game.getCurrentQuestion().getAnswer();
             removeIndices.remove(Integer.valueOf(answerIndex));
@@ -640,6 +674,8 @@ public class GameController implements Initializable, WebSocketSubscription {
      * Updates the interface to reflect a multiple-choice question.
      */
     private void changeToNumberMultiMode() {
+        tripleImage.setVisible(false);
+        singleImage.setVisible(true);
         answerBox.toFront();
         openAnswer.toFront();
         openAnswer.setVisible(false);
@@ -650,14 +686,27 @@ public class GameController implements Initializable, WebSocketSubscription {
      * Updates the interface to reflect an open-choice question.
      */
     private void changeToFreeMode() {
+        tripleImage.setVisible(false);
+        singleImage.setVisible(true);
         answerBox.toBack();
         openAnswer.toBack();
         openAnswer.setVisible(true);
         optionButtons.forEach((b) -> b.setVisible(false));
     }
 
-    //TODO: WILL BE IMPLEMENTED IN THE RESTRUCTURING ISSUE
-    private void changeToActivityMultiMode() {
+    private void changeToActivityMultiMode(final Image img1, final Image img2, final Image img3) {
+        singleImage.setVisible(false);
+        tripleImage.setVisible(true);
+        double height1 = img1.getHeight();
+        double height2 = img2.getHeight();
+        double height3 = img3.getHeight();
+
+        imageRegion1.setPrefHeight(239 - height1 + 25);
+        imageRegion2.setPrefHeight(239 - height2 + 25);
+        imageRegion3.setPrefHeight(239 - height3 + 25);
+        questionImage1.setImage(img1);
+        questionImage2.setImage(img2);
+        questionImage3.setImage(img3);
     }
 
     @FXML
