@@ -11,13 +11,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-
 import javax.inject.Inject;
-
 import client.FXMLController;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -95,7 +92,6 @@ public class LeaderboardController implements Initializable {
             leaderboardPlaque.setVisible(false);
         }
         nick.setText(me.getNick());
-        score.setText(Integer.toString(me.getScore()));
         playerRanking.getChildren().clear();
         List<Player> ranking = leaderboard.getRanking();
         Boolean plaqueSet = false;

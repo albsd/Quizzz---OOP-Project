@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.FXMLController;
 import client.sounds.Sound;
 import client.sounds.SoundName;
 import client.utils.ServerUtils;
@@ -47,7 +48,6 @@ import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,8 +55,6 @@ import java.util.ResourceBundle;
 import java.util.TimerTask;
 import java.util.Date;
 import java.util.Collections;
-import java.util.Scanner;
-
 public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
@@ -108,6 +106,8 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     private LeaderboardController leaderboardController;
 
+    private final FXMLController fxml;
+
     private final ServerUtils server;
 
     private final QuestionTimer clientTimer;
@@ -134,9 +134,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     private List<Button> activityOptionButtons;
 
     @Inject
-    public GameController(final ServerUtils server) {
+    public GameController(final ServerUtils server, final FXMLController fxml) {
         this.clientTimer = initClientTimer();
         this.server = server;
+        this.fxml = fxml;
     }
 
     @Override
@@ -261,7 +262,7 @@ public class GameController implements Initializable, WebSocketSubscription {
         Label nickname = new Label(nick);
 
         SVGPath svg = new SVGPath();
-        svg.setContent(loadSVGPath(svgFilePath));
+        svg.setContent(fxml.loadSVGPath(svgFilePath));
         svg.setScaleX(0.125);
         svg.setScaleY(0.125);
         svg.setTranslateX(-svg.getLayoutBounds().getCenterX() + 32);
@@ -746,24 +747,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     private void updateSoundButton(final ActionEvent e) {
         if (muted) {
             muted = false;
-            soundIcon.setContent(loadSVGPath("/images/svgs/sound.svg"));
+            soundIcon.setContent(fxml.loadSVGPath("/images/svgs/sound.svg"));
         } else {
             muted = true;
-            soundIcon.setContent(loadSVGPath("/images/svgs/mute.svg"));
-        }
-    }
-
-    public String loadSVGPath(final String filePath) {
-        try {
-            Scanner svgScanner = new Scanner(getClass().getResource(filePath).openStream(), StandardCharsets.UTF_8);
-            svgScanner.skip(".*<path d=\"");
-            svgScanner.useDelimiter("\"");
-            String svgString = svgScanner.next();
-            svgScanner.close();
-            return svgString;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
+            soundIcon.setContent(fxml.loadSVGPath("/images/svgs/mute.svg"));
         }
     }
 }

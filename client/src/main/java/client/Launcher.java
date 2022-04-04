@@ -15,7 +15,7 @@ public class Launcher extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
     public static void main(final String[] args) {
-        launch(args);
+        launch();
     }
 
     @Override

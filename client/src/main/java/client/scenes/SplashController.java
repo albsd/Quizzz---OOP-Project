@@ -138,7 +138,6 @@ public class SplashController implements Initializable {
             warning.setText("User with the given name is already in the game");
             return;
         }
-        nickField.setText(nick);
         server.saveNickname(nick);
         fxml.saveNick(nick);
         Sound popSound = new Sound(SoundName.pop);
@@ -157,7 +156,6 @@ public class SplashController implements Initializable {
             return;
         }
         nick = nickField.getText();
-        nickField.setText(nick);
         server.saveNickname(nick);
         fxml.saveNick(nick);
         Sound popSound = new Sound(SoundName.pop);

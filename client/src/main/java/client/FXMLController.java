@@ -1,9 +1,9 @@
 package client;
-
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.Scanner;
 import client.scenes.IPPromptController;
 import client.scenes.LobbyController;
 import client.scenes.GameController;
@@ -175,5 +175,19 @@ public class FXMLController {
 
     public String getNick() {
         return this.nick;
+    }
+
+    public String loadSVGPath(final String filePath) {
+        try {
+            Scanner svgScanner = new Scanner(getClass().getResource(filePath).openStream(), StandardCharsets.UTF_8);
+            svgScanner.skip(".*<path d=\"");
+            svgScanner.useDelimiter("\"");
+            String svgString = svgScanner.next();
+            svgScanner.close();
+            return svgString;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

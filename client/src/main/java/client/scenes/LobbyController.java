@@ -20,15 +20,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.TimerTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
@@ -210,25 +207,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         if (muted) {
             muted = false;
             lobbyMusic.unmuteVolume();
-            soundIcon.setContent(loadSVGPath("/images/svgs/sound.svg"));
+            soundIcon.setContent(fxml.loadSVGPath("/images/svgs/sound.svg"));
         } else {
             muted = true;
             lobbyMusic.muteVolume();
-            soundIcon.setContent(loadSVGPath("/images/svgs/mute.svg"));
-        }
-    }
-
-    public String loadSVGPath(final String filePath) {
-        try {
-            Scanner svgScanner = new Scanner(getClass().getResource(filePath).openStream(), StandardCharsets.UTF_8);
-            svgScanner.skip(".*<path d=\"");
-            svgScanner.useDelimiter("\"");
-            String svgString = svgScanner.next();
-            svgScanner.close();
-            return svgString;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
+            soundIcon.setContent(fxml.loadSVGPath("/images/svgs/mute.svg"));
         }
     }
 }
