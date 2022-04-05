@@ -18,7 +18,7 @@ public class QuestionRepository {
     private int questionListIndex = 0;
 
     public List<Question> getQuestions() {
-        if (questionListIndex == questions.size()){
+        if (questionListIndex == questions.size()) {
             return questions.get(new Random().nextInt(questions.size()));
         }
         return questions.get(questionListIndex++);
