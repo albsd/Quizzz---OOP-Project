@@ -53,7 +53,7 @@
          </HBox>
          <VBox alignment="CENTER" fillWidth="false" layoutY="300.0" prefHeight="150.0" prefWidth="1240.0" spacing="25.0">
             <children>
-                <TextField fx:id="nickField" alignment="CENTER" onAction="#onEnter" prefHeight="50.0" prefWidth="518.0" promptText="Type nickname and press enter" styleClass="nicknameField">
+                <TextField fx:id="nickField" alignment="CENTER" prefHeight="50.0" prefWidth="518.0" promptText="Type nickname and press enter" styleClass="nicknameField">
                   <font>
                      <Font size="24.0" />
                   </font>

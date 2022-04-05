@@ -2,7 +2,6 @@ package server.controller;
 
 import commons.Activity;
 import commons.Image;
-import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +36,7 @@ public class ActivityController {
      * @return all activities
      */
     @GetMapping(path = {"", "/"})
-    public List<Activity> getAllActivity() throws IOException, ParseException {
+    public List<Activity> getAllActivities() {
         return activityService.getAllActivities();
     }
 

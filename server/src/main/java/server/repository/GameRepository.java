@@ -36,14 +36,10 @@ public class GameRepository {
 
     private Set<Game> games;
 
-    private Set<Game> singleGames;
-
-    private UUID defaultID;
+    private UUID defaultID = UUID.randomUUID();
 
     public GameRepository() {
         games = new HashSet<>();
-        singleGames = new HashSet<>();
-        defaultID = UUID.randomUUID();
     }
 
     /**
@@ -71,27 +67,15 @@ public class GameRepository {
         }
         return optional.get();
     }
-    
-    /**
-     * Creates a singleplayer game object. Added to the singleplayer
-     * game hash set.
-     * 
-     * @param questions list of questiosn to add to game object
-     */
-    public void createSingleplayer(final List<Question> questions) {
-        Game game = new Game(defaultID, questions, false);
-        singleGames.add(game);
-    }
 
     /**
-     * Returns one of the pre-made single games in games repo.
-     * 
+     * Creates and returns singleplayer game.
+     *
+     * @param questions list of questions
      * @return Game object
      */
-    public Game getSingleGame() {
-        Game game = singleGames.stream().findAny().get();
-        singleGames.remove(game);
-        return game;
+    public Game getSingleGame(final List<Question> questions) {
+        return new Game(defaultID, questions, false);
     }
 
     /**
@@ -103,15 +87,6 @@ public class GameRepository {
     public UUID addGame(final Game game) {
         games.add(game);
         return game.getId();
-    }
-
-    /**
-     * Adds the passed singleplayer game object into the singleGames set.
-     *
-     * @param game the game object to add
-     */
-    public void addSingleGame(final Game game) {
-        singleGames.add(game);
     }
 
     /**
@@ -139,7 +114,7 @@ public class GameRepository {
      * @return leaderboard object
      */
     public Leaderboard getLeaderboard(final UUID id) {
-        Game game = this.findById(id);
+        Game game = findById(id);
         return new Leaderboard(game.getPlayers());
     }
 

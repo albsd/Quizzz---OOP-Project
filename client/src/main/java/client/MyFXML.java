@@ -51,7 +51,8 @@ public class MyFXML {
 
     private URL getLocation(final String... parts) {
         var path = Path.of("", parts).toString();
-        return MyFXML.class.getClassLoader().getResource(path);
+        String realPath = path.replaceAll("\\\\", "/");
+        return MyFXML.class.getClassLoader().getResource(realPath);
     }
 
     private class MyFactory

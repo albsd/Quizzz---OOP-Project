@@ -1,17 +1,18 @@
 package client.sounds;
 
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.sound.sampled.Line;
 import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.FloatControl;
-
-import java.io.File;
+import javax.sound.sampled.Line;
+import javax.sound.sampled.LineUnavailableException;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
 
 public class Sound {
     Clip clip;
@@ -27,32 +28,28 @@ public class Sound {
     FloatControl floatControl;
 
     public Sound(final SoundName soundName) {
+        String soundNameStr;
+        soundNameStr = switch (soundName) {
+            case pop -> "sounds/pop.wav";
+
+            case boon -> "sounds/boon.wav";
+
+            case lobby_music ->  "sounds/lobby_music.wav";
+
+            case lobby_start -> "sounds/lobby_start.wav";
+
+            case option -> "sounds/option.wav";
+
+            case wrong_answer -> "sounds/wrong_answer.wav";
+
+            case right_answer -> "sounds/right_answer.wav";
+
+            case chat_message -> "sounds/chat_message.wav";
+        };
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(soundNameStr);
+        InputStream bufferedIn = new BufferedInputStream(inputStream);
         try {
-
-            //System.out.println(System.getProperty("user.dir"));
-            String filePath;
-
-            filePath = switch (soundName) {
-                case pop -> "src/main/resources/sounds/pop.wav";
-
-                case boon -> "src/main/resources/sounds/boon.wav";
-
-                case lobby_music ->  "src/main/resources/sounds/lobby_music.wav";
-
-                case lobby_start -> "src/main/resources/sounds/lobby_start.wav";
-
-                case option -> "src/main/resources/sounds/option.wav";
-
-                case wrong_answer -> "src/main/resources/sounds/wrong_answer.wav";
-
-                case right_answer -> "src/main/resources/sounds/right_answer.wav";
-
-                case chat_message -> "src/main/resources/sounds/chat_message.wav";
-            };
-            
-            File file = new File(filePath);
-            audio = AudioSystem.getAudioInputStream(file);
-
+            audio = AudioSystem.getAudioInputStream(bufferedIn);
         } catch (UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
@@ -110,5 +107,4 @@ public class Sound {
     public void unmuteVolume() {
         floatControl.setValue(0);
     }
-
 }

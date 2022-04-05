@@ -20,15 +20,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.TimerTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
@@ -85,14 +82,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         // list and causes player updates to get ignored silently
         lobbyMusic = new Sound(SoundName.lobby_music);
         lobbyMusic.play(muted, true);
-
         this.lobby = server.getLobby();
         this.players = lobby.getPlayers().stream()
                 .map(Player::getNick)
                 .collect(Collectors.toList());
-
         updatePlayerList();
-
         muted = false;
     }
 
@@ -131,9 +125,9 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         subscriptions[2] = server.registerForMessages("/topic/lobby/start", GameUpdate.class, update -> {
             Sound lobbyStartSound = new Sound(SoundName.lobby_start);
             lobbyStartSound.play(muted, false);
+            server.cancelHeartbeat();
 
             KeyFrame kf = new KeyFrame(Duration.seconds(3), e -> {
-                server.cancelHeartbeat();
                 Game game = server.getGameById(lobby.getId());
                 fxml.showMultiPlayer(me, game);
             });
@@ -148,7 +142,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
     public void onEnter(final ActionEvent e) {
         String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         chatInput.setText("");
-
         final ZonedDateTime time = ZonedDateTime.now();
         final LobbyMessage message = new LobbyMessage(me.getNick(), time.toString(), content);
         
@@ -206,8 +199,6 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void start(final ActionEvent event) {
-        //don't start game immediately cause invoker starts game faster
-        //than other players in lobby
         server.startMultiPlayer();
     }
 
@@ -216,24 +207,11 @@ public class LobbyController implements Initializable, WebSocketSubscription {
         if (muted) {
             muted = false;
             lobbyMusic.unmuteVolume();
-            soundIcon.setContent(loadSVGPath("/images/svgs/sound.svg"));
+            soundIcon.setContent(fxml.loadSVGPath("/images/svgs/sound.svg"));
         } else {
             muted = true;
             lobbyMusic.muteVolume();
-            soundIcon.setContent(loadSVGPath("/images/svgs/mute.svg"));
-        }
-    }
-
-    public String loadSVGPath(final String filePath) {
-        try {
-            Scanner svgScanner = new Scanner(getClass().getResource(filePath).openStream(), StandardCharsets.UTF_8);
-            svgScanner.skip(".*<path d=\"");
-            svgScanner.useDelimiter("\"");
-            String svgString = svgScanner.next();
-            return svgString;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
+            soundIcon.setContent(fxml.loadSVGPath("/images/svgs/mute.svg"));
         }
     }
 }

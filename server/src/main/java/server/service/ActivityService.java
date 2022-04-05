@@ -10,6 +10,8 @@ import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import server.repository.ActivityRepository;
+import server.repository.QuestionRepository;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.FileReader;
@@ -39,17 +41,18 @@ public class ActivityService {
 
     private final ActivityRepository activityRepository;
 
+    private final QuestionRepository questionRepository;
+
     private final String activitiesPath = "./src/main/resources/activities";
 
     private final String resourcesPath = "./src/main/resources";
 
     private final float offset = 0.1f;
 
-    private final String defaultImagePath = ".src/main/resources/images/icon.png";
-
     @Autowired
-    public ActivityService(final ActivityRepository activityRepository) {
+    public ActivityService(final ActivityRepository activityRepository, final QuestionRepository questionRepository) {
         this.activityRepository = activityRepository;
+        this.questionRepository = questionRepository;
     }
 
     public List<Activity> getActivities() {
@@ -63,14 +66,19 @@ public class ActivityService {
         return activityRepository.findAllById(ids);
     }
 
-    public synchronized List<Question> getQuestionList() {
+    public synchronized void generateQuestions() {
         List<Activity> activityList = getActivities();
-        return activityList.stream()
+        List<Question> questions = activityList.stream().limit(20)
             .map((activity) -> {
                 int questionType = (int) ((Math.random() * (4)));
-                return  turnActivityIntoQuestion(activity, questionType, activityList);
+                return turnActivityIntoQuestion(activity, questionType, activityList);
             })
             .collect(Collectors.toList());
+        questionRepository.addQuestions(questions);
+    }
+
+    public List<Question> getQuestions() {
+        return questionRepository.getQuestions();
     }
 
     /**
@@ -310,11 +318,15 @@ public class ActivityService {
         return new Image(generateImageByteArray(path), path.substring(path.lastIndexOf('/') + 1));
     }
 
-    public List<Activity> getAllActivities() throws IOException, ParseException {
+    public List<Activity> getAllActivities() {
         List<Activity> activities = new ArrayList<>(activityRepository.findAll());
-        if (activities.isEmpty()) {
-            // unzipFolder();
-            activities = populateRepo();
+        try {
+            if (activities.isEmpty()) {
+                // unzipFolder();
+                activities = populateRepo();
+            }    
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return activities;
     }
