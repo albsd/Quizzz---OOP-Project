@@ -15,9 +15,13 @@ public class QuestionRepository {
 
     private final List<List<Question>> questions = new ArrayList<>();
 
+    private int questionListIndex = 0;
+
     public List<Question> getQuestions() {
-        //temporary solution before testing. Not permanent
-        return questions.get(new Random().nextInt(questions.size()));
+        if (questionListIndex == questions.size()){
+            return questions.get(new Random().nextInt(questions.size()));
+        }
+        return questions.get(questionListIndex++);
     }
 
     public void addQuestions(final List<Question> question) {
