@@ -97,9 +97,9 @@ public class LeaderboardController implements Initializable {
         nick.setText(me.getNick());
         playerRanking.getChildren().clear();
         List<Player> ranking = leaderboard.getRanking();
+        if (ranking.size() == 0) return;
 
         int maxScore = ranking.get(0).getScore();
-
         Boolean plaqueSet = false;
         for (int i = 0; i < ranking.size(); i++) {
             Player player = ranking.get(i);

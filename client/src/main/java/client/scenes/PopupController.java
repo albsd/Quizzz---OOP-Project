@@ -1,13 +1,10 @@
 package client.scenes;
 
-import client.FXMLController;
 import client.sounds.Sound;
 import client.sounds.SoundName;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-
-import javax.inject.Inject;
 
 public class PopupController {
 
@@ -17,14 +14,7 @@ public class PopupController {
     @FXML
     private Label text;
 
-    private final FXMLController fxml;
-
     private Runnable onConfirm;
-
-    @Inject
-    public PopupController(final FXMLController fxml) {
-        this.fxml = fxml;
-    }
 
     public void open(final String prompt, final Runnable onConfirm) {
         menu.setVisible(true);
