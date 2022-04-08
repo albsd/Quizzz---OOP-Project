@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import client.FXMLController;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 
@@ -31,6 +32,9 @@ public class LeaderboardController implements Initializable {
 
     @FXML
     private Button lobby, singleplayer, backButton;
+
+    @FXML
+    private ProgressBar selfScore;
 
     @FXML
     private StackPane leaderboardPlaque;
@@ -94,26 +98,36 @@ public class LeaderboardController implements Initializable {
         nick.setText(me.getNick());
         playerRanking.getChildren().clear();
         List<Player> ranking = leaderboard.getRanking();
+
+        int maxScore = ranking.get(0).getScore();
+
         Boolean plaqueSet = false;
         for (int i = 0; i < ranking.size(); i++) {
             Player player = ranking.get(i);
 
             Label rankLabel = new Label("#" + (i + 1));
+            rankLabel.setPadding(new Insets(0, 0, 0, 10));
             Label nickLabel = new Label(player.getNick());
             Label scoreLabel = new Label(Integer.toString(player.getScore()));
+            scoreLabel.setPadding(new Insets(0, 10, 0, 0));
 
             StackPane entry = new StackPane();
             StackPane.setAlignment(rankLabel, Pos.CENTER_LEFT);
             StackPane.setAlignment(nickLabel, Pos.CENTER);
             StackPane.setAlignment(scoreLabel, Pos.CENTER_RIGHT);
 
-            entry.setPadding(new Insets(10, 10, 10, 10));
+            ProgressBar progressBar = new ProgressBar(player.getScore() / (double) maxScore);
+            progressBar.setPrefHeight(55.2);
+            progressBar.setPrefWidth(600);
+
+            entry.getChildren().add(progressBar);
             entry.getChildren().addAll(rankLabel, nickLabel, scoreLabel);
 
             if (player.getNick().equals(me.getNick()) && !plaqueSet) {
                 plaqueSet = true;
                 rank.setText("#" + (i + 1));
                 score.setText(Integer.toString(player.getScore()));
+                selfScore.setProgress(player.getScore() / (double) maxScore);
                 entry.getStyleClass().add("leaderboardSelf");
             } else if (i == 0) {
                 entry.getStyleClass().add("leaderboardFirst");

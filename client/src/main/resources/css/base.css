@@ -85,24 +85,24 @@
     -fx-text-fill: -leaderboard-text;
 }
 
-.leaderboardEntry {
-    -fx-background-color: -leaderboard-background;
+.leaderboardEntry .progress-bar {
+    -fx-accent: -leaderboard-background;
 }
 
 .leaderboardFirst .label {
     -fx-text-fill: -leaderboard-first-text;
 }
 
-.leaderboardFirst {
-    -fx-background-color: -leaderboard-first-background;
+.leaderboardFirst .progress-bar {
+    -fx-accent: -leaderboard-first-background;
 }
 
 .leaderboardSelf .label {
     -fx-text-fill: -leaderboard-self-text;
 }
 
-.leaderboardSelf {
-    -fx-background-color: -leaderboard-self-background;
+.leaderboardSelf .progress-bar {
+    -fx-accent: -leaderboard-self-background;
 }
 
 /* ICONS */

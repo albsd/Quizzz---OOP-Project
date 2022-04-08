@@ -14,6 +14,6 @@
     -leaderboard-self-background: -correct-background;
     -leaderboard-self-text: -correct-text;
     -leaderboard-background: #EAEAEA;
-    -leaderboard-text: -text;
+    -leaderboard-text: derive(-text, -20%);
     -selected-border: white;
 }
