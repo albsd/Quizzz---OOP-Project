@@ -137,6 +137,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private final long kTHRESHHOLD = 200; // ms
 
+    private boolean showingAnswer = false;
+
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
         this.clientTimer = initClientTimer();
@@ -386,7 +388,6 @@ public class GameController implements Initializable, WebSocketSubscription {
      *
      * @return true if the answer submission is valid, false otherwise
      */
-    @FXML
     public boolean validateAnswerSubmission() {
         if (submittedAnswer) {
             warning.setText("Already submitted answer!");
@@ -409,6 +410,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void onEnter(final ActionEvent event) {
         String optionStr = openAnswer.getText();
+        openAnswer.setDisable(true);
         if (validateAnswerSubmission()) {
             submittedAnswer = true;
             long option = Long.parseLong(optionStr);
@@ -425,9 +427,8 @@ public class GameController implements Initializable, WebSocketSubscription {
      * @param option the chosen answer to the question
      * @param time the time left in ms
      */
-    @FXML
     public void checkAnswer(final long option, final int time) {
-        Sound optionSound = new Sound(SoundName.option);
+        Sound optionSound = new Sound(SoundName.pop);
         optionSound.play(muted || isSinglePlayer, false);
         currentScore = game.getCurrentQuestion().calculateScore(option, time);
         if (currentScore > 0) answeredCorrectly++;
@@ -438,11 +439,12 @@ public class GameController implements Initializable, WebSocketSubscription {
      * (for five seconds)
      */
     private void displayAnswerMomentarily() {
+        if (game.getCurrentQuestionNumber() > 20) return;
+        showingAnswer = true;
         if (doubleScore) {
             currentScore *= 2;
             doubleScore = false;
         }
-
         me.addScore(currentScore);
         server.addScore(game.getId(), me.getNick(), currentScore);
 
@@ -487,7 +489,6 @@ public class GameController implements Initializable, WebSocketSubscription {
      * Sets the next question, in case we are past the 10th question
      * sends the player score and displays the leaderboard above the current screen.
      */
-    @FXML
     public void setNextQuestion() {
         // Displays leaderboard at end of game
         if (game.isOver()) {
@@ -517,6 +518,8 @@ public class GameController implements Initializable, WebSocketSubscription {
             game.nextQuestion();
             displayCurrentQuestion();
             clientTimer.start(delay);
+            showingAnswer = false;
+            openAnswer.setDisable(false);
         }
     }
 
@@ -609,7 +612,8 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void openPopup(final ActionEvent e) {
-        popupController.open("game", () -> {
+        new Sound(SoundName.click).play(false, false);
+        popupController.open("Do you really want to leave the game?", () -> {
             if (game.isMultiplayer()) {
                 server.updatePlayerFinished(game.getId(), me.getNick());
                 server.cancelHeartbeat();
@@ -618,6 +622,7 @@ public class GameController implements Initializable, WebSocketSubscription {
             clientTimer.stop();
             //mark game over to prevent next callback
             game.setCurrentQuestionIndex(20);
+            fxml.showSplash();
         });
     }
 
@@ -627,11 +632,17 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void timePowerup(final ActionEvent e) {
-        server.send("/app/game/" + this.game.getId() + "/halve", GameUpdate.halveTimer);
-        reducedTime();
-        // Solution to ensure that the initiator's timer is not halved
-        clientTimer.setCurrentTime(clientTimer.getCurrentTime() * 2);
-        timeButton.setDisable(true);
+        if (showingAnswer) {
+            warning.setText("Power-up not available!");
+            warning.setVisible(true);
+        } else {
+            new Sound(SoundName.click).play(false, false);
+            server.send("/app/game/" + this.game.getId() + "/halve", GameUpdate.halveTimer);
+            server.send("/app" + chatPath, new EmoteMessage(me.getNick(), Emote.reducedTime));
+            // Solution to ensure that the initiator's timer is not halved
+            clientTimer.setCurrentTime(clientTimer.getCurrentTime() * 2);
+            timeButton.setDisable(true);
+        }
     }
 
     /**
@@ -640,11 +651,14 @@ public class GameController implements Initializable, WebSocketSubscription {
      */
     @FXML
     public void scorePowerup(final ActionEvent e) {
-        Sound popSound = new Sound(SoundName.pop);
-        popSound.play(muted, false);
-
-        doubleScore = true;
-        ((Button) e.getSource()).setDisable(true);
+        if (showingAnswer) {
+            warning.setText("Power-up not available!");
+            warning.setVisible(true);
+        } else {
+            new Sound(SoundName.click).play(false, false);
+            doubleScore = true;
+            ((Button) e.getSource()).setDisable(true);
+        }
     }
 
     /**
@@ -654,8 +668,7 @@ public class GameController implements Initializable, WebSocketSubscription {
     @FXML
     public void removePowerup(final ActionEvent e) {
         if (!isOpenQuestion && validateAnswerSubmission()) {
-            Sound popSound = new Sound(SoundName.pop);
-            popSound.play(muted, false);
+            new Sound(SoundName.click).play(false, false);
 
             ((Button) e.getSource()).setDisable(true);
             Button[] options;
@@ -698,19 +711,13 @@ public class GameController implements Initializable, WebSocketSubscription {
         sendEmote(Emote.surprised);
     }
 
-    @FXML
-    public void reducedTime() {
-        sendEmote(Emote.reducedTime);
-    }
-
     private void sendEmote(final Emote emote) {
         Date now = new Date();
         if (now.getTime() - then.getTime() < kTHRESHHOLD) return;
         then = now;
-
-        Sound popSound = new Sound(SoundName.pop);
-        popSound.play(muted, false);
-
+        
+        new Sound(SoundName.click).play(false, false);
+        
         server.send("/app" + chatPath, new EmoteMessage(me.getNick(), emote));
     }
 
@@ -754,6 +761,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @FXML
     private void updateSoundButton(final ActionEvent e) {
+        new Sound(SoundName.click).play(false, false);
         if (muted) {
             muted = false;
             soundIcon.setContent(fxml.loadSVGPath("/images/svgs/sound.svg"));

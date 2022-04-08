@@ -18,20 +18,20 @@ class QuestionTimerTest {
 
     @Test
     void setCurrentTime() {
-        questionTimer.setCurrentTime(20);
-        assertEquals(20, questionTimer.getCurrentTime());
+        questionTimer.setCurrentTime(15);
+        assertEquals(15, questionTimer.getCurrentTime());
     }
 
     @Test
     void halve() {
         questionTimer.start(0);
         questionTimer.halve();
-        assertTrue(questionTimer.getCurrentTime() <= 10000 && questionTimer.getCurrentTime() >= 9900);
+        assertTrue(questionTimer.getCurrentTime() <= 7500 && questionTimer.getCurrentTime() >= 7000);
     }
 
     @Test
     void getCurrentTime() {
-        assertEquals(20000, questionTimer.getCurrentTime());
+        assertEquals(15000, questionTimer.getCurrentTime());
         questionTimer.setCurrentTime(10000);
         assertEquals(10000, questionTimer.getCurrentTime());
     }

@@ -201,10 +201,12 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void openPopup(final ActionEvent event) {
-        popupController.open("lobby", () -> {
+        new Sound(SoundName.click).play(false, false);
+        popupController.open("Do you really want to leave the lobby?", () -> {
             lobbyMusic.stop();
             server.leaveLobby(me.getNick());
             server.cancelHeartbeat();
+            fxml.showSplash();
             fxml.showSplash();
         });
     }
@@ -216,6 +218,7 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     private void updateSoundButton(final ActionEvent e) {
+        new Sound(SoundName.click).play(false, false);
         if (muted) {
             muted = false;
             lobbyMusic.unmuteVolume();

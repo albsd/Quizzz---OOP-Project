@@ -18,7 +18,7 @@
                         <Font size="24.0" />
                      </font>
                   </Button>
-                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#returnToMenu" prefHeight="50.0" prefWidth="350.0" styleClass="confirmButton" text="Confirm">
+                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#confirm" prefHeight="50.0" prefWidth="350.0" styleClass="confirmButton" text="Confirm">
                      <font>
                         <Font size="24.0" />
                      </font>

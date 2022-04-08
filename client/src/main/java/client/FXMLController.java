@@ -75,6 +75,7 @@ public class FXMLController {
         Scene scene = new Scene(root.getValue());
         scene.getStylesheets().addAll("css/base.css", themePath);
         primaryStage.setScene(scene);
+        primaryStage.centerOnScreen();
         primaryStage.show();
         return root;
     }

@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 /**
  * This is the class used to time the questions during
  * both the single-player and multi-player modes.
- * By default, it's supposed to run for 20 seconds and
+ * By default, it's supposed to run for 15 seconds and
  * it "updates" once every 7ms and changing this
  * will reflect itself on not only the time the players have
  * but also on how its consumers behave
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  */
 
 public class QuestionTimer {
-    public static final int MAX_TIME = 20000; // 20s
+    public static final int MAX_TIME = 15000; // 15s
     private final int decrement = 7;    // 7ms
     private int currentTime = MAX_TIME;
     private boolean started = false;
