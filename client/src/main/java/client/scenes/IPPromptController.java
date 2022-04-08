@@ -4,12 +4,14 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
+import client.sounds.Sound;
+import client.sounds.SoundName;
 import com.google.inject.Inject;
-
+import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 import client.FXMLController;
 import client.utils.ServerUtils;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
@@ -27,6 +29,9 @@ public class IPPromptController implements Initializable {
 
     @FXML
     private Text warning;
+
+    @FXML
+    private Button connectButton;
     
     private final ServerUtils server;
 
@@ -45,10 +50,29 @@ public class IPPromptController implements Initializable {
                 8080,
                 c -> Pattern.matches("\\d*", c.getText()) ? c : null);
         portField.setTextFormatter(numberFormatter);
+
+        hostField.setOnKeyPressed(e -> {
+            if (e.getCode().equals(KeyCode.ENTER)) {
+                portField.requestFocus();
+            }
+        });
+
+        portField.setOnKeyPressed(e -> {
+            if (e.getCode().equals(KeyCode.ENTER)) {
+                connectButton.requestFocus();
+            }
+        });
+
+        connectButton.setOnKeyPressed(e -> {
+            if (e.getCode().equals(KeyCode.ENTER)) {
+                connect();
+            }
+        });
     }
 
     @FXML
-    public void connect(final ActionEvent event) {
+    public void connect() {
+        new Sound(SoundName.pop).play(false, false);
         String host = hostField.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
         String port = portField.getText();
 
@@ -61,8 +85,6 @@ public class IPPromptController implements Initializable {
 
         warning.setFill(new Color(0, 0.6, 0, 1));
         warning.setText("Connected to http://" + host + ":" + port);
-
         fxml.showSplash();
     }
-
 }

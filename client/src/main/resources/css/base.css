@@ -1,5 +1,5 @@
 /* FONTS */
-.label, .button, .text-field, Text {
+.label, .button, .text-field, Text, .column-header, .table-view .table-cell {
     -fx-font-family: 'Righteous';
     -fx-font-size: 24;
 }
@@ -40,7 +40,7 @@
     -fx-alignment: CENTER_LEFT;
 }
 
-.scene {
+.scene, .pane {
     -fx-background-color: -background;
 }
 
@@ -138,6 +138,66 @@ SVGPath {
 
 .iconButton:hover SVGPath {
     -fx-fill: ladder(-icon, derive(-icon, 20%), derive(-icon, -20%));
+}
+
+/* TABLE */
+.table-view, .table-view:focused {
+    -fx-background-color: -background;
+}
+
+.table-view .column-header {
+    -fx-background-color: -background-alt;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -background-alt;
+}
+
+.table-view .column-header-background .label {
+    -fx-font-size: 18;
+}
+
+.table-view .filler {
+    -fx-background-color: -background-alt;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: -text;
+    -fx-font-size: 18;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:even {
+    -fx-background-color: -background;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: -background-alt;
+}
+
+.table-row-cell:focused {
+    -fx-border-color: -selected-border;
+}
+
+/* SCROLL BAR */
+.scroll-bar,
+.scroll-bar > .track,
+.scroll-bar > .track-background {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -button-background;
+}
+
+.scroll-bar > .increment-button, 
+.scroll-bar > .decrement-button {
+    -fx-opacity: 0;
+}
+
+.virtual-flow > .corner,
+.scroll-bar > .corner {
+    -fx-background-color: transparent;
 }
 
 /* OTHER */

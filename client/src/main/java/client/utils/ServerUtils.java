@@ -38,9 +38,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -541,29 +539,19 @@ public class ServerUtils {
     }
 
     private String initMacAddress() {
-        InetAddress localHost = null;
         try {
-            localHost = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
+            InetAddress localHost = InetAddress.getLocalHost();
+            NetworkInterface ni = NetworkInterface.getByInetAddress(localHost);
+            byte[] hardwareAddress = ni.getHardwareAddress();
+
+            String[] hexadecimal = new String[hardwareAddress.length];
+            for (int i = 0; i < hardwareAddress.length; i++) {
+                hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
+            }
+            return String.join("_", hexadecimal);
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        NetworkInterface ni = null;
-        try {
-            ni = NetworkInterface.getByInetAddress(localHost);
-        } catch (SocketException e1) {
-            e1.printStackTrace();
-        }
-        byte[] hardwareAddress = null;
-        try {
-            hardwareAddress = ni.getHardwareAddress();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        String[] hexadecimal = new String[hardwareAddress.length];
-        for (int i = 0; i < hardwareAddress.length; i++) {
-            hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
-        }
-        
-        return String.join("_", hexadecimal);
     }
 }

@@ -58,6 +58,7 @@ public class LeaderboardController implements Initializable {
 
     @FXML
     public void backToSplash(final ActionEvent e) {
+        new Sound(SoundName.click).play(false, false);
         fxml.showSplash();
     }
 
@@ -77,16 +78,14 @@ public class LeaderboardController implements Initializable {
 
     @FXML
     public void lobby(final ActionEvent event) {
-        Sound popSound = new Sound(SoundName.pop);
-        popSound.play(false, false);
+        new Sound(SoundName.pop).play(false, false);
         final Player me = server.joinLobby(prevMe.getNick());
         fxml.showLobby(me);
     }
 
     @FXML
     public void singleplayer() {
-        Sound popSound = new Sound(SoundName.pop);
-        popSound.play(false, false);
+        new Sound(SoundName.pop).play(false, false);
         Game single = server.startSinglePlayer(prevMe.getNick());
         fxml.showSinglePlayer(single);
     }
@@ -139,7 +138,6 @@ public class LeaderboardController implements Initializable {
         }
     }
 
-    @FXML
     public void hideBackButton() {
         backButton.setVisible(false);
     }

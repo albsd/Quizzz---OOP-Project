@@ -19,5 +19,13 @@
 }
 
 .text-field {
-    -fx-text-fill: #433E7A;
+    -fx-text-fill: -correct-text;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: -button-background;
+}
+
+.table-view .column-header-background .label {
+    -fx-text-fill: -button-background;
 }

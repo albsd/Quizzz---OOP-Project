@@ -66,17 +66,20 @@ public class SplashController implements Initializable {
 
     @FXML
     public void help(final ActionEvent event) {
+        new Sound(SoundName.click).play(false, false);
         fxml.showHelp();
     }
 
     @FXML
     public void theme(final ActionEvent event) {
+        new Sound(SoundName.click).play(false, false);
         fxml.showThemeSelector();
     }
 
     @FXML
     public void exitApp(final ActionEvent event) {
-        popupController.open("app", () -> {
+        new Sound(SoundName.click).play(false, false);
+        popupController.open("Do you really want to close the app?", () -> {
             System.exit(0);
         });
     }
@@ -107,6 +110,7 @@ public class SplashController implements Initializable {
 
     @FXML
     public void singleGame(final ActionEvent event) {
+        new Sound(SoundName.pop).play(false, false);
         if (!validateNickname(nickField.getText())) {
             return;
         }
@@ -114,8 +118,6 @@ public class SplashController implements Initializable {
         nickField.setText(nick);
         server.saveNickname(nick);
         fxml.saveNick(nick);
-        Sound popSound = new Sound(SoundName.pop);
-        popSound.play(false, false);
         Game singleGame = server.startSinglePlayer(nick);
         fxml.showSinglePlayer(singleGame);
     }
@@ -128,6 +130,7 @@ public class SplashController implements Initializable {
      */
     @FXML
     public void lobby(final ActionEvent event) {
+        new Sound(SoundName.pop).play(false, false);
         if (!validateNickname(nickField.getText())) {
             return;
         }
@@ -140,8 +143,6 @@ public class SplashController implements Initializable {
         }
         server.saveNickname(nick);
         fxml.saveNick(nick);
-        Sound popSound = new Sound(SoundName.pop);
-        popSound.play(false, false);
         fxml.showLobby(me);
     }
 
@@ -152,21 +153,19 @@ public class SplashController implements Initializable {
 
     @FXML
     public void leaderBoard(final ActionEvent event) {
+        new Sound(SoundName.pop).play(false, false);
         if (!validateNickname(nickField.getText())) {
             return;
         }
         nick = nickField.getText();
         server.saveNickname(nick);
         fxml.saveNick(nick);
-        Sound popSound = new Sound(SoundName.pop);
-        popSound.play(false, false);
         fxml.showLeaderboard(server.getSinglePlayerLeaderboard());
     }
 
     @FXML
     public void admin(final ActionEvent event) {
-        Sound popSound = new Sound(SoundName.pop);
-        popSound.play(false, false);
+        new Sound(SoundName.pop).play(false, false);
         fxml.showAdminPanel();
     }
 }

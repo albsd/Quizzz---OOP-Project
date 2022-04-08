@@ -97,7 +97,7 @@
                      <Font name="System Bold" size="24.0" />
                   </font>
                </Label>
-               <Label alignment="TOP_LEFT" lineSpacing="4.0" text="Compete for the global leaderboard! There are no powerups involved." wrapText="true" GridPane.rowIndex="2">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" text="Compete for the global leaderboard! There are no power-ups involved." wrapText="true" GridPane.rowIndex="2">
                   <font>
                      <Font size="24.0" />
                   </font>
@@ -105,7 +105,7 @@
                      <Insets bottom="24.0" />
                   </GridPane.margin>
                </Label>
-               <Label alignment="TOP_LEFT" lineSpacing="4.0" text="Play with others and compete for the highest score in the game! You have the ability to use power ups. You can also use emotes to interact with others. Any number of players per lobby. Woah!" wrapText="true" GridPane.rowIndex="4">
+               <Label alignment="TOP_LEFT" lineSpacing="4.0" text="Play with others and compete for the highest score in the game! You have the ability to use power-ups. You can also use emotes to interact with others. Any number of players per lobby. Woah!" wrapText="true" GridPane.rowIndex="4">
                   <font>
                      <Font size="24.0" />
                   </font>

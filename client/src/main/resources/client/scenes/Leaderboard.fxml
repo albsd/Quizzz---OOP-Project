@@ -44,7 +44,7 @@
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <Label fx:id="rank" text="test" StackPane.alignment="CENTER_LEFT">
+                  <Label fx:id="rank" StackPane.alignment="CENTER_LEFT">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -55,7 +55,7 @@
                         <Insets left="10.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="score" text="100" StackPane.alignment="CENTER_RIGHT">
+                  <Label fx:id="score" StackPane.alignment="CENTER_RIGHT">
                      <font>
                         <Font size="24.0" />
                      </font>

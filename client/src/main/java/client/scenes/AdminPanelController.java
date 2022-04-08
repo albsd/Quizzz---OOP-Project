@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.FXMLController;
+import client.sounds.Sound;
+import client.sounds.SoundName;
 import client.utils.ServerUtils;
 import commons.Activity;
 import commons.DBController;
@@ -11,15 +13,17 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -49,6 +53,8 @@ import java.util.ResourceBundle;
 public class AdminPanelController implements Initializable {
 
     @FXML
+    private PopupController popupController;
+    @FXML
     private TableView<Activity> table;
     @FXML
     private TableColumn<Activity, Long> id;
@@ -64,12 +70,19 @@ public class AdminPanelController implements Initializable {
     private Label modeText, infoText;
     @FXML
     private ImageView imageShow;
+    @FXML
+    private HBox editWindow, buttons;
+    @FXML
+    private Button delete, edit, add;
+
+    private Button[] editButtons;
+
 
     private final ServerUtils server;
     private final FXMLController fxml;
     private ObservableList<Activity> activities;
     private boolean isEditing;
-    private Activity activityEdit;
+    private Activity selectedActivity;
     private commons.Image image;
     private final FileChooser.ExtensionFilter extensionFilter;
 
@@ -103,10 +116,10 @@ public class AdminPanelController implements Initializable {
         powerInput.setText("");
         isEditing = false;
         loadTable(false);
+        editButtons = new Button[] {delete, edit, add};
 
-        //Activity selection with double-clicking
         table.setOnMouseClicked((MouseEvent event) -> {
-            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
                 select();
             }
         });
@@ -118,6 +131,7 @@ public class AdminPanelController implements Initializable {
      */
     @FXML
     public void splash(final ActionEvent e) {
+        new Sound(SoundName.click).play(false, false);
         fxml.showSplash();
     }
 
@@ -137,11 +151,6 @@ public class AdminPanelController implements Initializable {
         }
     }
 
-    @FXML
-    public void refresh() {
-        loadTable(false);
-    }
-
     /**
      * Submits the filled inputs to the server, either adding or editing an activity.
      * Checks whether fields and image are entered properly
@@ -149,37 +158,24 @@ public class AdminPanelController implements Initializable {
      */
     @FXML
     public void submit() {
+        new Sound(SoundName.pop).play(false, false);
+        if (!checkInput()) return;
         if (isEditing) {
-            if (activityEdit == null) {
-                infoText.setText("You have to select an activity to edit.");
-            } else {
-                if (!checkInput()) return;
-                activityEdit.setTitle(titleInput.getText());
-                activityEdit.setEnergyConsumption(Long.parseLong(powerInput.getText()));
-                activityEdit.setSource(sourceInput.getText());
-                activityEdit.setPath(image.getName());
-                server.addActivity(activityEdit);
-                server.sendImage(image);
-                infoText.setText(String.format("Activity with the id %d is edited.", activityEdit.getId()));
-                loadTable(false);
-            }
+            selectedActivity.setTitle(titleInput.getText());
+            selectedActivity.setEnergyConsumption(Long.parseLong(powerInput.getText()));
+            selectedActivity.setSource(sourceInput.getText());
+            selectedActivity.setPath(image.getName());
+            server.addActivity(selectedActivity);
+            server.sendImage(image);
+            loadTable(false);
+            closeEditWindow();
         } else {
-            if (image == null) {
-                infoText.setText("You need to select an image before adding an activity.");
-            } else {
-                if (!checkInput()) return;
-                Activity newActivity = new Activity(titleInput.getText(), Long.parseLong(powerInput.getText()),
-                        sourceInput.getText(), image.getName());
-                Activity added = server.addActivity(newActivity);
-                server.sendImage(image);
-                infoText.setText(String.format("New activity is added with the id %d.", added.getId()));
-                titleInput.setText("");
-                powerInput.setText("");
-                sourceInput.setText("");
-                imageShow.setImage(null);
-                image = null;
-                loadTable(true);
-            }
+            Activity newActivity = new Activity(titleInput.getText(), Long.parseLong(powerInput.getText()),
+                    sourceInput.getText(), image.getName());
+            server.addActivity(newActivity);
+            server.sendImage(image);
+            loadTable(true);
+            closeEditWindow();
         }
     }
 
@@ -200,76 +196,107 @@ public class AdminPanelController implements Initializable {
             infoText.setText("Source cannot be empty.");
             return false;
         }
+        if (image == null) {
+            infoText.setText("Image must be set.");
+        }
         return true;
+    }
+
+    private void showEditWindow() {
+        buttons.setDisable(true);
+        table.setDisable(true);
+        infoText.setText("");
+        clearActivity();
+        if (selectedActivity != null) {
+            titleInput.setText(selectedActivity.getTitle());
+            powerInput.setText(Long.toString(selectedActivity.getEnergyConsumption()));
+            sourceInput.setText(selectedActivity.getSource());
+            image = server.getImage(selectedActivity.getPath().replace(" ", "%20"));
+            imageShow.setImage(new Image(new ByteArrayInputStream(image.getData())));
+        }
+        editWindow.setVisible(true);
+    }
+
+    @FXML
+    public void closeEditWindow() {
+        editWindow.setVisible(false);
+        buttons.setDisable(false);
+        table.setDisable(false);
     }
 
     /**
      * Changes current mode to ADD MODE.
      */
+    @FXML
     public void add() {
-        modeText.setText("ADD MODE");
+        new Sound(SoundName.click).play(false, false);
+        selectedActivity = null;
+        showEditWindow();
+        modeText.setText("ADD ACTIVITY");
         isEditing = false;
-        activityEdit = null;
-        infoText.setText("");
     }
 
     /**
      * Changes current mode to EDIT MODE.
      */
+    @FXML
     public void edit() {
-        modeText.setText("EDIT MODE");
+        new Sound(SoundName.click).play(false, false);
+        showEditWindow();
+        modeText.setText("EDIT ACTIVITY");
         isEditing = true;
-        if (activityEdit != null) {
-            infoText.setText(String.format("Activity with the id %d is selected to edit.", activityEdit.getId()));
-        }
     }
 
     /**
      * Selects an activity from the table.
      * Fills required fields and uploads the image of the activity.
      */
-    public void select() {
-        activityEdit = getSelected();
-        titleInput.setText(activityEdit.getTitle());
-        powerInput.setText(Long.toString(activityEdit.getEnergyConsumption()));
-        sourceInput.setText(activityEdit.getSource());
-        image = server.getImage(activityEdit.getPath().replace(" ", "%20"));
-        imageShow.setImage(new Image(new ByteArrayInputStream(image.getData())));
-
-        if (isEditing) {
-            infoText.setText(String.format("Activity with the id %d is selected to edit.", activityEdit.getId()));
-        } else {
-            infoText.setText("");
+    private void select() {
+        selectedActivity = getSelected();
+        for (Button b : editButtons) {
+            b.setDisable(false);
         }
+    }
+
+    private void clearActivity() {
+        titleInput.clear();
+        powerInput.clear();
+        sourceInput.clear();
+        imageShow.setImage(null);
+        image = null;
     }
 
     /**
      * Deletes the selected activity from the database and the image of the activity.
      */
+    @FXML
     public void delete() {
-        Activity toBeDeleted = getSelected();
-        infoText.setText(String.format("Activity with the id %d is deleted.", toBeDeleted.getId()));
-        server.deleteActivity(toBeDeleted.getId());
-        titleInput.setText("");
-        powerInput.setText("");
-        sourceInput.setText("");
-        imageShow.setImage(null);
-        image = null;
-        loadTable(false);
+        new Sound(SoundName.click).play(false, false);
+        popupController.open("Are you sure you want to delete this activity?", () -> {
+            Activity toBeDeleted = getSelected();
+            server.deleteActivity(toBeDeleted.getId());
+            clearActivity();
+            selectedActivity = null;
+            for (Button b : editButtons) {
+                b.setDisable(true);
+            }
+            loadTable(false);
+        });
     }
 
     /**
      * Opens up the file chooser tab for image selection.
      * Shows up the image if an appropriate image is selected.
      */
+    @FXML
     public void chooseImage() {
+        new Sound(SoundName.click).play(false, false);
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose an Image");
         fileChooser.getExtensionFilters().add(extensionFilter);
         File file = fileChooser.showOpenDialog(stage);
         if (file != null && file.length() / 1024 <= 500) {
-
             image = new commons.Image(generateImageByteArray(file.getPath()), file.getName());
             Image img = new Image(new ByteArrayInputStream(image.getData()));
             if (img.getHeight() < 200) {
@@ -286,7 +313,9 @@ public class AdminPanelController implements Initializable {
         }
     }
 
+    @FXML
     public void chooseActivities() {
+        new Sound(SoundName.click).play(false, false);
         Stage stage = new Stage();
         DirectoryChooser dirChooser = new DirectoryChooser();
         dirChooser.setTitle("Choose the activities folder.");
@@ -337,7 +366,6 @@ public class AdminPanelController implements Initializable {
         server.addActivities(newActivities);
         server.sendImages(images);
         loadTable(true);
-        infoText.setText("Activities are loaded successfully.");
     }
 
     /**
@@ -366,7 +394,7 @@ public class AdminPanelController implements Initializable {
     /**
      * @return Currently selected activity in the table
      */
-    public Activity getSelected() {
+    private Activity getSelected() {
         return table.getSelectionModel().getSelectedItem();
     }
 }

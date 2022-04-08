@@ -45,6 +45,8 @@ public class Sound {
             case right_answer -> "sounds/right_answer.wav";
 
             case chat_message -> "sounds/chat_message.wav";
+
+            case click -> "sounds/click.wav";
         };
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(soundNameStr);
         InputStream bufferedIn = new BufferedInputStream(inputStream);
