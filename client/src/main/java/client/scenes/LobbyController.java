@@ -24,6 +24,7 @@ import java.net.URL;
 import java.time.ZonedDateTime;
 import java.util.TimerTask;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -69,6 +70,10 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     private Sound lobbyMusic;
 
+    private Date then;
+
+    private final long kTHRESHHOLD = 500; // ms
+
     @Inject
     public LobbyController(final ServerUtils server, final FXMLController fxml) {
         this.server = server;
@@ -78,15 +83,15 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        // We DON'T use the shorthand .toList() here, because that returns an immutable
-        // list and causes player updates to get ignored silently
-        lobbyMusic = new Sound(SoundName.lobby_music);
-        lobbyMusic.play(muted, true);
+        this.then = new Date();
         this.lobby = server.getLobby();
         this.players = lobby.getPlayers().stream()
                 .map(Player::getNick)
                 .collect(Collectors.toList());
         updatePlayerList();
+
+        lobbyMusic = new Sound(SoundName.lobby_music);
+        lobbyMusic.play(muted, true);
         muted = false;
     }
 
@@ -111,11 +116,12 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
             Platform.runLater(() -> {
                 //prevent repeated clicking of start button
-                if (message.toString().startsWith("Server - Game is about to start.")) {
+                String msg = message.toString();
+                if (msg.startsWith("Server - Game is about to start.")) {
                     startButton.setDisable(true);
                     lobbyMusic.stop();
                 }
-                String chatBox = chatText.getText() + message.toString();
+                String chatBox = chatText.getText() + msg;
                 chatText.setText(chatBox);
                 chatArea.layout();
                 chatArea.setVvalue(1.0);
@@ -140,11 +146,17 @@ public class LobbyController implements Initializable, WebSocketSubscription {
 
     @FXML
     public void onEnter(final ActionEvent e) {
+        Date now = new Date();
+        if (now.getTime() - then.getTime() < kTHRESHHOLD) return;
+        then = now;
+
         String content = chatInput.getText().replaceAll("[\"\'><&]", ""); // escape XML characters
+        if (content.length() == 0) return;
+
         chatInput.setText("");
         final ZonedDateTime time = ZonedDateTime.now();
         final LobbyMessage message = new LobbyMessage(me.getNick(), time.toString(), content);
-        
+
         server.send("/app/lobby/chat", message);
     }
 
