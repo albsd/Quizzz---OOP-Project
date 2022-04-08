@@ -34,6 +34,9 @@ public class LeaderboardController implements Initializable {
     private Button lobby, singleplayer, backButton;
 
     @FXML
+    private ProgressBar selfScore;
+
+    @FXML
     private StackPane leaderboardPlaque;
 
     private Player prevMe;
@@ -124,6 +127,7 @@ public class LeaderboardController implements Initializable {
                 plaqueSet = true;
                 rank.setText("#" + (i + 1));
                 score.setText(Integer.toString(player.getScore()));
+                selfScore.setProgress(player.getScore() / (double) maxScore);
                 entry.getStyleClass().add("leaderboardSelf");
             } else if (i == 0) {
                 entry.getStyleClass().add("leaderboardFirst");
