@@ -14,7 +14,7 @@
     -leaderboard-self-background: -correct-background;
     -leaderboard-self-text: -correct-text;
     -leaderboard-background: #8D89A4;
-    -leaderboard-text: -text;
+    -leaderboard-text: -correct-text;
     -selected-border: -text;
 }
 
