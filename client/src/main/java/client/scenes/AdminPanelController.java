@@ -49,7 +49,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
-//TODO: IMPROVE THE SCENE VISUALLY (FONTS - SIZES - PLACEMENT)
 public class AdminPanelController implements Initializable {
 
     @FXML
@@ -330,6 +329,7 @@ public class AdminPanelController implements Initializable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void populateRepo(final String activitiesPath) {
         List<File> files = DBController.getFiles(".json", new File(activitiesPath));
         final String resourcesPath = "./src/main/resources";
