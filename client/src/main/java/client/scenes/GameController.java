@@ -132,6 +132,10 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     private List<Button> optionButtons;
     private List<Button> activityOptionButtons;
+    
+    private Date then;
+
+    private final long kTHRESHHOLD = 200; // ms
 
     @Inject
     public GameController(final ServerUtils server, final FXMLController fxml) {
@@ -142,6 +146,7 @@ public class GameController implements Initializable, WebSocketSubscription {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        this.then = new Date();
         multiImageSize = 239;
         optionButtons = new ArrayList<>(Arrays.asList(option1, option2, option3));
         optionButtons.forEach((b) -> {
@@ -699,6 +704,10 @@ public class GameController implements Initializable, WebSocketSubscription {
     }
 
     private void sendEmote(final Emote emote) {
+        Date now = new Date();
+        if (now.getTime() - then.getTime() < kTHRESHHOLD) return;
+        then = now;
+
         Sound popSound = new Sound(SoundName.pop);
         popSound.play(muted, false);
 
